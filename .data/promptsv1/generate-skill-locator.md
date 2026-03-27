@@ -218,10 +218,11 @@ Generate framework-specific sections in references/ files. Each MUST include: pr
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent                | Role                                                            | Tools               | Spawn When                                                                               |
-| -------------------- | --------------------------------------------------------------- | -------------------- | ---------------------------------------------------------------------------------------- |
-| locator-auditor      | Audit existing locators for brittleness and suggest improvements | Read Glob Grep Bash | Locator review request, brittle selector audit, locator quality assessment, pre-refactor |
-| page-object-builder  | Generate or update page objects with proper locator strategies  | Read Edit Write Glob Grep | New page creation, page object refactoring, locator centralization task               |
+| Agent                 | Role                                                                 | Tools                     | Spawn When                                                                               |
+| --------------------- | -------------------------------------------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------- |
+| locator-auditor       | Audit existing locators for brittleness and suggest improvements     | Read Glob Grep Bash       | Locator review request, brittle selector audit, locator quality assessment, pre-refactor |
+| page-object-builder   | Generate or update page objects with proper locator strategies       | Read Edit Write Glob Grep | New page creation, page object refactoring, locator centralization task                   |
+| accessibility-checker | Verify locators follow a11y-first strategy and WCAG compliance       | Read Glob Grep            | Accessibility audit, a11y-first selector compliance check, ARIA role verification        |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 
@@ -233,3 +234,4 @@ Add to suggested reference files:
 
 - `agents/locator-auditor.md` — locator brittleness analysis agent
 - `agents/page-object-builder.md` — page object generation and locator centralization agent
+- `agents/accessibility-checker.md` — a11y-first selector compliance and WCAG verification agent

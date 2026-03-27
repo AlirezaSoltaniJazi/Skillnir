@@ -109,8 +109,8 @@ Integrate for the detected architecture:
 - ProGuard/R8 rules and considerations
 - App startup optimization (App Startup library, lazy init)
 - Battery and network efficiency
-- Accessibility (TalkBack, content descriptions, semantic properties)
-- Security (certificate pinning, EncryptedSharedPreferences, safe intents)
+- Accessibility (TalkBack, content descriptions, semantic properties, WCAG 2.1 AA mapping, touch target sizing, color contrast)
+- Security (certificate pinning, EncryptedSharedPreferences, safe intents, OWASP Mobile Top 10)
 - Testing pyramid (unit > integration > UI)
 - KMP best practices (shared logic boundaries, platform-specific implementations)
 
@@ -135,7 +135,7 @@ Integrate for the detected architecture:
 9. **Security** — summary + link to references/security-checklist.md for storage, network, intent verification
 10. **Anti-Patterns** — what NOT to do (with why)
 11. **References** — key files, SDK docs, architecture decision records
-12. **Adaptive Interaction Protocols** — interaction modes with Android-specific detection signals (e.g., "what does this annotation do" for Teaching, "same pattern as X screen" for Efficient, "crash on rotation" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, memory bridge
+12. **Adaptive Interaction Protocols** — interaction modes with Android-specific detection signals (e.g., "what does this annotation do" for Teaching, "same pattern as X screen" for Efficient, "crash on rotation" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
 
 **Suggested reference files**:
 
@@ -156,10 +156,11 @@ Integrate for the detected architecture:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent         | Role                                                            | Tools                          | Spawn When                                                             |
-| ------------- | --------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------- |
-| code-reviewer | Read-only Kotlin/Java code analysis and architecture compliance | Read Glob Grep                 | PR review, architecture compliance check, Compose best practices audit |
-| test-writer   | Android test generation (unit + instrumented)                   | Read Edit Write Glob Grep Bash | "write tests for X", new screen/feature creation, coverage gaps        |
+| Agent            | Role                                                            | Tools                          | Spawn When                                                                   |
+| ---------------- | --------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------- |
+| code-reviewer    | Read-only Kotlin/Java code analysis and architecture compliance | Read Glob Grep                 | PR review, architecture compliance check, Compose best practices audit       |
+| test-writer      | Android test generation (unit + instrumented)                   | Read Edit Write Glob Grep Bash | "write tests for X", new screen/feature creation, coverage gaps              |
+| security-scanner | OWASP Mobile Top 10 audit and Android security analysis         | Read Glob Grep                 | Security review, pre-release audit, insecure storage/intent/IPC analysis     |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 
@@ -171,3 +172,4 @@ Add to suggested reference files:
 
 - `agents/code-reviewer.md` — read-only Android code analysis agent
 - `agents/test-writer.md` — Android test generation agent
+- `agents/security-scanner.md` — OWASP Mobile Top 10 security audit agent

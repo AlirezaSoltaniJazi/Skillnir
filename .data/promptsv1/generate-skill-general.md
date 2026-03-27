@@ -5,6 +5,8 @@ description: Guides users through creating effective Agent Skills for Cursor. Us
 
 # Creating Skills in Cursor
 
+> **Disambiguation**: This is a **skill-authoring guide** — it teaches how to write effective skills manually. For generating project-wide system/meta skills automatically, see [`generate-skill-general-system.md`](generate-skill-general-system.md).
+
 Skills are markdown files that teach the agent specific tasks: reviewing PRs, generating commits, querying schemas, or any specialized workflow.
 
 ## Before You Begin: Gather Requirements

@@ -92,6 +92,10 @@ Focus on **patterns**, not exhaustive listings.
 - Monkeypatching/metaprogramming changing runtime behavior
 - "Don't touch" zones
 
+### 2e. LEARNED.md scan
+
+If `.data/skills/*/LEARNED.md` files exist with non-empty content, extract corrections, preferences, and discovered conventions. These represent accumulated team knowledge from prior AI sessions and should inform the generated docs.
+
 ---
 
 ## PHASE 3: GENERATE DOCUMENTS
@@ -205,6 +209,15 @@ make lint
 ## Testing
 
 {{Organization, what to run, factories/fixtures}}
+
+## Security
+
+{{Summary of critical security rules from project skills and code analysis}}
+
+- Authentication/authorization patterns
+- Input validation rules
+- Secrets management approach
+- Dependency audit status
 
 ## Known Gotchas
 

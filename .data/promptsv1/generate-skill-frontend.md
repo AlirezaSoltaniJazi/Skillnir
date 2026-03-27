@@ -117,7 +117,7 @@ Integrate for the detected framework:
 - SEO (SSR/SSG patterns, meta tags, structured data)
 - Error boundaries and graceful degradation
 - Testing strategy (what to unit test vs E2E)
-- Security (XSS prevention, CSP, sanitization)
+- Security (XSS prevention, CSP, sanitization, dependency auditing, classify by severity)
 - Responsive design patterns
 - State management best practices for detected solution
 - Web vitals optimization (LCP, FID, CLS)
@@ -143,7 +143,7 @@ Integrate for the detected framework:
 9. **Security** — summary + link to references/security-checklist.md for XSS, sanitization, CSP verification
 10. **Anti-Patterns** — what NOT to do (with why)
 11. **References** — key files, docs, design system links
-12. **Adaptive Interaction Protocols** — interaction modes with frontend-specific detection signals (e.g., "what is this hook" for Teaching, "another component like X" for Efficient, "render error" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, memory bridge
+12. **Adaptive Interaction Protocols** — interaction modes with frontend-specific detection signals (e.g., "what is this hook" for Teaching, "another component like X" for Efficient, "render error" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
 
 **Suggested reference files**:
 

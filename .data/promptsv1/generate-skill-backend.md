@@ -100,10 +100,12 @@ Integrate for the detected language/framework:
 - Auth/authorization best practices
 - Error handling hierarchy
 - Testing discipline (unit vs integration, what to mock)
-- Security: OWASP top 10 for the detected framework
+- Security: OWASP top 10 for the detected framework, classify by severity (Critical/High/Medium/Low)
 - Logging and observability patterns
 - 12-factor app principles where applicable
 - WebSocket/real-time best practices (connection lifecycle, reconnection)
+- Rollback strategy and data recovery (migration rollback, deployment rollback, data backup verification)
+- Cloud cost awareness (right-sizing, connection pooling, query cost, caching to reduce compute)
 
 ---
 
@@ -126,7 +128,7 @@ Integrate for the detected language/framework:
 9. **Security** — summary + link to references/security-checklist.md for per-component verification
 10. **Anti-Patterns** — what NOT to do (with why)
 11. **References** — key files, docs, resources
-12. **Adaptive Interaction Protocols** — interaction modes with backend-specific detection signals (e.g., "traceback" for Diagnostic, "another endpoint" for Efficient, "what is this mixin" for Teaching), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, memory bridge
+12. **Adaptive Interaction Protocols** — interaction modes with backend-specific detection signals (e.g., "traceback" for Diagnostic, "another endpoint" for Efficient, "what is this mixin" for Teaching), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
 
 **Suggested reference files**:
 

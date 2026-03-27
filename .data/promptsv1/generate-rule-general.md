@@ -92,6 +92,7 @@ alwaysApply: false
 - **One concern per rule** — split large rules into focused pieces
 - **Concrete examples** — show before/after, not just prose
 - **Specify anti-patterns** — what NOT to do with why
+- **Reference LEARNED.md** — if `.data/skills/*/LEARNED.md` files contain relevant corrections or conventions, incorporate them into the rule so accumulated learnings persist across tools
 
 ---
 

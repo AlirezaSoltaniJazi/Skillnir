@@ -125,6 +125,7 @@ Integrate for the detected stack:
 - `references/security-test-scenarios.md` — OWASP-aligned security test cases
 - `references/api-test-matrix.md` — endpoint x method x auth x status code coverage matrix
 - `references/common-issues.md` — commonly missed test scenarios and blind spots
+- `references/ai-interaction-guide.md` — research-backed anti-patterns, anti-dependency strategies
 - `assets/test-case-template.md` — copy-paste test case template (Given/When/Then format)
 - `scripts/validate-coverage.sh` — coverage gap checker
 
@@ -134,10 +135,11 @@ Integrate for the detected stack:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent              | Role                                                   | Tools                     | Spawn When                                                               |
-| ------------------ | ------------------------------------------------------ | ------------------------- | ------------------------------------------------------------------------ |
-| risk-analyzer      | Risk-based test prioritization and regression analysis | Read Glob Grep            | Test strategy review, regression prioritization, risk assessment         |
-| scenario-generator | Test scenario generation with boundary analysis        | Read Edit Write Glob Grep | "generate test cases for X", boundary analysis, equivalence partitioning |
+| Agent              | Role                                                            | Tools                     | Spawn When                                                               |
+| ------------------ | --------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------ |
+| risk-analyzer      | Risk-based test prioritization and regression analysis          | Read Glob Grep            | Test strategy review, regression prioritization, risk assessment         |
+| scenario-generator | Test scenario generation with boundary analysis                 | Read Edit Write Glob Grep | "generate test cases for X", boundary analysis, equivalence partitioning |
+| coverage-mapper    | Automate gap detection against risk matrices and test plans     | Read Glob Grep            | Coverage analysis, gap identification, test plan vs implementation audit |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 
@@ -149,3 +151,4 @@ Add to suggested reference files:
 
 - `agents/risk-analyzer.md` — risk-based test prioritization agent
 - `agents/scenario-generator.md` — test scenario generation agent
+- `agents/coverage-mapper.md` — coverage gap detection and test plan audit agent

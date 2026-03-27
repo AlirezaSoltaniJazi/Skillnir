@@ -1,5 +1,7 @@
 # General System Skill Generator
 
+**Disambiguation**: This generates **system-level meta-skills** — cross-cutting rules for the skill system itself. For the manual skill-authoring guide, see [`generate-skill-general.md`](generate-skill-general.md).
+
 > **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are general-system-specific overrides.
 
 ```

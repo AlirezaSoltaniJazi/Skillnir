@@ -99,8 +99,8 @@ Integrate for the detected stack:
 - CI/CD best practices (fast feedback, idempotent deploys, rollback strategy)
 - IaC principles (immutable infra, drift detection, state management)
 - Kubernetes best practices (resource limits, health probes, security contexts, PDB)
-- Secret management (never in code, rotation, least privilege)
-- Network security (zero trust, mTLS, network policies)
+- Secret management (never in code, rotation, least privilege, classify by severity)
+- Network security (zero trust, mTLS, network policies, classify by severity)
 - Observability (RED/USE methods, SLOs/SLIs, structured logging)
 - Cost optimization (right-sizing, reserved instances, spot/preemptible)
 - Disaster recovery (backup verification, RTO/RPO, multi-region)
@@ -127,7 +127,7 @@ Integrate for the detected stack:
 9. **Disaster Recovery** — backup, restore, rollback procedures
 10. **Anti-Patterns** — what NOT to do (with why)
 11. **References** — config files, runbooks, cloud docs
-12. **Adaptive Interaction Protocols** — interaction modes with infra-specific detection signals (e.g., "what is this Terraform resource" for Teaching, "same module as X" for Efficient, "terraform plan failed" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, memory bridge
+12. **Adaptive Interaction Protocols** — interaction modes with infra-specific detection signals (e.g., "what is this Terraform resource" for Teaching, "same module as X" for Efficient, "terraform plan failed" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
 
 **Suggested reference files**:
 

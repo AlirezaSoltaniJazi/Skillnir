@@ -113,7 +113,7 @@ Integrate for the detected stack:
 
 1. **When to Use** — 4-6 trigger conditions
 2. **Do NOT Use** — cross-references to sibling skills (backend if Python/Go/Java, mobile, infra)
-3. **Architecture** — project structure, module organization, data flow
+3. **Architecture** — project structure diagram, module boundaries, data flow
 4. **Key Patterns** — summary table only (pattern name, approach, key rule). Full code examples in references/ only
 5. **Code Style** — rules table only. TypeScript conventions, imports, formatting details in references/code-style.md
 6. **Common Recipes** — numbered step lists only, no code blocks

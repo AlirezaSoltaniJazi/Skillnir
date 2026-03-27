@@ -113,7 +113,7 @@ Integrate for the detected stack:
 
 1. **When to Use** — 4-6 trigger conditions
 2. **Do NOT Use** — cross-references to sibling skills (frontend JS/TS, mobile, infra)
-3. **Architecture** — project structure, module organization, data flow
+3. **Architecture** — project structure diagram, module boundaries, data flow
 4. **Key Patterns** — summary table only (pattern name, approach, key rule). Full code examples in references/ only
 5. **Code Style** — rules table only. Import order, type hints, formatting details in references/code-style.md
 6. **Common Recipes** — numbered step lists only, no code blocks
@@ -133,6 +133,7 @@ Integrate for the detected stack:
 - `references/template.py` — copy-paste module/class boilerplate
 - `references/test-patterns.md` — testing patterns with full examples
 - `references/common-issues.md` — troubleshooting common Python pitfalls
+- `references/ai-interaction-guide.md` — research-backed anti-patterns, anti-dependency strategies
 - `assets/pyproject-example.toml` — pyproject.toml template
 - `scripts/validate-python.sh` — naming + structure convention checker
 

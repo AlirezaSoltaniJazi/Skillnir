@@ -111,8 +111,8 @@ Integrate for the detected architecture:
 - SwiftUI best practices (view composition, environment, preferences, minimal body)
 - UIKit best practices (lifecycle, auto layout performance, diffable data sources)
 - App lifecycle and state restoration
-- Accessibility (VoiceOver, Dynamic Type, UIAccessibility)
-- Security (Keychain, App Transport Security, biometric auth, data protection)
+- Accessibility (VoiceOver, Dynamic Type, UIAccessibility, WCAG 2.1 AA mapping, touch target sizing, color contrast)
+- Security (Keychain, App Transport Security, biometric auth, data protection, OWASP Mobile Top 10)
 - Performance (Instruments profiling, image optimization, lazy loading, startup time)
 - Testing pyramid (unit > integration > UI)
 - App Store guidelines compliance
@@ -138,7 +138,7 @@ Integrate for the detected architecture:
 9. **Security** — summary + link to references/security-checklist.md for keychain, ATS, biometric verification
 10. **Anti-Patterns** — what NOT to do (with why)
 11. **References** — key files, SDK docs, architecture decisions
-12. **Adaptive Interaction Protocols** — interaction modes with iOS-specific detection signals (e.g., "how does @Observable work" for Teaching, "another view like X" for Efficient, "EXC_BAD_ACCESS" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, memory bridge
+12. **Adaptive Interaction Protocols** — interaction modes with iOS-specific detection signals (e.g., "how does @Observable work" for Teaching, "another view like X" for Efficient, "EXC_BAD_ACCESS" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
 
 **Suggested reference files**:
 
@@ -159,10 +159,11 @@ Integrate for the detected architecture:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent         | Role                                                      | Tools                          | Spawn When                                                             |
-| ------------- | --------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------- |
-| code-reviewer | Read-only Swift code analysis and architecture compliance | Read Glob Grep                 | PR review, architecture compliance check, SwiftUI best practices audit |
-| test-writer   | XCTest/Swift Testing generation                           | Read Edit Write Glob Grep Bash | "write tests for X", new view/feature creation, coverage gaps          |
+| Agent            | Role                                                          | Tools                          | Spawn When                                                                   |
+| ---------------- | ------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------- |
+| code-reviewer    | Read-only Swift code analysis and architecture compliance     | Read Glob Grep                 | PR review, architecture compliance check, SwiftUI best practices audit       |
+| test-writer      | XCTest/Swift Testing generation                               | Read Edit Write Glob Grep Bash | "write tests for X", new view/feature creation, coverage gaps                |
+| security-scanner | OWASP Mobile Top 10 audit and iOS security analysis           | Read Glob Grep                 | Security review, pre-release audit, Keychain/ATS/biometric verification      |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 
@@ -174,3 +175,4 @@ Add to suggested reference files:
 
 - `agents/code-reviewer.md` — read-only Swift code analysis agent
 - `agents/test-writer.md` — XCTest/Swift Testing generation agent
+- `agents/security-scanner.md` — OWASP Mobile Top 10 security audit agent

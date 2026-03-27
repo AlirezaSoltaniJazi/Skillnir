@@ -138,7 +138,7 @@ Write to `/tmp/skill_synthesis_testing.md`:
 9. **CI/CD Integration** — summary + link to references/ for pipeline config examples
 10. **Anti-Patterns** — what NOT to do (with why)
 11. **References** — config files, framework docs, test utilities
-12. **Adaptive Interaction Protocols** — interaction modes with testing-specific detection signals (e.g., "how does this fixture work" for Teaching, "another test like X" for Efficient, "flaky test failure" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, memory bridge
+12. **Adaptive Interaction Protocols** — interaction modes with testing-specific detection signals (e.g., "how does this fixture work" for Teaching, "another test like X" for Efficient, "flaky test failure" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
 
 **Suggested reference files**:
 

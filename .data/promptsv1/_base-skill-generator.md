@@ -110,6 +110,7 @@ Template:
 - Concrete and project-specific — zero generic advice ("write clean code", "follow best practices")
 - Opinionated — make clear decisions, don't hedge with "you could also..."
 - Written as if from a senior engineer who works in this codebase daily
+- Phase 3 best practices SHOULD be **numbered by priority** (1 = highest) — this communicates trade-off ordering to the consuming AI when resources or time are limited
 - SKILL.md **≤300 lines and <3,500 tokens** — no code blocks >5 lines
 - At least **5 reference files** generated (must include: code-style, security-checklist, patterns, common-issues)
 - Generated SKILL.md MUST include an announcement rule in "Before You Start": **Always say "Using: {{Skill Name}} skill" at the very start of the response before doing any work.**
@@ -142,6 +143,7 @@ SKILL.md is a **decision guide** — it tells the AI WHAT to do and WHEN. Refere
 - Detailed security verification checklists (per-component)
 - Research citations and detailed anti-pattern explanations
 - Full test examples with setup/teardown
+- **Priority-based decision tables** — when multiple approaches exist, rank them in a numbered fallback hierarchy (e.g., locator strategies, caching strategies, error handling approaches) rather than flat unordered lists
 
 **What MOVES to agents/** (on-delegation phase):
 
@@ -152,7 +154,7 @@ SKILL.md is a **decision guide** — it tells the AI WHAT to do and WHEN. Refere
 
 - `references/{{domain}}-patterns.md` — full code examples for key patterns
 - `references/code-style.md` — imports, formatting, naming with code examples
-- `references/security-checklist.md` — per-component verification checklists
+- `references/security-checklist.md` — per-component verification checklists, classified by **severity** (Critical/High/Medium/Low) and referencing relevant **OWASP category** where applicable
 - `references/ai-interaction-guide.md` — research-backed anti-patterns, anti-dependency strategies
 - `references/common-issues.md` — troubleshooting with code fixes
 - `references/{{name}}-template.{{ext}}` — copy-paste boilerplate in project language
@@ -276,7 +278,7 @@ Each sub-agent definition file (`agents/{{name}}.md`) MUST follow this template:
 
 {{space-separated tool list — restrict to MINIMUM needed}}
 
-- Analysis agents: Read Glob Grep
+- Analysis agents: Read Glob Grep (read-only — analysis agents MUST NOT have Edit/Write access)
 - Modification agents: Read Edit Write Bash Glob Grep
 - Test agents: Read Edit Write Bash Glob Grep
 
@@ -302,7 +304,7 @@ Include:
 ### Delegation Rules
 
 1. **Cap at 3-4 sub-agents** per skill — more causes decision overhead and degrades routing accuracy
-2. **Use tool restriction strategically** — analysis agents get `Read Glob Grep` (read-only), modification agents get `Read Edit Write Bash Glob Grep` (full write). This is the primary security value of sub-agents
+2. **Use tool restriction strategically** — analysis agents get `Read Glob Grep` (read-only, never Edit/Write), modification agents get `Read Edit Write Bash Glob Grep` (full write). This is the primary security value of sub-agents. Test-writer agents SHOULD include flakiness prevention guidance in their context template (deterministic tests, no shared state, explicit waits over sleeps)
 3. **Pass ALL context explicitly** — sub-agents receive their own prompt + project CLAUDE.md files, but do NOT receive parent conversation history, parent skills, or parent system prompt
 4. **Only the final message returns** — intermediate tool calls and results stay inside the sub-agent. Design result format accordingly
 5. **No recursive sub-agents** — sub-agents CANNOT spawn their own sub-agents (max depth = 1). Design workflows accordingly
