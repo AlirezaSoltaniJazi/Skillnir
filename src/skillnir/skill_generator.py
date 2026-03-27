@@ -54,6 +54,15 @@ SKILL_SCOPES: tuple[str, ...] = (
     "test-design",
     "general-system",
     "locator",
+    "database",
+    "api-design",
+    "migration",
+    "data-science",
+    "go",
+    "performance",
+    "cross-platform-mobile",
+    "observability",
+    "accessibility",
 )
 
 SCOPE_LABELS: dict[str, str] = {
@@ -69,6 +78,15 @@ SCOPE_LABELS: dict[str, str] = {
     "test-design": "Test Case Design (test strategy, coverage, scenarios, edge cases)",
     "general-system": "General System (cross-cutting skill rules, LEARNED.md conventions, skill file management)",
     "locator": "Locator Extraction (element selectors, page objects, Playwright/Cypress/WDIO/Selenium/Robot)",
+    "database": "Database (schema design/migrations/query optimization/ORM patterns/data modeling)",
+    "api-design": "API Design (OpenAPI/Protobuf/GraphQL schemas/versioning/contract testing)",
+    "migration": "Migration & Refactoring (framework upgrades/language migrations/architecture refactors)",
+    "data-science": "Data Science & ML (notebooks/pandas/ML pipelines/experiment tracking/model serving)",
+    "go": "Go (idioms/goroutines/channels/modules/table-driven tests/pprof)",
+    "performance": "Performance (profiling/load testing/bundle analysis/caching/query optimization)",
+    "cross-platform-mobile": "Cross-Platform Mobile (React Native/Flutter/KMP/native bridges)",
+    "observability": "Observability (OpenTelemetry/tracing/metrics/logging/SLOs/alerting)",
+    "accessibility": "Accessibility (WCAG/ARIA/screen readers/keyboard navigation/color contrast)",
 }
 
 
