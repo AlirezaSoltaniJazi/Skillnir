@@ -1,0 +1,75 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [ --allow-multiple-documents ]
+      - id: check-added-large-files
+      - id: check-ast # check .py files are valid python files
+      - id: check-merge-conflict
+  # A pre-commit hook to check your Python dependencies against safety-db.
+  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
+    rev: v1.4.2
+    hooks:
+      - id: python-safety-dependencies-check
+        name: Check dependencies for vulnerability
+        files: requirements*
+        args:
+          # Ignore brotli CVE-2025-6176 (no fix available yet, 1.1.0 is latest)
+          - --ignore=81038
+  # A security linter from PyCQA
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.9.2
+    hooks:
+      - id: bandit
+        args:
+          - "-lll"
+          - "-iii"
+  # Removes unused imports and unused variables
+  - repo: https://github.com/PyCQA/autoflake
+    rev: v2.3.1
+    hooks:
+      - id: autoflake
+        exclude: ^\.data/
+        args:
+          - "--in-place"
+          - "--remove-all-unused-imports"
+          - "--remove-unused-variables"
+          - "--expand-star-imports"
+          - "--ignore-init-module-imports"
+  - repo: local
+    hooks:
+      - id: pylint
+        name: Lint code with pylint
+        entry: pylint
+        language: system
+        types: [ python ]
+        require_serial: true
+        exclude: ^\.data/
+        args:
+          - "-rn" # Only display messages
+          - "--rcfile=.pylintrc"
+  #  isort is a Python utility / library to sort imports alphabetically, and automatically separated into sections and by type.
+#  - repo: https://github.com/pycqa/isort
+#    rev: 7.0.0
+#    hooks:
+#      - id: isort
+#        name: isort (python) ,
+  # Automatically format your Python code to conform to the PEP 8 style guide
+  - repo: https://github.com/psf/black
+    rev: 26.3.1
+    hooks:
+      - id: black
+        language_version: python3.14
+        exclude: ^\.data/
+        args: [ "-S" ]
+  # Format Markdown files with Prettier
+  - repo: https://github.com/rbubley/mirrors-prettier
+    rev: v3.8.1
+    hooks:
+      - id: prettier
+        types: [ markdown ]

@@ -1,0 +1,472 @@
+"""Skill generation with multi-backend support (Claude, Gemini, Copilot)."""
+
+import asyncio
+import re
+import shutil
+import subprocess
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Callable
+
+from skillnir.backends import (
+    BACKENDS,
+    AIBackend,
+    build_subprocess_command,
+    load_config,
+    parse_stream_line,
+)
+from skillnir.generator import GenerationProgress, _emit, get_prompts_dir
+from skillnir.skills import parse_frontmatter
+from skillnir.syncer import get_source_skills_dir
+
+
+def to_camel_case(name: str) -> str:
+    """Convert a name to camelCase for skill directory naming.
+
+    'My Skill' -> 'mySkill'
+    'my-skill' -> 'mySkill'
+    'my_skill' -> 'mySkill'
+    'MySkill'  -> 'mySkill'
+    'my skill name' -> 'mySkillName'
+    """
+    # Split on spaces, hyphens, and underscores
+    words = re.split(r"[\s\-_]+", name.strip())
+    if not words:
+        return name
+    # First word lowercase, rest title-cased
+    result = words[0].lower() + "".join(w.capitalize() for w in words[1:])
+    # Handle PascalCase input: if first char was uppercase but no separators, lowercase first char
+    if not result:
+        return name
+    return result
+
+
+SKILL_SCOPES: tuple[str, ...] = (
+    "backend",
+    "frontend",
+    "android",
+    "ios",
+    "infra",
+    "testing",
+    "js",
+    "python",
+    "security",
+    "test-design",
+    "general-system",
+    "locator",
+)
+
+SCOPE_LABELS: dict[str, str] = {
+    "backend": "Backend (Python/Django/Go/Java/etc.)",
+    "frontend": "Frontend (React/Vue/Angular/Svelte/etc.)",
+    "android": "Android (Kotlin/Java)",
+    "ios": "iOS (Swift/Obj-C)",
+    "infra": "Infrastructure (Docker/CI/Terraform/K8s)",
+    "testing": "Test Automation (E2E/API/Integration/Playwright/WDIO/etc.)",
+    "js": "JavaScript/TypeScript (Node.js/React/Vue/Express/Next.js/etc.)",
+    "python": "Python (FastAPI/Flask/scripts/data/CLI/etc.)",
+    "security": "Security (OWASP/SAST/DAST/dependency audit across all platforms)",
+    "test-design": "Test Case Design (test strategy, coverage, scenarios, edge cases)",
+    "general-system": "General System (cross-cutting skill rules, LEARNED.md conventions, skill file management)",
+    "locator": "Locator Extraction (element selectors, page objects, Playwright/Cypress/WDIO/Selenium/Robot)",
+}
+
+
+@dataclass
+class SkillGenerationResult:
+    success: bool
+    skill_name: str
+    target_skill_path: Path | None = None
+    source_skill_path: Path | None = None
+    error: str | None = None
+    backend_used: AIBackend | None = None
+
+
+def load_skill_prompt(scope: str, version: str = "") -> str:
+    """Load a scope-specific prompt, prepending the shared base for v2."""
+    if scope not in SKILL_SCOPES:
+        raise ValueError(f"Invalid scope '{scope}'. Must be one of: {SKILL_SCOPES}")
+    prompts_dir = get_prompts_dir(version)
+    prompt_file = prompts_dir / f"generate-skill-{scope}.md"
+    if not prompt_file.exists():
+        raise FileNotFoundError(
+            f"Prompt file not found: {prompt_file}\n"
+            f"Expected at {prompts_dir}/generate-skill-{scope}.md"
+        )
+    prompt_text = prompt_file.read_text(encoding="utf-8")
+
+    if version != "v1":
+        base_file = prompts_dir / "_base-skill-generator.md"
+        if base_file.exists():
+            base_text = base_file.read_text(encoding="utf-8")
+            prompt_text = base_text + "\n\n---\n\n" + prompt_text
+
+    return prompt_text
+
+
+def _find_reference_skill(scope: str) -> Path | None:
+    """Find an existing skill to use as format reference for the AI."""
+    source_dir = get_source_skills_dir()
+    if not source_dir.is_dir():
+        return None
+
+    scope_keywords = {
+        "backend": ("server", "backend", "django", "api"),
+        "frontend": ("web", "frontend", "react", "angular", "vue"),
+        "android": ("android",),
+        "ios": ("ios",),
+        "infra": ("infra", "devops", "deploy"),
+        "testing": ("test", "e2e", "wdio", "playwright", "cypress", "selenium", "spec"),
+        "js": (
+            "javascript",
+            "typescript",
+            "node",
+            "npm",
+            "react",
+            "vue",
+            "next",
+            "express",
+        ),
+        "python": ("python", "fastapi", "flask", "pip", "poetry", "script"),
+        "security": ("security", "auth", "owasp", "vulnerability", "pentest", "audit"),
+        "test-design": (
+            "test-case",
+            "test-design",
+            "test-plan",
+            "test-strategy",
+            "scenario",
+        ),
+        "general-system": (
+            "general",
+            "system",
+            "meta",
+            "skill-system",
+            "cross-cutting",
+        ),
+        "locator": (
+            "locator",
+            "selector",
+            "page-object",
+            "element",
+            "wdio",
+            "playwright",
+            "cypress",
+            "selenium",
+        ),
+    }
+
+    keywords = scope_keywords.get(scope, ())
+    for entry in sorted(source_dir.iterdir()):
+        if entry.is_dir() and (entry / "SKILL.md").exists():
+            name_lower = entry.name.lower()
+            if any(kw in name_lower for kw in keywords):
+                return entry
+
+    # Fallback: return the first skill found (any scope is better than none)
+    for entry in sorted(source_dir.iterdir()):
+        if entry.is_dir() and (entry / "SKILL.md").exists():
+            return entry
+
+    return None
+
+
+def _build_user_prompt(
+    target_project: Path,
+    project_name: str,
+    scope: str,
+) -> str:
+    """Construct the runtime user prompt with project-specific details."""
+    skill_name = to_camel_case(project_name)
+    output_dir = target_project / ".data" / "skills" / skill_name
+    output_file = output_dir / "SKILL.md"
+
+    ref_skill = _find_reference_skill(scope)
+    ref_section = ""
+    if ref_skill:
+        ref_section = (
+            f"\n\nReference skill for format guidance: {ref_skill}\n"
+            f"Read {ref_skill / 'SKILL.md'} before generating to match the style."
+        )
+
+    return (
+        f"Generate a {scope} skill for the project at {target_project}.\n"
+        f"The project name is \"{project_name}\".\n"
+        f"The skill name is \"{skill_name}\".\n"
+        f"Use \"{skill_name}\" as the 'name' field in YAML frontmatter.\n"
+        f"\nFollow all phases in the system prompt.\n"
+        f"Create the output directory if needed: mkdir -p {output_dir}\n"
+        f"Write the final SKILL.md to: {output_file}"
+        f"{ref_section}"
+    )
+
+
+async def generate_skill_sdk(
+    target_project: Path,
+    project_name: str,
+    scope: str,
+    prompt_text: str,
+    on_progress: Callable[[GenerationProgress], None] | None = None,
+) -> SkillGenerationResult:
+    """Generate skill using claude-agent-sdk (async, streaming). Claude only."""
+    from claude_agent_sdk import (
+        AssistantMessage,
+        ClaudeAgentOptions,
+        ResultMessage,
+        TextBlock,
+        ToolUseBlock,
+        query,
+    )
+
+    from skillnir.usage import session_tracker
+
+    skill_name = to_camel_case(project_name)
+    _emit(on_progress, "phase", "Connecting to Claude SDK...")
+
+    options = ClaudeAgentOptions(
+        system_prompt=prompt_text,
+        max_turns=20,
+        allowed_tools=["Read", "Glob", "Grep", "Bash", "Write"],
+        permission_mode="acceptEdits",
+        cwd=str(target_project),
+    )
+
+    user_prompt = _build_user_prompt(target_project, project_name, scope)
+
+    try:
+        async for message in query(prompt=user_prompt, options=options):
+            if isinstance(message, AssistantMessage) and on_progress:
+                for block in message.content:
+                    if isinstance(block, TextBlock):
+                        _emit(on_progress, "text", block.text)
+                    elif isinstance(block, ToolUseBlock):
+                        _emit(
+                            on_progress,
+                            "tool_use",
+                            f"Using {block.name}...",
+                            tool_name=block.name,
+                        )
+            elif isinstance(message, ResultMessage):
+                if message.usage:
+                    session_tracker.record(
+                        'claude',
+                        message.usage,
+                        getattr(message, 'total_cost_usd', None),
+                    )
+    except Exception as e:
+        return SkillGenerationResult(
+            success=False,
+            skill_name=skill_name,
+            error=str(e),
+            backend_used=AIBackend.CLAUDE,
+        )
+
+    return _check_skill_outputs(target_project, skill_name, AIBackend.CLAUDE)
+
+
+def generate_skill_subprocess(
+    target_project: Path,
+    project_name: str,
+    scope: str,
+    prompt_text: str,
+    backend: AIBackend,
+    model: str,
+    on_progress: Callable[[GenerationProgress], None] | None = None,
+) -> SkillGenerationResult:
+    """Generate skill using any backend CLI subprocess with real-time streaming."""
+    skill_name = to_camel_case(project_name)
+    info = BACKENDS[backend]
+    _emit(on_progress, "phase", f"Starting {info.name}...")
+
+    user_prompt = _build_user_prompt(target_project, project_name, scope)
+    full_prompt = prompt_text + "\n\n---\n\n" + user_prompt
+    cmd = build_subprocess_command(backend, full_prompt, model=model, max_turns=20)
+
+    try:
+        _emit(on_progress, "phase", f"Scanning project ({scope})...")
+
+        proc = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            cwd=str(target_project),
+        )
+
+        import threading
+
+        stderr_chunks: list[str] = []
+
+        def _drain_stderr() -> None:
+            for err_line in proc.stderr:
+                stderr_chunks.append(err_line)
+
+        stderr_thread = threading.Thread(target=_drain_stderr, daemon=True)
+        stderr_thread.start()
+
+        for line in proc.stdout:
+            parse_stream_line(backend, line, on_progress)
+
+        proc.wait(timeout=600)
+        stderr_thread.join(timeout=5)
+        stderr = ''.join(stderr_chunks)
+
+        if proc.returncode != 0:
+            return SkillGenerationResult(
+                success=False,
+                skill_name=skill_name,
+                error=f"{info.name} exited with code {proc.returncode}: {stderr}",
+                backend_used=backend,
+            )
+
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        return SkillGenerationResult(
+            success=False,
+            skill_name=skill_name,
+            error=f"{info.name} timed out after 10 minutes.",
+            backend_used=backend,
+        )
+    except FileNotFoundError:
+        return SkillGenerationResult(
+            success=False,
+            skill_name=skill_name,
+            error=f"{info.cli_command} CLI not found in PATH.",
+            backend_used=backend,
+        )
+
+    _emit(on_progress, "phase", "Verifying outputs...")
+    return _check_skill_outputs(target_project, skill_name, backend)
+
+
+def _check_skill_outputs(
+    target_project: Path,
+    skill_name: str,
+    backend: AIBackend,
+) -> SkillGenerationResult:
+    """Verify that SKILL.md was created and has valid frontmatter."""
+    skill_dir = target_project / ".data" / "skills" / skill_name
+    skill_md = skill_dir / "SKILL.md"
+
+    if not skill_md.exists():
+        return SkillGenerationResult(
+            success=False,
+            skill_name=skill_name,
+            error=(
+                f"SKILL.md was not created at {skill_md}. "
+                "The AI may need more turns or the project may be too complex."
+            ),
+            backend_used=backend,
+        )
+
+    # Validate frontmatter
+    try:
+        meta = parse_frontmatter(skill_md)
+        if not meta.get("name"):
+            return SkillGenerationResult(
+                success=False,
+                skill_name=skill_name,
+                error="SKILL.md was created but has no 'name' in frontmatter.",
+                backend_used=backend,
+            )
+    except Exception:
+        pass  # Don't fail on frontmatter issues — the file exists
+
+    # Copy to skillnir's .data/skills/
+    source_path = _copy_to_source(skill_dir, skill_name)
+
+    return SkillGenerationResult(
+        success=True,
+        skill_name=skill_name,
+        target_skill_path=skill_md,
+        source_skill_path=source_path,
+        backend_used=backend,
+    )
+
+
+def _copy_to_source(target_skill_dir: Path, skill_name: str) -> Path | None:
+    """Copy generated skill back to skillnir's .data/skills/."""
+    try:
+        source_skills = get_source_skills_dir()
+        dest = source_skills / skill_name
+
+        # Skip copy if source and destination are the same path
+        # (happens when generating a skill for the skillnir project itself)
+        if dest.resolve() == target_skill_dir.resolve():
+            return dest / "SKILL.md"
+
+        if dest.exists():
+            shutil.rmtree(dest)
+        shutil.copytree(target_skill_dir, dest)
+        return dest / "SKILL.md"
+    except Exception:
+        return None
+
+
+def _claude_sdk_available() -> bool:
+    """Check if claude-agent-sdk is importable."""
+    try:
+        import claude_agent_sdk  # noqa: F401
+
+        return True
+    except ImportError:
+        return False
+
+
+async def generate_skill(
+    target_project: Path,
+    project_name: str,
+    scope: str,
+    on_progress: Callable[[GenerationProgress], None] | None = None,
+    backend_override: AIBackend | None = None,
+    model_override: str | None = None,
+    prompt_version_override: str | None = None,
+) -> SkillGenerationResult:
+    """Main entry point: load prompt, use configured backend, generate skill."""
+    skill_name = to_camel_case(project_name)
+    _emit(on_progress, "phase", "Loading skill prompt...")
+
+    config = load_config()
+    version = prompt_version_override or config.prompt_version
+
+    try:
+        prompt_text = load_skill_prompt(scope, version)
+    except (FileNotFoundError, ValueError) as e:
+        return SkillGenerationResult(success=False, skill_name=skill_name, error=str(e))
+    backend = backend_override or config.backend
+    model = model_override or config.model
+    info = BACKENDS[backend]
+
+    _emit(on_progress, "phase", f"Using {info.name}...")
+
+    # Check CLI availability
+    cli_available = bool(shutil.which(info.cli_command))
+
+    # For Claude, try SDK first if available
+    if backend == AIBackend.CLAUDE and _claude_sdk_available():
+        _emit(on_progress, "status", "Using Claude SDK")
+        return await generate_skill_sdk(
+            target_project, project_name, scope, prompt_text, on_progress
+        )
+
+    if not cli_available:
+        return SkillGenerationResult(
+            success=False,
+            skill_name=skill_name,
+            error=f"{info.name} CLI ({info.cli_command}) not found in PATH.",
+            backend_used=backend,
+        )
+
+    _emit(on_progress, "status", f"Using {info.name} ({model})")
+
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(
+        None,
+        generate_skill_subprocess,
+        target_project,
+        project_name,
+        scope,
+        prompt_text,
+        backend,
+        model,
+        on_progress,
+    )

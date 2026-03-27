@@ -1,0 +1,15 @@
+# Skillnir Project Owners
+#
+# This file lists the owners and maintainers of this repository.
+# Owners are responsible for reviewing and approving pull requests.
+#
+# Format:
+#   @github-username    Role
+#
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Project Owner
+@AlirezaSoltaniJazi    owner
+
+# Approvers
+@AlirezaSoltaniJazi    approver
