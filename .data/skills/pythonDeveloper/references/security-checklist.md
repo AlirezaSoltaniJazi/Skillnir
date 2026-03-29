@@ -6,12 +6,12 @@
 
 ## Severity Classification
 
-| Severity | Description | Examples |
-|----------|-------------|---------|
-| **Critical** | Data loss, arbitrary code execution | Subprocess injection, path traversal deleting files |
-| **High** | Information disclosure, auth bypass | Config secrets in logs, unvalidated user paths |
-| **Medium** | Logic flaws, input validation gaps | Missing encoding, unhandled edge cases |
-| **Low** | Code quality, minor information leak | Unused imports, verbose error messages |
+| Severity     | Description                          | Examples                                            |
+| ------------ | ------------------------------------ | --------------------------------------------------- |
+| **Critical** | Data loss, arbitrary code execution  | Subprocess injection, path traversal deleting files |
+| **High**     | Information disclosure, auth bypass  | Config secrets in logs, unvalidated user paths      |
+| **Medium**   | Logic flaws, input validation gaps   | Missing encoding, unhandled edge cases              |
+| **Low**      | Code quality, minor information leak | Unused imports, verbose error messages              |
 
 ---
 

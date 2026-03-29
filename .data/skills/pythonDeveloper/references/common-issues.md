@@ -11,6 +11,7 @@
 **Cause**: Package not installed in development mode.
 
 **Fix**:
+
 ```bash
 uv pip install -e .
 # or
@@ -22,6 +23,7 @@ uv sync
 **Cause**: Two modules importing each other at the top level.
 
 **Fix**: Use string annotations for type hints that would cause circular imports:
+
 ```python
 # In syncer.py — reference AITool as string to avoid importing tools.py
 def inject_skill(tool: 'AITool', skill: Skill) -> InjectionResult:
@@ -37,6 +39,7 @@ def inject_skill(tool: 'AITool', skill: Skill) -> InjectionResult:
 **Cause**: Not checking if source and target resolve to the same directory.
 
 **Fix** (already implemented in syncer.py):
+
 ```python
 if source_dir.resolve() == target_dir.resolve():
     return []  # Skip — same directory
@@ -47,6 +50,7 @@ if source_dir.resolve() == target_dir.resolve():
 **Cause**: Missing `.exists()` guard before reading.
 
 **Fix**:
+
 ```python
 if not skill_md.exists():
     return 'unknown'
@@ -58,6 +62,7 @@ text = skill_md.read_text(encoding='utf-8')
 **Cause**: Missing `encoding='utf-8'` parameter.
 
 **Fix**: Always specify encoding:
+
 ```python
 # GOOD
 text = path.read_text(encoding='utf-8')
@@ -76,6 +81,7 @@ text = path.read_text()
 **Cause**: Stderr buffer fills up, blocking the process.
 
 **Fix**: Drain stderr in a separate thread:
+
 ```python
 stderr_lines: list[str] = []
 stderr_thread = threading.Thread(
@@ -90,6 +96,7 @@ stderr_thread.start()
 **Cause**: External CLI tool not installed or not on PATH.
 
 **Fix**: Check availability before spawning:
+
 ```python
 if not shutil.which(backend_info.cli_command):
     return GenerationResult(success=False, error=f'{backend_info.cli_command} not found on PATH')
@@ -100,6 +107,7 @@ if not shutil.which(backend_info.cli_command):
 **Cause**: Non-JSON lines mixed into stream output (progress bars, warnings).
 
 **Fix**: Handle gracefully with try/except:
+
 ```python
 try:
     return json.loads(stripped)
@@ -116,6 +124,7 @@ except json.JSONDecodeError:
 **Cause**: Empty frontmatter block (`---\n---`).
 
 **Fix**: Always use `or {}`:
+
 ```python
 return yaml.safe_load(text[3:end]) or {}
 ```
@@ -125,6 +134,7 @@ return yaml.safe_load(text[3:end]) or {}
 **Cause**: Accessing `meta['metadata']['version']` when metadata key doesn't exist.
 
 **Fix**: Use `.get()` with defaults:
+
 ```python
 metadata = meta.get('metadata', {}) or {}
 version = metadata.get('version', 'unknown')
@@ -139,6 +149,7 @@ version = metadata.get('version', 'unknown')
 **Cause**: Using mutable default (dict/list) directly in frozen dataclass field.
 
 **Fix**: Use `field(default_factory=...)`:
+
 ```python
 # GOOD
 @dataclass(frozen=True)
@@ -156,6 +167,7 @@ class BackendInfo:
 **Cause**: Trying to mutate a frozen dataclass after creation.
 
 **Fix**: Create a new instance instead:
+
 ```python
 # Use dataclasses.replace() for modified copies
 from dataclasses import replace
@@ -171,6 +183,7 @@ new_config = replace(old_config, model='opus')
 **Cause**: Tests reading real `~/.skillnir/config.json` instead of test config.
 
 **Fix**: Mock the config loader:
+
 ```python
 @pytest.fixture
 def mock_config():
@@ -184,6 +197,7 @@ def mock_config():
 **Cause**: Symlink creation requires admin privileges on Windows.
 
 **Fix**: Skip or mark tests:
+
 ```python
 import os
 import pytest
@@ -198,6 +212,7 @@ def test_symlink_creation(tmp_path: Path):
 **Cause**: Missing `asyncio_mode = "auto"` in pyproject.toml.
 
 **Fix**: Ensure pytest config includes:
+
 ```toml
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -212,6 +227,7 @@ asyncio_mode = "auto"
 **Cause**: Missing `exclude: ^\.data/` in Black hook config.
 
 **Fix**: Ensure all code quality hooks exclude `.data/`:
+
 ```yaml
 - id: black
   exclude: ^\.data/
@@ -223,6 +239,7 @@ asyncio_mode = "auto"
 **Cause**: Pylint cannot find skillnir package.
 
 **Fix**: Ensure package is installed in dev environment:
+
 ```bash
 uv sync
 uv pip install -e .

@@ -208,17 +208,14 @@ def _load_index(events_dir: Path) -> dict[str, Event]:
     try:
         data = json.loads(index_file.read_text(encoding="utf-8"))
         return {item["id"]: Event(**item) for item in data}
-    except (json.JSONDecodeError, KeyError, TypeError):
+    except json.JSONDecodeError, KeyError, TypeError:
         return {}
 
 
 def _save_index(events_dir: Path, events: dict[str, Event]) -> None:
     """Persist events registry."""
     index_file = events_dir / "events-index.json"
-    data = [
-        asdict(e)
-        for e in sorted(events.values(), key=lambda e: e.event_date)
-    ]
+    data = [asdict(e) for e in sorted(events.values(), key=lambda e: e.event_date)]
     index_file.write_text(
         json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
@@ -282,9 +279,7 @@ def _write_event_md(event: Event, events_subdir: Path) -> Path:
     topic_dir = events_subdir / event.topic
     topic_dir.mkdir(exist_ok=True)
     md_path = topic_dir / f"{event.id}.md"
-    highlights = "\n".join(
-        f"{i + 1}. {h}" for i, h in enumerate(event.key_highlights)
-    )
+    highlights = "\n".join(f"{i + 1}. {h}" for i, h in enumerate(event.key_highlights))
     free_label = "Free" if event.is_free else "Paid"
 
     content = f"""\
@@ -391,9 +386,7 @@ def _generate_landing_html(
     events: dict[str, Event], events_dir: Path, new_ids: set[str] | None = None
 ) -> Path:
     """Generate index.html landing page sorted by event_date ascending."""
-    sorted_events = sorted(
-        events.values(), key=lambda e: e.event_date
-    )
+    sorted_events = sorted(events.values(), key=lambda e: e.event_date)
     new_ids = new_ids or set()
 
     topic_colors = {
@@ -516,8 +509,7 @@ def _generate_landing_html(
     next_event = sorted_events[0].event_date if sorted_events else "N/A"
     generated_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     subtitle = (
-        f"{total} events | Next event: {next_event}"
-        f" | Generated: {generated_at}"
+        f"{total} events | Next event: {next_event}" f" | Generated: {generated_at}"
     )
 
     template = _load_template("events-landing.html")
@@ -628,7 +620,7 @@ def _dict_to_event(item: dict, country_code: str) -> Event | None:
         )
         if event.id and event.title and event.event_url:
             return event
-    except (json.JSONDecodeError, KeyError, TypeError):
+    except json.JSONDecodeError, KeyError, TypeError:
         pass
     return None
 
@@ -744,9 +736,7 @@ def _search_events_subprocess(
 
     except subprocess.TimeoutExpired:
         proc.kill()
-        _emit(
-            on_progress, "error", f"{info.name} timed out for country {country_code}"
-        )
+        _emit(on_progress, "error", f"{info.name} timed out for country {country_code}")
         return []
     except FileNotFoundError:
         _emit(on_progress, "error", f"{info.cli_command} CLI not found in PATH")

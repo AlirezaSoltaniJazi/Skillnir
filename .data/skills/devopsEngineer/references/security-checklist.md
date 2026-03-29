@@ -6,12 +6,12 @@
 
 ## Severity Classification
 
-| Severity | Description | Examples |
-|----------|-------------|---------|
-| **Critical** | Secret exposure, code injection | Secrets in workflow logs, shell injection in CI |
-| **High** | Permission escalation, dependency vulnerability | Overly broad permissions, unpatched CVEs |
-| **Medium** | Configuration weakness | Missing timeouts, unpinned versions |
-| **Low** | Best practice deviation | Verbose logging, non-minimal runners |
+| Severity     | Description                                     | Examples                                        |
+| ------------ | ----------------------------------------------- | ----------------------------------------------- |
+| **Critical** | Secret exposure, code injection                 | Secrets in workflow logs, shell injection in CI |
+| **High**     | Permission escalation, dependency vulnerability | Overly broad permissions, unpatched CVEs        |
+| **Medium**   | Configuration weakness                          | Missing timeouts, unpinned versions             |
+| **Low**      | Best practice deviation                         | Verbose logging, non-minimal runners            |
 
 ---
 

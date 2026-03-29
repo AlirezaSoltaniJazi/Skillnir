@@ -64,7 +64,7 @@ name: Setup Python
 inputs:
   python-version:
     description: Python version
-    default: '3.14'
+    default: "3.14"
 runs:
   using: composite
   steps:
@@ -75,6 +75,7 @@ runs:
 ```
 
 **Key rules:**
+
 - Always `actions/checkout@v4` BEFORE using this composite action
 - Default Python version is 3.14 — override via input if needed
 - pip caching enabled for faster CI runs

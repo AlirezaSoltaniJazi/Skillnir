@@ -25,7 +25,6 @@ async def page_events():
         _load_index,
         search_events,
     )
-    from skillnir.researcher import TOPIC_LABELS
 
     audio_el, sound_state = header()
     config = load_config()
@@ -42,7 +41,12 @@ async def page_events():
         with ui.row().classes("items-center gap-2"):
             ui.icon(backend_info.icon, size="sm").classes("text-gray-400")
             ui.label(
-                t("messages.using_backend", lang, name=backend_info.name, model=config.model)
+                t(
+                    "messages.using_backend",
+                    lang,
+                    name=backend_info.name,
+                    model=config.model,
+                )
             ).classes("text-sm text-gray-400")
 
         # ── Country chips ──
@@ -71,10 +75,14 @@ async def page_events():
                         if is_sel
                         else "bg-transparent text-gray-400 border border-gray-600"
                     )
-                    with ui.element("div").classes(
-                        f"flex items-center gap-1.5 px-3 py-1 rounded-full "
-                        f"cursor-pointer select-none text-sm {sel_cls}"
-                    ).on("click", _toggle):
+                    with (
+                        ui.element("div")
+                        .classes(
+                            f"flex items-center gap-1.5 px-3 py-1 rounded-full "
+                            f"cursor-pointer select-none text-sm {sel_cls}"
+                        )
+                        .on("click", _toggle)
+                    ):
                         ui.image(f"/static/flags/{key}.png").classes(
                             "w-5 h-3.5 rounded-sm"
                         ).style("flex-shrink:0")
@@ -109,7 +117,11 @@ async def page_events():
                         count, _ = regenerate_landing(events_dir)
                         if count:
                             ui.notify(
-                                t("pages.events.generated_html_pages", lang, count=str(count)),
+                                t(
+                                    "pages.events.generated_html_pages",
+                                    lang,
+                                    count=str(count),
+                                ),
                                 type="positive",
                             )
                         ui.navigate.to(_cache_bust_url(), new_tab=True)
@@ -126,12 +138,17 @@ async def page_events():
                         count, _ = regenerate_landing(events_dir)
                         if count:
                             ui.notify(
-                                t("pages.events.generated_html_pages", lang, count=str(count)),
+                                t(
+                                    "pages.events.generated_html_pages",
+                                    lang,
+                                    count=str(count),
+                                ),
                                 type="positive",
                             )
                         else:
                             ui.notify(
-                                t("pages.events.all_events_have_html", lang), type="info"
+                                t("pages.events.all_events_have_html", lang),
+                                type="info",
                             )
 
                     ui.button(
@@ -146,7 +163,9 @@ async def page_events():
         async def do_search():
             start_time = time.time()
             if not selected_countries:
-                ui.notify(t("pages.events.select_at_least_one_country", lang), type="warning")
+                ui.notify(
+                    t("pages.events.select_at_least_one_country", lang), type="warning"
+                )
                 return
 
             search_btn.disable()
@@ -210,7 +229,9 @@ async def page_events():
                         )
 
                     toggle_btn = ui.button(
-                        t("buttons.hide_log", lang), on_click=toggle_log, icon="visibility_off"
+                        t("buttons.hide_log", lang),
+                        on_click=toggle_log,
+                        icon="visibility_off",
                     ).props("flat rounded dense")
                 saved_log = ui.log(max_lines=500).classes(
                     "w-full h-72 font-mono text-xs"
@@ -224,7 +245,9 @@ async def page_events():
                 grid = {
                     t("pages.events.grid_events_found", lang): str(result.events_found),
                     t("pages.events.grid_new_events", lang): str(result.events_new),
-                    t("pages.events.grid_skipped_dedup", lang): str(result.events_skipped),
+                    t("pages.events.grid_skipped_dedup", lang): str(
+                        result.events_skipped
+                    ),
                     t("pages.events.grid_duration", lang): format_duration(secs),
                 }
                 result_card(

@@ -2,7 +2,13 @@
 
 from pathlib import Path
 
-from skillnir.i18n import t, get_current_language, is_rtl, SUPPORTED_LANGUAGES, set_language
+from skillnir.i18n import (
+    t,
+    get_current_language,
+    is_rtl,
+    SUPPORTED_LANGUAGES,
+    set_language,
+)
 from skillnir.skills import Skill
 from skillnir.syncer import SyncResult
 from skillnir.tools import AITool, AUTO_INJECT_TOOL, TOOLS, detect_tools
@@ -177,7 +183,7 @@ def header() -> tuple:
     # ── Detect current route for active highlighting ──
     current_path = ui.context.client.page.path
     lang = get_current_language()
-    rtl = is_rtl(lang)
+    is_rtl(lang)
     nav_groups = get_nav_groups(lang)
 
     # ── Left Drawer ──

@@ -56,9 +56,9 @@ def page_delete_skill():
             skill_container.clear()
             if not state['skills']:
                 with skill_container:
-                    ui.label(
-                        t('pages.delete_skill.no_skills_found', lang)
-                    ).classes('text-gray-400')
+                    ui.label(t('pages.delete_skill.no_skills_found', lang)).classes(
+                        'text-gray-400'
+                    )
                 return
             with skill_container:
                 ui.label(
@@ -98,9 +98,9 @@ def page_delete_skill():
                                     )
                                 ).classes('text-gray-400 text-sm')
 
-        ui.button(
-            t('buttons.scan', lang), on_click=scan_skills, icon='search'
-        ).props('unelevated rounded')
+        ui.button(t('buttons.scan', lang), on_click=scan_skills, icon='search').props(
+            'unelevated rounded'
+        )
 
         delete_data_cb = ui.checkbox(
             t('pages.delete_skill.also_delete_data', lang), value=False
@@ -121,9 +121,9 @@ def page_delete_skill():
                     .classes('w-full p-6 border-l-accent fade-in')
                     .style('border-left-color: #ef4444')
                 ):
-                    ui.label(
-                        t('pages.delete_skill.deletion_report', lang)
-                    ).classes('text-xl font-bold mb-3')
+                    ui.label(t('pages.delete_skill.deletion_report', lang)).classes(
+                        'text-xl font-bold mb-3'
+                    )
                     for skill in state['selected']:
                         result = delete_skill(
                             target, skill.dir_name, delete_data=delete_data_cb.value

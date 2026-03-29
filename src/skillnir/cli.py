@@ -6,7 +6,6 @@ from pathlib import Path
 
 import questionary
 
-from skillnir.i18n import get_current_language, set_language, t
 from skillnir.injector import inject_skill
 from skillnir.remover import (
     delete_docs,
@@ -1040,9 +1039,7 @@ def _events_cmd() -> None:
         ],
     ).ask()
 
-    if not questionary.confirm(
-        "\n  Search for upcoming events?", default=True
-    ).ask():
+    if not questionary.confirm("\n  Search for upcoming events?", default=True).ask():
         sys.exit(0)
 
     def on_progress(p) -> None:
@@ -1056,9 +1053,7 @@ def _events_cmd() -> None:
     print(f"\n{'─' * 50}\nSearching for events...\n")
 
     result = asyncio.run(
-        search_events(
-            on_progress=on_progress, countries=country_choices or None
-        )
+        search_events(on_progress=on_progress, countries=country_choices or None)
     )
 
     print(f"\n{'─' * 50}")

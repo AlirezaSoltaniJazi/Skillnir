@@ -37,7 +37,12 @@ async def page_generate_docs():
         with ui.row().classes('items-center gap-2'):
             ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
             ui.label(
-                t('messages.using_backend', lang, name=backend_info.name, model=config.model)
+                t(
+                    'messages.using_backend',
+                    lang,
+                    name=backend_info.name,
+                    model=config.model,
+                )
             ).classes('text-sm text-gray-400')
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
@@ -165,7 +170,12 @@ async def page_generate_rule():
         with ui.row().classes('items-center gap-2'):
             ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
             ui.label(
-                t('messages.using_backend', lang, name=backend_info.name, model=config.model)
+                t(
+                    'messages.using_backend',
+                    lang,
+                    name=backend_info.name,
+                    model=config.model,
+                )
             ).classes('text-sm text-gray-400')
 
         with ui.card().classes('w-full p-6').props('flat bordered'):

@@ -123,7 +123,12 @@ async def page_ask():
         with ui.row().classes('items-center gap-2'):
             ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
             ui.label(
-                t('messages.using_backend', lang, name=backend_info.name, model=config.model)
+                t(
+                    'messages.using_backend',
+                    lang,
+                    name=backend_info.name,
+                    model=config.model,
+                )
             ).classes('text-sm text-gray-400')
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
@@ -207,7 +212,12 @@ async def page_plan():
         with ui.row().classes('items-center gap-2'):
             ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
             ui.label(
-                t('messages.using_backend', lang, name=backend_info.name, model=config.model)
+                t(
+                    'messages.using_backend',
+                    lang,
+                    name=backend_info.name,
+                    model=config.model,
+                )
             ).classes('text-sm text-gray-400')
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
@@ -291,7 +301,12 @@ async def page_check_skill():
         with ui.row().classes('items-center gap-2'):
             ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
             ui.label(
-                t('messages.using_backend', lang, name=backend_info.name, model=config.model)
+                t(
+                    'messages.using_backend',
+                    lang,
+                    name=backend_info.name,
+                    model=config.model,
+                )
             ).classes('text-sm text-gray-400')
 
         with ui.card().classes('w-full p-6').props('flat bordered'):

@@ -42,7 +42,12 @@ async def page_research():
         with ui.row().classes('items-center gap-2'):
             ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
             ui.label(
-                t('messages.using_backend', lang, name=backend_info.name, model=config.model)
+                t(
+                    'messages.using_backend',
+                    lang,
+                    name=backend_info.name,
+                    model=config.model,
+                )
             ).classes('text-sm text-gray-400')
 
         # ── Topic chips ──
@@ -130,7 +135,11 @@ async def page_research():
                         count, _ = regenerate_landing(research_dir)
                         if count:
                             ui.notify(
-                                t('pages.research.generated_html_pages', lang, count=str(count)),
+                                t(
+                                    'pages.research.generated_html_pages',
+                                    lang,
+                                    count=str(count),
+                                ),
                                 type='positive',
                             )
                         ui.navigate.to(_cache_bust_url(), new_tab=True)
@@ -147,12 +156,17 @@ async def page_research():
                         count, _ = regenerate_landing(research_dir)
                         if count:
                             ui.notify(
-                                t('pages.research.generated_html_pages', lang, count=str(count)),
+                                t(
+                                    'pages.research.generated_html_pages',
+                                    lang,
+                                    count=str(count),
+                                ),
                                 type='positive',
                             )
                         else:
                             ui.notify(
-                                t('pages.research.all_articles_have_html', lang), type='info'
+                                t('pages.research.all_articles_have_html', lang),
+                                type='info',
                             )
 
                     ui.button(
@@ -167,7 +181,9 @@ async def page_research():
         async def do_research():
             start_time = time.time()
             if not selected_topics:
-                ui.notify(t('pages.research.select_at_least_one_topic', lang), type='warning')
+                ui.notify(
+                    t('pages.research.select_at_least_one_topic', lang), type='warning'
+                )
                 return
 
             research_btn.disable()
@@ -232,7 +248,9 @@ async def page_research():
                         )
 
                     toggle_btn = ui.button(
-                        t('buttons.hide_log', lang), on_click=toggle_log, icon='visibility_off'
+                        t('buttons.hide_log', lang),
+                        on_click=toggle_log,
+                        icon='visibility_off',
                     ).props('flat rounded dense')
                 saved_log = ui.log(max_lines=500).classes(
                     'w-full h-72 font-mono text-xs'
@@ -244,9 +262,15 @@ async def page_research():
 
             if result.success:
                 grid = {
-                    t('pages.research.grid_articles_found', lang): str(result.articles_found),
-                    t('pages.research.grid_new_articles', lang): str(result.articles_new),
-                    t('pages.research.grid_skipped_dedup', lang): str(result.articles_skipped),
+                    t('pages.research.grid_articles_found', lang): str(
+                        result.articles_found
+                    ),
+                    t('pages.research.grid_new_articles', lang): str(
+                        result.articles_new
+                    ),
+                    t('pages.research.grid_skipped_dedup', lang): str(
+                        result.articles_skipped
+                    ),
                     t('pages.research.grid_duration', lang): format_duration(secs),
                 }
                 result_card(

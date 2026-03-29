@@ -50,11 +50,13 @@ Return a markdown report with:
 **Estimated time savings**: X minutes per PR
 
 ### Recommendations
+
 | Workflow | Issue | Improvement | Impact |
-|----------|-------|-------------|--------|
-| ... | ... | ... | ... |
+| -------- | ----- | ----------- | ------ |
+| ...      | ...   | ...         | ...    |
 
 ### Good Practices
+
 - ...
 ```
 

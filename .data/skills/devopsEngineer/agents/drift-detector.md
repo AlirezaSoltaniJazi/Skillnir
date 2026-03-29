@@ -51,11 +51,13 @@ Return a markdown report with:
 **Aligned**: N | **Drifted**: N
 
 ### Drift Issues
+
 | Tool | Local Config | CI Config | Fix |
-|------|-------------|-----------|-----|
-| ... | ... | ... | ... |
+| ---- | ------------ | --------- | --- |
+| ...  | ...          | ...       | ... |
 
 ### Aligned
+
 - ...
 ```
 

@@ -65,20 +65,25 @@ Return a security report classified by severity.
 **Findings**: N total (Critical: N, High: N, Medium: N, Low: N)
 
 ### Critical
+
 | File | Line | OWASP | Finding | Remediation |
-|------|------|-------|---------|-------------|
+| ---- | ---- | ----- | ------- | ----------- |
 
 ### High
+
 | File | Line | OWASP | Finding | Remediation |
-|------|------|-------|---------|-------------|
+| ---- | ---- | ----- | ------- | ----------- |
 
 ### Medium
+
 ...
 
 ### Low
+
 ...
 
 ### Clean Areas
+
 - {{modules with no findings}}
 ```
 

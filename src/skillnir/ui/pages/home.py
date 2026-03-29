@@ -28,10 +28,22 @@ def get_sections(lang: str) -> list[dict]:
             'title': t('pages.home.sections.skill.title', lang),
             'desc': t('pages.home.sections.skill.desc', lang),
             'items': [
-                ('download', t('pages.home.sections.skill.items.install', lang), '/install'),
+                (
+                    'download',
+                    t('pages.home.sections.skill.items.install', lang),
+                    '/install',
+                ),
                 ('sync', t('pages.home.sections.skill.items.update', lang), '/update'),
-                ('fact_check', t('pages.home.sections.skill.items.check', lang), '/check-skill'),
-                ('delete', t('pages.home.sections.skill.items.delete', lang), '/delete-skill'),
+                (
+                    'fact_check',
+                    t('pages.home.sections.skill.items.check', lang),
+                    '/check-skill',
+                ),
+                (
+                    'delete',
+                    t('pages.home.sections.skill.items.delete', lang),
+                    '/delete-skill',
+                ),
                 (
                     'psychology',
                     t('pages.home.sections.skill.items.generate_skill', lang),
@@ -159,7 +171,11 @@ def get_sections(lang: str) -> list[dict]:
             'desc': t('pages.home.sections.ai_extra.desc', lang),
             'items': [
                 ('chat', t('pages.home.sections.ai_extra.items.ask_ai', lang), '/ask'),
-                ('map', t('pages.home.sections.ai_extra.items.plan_with_ai', lang), '/plan'),
+                (
+                    'map',
+                    t('pages.home.sections.ai_extra.items.plan_with_ai', lang),
+                    '/plan',
+                ),
             ],
         },
     ]
@@ -179,14 +195,10 @@ def _build_claude_tools_content():
     def on_hook_toggle(e):
         if e.value:
             enable_sound_hooks()
-            ui.notify(
-                t('messages.claude_sound_enabled', lang), type='positive'
-            )
+            ui.notify(t('messages.claude_sound_enabled', lang), type='positive')
         else:
             disable_sound_hooks()
-            ui.notify(
-                t('messages.claude_sound_disabled', lang), type='warning'
-            )
+            ui.notify(t('messages.claude_sound_disabled', lang), type='warning')
 
     with ui.row().classes('items-center gap-3'):
         ui.icon('notifications_active', color='amber').classes('text-lg')
@@ -281,16 +293,14 @@ def page_home():
                             f'<pre style="white-space:pre-wrap;font-size:0.85rem;'
                             f'line-height:1.5;margin:0">{usage}</pre>'
                         )
-                        ui.button(
-                            t('buttons.close', lang), on_click=dlg.close
-                        ).props('flat').classes('mt-3')
+                        ui.button(t('buttons.close', lang), on_click=dlg.close).props(
+                            'flat'
+                        ).classes('mt-3')
                     dlg.open()
                 elif backend_info.usage_url:
                     ui.navigate.to(backend_info.usage_url, new_tab=True)
                 else:
-                    ui.notify(
-                        t('messages.no_usage_info', lang), type='warning'
-                    )
+                    ui.notify(t('messages.no_usage_info', lang), type='warning')
 
             ui.button(
                 t('buttons.usage', lang), icon='analytics', on_click=_show_usage

@@ -72,35 +72,35 @@ OWNERS                          # Code ownership (@AlirezaSoltaniJazi)
 
 ## Key Patterns
 
-| Pattern | Approach | Key Rule |
-|---------|----------|----------|
-| CI/CD platform | GitHub Actions on `pull_request` trigger | All checks run in parallel on PR |
-| Composite actions | `.github/actions/setup-python/` | Extract shared steps, reuse across workflows |
-| Pre-commit hooks | 7 hooks in `.pre-commit-config.yaml` | Exclude `.data/` from code quality hooks |
-| Code formatting | Black 26.3.1 with `-S` flag | Single quotes enforced, Python 3.14 target |
-| Linting | Pylint with `.pylintrc` (fail-under=10) | Serial execution, 100-char line length |
-| Security scanning | Bandit `-lll -iii` + Safety check | Low false-positive threshold, document CVE exceptions |
-| Build system | hatchling via `pyproject.toml` | Entry point: `skillnir = "skillnir.cli:main"` |
-| Package manager | uv exclusively | Never pip, poetry, or pipenv |
-| Python version | 3.14+ pinned | `actions/setup-python@v5` with pip caching |
-| PR workflow | Template + auto-assign + parallel checks | Always checkout before local composite actions |
+| Pattern           | Approach                                 | Key Rule                                              |
+| ----------------- | ---------------------------------------- | ----------------------------------------------------- |
+| CI/CD platform    | GitHub Actions on `pull_request` trigger | All checks run in parallel on PR                      |
+| Composite actions | `.github/actions/setup-python/`          | Extract shared steps, reuse across workflows          |
+| Pre-commit hooks  | 7 hooks in `.pre-commit-config.yaml`     | Exclude `.data/` from code quality hooks              |
+| Code formatting   | Black 26.3.1 with `-S` flag              | Single quotes enforced, Python 3.14 target            |
+| Linting           | Pylint with `.pylintrc` (fail-under=10)  | Serial execution, 100-char line length                |
+| Security scanning | Bandit `-lll -iii` + Safety check        | Low false-positive threshold, document CVE exceptions |
+| Build system      | hatchling via `pyproject.toml`           | Entry point: `skillnir = "skillnir.cli:main"`         |
+| Package manager   | uv exclusively                           | Never pip, poetry, or pipenv                          |
+| Python version    | 3.14+ pinned                             | `actions/setup-python@v5` with pip caching            |
+| PR workflow       | Template + auto-assign + parallel checks | Always checkout before local composite actions        |
 
 See [references/pipeline-patterns.md](references/pipeline-patterns.md) for full workflow examples.
 
 ## Conventions
 
-| Rule | Convention |
-|------|-----------|
-| Workflow triggers | `on: pull_request` for checks, never `on: push` to main for CI |
-| Job timeout | 10 minutes max for all CI jobs |
-| Runner | `ubuntu-latest` for all workflows |
-| Permissions | Minimal — only `pull-requests: write` for auto-assign |
-| Composite actions | Stored in `.github/actions/{name}/action.yml` |
-| Pre-commit excludes | `.data/` excluded from Black, Pylint, Autoflake |
-| Hook versions | Pinned with `rev:` — update via `pre-commit autoupdate` |
-| Safety exceptions | Document CVE ID + reason in `args:` with `--ignore` |
-| Dependency management | `uv add <pkg>` (runtime), `uv add --group dev <pkg>` (dev) |
-| Branch strategy | Feature branches from main: `feat/`, `fix/`, `docs/` prefixes |
+| Rule                  | Convention                                                     |
+| --------------------- | -------------------------------------------------------------- |
+| Workflow triggers     | `on: pull_request` for checks, never `on: push` to main for CI |
+| Job timeout           | 10 minutes max for all CI jobs                                 |
+| Runner                | `ubuntu-latest` for all workflows                              |
+| Permissions           | Minimal — only `pull-requests: write` for auto-assign          |
+| Composite actions     | Stored in `.github/actions/{name}/action.yml`                  |
+| Pre-commit excludes   | `.data/` excluded from Black, Pylint, Autoflake                |
+| Hook versions         | Pinned with `rev:` — update via `pre-commit autoupdate`        |
+| Safety exceptions     | Document CVE ID + reason in `args:` with `--ignore`            |
+| Dependency management | `uv add <pkg>` (runtime), `uv add --group dev <pkg>` (dev)     |
+| Branch strategy       | Feature branches from main: `feat/`, `fix/`, `docs/` prefixes  |
 
 See [references/code-style.md](references/code-style.md) for naming and configuration conventions.
 
@@ -124,15 +124,15 @@ See [references/code-style.md](references/code-style.md) for naming and configur
 
 ## Security
 
-| Area | Rule | Severity |
-|------|------|----------|
-| Secrets in CI | Never hardcode — use GitHub Secrets or environment variables | Critical |
-| Bandit threshold | `-lll -iii` — low false-positive, catches real issues | High |
-| Safety exceptions | Document every ignored CVE with ID, package, and reason | High |
-| Pre-commit | `check-ast` validates Python syntax before commit | Medium |
-| `.gitignore` | Excludes `.env`, `.pypirc`, credentials files | Critical |
-| Claude settings | Whitelist specific bash commands in `.claude/settings.json` | High |
-| PR permissions | Minimal scope — only `pull-requests: write` for auto-assign | Medium |
+| Area              | Rule                                                         | Severity |
+| ----------------- | ------------------------------------------------------------ | -------- |
+| Secrets in CI     | Never hardcode — use GitHub Secrets or environment variables | Critical |
+| Bandit threshold  | `-lll -iii` — low false-positive, catches real issues        | High     |
+| Safety exceptions | Document every ignored CVE with ID, package, and reason      | High     |
+| Pre-commit        | `check-ast` validates Python syntax before commit            | Medium   |
+| `.gitignore`      | Excludes `.env`, `.pypirc`, credentials files                | Critical |
+| Claude settings   | Whitelist specific bash commands in `.claude/settings.json`  | High     |
+| PR permissions    | Minimal scope — only `pull-requests: write` for auto-assign  | Medium   |
 
 See [references/security-checklist.md](references/security-checklist.md) for full verification checklists.
 
@@ -146,18 +146,18 @@ See [references/security-checklist.md](references/security-checklist.md) for ful
 
 ## Anti-Patterns
 
-| Anti-Pattern | Why It's Wrong |
-|-------------|----------------|
-| Using `pip install` instead of `uv` | Project uses uv exclusively — mixing creates dependency conflicts |
-| Running hooks with `--no-verify` | Bypasses quality gates — fix the hook failure instead |
-| Using `on: push` to main for CI checks | Checks should run on PR to catch issues before merge |
-| Hardcoding Python version in workflows | Use composite action input — single source of truth |
-| Adding secrets to `.env` files in repo | Use GitHub Secrets — `.env` is gitignored for a reason |
-| Skipping `actions/checkout` before local actions | Composite actions need repo code — checkout first |
-| Using `pip` in CI instead of `pip install -e` | Dev dependencies need editable install for pytest |
-| Ignoring Safety CVEs without documentation | Every exception needs CVE ID, package, and justification |
-| Using `shell: bash` with user input in CI | Injection risk — use `actions/github-script` for dynamic content |
-| Setting `fail-under` below 10 in Pylint | Allows code quality regression — maintain the bar |
+| Anti-Pattern                                     | Why It's Wrong                                                    |
+| ------------------------------------------------ | ----------------------------------------------------------------- |
+| Using `pip install` instead of `uv`              | Project uses uv exclusively — mixing creates dependency conflicts |
+| Running hooks with `--no-verify`                 | Bypasses quality gates — fix the hook failure instead             |
+| Using `on: push` to main for CI checks           | Checks should run on PR to catch issues before merge              |
+| Hardcoding Python version in workflows           | Use composite action input — single source of truth               |
+| Adding secrets to `.env` files in repo           | Use GitHub Secrets — `.env` is gitignored for a reason            |
+| Skipping `actions/checkout` before local actions | Composite actions need repo code — checkout first                 |
+| Using `pip` in CI instead of `pip install -e`    | Dev dependencies need editable install for pytest                 |
+| Ignoring Safety CVEs without documentation       | Every exception needs CVE ID, package, and justification          |
+| Using `shell: bash` with user input in CI        | Injection risk — use `actions/github-script` for dynamic content  |
+| Setting `fail-under` below 10 in Pylint          | Allows code quality regression — maintain the bar                 |
 
 ## Code Generation Rules
 
@@ -170,11 +170,11 @@ See [references/security-checklist.md](references/security-checklist.md) for ful
 
 ## Sub-Agent Delegation
 
-| Agent | Role | Spawn When | Tools |
-|-------|------|------------|-------|
-| [security-scanner](agents/security-scanner.md) | CI/CD security audit and secret detection | Workflow review, secret detection, permission audit | Read Glob Grep |
-| [drift-detector](agents/drift-detector.md) | Config drift between CI and local tooling | Pre-commit vs CI mismatch, version drift, config validation | Read Glob Grep |
-| [cost-reviewer](agents/cost-reviewer.md) | CI optimization and resource analysis | Workflow optimization, action caching review, job parallelization | Read Glob Grep |
+| Agent                                          | Role                                      | Spawn When                                                        | Tools          |
+| ---------------------------------------------- | ----------------------------------------- | ----------------------------------------------------------------- | -------------- |
+| [security-scanner](agents/security-scanner.md) | CI/CD security audit and secret detection | Workflow review, secret detection, permission audit               | Read Glob Grep |
+| [drift-detector](agents/drift-detector.md)     | Config drift between CI and local tooling | Pre-commit vs CI mismatch, version drift, config validation       | Read Glob Grep |
+| [cost-reviewer](agents/cost-reviewer.md)       | CI optimization and resource analysis     | Workflow optimization, action caching review, job parallelization | Read Glob Grep |
 
 ### Delegation Rules
 
@@ -188,19 +188,19 @@ See [references/security-checklist.md](references/security-checklist.md) for ful
 
 Corrections and preferences persist via [LEARNED.md](LEARNED.md).
 
-| Mode | Detection Signal | Behavior |
-|------|-----------------|----------|
-| Diagnostic | "CI failed", "hook error", "workflow broken", error logs | Read workflow/config, check syntax/versions, diagnose root cause first |
-| Efficient | "Same as check-style", "Add another workflow like X", Nth similar task | Minimal explanation, match existing patterns, generate directly |
-| Teaching | "What is a composite action", "why pre-commit", "explain this workflow" | Explain rationale, reference pipeline-patterns.md, show existing examples |
-| Review | "Check this workflow", "audit CI config", "review pipeline" | Read-only analysis, delegate to security-scanner agent, report findings |
+| Mode       | Detection Signal                                                        | Behavior                                                                  |
+| ---------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Diagnostic | "CI failed", "hook error", "workflow broken", error logs                | Read workflow/config, check syntax/versions, diagnose root cause first    |
+| Efficient  | "Same as check-style", "Add another workflow like X", Nth similar task  | Minimal explanation, match existing patterns, generate directly           |
+| Teaching   | "What is a composite action", "why pre-commit", "explain this workflow" | Explain rationale, reference pipeline-patterns.md, show existing examples |
+| Review     | "Check this workflow", "audit CI config", "review pipeline"             | Read-only analysis, delegate to security-scanner agent, report findings   |
 
 **Proficiency Calibration:**
 
-| Signal Type | Indicators | Behavior |
-|-------------|-----------|----------|
-| Senior | Modifies generated config, asks about trade-offs, references CI internals | Lead with config, rationale on non-obvious only |
-| Learning | Asks "what is...", copies unchanged, pastes errors without analysis | Teaching mode, explain why not just how, link to docs |
+| Signal Type | Indicators                                                                | Behavior                                              |
+| ----------- | ------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Senior      | Modifies generated config, asks about trade-offs, references CI internals | Lead with config, rationale on non-obvious only       |
+| Learning    | Asks "what is...", copies unchanged, pastes errors without analysis       | Teaching mode, explain why not just how, link to docs |
 
 **Self-Learning**: All learnings are **written** to LEARNED.md — not suggested, written:
 
@@ -211,24 +211,24 @@ Corrections and preferences persist via [LEARNED.md](LEARNED.md).
 
 ## Freedom Levels
 
-| Level | Scope | Examples |
-|-------|-------|---------|
-| **MUST** follow | uv only, pin versions, minimal permissions, exclude .data/, timeout on jobs, checkout before local actions | "MUST use uv, never pip" |
-| **SHOULD** follow | 10-min timeout, ubuntu-latest runner, composite actions for shared steps, `-lll -iii` Bandit threshold | "SHOULD extract shared steps into composite actions" |
-| **CAN** customize | Workflow naming, job concurrency, specific hook ordering, Pylint disable rules | "CAN choose between `on: [push, pull_request]` triggers" |
+| Level             | Scope                                                                                                      | Examples                                                 |
+| ----------------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| **MUST** follow   | uv only, pin versions, minimal permissions, exclude .data/, timeout on jobs, checkout before local actions | "MUST use uv, never pip"                                 |
+| **SHOULD** follow | 10-min timeout, ubuntu-latest runner, composite actions for shared steps, `-lll -iii` Bandit threshold     | "SHOULD extract shared steps into composite actions"     |
+| **CAN** customize | Workflow naming, job concurrency, specific hook ordering, Pylint disable rules                             | "CAN choose between `on: [push, pull_request]` triggers" |
 
 ## References
 
-| File | Description |
-|------|-------------|
-| [LEARNED.md](LEARNED.md) | **Auto-updated.** Corrections, preferences, conventions across sessions |
-| [INJECT.md](INJECT.md) | Always-loaded quick reference (hallucination firewall) |
-| [references/deployment-guide.md](references/deployment-guide.md) | CI/CD flow, environment topology, quality gate pipeline |
-| [references/code-style.md](references/code-style.md) | Naming, tagging, configuration conventions with examples |
-| [references/security-checklist.md](references/security-checklist.md) | CI/CD security, secrets, permissions, dependency verification |
-| [references/ai-interaction-guide.md](references/ai-interaction-guide.md) | Anti-dependency strategies, correction protocols |
-| [references/pipeline-patterns.md](references/pipeline-patterns.md) | GitHub Actions workflow patterns with full examples |
-| [references/common-issues.md](references/common-issues.md) | Troubleshooting common CI/CD and pre-commit pitfalls |
-| [assets/workflow-template.yml](assets/workflow-template.yml) | Copy-paste GitHub Actions workflow template |
-| [assets/pre-commit-hook-template.yaml](assets/pre-commit-hook-template.yaml) | Pre-commit hook entry template |
-| [scripts/validate-infra.sh](scripts/validate-infra.sh) | Infrastructure convention and naming validator |
+| File                                                                         | Description                                                             |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| [LEARNED.md](LEARNED.md)                                                     | **Auto-updated.** Corrections, preferences, conventions across sessions |
+| [INJECT.md](INJECT.md)                                                       | Always-loaded quick reference (hallucination firewall)                  |
+| [references/deployment-guide.md](references/deployment-guide.md)             | CI/CD flow, environment topology, quality gate pipeline                 |
+| [references/code-style.md](references/code-style.md)                         | Naming, tagging, configuration conventions with examples                |
+| [references/security-checklist.md](references/security-checklist.md)         | CI/CD security, secrets, permissions, dependency verification           |
+| [references/ai-interaction-guide.md](references/ai-interaction-guide.md)     | Anti-dependency strategies, correction protocols                        |
+| [references/pipeline-patterns.md](references/pipeline-patterns.md)           | GitHub Actions workflow patterns with full examples                     |
+| [references/common-issues.md](references/common-issues.md)                   | Troubleshooting common CI/CD and pre-commit pitfalls                    |
+| [assets/workflow-template.yml](assets/workflow-template.yml)                 | Copy-paste GitHub Actions workflow template                             |
+| [assets/pre-commit-hook-template.yaml](assets/pre-commit-hook-template.yaml) | Pre-commit hook entry template                                          |
+| [scripts/validate-infra.sh](scripts/validate-infra.sh)                       | Infrastructure convention and naming validator                          |

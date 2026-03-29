@@ -23,13 +23,13 @@ asyncio_mode = "auto"
 
 Each module gets a corresponding test file:
 
-| Source Module | Test File |
-|--------------|-----------|
+| Source Module              | Test File                |
+| -------------------------- | ------------------------ |
 | `src/skillnir/backends.py` | `tests/test_backends.py` |
-| `src/skillnir/syncer.py` | `tests/test_syncer.py` |
-| `src/skillnir/skills.py` | `tests/test_skills.py` |
+| `src/skillnir/syncer.py`   | `tests/test_syncer.py`   |
+| `src/skillnir/skills.py`   | `tests/test_skills.py`   |
 | `src/skillnir/injector.py` | `tests/test_injector.py` |
-| `src/skillnir/hooks.py` | `tests/test_hooks.py` |
+| `src/skillnir/hooks.py`    | `tests/test_hooks.py`    |
 
 ---
 
@@ -68,6 +68,7 @@ class TestSyncSkill:
 ```
 
 **Naming rules:**
+
 - Class: `TestFunctionName` or `TestBehaviorName`
 - Method: `test_description_of_behavior`
 - No `test_` prefix on classes (pytest discovers them by `Test` prefix)
@@ -238,6 +239,7 @@ class TestSamePathSafety:
 ```
 
 Standard edge cases to cover:
+
 - Empty inputs (empty directories, empty strings)
 - Missing files/directories
 - Same source and target paths

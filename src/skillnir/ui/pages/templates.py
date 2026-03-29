@@ -135,9 +135,7 @@ def page_init_docs():
             )
 
         with ui.card().classes('w-full p-4').props('flat bordered'):
-            ui.label(t('pages.init_docs.will_create', lang)).classes(
-                'font-medium mb-2'
-            )
+            ui.label(t('pages.init_docs.will_create', lang)).classes('font-medium mb-2')
             ui.code(
                 'project/\n'
                 '├── agents.md                          (template)\n'
@@ -172,9 +170,9 @@ def page_init_docs():
                         .classes('w-full p-5 border-l-accent fade-in')
                         .style('border-left-color: #10b981')
                     ):
-                        ui.label(
-                            t('pages.init_docs.docs_created', lang)
-                        ).classes('text-positive font-medium')
+                        ui.label(t('pages.init_docs.docs_created', lang)).classes(
+                            'text-positive font-medium'
+                        )
                         for f in result.created_files:
                             ui.label(f'  + {f}').classes(
                                 'text-sm text-green-400 font-mono'

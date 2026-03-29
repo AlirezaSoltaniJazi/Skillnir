@@ -275,9 +275,7 @@ def page_update():
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
             target_input = (
-                ui.input(
-                    t('pages.install.project_root', lang), value=str(Path.cwd())
-                )
+                ui.input(t('pages.install.project_root', lang), value=str(Path.cwd()))
                 .classes('w-full max-w-xl')
                 .props('outlined dense rounded')
             )
@@ -433,9 +431,7 @@ def page_skills():
                             ui.button(
                                 t('pages.skills_library.skill_md_not_found', lang),
                                 icon='error_outline',
-                            ).props('flat dense disabled').classes(
-                                'mt-2 text-gray-600'
-                            )
+                            ).props('flat dense disabled').classes('mt-2 text-gray-600')
 
         _render_skills()
         search_input.on_value_change(lambda e: _render_skills(e.value or ''))

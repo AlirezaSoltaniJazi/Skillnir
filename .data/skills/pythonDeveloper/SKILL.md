@@ -74,38 +74,38 @@ tests/                          # pytest suite (13 test files + conftest.py)
 
 ## Key Patterns
 
-| Pattern | Approach | Key Rule |
-|---------|----------|----------|
-| Error handling | Result dataclasses (`SyncResult`, `GenerationResult`) | Return results, never raise for expected outcomes |
-| Config objects | `@dataclass(frozen=True)` with `field(default_factory=...)` | Immutable after creation |
-| Result objects | `@dataclass` (regular, mutable) | Include action/status + optional error field |
-| File operations | `pathlib.Path` exclusively | Always `encoding='utf-8'`, check `.exists()` first |
-| Enums | `class X(Enum)` with string values | Used for fixed sets, never plain strings |
-| Type hints | Modern Python 3.14 syntax | `str \| None`, `list[X]`, `tuple[X, ...]`, no `Any` |
-| Subprocess | `Popen` with threaded stderr drain | Never `shell=True`, always command as list |
-| Directory iteration | `sorted(dir.iterdir())` | Deterministic output, filter with `.is_dir()` |
-| Caching | `@functools.lru_cache` | For expensive discovery operations only |
-| Multi-backend | `AIBackend` enum + `BACKENDS` registry dict | Add new backends via registry, not conditionals |
+| Pattern             | Approach                                                    | Key Rule                                            |
+| ------------------- | ----------------------------------------------------------- | --------------------------------------------------- |
+| Error handling      | Result dataclasses (`SyncResult`, `GenerationResult`)       | Return results, never raise for expected outcomes   |
+| Config objects      | `@dataclass(frozen=True)` with `field(default_factory=...)` | Immutable after creation                            |
+| Result objects      | `@dataclass` (regular, mutable)                             | Include action/status + optional error field        |
+| File operations     | `pathlib.Path` exclusively                                  | Always `encoding='utf-8'`, check `.exists()` first  |
+| Enums               | `class X(Enum)` with string values                          | Used for fixed sets, never plain strings            |
+| Type hints          | Modern Python 3.14 syntax                                   | `str \| None`, `list[X]`, `tuple[X, ...]`, no `Any` |
+| Subprocess          | `Popen` with threaded stderr drain                          | Never `shell=True`, always command as list          |
+| Directory iteration | `sorted(dir.iterdir())`                                     | Deterministic output, filter with `.is_dir()`       |
+| Caching             | `@functools.lru_cache`                                      | For expensive discovery operations only             |
+| Multi-backend       | `AIBackend` enum + `BACKENDS` registry dict                 | Add new backends via registry, not conditionals     |
 
 See [references/api-patterns.md](references/api-patterns.md) for full code examples.
 
 ## Code Style
 
-| Rule | Convention |
-|------|-----------|
-| Formatter | Black 26.3.1, Python 3.14 target, `-S` flag (single quotes) |
-| Line length | 100 characters |
-| Linter | Pylint (`.pylintrc`, fail-under=10) |
-| Imports | Absolute only: `from skillnir.X import Y` |
-| Import order | stdlib → third-party → local (blank lines between) |
-| Naming | `snake_case` functions, `UPPER_CASE` constants, `PascalCase` classes |
-| Docstrings | One-liner with period, no param/return docs (types in signatures) |
-| Module docstrings | Required on every `.py` file |
-| Type hints | Required on all function signatures |
-| Path operations | `pathlib.Path` only, never `os.path` |
-| String quotes | Single quotes (enforced by Black -S) |
-| Unused code | Autoflake removes unused imports/variables |
-| Pre-commit exclude | `.data/` excluded from all code quality hooks |
+| Rule               | Convention                                                           |
+| ------------------ | -------------------------------------------------------------------- |
+| Formatter          | Black 26.3.1, Python 3.14 target, `-S` flag (single quotes)          |
+| Line length        | 100 characters                                                       |
+| Linter             | Pylint (`.pylintrc`, fail-under=10)                                  |
+| Imports            | Absolute only: `from skillnir.X import Y`                            |
+| Import order       | stdlib → third-party → local (blank lines between)                   |
+| Naming             | `snake_case` functions, `UPPER_CASE` constants, `PascalCase` classes |
+| Docstrings         | One-liner with period, no param/return docs (types in signatures)    |
+| Module docstrings  | Required on every `.py` file                                         |
+| Type hints         | Required on all function signatures                                  |
+| Path operations    | `pathlib.Path` only, never `os.path`                                 |
+| String quotes      | Single quotes (enforced by Black -S)                                 |
+| Unused code        | Autoflake removes unused imports/variables                           |
+| Pre-commit exclude | `.data/` excluded from all code quality hooks                        |
 
 See [references/code-style.md](references/code-style.md) for import order examples and full formatting rules.
 
@@ -154,18 +154,18 @@ See [references/security-checklist.md](references/security-checklist.md) for per
 
 ## Anti-Patterns
 
-| Anti-Pattern | Why It's Wrong |
-|-------------|----------------|
-| Using `os.path` for file operations | Project uses `pathlib.Path` exclusively — mixing creates inconsistency |
-| Raising exceptions for expected outcomes | Use result dataclasses (SyncResult, etc.) — exceptions are for truly exceptional cases |
-| Using `Optional[X]` from typing | Use `X \| None` — modern Python 3.14 syntax |
-| Using `List`, `Dict`, `Tuple` from typing | Use built-in `list`, `dict`, `tuple` — typing generics are deprecated |
-| Using `Any` type hint | Find the correct type — `Any` defeats the purpose of type checking |
-| Mutable defaults in dataclass fields | Use `field(default_factory=dict)` — mutable defaults are shared across instances |
-| Using `yaml.load()` | Security risk — always `yaml.safe_load()` |
-| Missing `encoding='utf-8'` on file I/O | Causes encoding bugs on different platforms |
-| String comparison for paths | Use `Path.resolve()` — handles symlinks and relative paths correctly |
-| Mocking file operations in tests | Use `tmp_path` fixture for real file system tests |
+| Anti-Pattern                              | Why It's Wrong                                                                         |
+| ----------------------------------------- | -------------------------------------------------------------------------------------- |
+| Using `os.path` for file operations       | Project uses `pathlib.Path` exclusively — mixing creates inconsistency                 |
+| Raising exceptions for expected outcomes  | Use result dataclasses (SyncResult, etc.) — exceptions are for truly exceptional cases |
+| Using `Optional[X]` from typing           | Use `X \| None` — modern Python 3.14 syntax                                            |
+| Using `List`, `Dict`, `Tuple` from typing | Use built-in `list`, `dict`, `tuple` — typing generics are deprecated                  |
+| Using `Any` type hint                     | Find the correct type — `Any` defeats the purpose of type checking                     |
+| Mutable defaults in dataclass fields      | Use `field(default_factory=dict)` — mutable defaults are shared across instances       |
+| Using `yaml.load()`                       | Security risk — always `yaml.safe_load()`                                              |
+| Missing `encoding='utf-8'` on file I/O    | Causes encoding bugs on different platforms                                            |
+| String comparison for paths               | Use `Path.resolve()` — handles symlinks and relative paths correctly                   |
+| Mocking file operations in tests          | Use `tmp_path` fixture for real file system tests                                      |
 
 ## Code Generation Rules
 
@@ -178,11 +178,11 @@ See [references/security-checklist.md](references/security-checklist.md) for per
 
 ## Sub-Agent Delegation
 
-| Agent | Role | Spawn When | Tools |
-|-------|------|------------|-------|
-| [code-reviewer](agents/code-reviewer.md) | Read-only convention compliance check | PR review, code audit, architecture check | Read Glob Grep |
-| [test-writer](agents/test-writer.md) | pytest test generation | "Write tests for X", new module, coverage gaps | Read Edit Write Bash Glob Grep |
-| [security-scanner](agents/security-scanner.md) | OWASP security audit | Security review, pre-deploy check, dependency audit | Read Glob Grep |
+| Agent                                          | Role                                  | Spawn When                                          | Tools                          |
+| ---------------------------------------------- | ------------------------------------- | --------------------------------------------------- | ------------------------------ |
+| [code-reviewer](agents/code-reviewer.md)       | Read-only convention compliance check | PR review, code audit, architecture check           | Read Glob Grep                 |
+| [test-writer](agents/test-writer.md)           | pytest test generation                | "Write tests for X", new module, coverage gaps      | Read Edit Write Bash Glob Grep |
+| [security-scanner](agents/security-scanner.md) | OWASP security audit                  | Security review, pre-deploy check, dependency audit | Read Glob Grep                 |
 
 ### Delegation Rules
 
@@ -196,19 +196,19 @@ See [references/security-checklist.md](references/security-checklist.md) for per
 
 Corrections and preferences persist via [LEARNED.md](LEARNED.md).
 
-| Mode | Detection Signal | Behavior |
-|------|-----------------|----------|
-| Diagnostic | Traceback, "doesn't work", "wrong result", error output | Read module, check types/paths/error handling, diagnose root cause first |
-| Efficient | "Another module like X", "Add Y to Z", Nth similar task | Minimal explanation, match existing patterns, generate directly |
-| Teaching | "What is a result dataclass", "why pathlib", "explain this pattern" | Explain rationale, reference code-style.md, show existing examples |
-| Review | "Check this code", "audit module X", "review my changes" | Read-only analysis, delegate to code-reviewer agent, report findings |
+| Mode       | Detection Signal                                                    | Behavior                                                                 |
+| ---------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Diagnostic | Traceback, "doesn't work", "wrong result", error output             | Read module, check types/paths/error handling, diagnose root cause first |
+| Efficient  | "Another module like X", "Add Y to Z", Nth similar task             | Minimal explanation, match existing patterns, generate directly          |
+| Teaching   | "What is a result dataclass", "why pathlib", "explain this pattern" | Explain rationale, reference code-style.md, show existing examples       |
+| Review     | "Check this code", "audit module X", "review my changes"            | Read-only analysis, delegate to code-reviewer agent, report findings     |
 
 **Proficiency Calibration:**
 
-| Signal Type | Indicators | Behavior |
-|-------------|-----------|----------|
-| Senior | Modifies generated code, asks about trade-offs, references internals | Lead with code, rationale on non-obvious only |
-| Learning | Asks "what is...", copies unchanged, pastes errors without analysis | Teaching mode, explain why not just how, link to docs |
+| Signal Type | Indicators                                                           | Behavior                                              |
+| ----------- | -------------------------------------------------------------------- | ----------------------------------------------------- |
+| Senior      | Modifies generated code, asks about trade-offs, references internals | Lead with code, rationale on non-obvious only         |
+| Learning    | Asks "what is...", copies unchanged, pastes errors without analysis  | Teaching mode, explain why not just how, link to docs |
 
 **Self-Learning**: All learnings are **written** to LEARNED.md — not suggested, written:
 
@@ -219,24 +219,24 @@ Corrections and preferences persist via [LEARNED.md](LEARNED.md).
 
 ## Freedom Levels
 
-| Level | Scope | Examples |
-|-------|-------|---------|
-| **MUST** follow | pathlib.Path, result dataclasses, type hints, single quotes, encoding='utf-8', yaml.safe_load, no shell=True | "MUST return result dataclass", "MUST use pathlib.Path" |
-| **SHOULD** follow | Class-based test organization, module docstrings, frozen for config, lru_cache for discovery | "SHOULD use frozen=True for config dataclasses" |
-| **CAN** customize | Test helper naming, docstring detail level, specific lru_cache maxsize | "CAN choose between one-liner and multi-line docstrings" |
+| Level             | Scope                                                                                                        | Examples                                                 |
+| ----------------- | ------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- |
+| **MUST** follow   | pathlib.Path, result dataclasses, type hints, single quotes, encoding='utf-8', yaml.safe_load, no shell=True | "MUST return result dataclass", "MUST use pathlib.Path"  |
+| **SHOULD** follow | Class-based test organization, module docstrings, frozen for config, lru_cache for discovery                 | "SHOULD use frozen=True for config dataclasses"          |
+| **CAN** customize | Test helper naming, docstring detail level, specific lru_cache maxsize                                       | "CAN choose between one-liner and multi-line docstrings" |
 
 ## References
 
-| File | Description |
-|------|-------------|
-| [LEARNED.md](LEARNED.md) | **Auto-updated.** Corrections, preferences, conventions across sessions |
-| [INJECT.md](INJECT.md) | Always-loaded quick reference (hallucination firewall) |
-| [references/api-patterns.md](references/api-patterns.md) | CLI patterns, subprocess spawning, stream parsing, config persistence |
-| [references/code-style.md](references/code-style.md) | Import order, naming, type hints, dataclass patterns, formatting |
-| [references/security-checklist.md](references/security-checklist.md) | Per-module OWASP security verification checklists |
-| [references/ai-interaction-guide.md](references/ai-interaction-guide.md) | Anti-dependency strategies, correction protocols |
-| [references/test-patterns.md](references/test-patterns.md) | pytest conventions, fixtures, mocking, assertion patterns |
-| [references/common-issues.md](references/common-issues.md) | Troubleshooting common backend Python pitfalls |
-| [references/model-template.py](references/model-template.py) | Copy-paste module template with dataclasses and patterns |
-| [assets/env-example](assets/env-example) | Environment variable template |
-| [scripts/validate-backend.sh](scripts/validate-backend.sh) | Backend convention and naming validator |
+| File                                                                     | Description                                                             |
+| ------------------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| [LEARNED.md](LEARNED.md)                                                 | **Auto-updated.** Corrections, preferences, conventions across sessions |
+| [INJECT.md](INJECT.md)                                                   | Always-loaded quick reference (hallucination firewall)                  |
+| [references/api-patterns.md](references/api-patterns.md)                 | CLI patterns, subprocess spawning, stream parsing, config persistence   |
+| [references/code-style.md](references/code-style.md)                     | Import order, naming, type hints, dataclass patterns, formatting        |
+| [references/security-checklist.md](references/security-checklist.md)     | Per-module OWASP security verification checklists                       |
+| [references/ai-interaction-guide.md](references/ai-interaction-guide.md) | Anti-dependency strategies, correction protocols                        |
+| [references/test-patterns.md](references/test-patterns.md)               | pytest conventions, fixtures, mocking, assertion patterns               |
+| [references/common-issues.md](references/common-issues.md)               | Troubleshooting common backend Python pitfalls                          |
+| [references/model-template.py](references/model-template.py)             | Copy-paste module template with dataclasses and patterns                |
+| [assets/env-example](assets/env-example)                                 | Environment variable template                                           |
+| [scripts/validate-backend.sh](scripts/validate-backend.sh)               | Backend convention and naming validator                                 |

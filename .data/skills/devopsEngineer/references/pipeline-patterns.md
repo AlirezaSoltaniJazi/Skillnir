@@ -32,6 +32,7 @@ jobs:
 ```
 
 **Key rules:**
+
 - Steps run sequentially — fail fast on formatting before expensive linting
 - Same flags as pre-commit hooks — no drift between local and CI
 - `--check` mode only — CI should never modify code
@@ -60,6 +61,7 @@ jobs:
 ```
 
 **Key rules:**
+
 - `--tb=short` for readable CI output
 - `-q` for quiet mode (less noise in logs)
 - Editable install (`-e`) ensures imports work correctly
@@ -94,6 +96,7 @@ jobs:
 ```
 
 **Key rules:**
+
 - Only triggers on `opened` (not every PR update)
 - Minimal permission: `pull-requests: write`
 - Uses `actions/github-script` for safe GitHub API interaction (no shell injection)
@@ -111,7 +114,7 @@ inputs:
   python-version:
     description: Python version to install
     required: false
-    default: '3.14'
+    default: "3.14"
 runs:
   using: composite
   steps:
@@ -122,6 +125,7 @@ runs:
 ```
 
 **Key rules:**
+
 - Inputs have sensible defaults (Python 3.14)
 - `cache: pip` for faster subsequent runs
 - `using: composite` (not Docker or Node.js)
@@ -153,6 +157,7 @@ jobs:
 ```
 
 **Checklist for new workflows:**
+
 1. Set `timeout-minutes: 10`
 2. Pin all action versions
 3. Use composite action for Python setup
@@ -165,11 +170,11 @@ jobs:
 
 Ensure pre-commit hooks and CI workflows run identical commands:
 
-| Tool | Pre-commit Args | CI Args |
-|------|----------------|---------|
-| Black | `-S` (in-place) | `--check -S` (check mode) |
+| Tool      | Pre-commit Args                                                                                                       | CI Args                                                                                                            |
+| --------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Black     | `-S` (in-place)                                                                                                       | `--check -S` (check mode)                                                                                          |
 | Autoflake | `--in-place --remove-all-unused-imports --remove-unused-variables --expand-star-imports --ignore-init-module-imports` | `--check --remove-all-unused-imports --remove-unused-variables --expand-star-imports --ignore-init-module-imports` |
-| Pylint | `-rn --rcfile=.pylintrc` | `-rn --rcfile=.pylintrc` |
-| Bandit | `-lll -iii` | `-lll -iii -r src/` |
+| Pylint    | `-rn --rcfile=.pylintrc`                                                                                              | `-rn --rcfile=.pylintrc`                                                                                           |
+| Bandit    | `-lll -iii`                                                                                                           | `-lll -iii -r src/`                                                                                                |
 
 **Key difference:** Pre-commit runs `--in-place` (fixes), CI runs `--check` (validates).

@@ -51,11 +51,13 @@ Return a markdown report with:
 **Issues found**: N (Critical: N, High: N, Medium: N, Low: N)
 
 ### Issues
+
 | File | Line | Severity | Rule | Issue | Fix |
-|------|------|----------|------|-------|-----|
-| ... | ... | ... | ... | ... | ... |
+| ---- | ---- | -------- | ---- | ----- | --- |
+| ...  | ...  | ...      | ...  | ...   | ... |
 
 ### Positive Patterns
+
 - ...
 ```
 

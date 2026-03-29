@@ -22,13 +22,13 @@ Infrastructure mistakes have blast radius — a bad workflow config affects ever
 
 ## Common AI Anti-Patterns in Infrastructure
 
-| Anti-Pattern | Better Approach |
-|-------------|----------------|
-| Generating complex workflows from scratch | Copy existing workflow, modify incrementally |
-| Adding permissions without justification | Explain why each permission is needed |
-| Using latest/unpinned versions | Always pin, explain version strategy |
-| Ignoring pre-commit/CI alignment | Check both when modifying either |
-| Over-engineering simple tasks | Start minimal, add complexity only when needed |
+| Anti-Pattern                              | Better Approach                                |
+| ----------------------------------------- | ---------------------------------------------- |
+| Generating complex workflows from scratch | Copy existing workflow, modify incrementally   |
+| Adding permissions without justification  | Explain why each permission is needed          |
+| Using latest/unpinned versions            | Always pin, explain version strategy           |
+| Ignoring pre-commit/CI alignment          | Check both when modifying either               |
+| Over-engineering simple tasks             | Start minimal, add complexity only when needed |
 
 ---
 
@@ -54,6 +54,7 @@ When discovering implicit infrastructure conventions:
 4. **Apply** — use the convention in subsequent output
 
 Examples:
+
 - "All workflows use `timeout-minutes: 10`" → convention
 - "Pre-commit hooks exclude `.data/` for code quality" → convention
 - "Composite actions stored in `.github/actions/{name}/`" → convention
@@ -62,11 +63,11 @@ Examples:
 
 ## Proficiency Signals
 
-| Signal | Response |
-|--------|----------|
-| User pastes CI error log | Diagnostic mode — read the log, identify root cause |
-| User says "add a workflow like X" | Efficient mode — copy pattern, minimal explanation |
-| User asks "what does this permission do" | Teaching mode — explain with context |
-| User requests "review my workflow" | Review mode — delegate to security-scanner agent |
-| User modifies generated config before committing | Senior signal — reduce explanations |
-| User asks "is this right?" repeatedly | Learning signal — increase guidance |
+| Signal                                           | Response                                            |
+| ------------------------------------------------ | --------------------------------------------------- |
+| User pastes CI error log                         | Diagnostic mode — read the log, identify root cause |
+| User says "add a workflow like X"                | Efficient mode — copy pattern, minimal explanation  |
+| User asks "what does this permission do"         | Teaching mode — explain with context                |
+| User requests "review my workflow"               | Review mode — delegate to security-scanner agent    |
+| User modifies generated config before committing | Senior signal — reduce explanations                 |
+| User asks "is this right?" repeatedly            | Learning signal — increase guidance                 |

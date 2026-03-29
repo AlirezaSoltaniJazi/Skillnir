@@ -6,16 +6,16 @@
 
 ## Formatting Rules
 
-| Rule | Value |
-|------|-------|
-| Formatter | Black 26.3.1 |
-| Python target | 3.14 |
-| String quotes | Single quotes (`-S` flag) |
-| Line length | 100 characters (Black default) |
-| Linter | Pylint (`.pylintrc`, fail-under=10) |
-| Unused code | Autoflake (removes unused imports/variables) |
-| Security | Bandit (`-lll -iii` threshold) |
-| Markdown | Prettier 3.8.1 |
+| Rule          | Value                                        |
+| ------------- | -------------------------------------------- |
+| Formatter     | Black 26.3.1                                 |
+| Python target | 3.14                                         |
+| String quotes | Single quotes (`-S` flag)                    |
+| Line length   | 100 characters (Black default)               |
+| Linter        | Pylint (`.pylintrc`, fail-under=10)          |
+| Unused code   | Autoflake (removes unused imports/variables) |
+| Security      | Bandit (`-lll -iii` threshold)               |
+| Markdown      | Prettier 3.8.1                               |
 
 ---
 
@@ -45,6 +45,7 @@ from skillnir.syncer import SyncResult, sync_skill
 ```
 
 **Rules:**
+
 - Always absolute imports (`from skillnir.X import Y`)
 - Never relative imports (`from .X import Y`)
 - Group: stdlib, then blank line, then third-party, then blank line, then local
@@ -290,7 +291,7 @@ All hooks exclude `.data/` directory:
 
 ```yaml
 # .pre-commit-config.yaml patterns
-exclude: ^\.data/  # Applied to autoflake, pylint, black
+exclude: ^\.data/ # Applied to autoflake, pylint, black
 ```
 
 Running pre-commit manually:

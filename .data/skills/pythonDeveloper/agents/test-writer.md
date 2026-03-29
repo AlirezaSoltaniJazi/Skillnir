@@ -12,7 +12,7 @@ Test generation agent that creates pytest tests following Skillnir project conve
 
 ## Tools
 
-Read Edit Write Bash(uv:*) Bash(pytest:*) Glob Grep
+Read Edit Write Bash(uv:_) Bash(pytest:_) Glob Grep
 
 ## Context Template
 
@@ -50,16 +50,19 @@ Run pytest to verify tests pass.
 
 **Tests written**: N tests in M classes
 **Coverage**: {{functions covered}}
-**File**: tests/test_{{module}}.py
+**File**: tests/test\_{{module}}.py
 
 ### Test Classes
+
 - TestFunctionA: N tests
 - TestFunctionB: N tests
 
 ### Edge Cases Covered
+
 - ...
 
 ### Tests Passing
+
 ✅ All N tests pass / ❌ N failures (with details)
 ```
 

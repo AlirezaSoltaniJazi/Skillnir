@@ -6,12 +6,12 @@
 
 ## Workflow Naming
 
-| Convention | Example |
-|-----------|---------|
-| Workflow files | `kebab-case.yml` (`check-style.yml`, `run-tests.yml`) |
-| Job names | `snake_case` or short lowercase (`test`, `style`, `assign-author`) |
-| Step names | Sentence case with action verb (`Install dependencies`, `Run tests`) |
-| Composite actions | Nested under `.github/actions/{name}/action.yml` |
+| Convention        | Example                                                              |
+| ----------------- | -------------------------------------------------------------------- |
+| Workflow files    | `kebab-case.yml` (`check-style.yml`, `run-tests.yml`)                |
+| Job names         | `snake_case` or short lowercase (`test`, `style`, `assign-author`)   |
+| Step names        | Sentence case with action verb (`Install dependencies`, `Run tests`) |
+| Composite actions | Nested under `.github/actions/{name}/action.yml`                     |
 
 ---
 
@@ -29,12 +29,13 @@ jobs:
       # Only what's needed
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-python  # Local composite
+      - uses: ./.github/actions/setup-python # Local composite
       - name: Step description
         run: command here
 ```
 
 **Key rules:**
+
 - Always set `timeout-minutes: 10`
 - Always pin action versions (`@v4`, not `@latest`)
 - Always `checkout` before local composite actions
@@ -46,14 +47,15 @@ jobs:
 
 ```yaml
 - repo: https://github.com/org/repo
-  rev: vX.Y.Z          # Always pinned
+  rev: vX.Y.Z # Always pinned
   hooks:
     - id: hook-name
       args: [--flag1, --flag2]
-      exclude: '\.data/'  # For code quality hooks
+      exclude: '\.data/' # For code quality hooks
 ```
 
 **Key rules:**
+
 - Pin `rev:` to exact version tag
 - Add `exclude: '\.data/'` for Black, Pylint, Autoflake
 - Use `additional_dependencies:` for local hooks that need packages
@@ -82,6 +84,7 @@ asyncio_mode = "auto"
 ```
 
 **Key rules:**
+
 - Use `>=` version bounds (not `==` pinning) in `pyproject.toml`
 - Exact pinning lives in `uv.lock` (auto-generated)
 - Entry points under `[project.scripts]`
@@ -122,13 +125,16 @@ dist/
 
 ```markdown
 ## Summary
+
 <!-- What and why -->
 
 ## Changes
+
 - Change 1
 - Change 2
 
 ## Test plan
+
 - [ ] Tests pass (`uv run pytest`)
 - [ ] Manual verification
 ```
@@ -137,10 +143,10 @@ dist/
 
 ## Version Pinning Strategy
 
-| Location | Strategy | Example |
-|----------|---------|---------|
-| `pyproject.toml` | Minimum bound | `pyyaml>=6.0` |
-| `uv.lock` | Exact lock (auto) | `pyyaml==6.0.2` |
-| `.pre-commit-config.yaml` | Exact tag | `rev: 26.3.1` |
-| GitHub Actions | Major version | `uses: actions/checkout@v4` |
-| Composite action inputs | Default value | `default: '3.14'` |
+| Location                  | Strategy          | Example                     |
+| ------------------------- | ----------------- | --------------------------- |
+| `pyproject.toml`          | Minimum bound     | `pyyaml>=6.0`               |
+| `uv.lock`                 | Exact lock (auto) | `pyyaml==6.0.2`             |
+| `.pre-commit-config.yaml` | Exact tag         | `rev: 26.3.1`               |
+| GitHub Actions            | Major version     | `uses: actions/checkout@v4` |
+| Composite action inputs   | Default value     | `default: '3.14'`           |

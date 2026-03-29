@@ -28,7 +28,7 @@ def load_locale(lang: str) -> dict:
     locale_file = LOCALES_DIR / f"{lang}.json"
     try:
         return json.loads(locale_file.read_text(encoding="utf-8"))
-    except (FileNotFoundError, json.JSONDecodeError):
+    except FileNotFoundError, json.JSONDecodeError:
         return {}
 
 
@@ -48,7 +48,7 @@ def get_current_language() -> str:
     try:
         config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
         return config.get("language", "en")
-    except (FileNotFoundError, json.JSONDecodeError, OSError):
+    except FileNotFoundError, json.JSONDecodeError, OSError:
         return "en"
 
 
@@ -57,7 +57,7 @@ def set_language(lang: str) -> None:
     config: dict = {}
     try:
         config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
-    except (FileNotFoundError, json.JSONDecodeError, OSError):
+    except FileNotFoundError, json.JSONDecodeError, OSError:
         pass
     config["language"] = lang
     CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
