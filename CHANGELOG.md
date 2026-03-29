@@ -22,6 +22,7 @@ First stable release of Skillnir -- a system for generating, managing, and injec
 Each scope has a dedicated AI prompt with three-phase generation: project scan, synthesis, and best-practice integration.
 
 **Application Development**
+
 - `backend` -- Python/Django/Go/Java server-side patterns
 - `frontend` -- React/Vue/Angular/Svelte component patterns
 - `android` -- Kotlin/Java with Jetpack Compose, coroutines, KMP
@@ -32,11 +33,13 @@ Each scope has a dedicated AI prompt with three-phase generation: project scan, 
 - `cross-platform-mobile` -- React Native, Flutter, KMP shared logic
 
 **Data & APIs**
+
 - `database` -- schema design, migration safety, query optimization, ORM patterns
 - `api-design` -- OpenAPI/Protobuf/GraphQL schema design and contract testing
 - `data-science` -- Jupyter notebooks, pandas/polars, ML pipelines, experiment tracking
 
 **Testing & Quality**
+
 - `testing` -- generic E2E/API/integration test automation
 - `test-design` -- test strategy, coverage analysis, scenario design
 - `locator` -- element selector strategies across 5 frameworks
@@ -46,13 +49,15 @@ Each scope has a dedicated AI prompt with three-phase generation: project scan, 
 - `appium` -- Appium 2.0, XCUITest/UiAutomator2, gestures, hybrid apps
 
 **Operations & Security**
+
 - `infra` -- Docker, CI/CD, Terraform, Kubernetes, disaster recovery
 - `security` -- cross-platform OWASP/NIST/CIS audit (read-only analysis)
 - `observability` -- OpenTelemetry, distributed tracing, SLOs, alerting
 - `performance` -- profiling, load testing, bundle analysis, caching
 
 **Specialized**
-- `chrome-extension` -- Manifest V3, content scripts, service workers, chrome.* APIs
+
+- `chrome-extension` -- Manifest V3, content scripts, service workers, chrome.\* APIs
 - `accessibility` -- cross-platform WCAG 2.1 AA compliance audit
 - `migration` -- framework upgrades, language migrations, architecture refactors
 - `general-system` -- cross-cutting skill system rules and conventions
@@ -99,24 +104,24 @@ skill-name/
 
 ### CLI Commands
 
-| Command | Description |
-| --- | --- |
-| `install` | Sync skills from source + inject symlinks into tool directories |
-| `update` | Sync skills only (version comparison) |
-| `generate-skill` | Generate domain-specific SKILL.md with AI |
-| `generate-docs` | Generate agents.md project documentation with AI |
-| `generate-rule` | Generate Cursor .mdc rule files with AI |
-| `check-skill` | Validate installed skills via AI backend |
-| `ask` | Ask AI a read-only question about a project |
-| `plan` | Get an AI-generated implementation plan |
-| `research` | Search and summarize AI engineering news |
-| `delete-skill` | Remove skill(s) from a project |
-| `delete-docs` | Remove AI documentation from a project |
-| `init-skill` | Create a blank skill scaffold |
-| `init-docs` | Create a blank agents.md template |
-| `config` | Manage backend and model settings |
-| `sound` | Configure Claude Code sound notification hooks |
-| `ui` | Launch the web interface |
+| Command          | Description                                                     |
+| ---------------- | --------------------------------------------------------------- |
+| `install`        | Sync skills from source + inject symlinks into tool directories |
+| `update`         | Sync skills only (version comparison)                           |
+| `generate-skill` | Generate domain-specific SKILL.md with AI                       |
+| `generate-docs`  | Generate agents.md project documentation with AI                |
+| `generate-rule`  | Generate Cursor .mdc rule files with AI                         |
+| `check-skill`    | Validate installed skills via AI backend                        |
+| `ask`            | Ask AI a read-only question about a project                     |
+| `plan`           | Get an AI-generated implementation plan                         |
+| `research`       | Search and summarize AI engineering news                        |
+| `delete-skill`   | Remove skill(s) from a project                                  |
+| `delete-docs`    | Remove AI documentation from a project                          |
+| `init-skill`     | Create a blank skill scaffold                                   |
+| `init-docs`      | Create a blank agents.md template                               |
+| `config`         | Manage backend and model settings                               |
+| `sound`          | Configure Claude Code sound notification hooks                  |
+| `ui`             | Launch the web interface                                        |
 
 ### Web Interface
 
