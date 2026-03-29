@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><!-- TITLE --></title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0f0f17;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.7;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 24px;
+    }
+    .back-link {
+      color: #818cf8;
+      text-decoration: none;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 24px;
+      padding: 6px 14px;
+      border-radius: 8px;
+      background: #1a1a2e;
+      transition: all 0.15s;
+    }
+    .back-link:hover { background: #22223a; color: #a5b4fc; }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0 0 16px 0;
+      line-height: 1.3;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid #1e1e36;
+    }
+    .meta a {
+      color: #818cf8;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .meta a:hover { text-decoration: underline; color: #a5b4fc; }
+    .meta span {
+      color: #6b7280;
+      font-size: 14px;
+    }
+    .topic-badge {
+      background: #1a1a2e;
+      color: #e2e8f0;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid #2e2e4a;
+    }
+    .country-badge {
+      background: #1a1a2e;
+      color: #e2e8f0;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid #2e2e4a;
+    }
+    .free-paid-badge {
+      color: #fff;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      border: none;
+    }
+    .free { background: #22c55e; }
+    .paid { background: #ef4444; }
+    .register-btn {
+      display: inline-block;
+      margin: 24px 0;
+      padding: 12px 32px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .register-btn:hover { opacity: 0.85; }
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin: 32px 0 16px 0;
+      color: #f1f5f9;
+    }
+    ol {
+      padding-left: 24px;
+      margin: 0;
+    }
+    ol li {
+      margin-bottom: 12px;
+      color: #cbd5e1;
+    }
+    .description p {
+      color: #cbd5e1;
+      margin: 0 0 16px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="../../index.html" class="back-link">&larr; Back to Events</a>
+    <h1><!-- TITLE --></h1>
+    <div class="meta">
+      <a href="<!-- EVENT_URL -->" target="_blank" rel="noopener">Event Page &nearr;</a>
+      <span>Organizer: <!-- ORGANIZER --></span>
+      <span>Date: <!-- EVENT_DATE --></span>
+      <span>Location: <!-- LOCATION --></span>
+      <span class="country-badge"><!-- COUNTRY_FLAG --><!-- COUNTRY --></span>
+      <span class="topic-badge"><!-- TOPIC_LABEL --></span>
+      <span class="free-paid-badge <!-- FREE_BADGE -->"><!-- FREE_BADGE --></span>
+    </div>
+    <a href="<!-- REGISTRATION_URL -->" target="_blank" rel="noopener" class="register-btn">Register Now &rarr;</a>
+    <h2>Key Highlights</h2>
+    <ol>
+<!-- HIGHLIGHTS_HTML -->
+    </ol>
+    <h2>About This Event</h2>
+    <div class="description">
+<!-- DESCRIPTION_HTML -->
+    </div>
+  </div>
+</body>
+</html>
