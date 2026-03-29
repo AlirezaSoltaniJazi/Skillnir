@@ -67,10 +67,14 @@ async def show_welcome_dialog() -> None:
     """Show a first-visit welcome popup. Skips if user dismissed it before."""
     from nicegui import ui
 
-    dismissed = await ui.run_javascript(
-        'localStorage.getItem("skillnir_welcome_dismissed")'
-    )
-    if dismissed == 'true':
+    try:
+        dismissed = await ui.run_javascript(
+            'localStorage.getItem("skillnir_welcome_dismissed")',
+            timeout=3.0,
+        )
+        if dismissed == 'true':
+            return
+    except TimeoutError:
         return
 
     dont_show = {'checked': False}

@@ -1,0 +1,748 @@
+{
+  "nav": {
+    "groups": {
+      "skill_management": "مدیریت مهارت",
+      "ai_context": "زمینه هوش مصنوعی",
+      "templates": "قالب‌ها",
+      "ai_assistant": "دستیار هوش مصنوعی",
+      "tools_data": "ابزارها و داده‌ها"
+    },
+    "items": {
+      "install": "نصب",
+      "update": "به‌روزرسانی",
+      "check": "بررسی",
+      "delete": "حذف",
+      "generate_skill": "تولید مهارت",
+      "generate_rule": "تولید قاعده",
+      "generate_docs": "تولید مستندات",
+      "delete_docs": "حذف مستندات",
+      "init_skill": "ایجاد مهارت",
+      "init_docs": "ایجاد مستندات",
+      "ask_ai": "پرسش از AI",
+      "plan": "برنامه‌ریزی",
+      "skills_library": "کتابخانه مهارت‌ها",
+      "tools_registry": "فهرست ابزارها",
+      "usage": "مصرف",
+      "research": "پژوهش",
+      "events": "رویدادها",
+      "settings": "تنظیمات"
+    },
+    "sort_modes": {
+      "default": "پیش‌فرض",
+      "popularity": "محبوبیت",
+      "performance": "عملکرد",
+      "price": "قیمت (ارزان‌ترین)",
+      "alpha": "الفبایی"
+    }
+  },
+
+  "pages": {
+    "home": {
+      "sections": {
+        "skill": {
+          "title": "مهارت",
+          "desc": "نصب، به‌روزرسانی، بررسی، حذف یا تولید مهارت‌ها برای پروژه‌های شما.",
+          "items": {
+            "install": "نصب",
+            "update": "به‌روزرسانی",
+            "check": "بررسی",
+            "delete": "حذف",
+            "generate_skill": "تولید مهارت"
+          }
+        },
+        "ai_context": {
+          "title": "زمینه AI",
+          "desc": "تولید قواعد، مستندات AI یا حذف مستندات موجود از پروژه‌ها.",
+          "items": {
+            "generate_rule": "تولید قاعده",
+            "generate_docs": "تولید مستندات AI",
+            "delete_docs": "حذف مستندات"
+          }
+        },
+        "default_template": {
+          "title": "قالب پیش‌فرض",
+          "desc": "ایجاد قالب خالی مهارت یا مستندات با جای‌نگهدارهای توضیح‌دار.",
+          "items": {
+            "init_skill": "ایجاد مهارت",
+            "init_docs": "ایجاد مستندات"
+          }
+        },
+        "claude_tools": {
+          "title": "ابزارهای Claude",
+          "desc": "فعال یا غیرفعال کردن اعلان‌های صوتی Claude Code.",
+          "sound_notifications": "اعلان‌های صوتی"
+        },
+        "usage": {
+          "title": "مصرف",
+          "desc": "مشاهده آمار توکن‌ها و اطلاعات مصرف هر بک‌اند.",
+          "items": {
+            "token_stats": "آمار توکن‌ها"
+          }
+        },
+        "supported_tools": {
+          "title": "ابزارهای پشتیبانی‌شده",
+          "desc": "مرور تمام ابزارهای AI پشتیبانی‌شده و مدل‌های آن‌ها.",
+          "items": {
+            "models_tools": "مدل‌ها و ابزارها"
+          }
+        },
+        "research": {
+          "title": "پژوهش",
+          "desc": "جستجوی وب، مشاهده مقالات موجود یا حذف داده‌های پژوهشی.",
+          "items": {
+            "research_hub": "مرکز پژوهش"
+          }
+        },
+        "events": {
+          "title": "رویدادها",
+          "desc": "یافتن کنفرانس‌ها، گردهمایی‌ها و کارگاه‌های AI در سراسر جهان.",
+          "items": {
+            "events_hub": "مرکز رویدادها"
+          }
+        },
+        "settings": {
+          "title": "تنظیمات",
+          "desc": "حالت روشن/تاریک، تنظیم اعلان‌ها و ترجیحات برنامه.",
+          "items": {
+            "preferences": "ترجیحات"
+          }
+        },
+        "ai_extra": {
+          "title": "امکانات اضافی AI",
+          "desc": "پرسش از AI یا دریافت برنامه‌های پیاده‌سازی دقیق.",
+          "items": {
+            "ask_ai": "پرسش از AI",
+            "plan_with_ai": "برنامه‌ریزی با AI"
+          }
+        }
+      },
+      "quick_actions": {
+        "install_skill": "نصب مهارت",
+        "generate_docs": "تولید مستندات",
+        "generate_skill": "تولید مهارت",
+        "ask_ai": "پرسش از AI"
+      }
+    },
+
+    "install": {
+      "title": "نصب مهارت‌ها",
+      "subtitle": "تزریق مهارت‌های کدنویسی AI به پروژه شما.",
+      "steps": {
+        "target_source": "مقصد و منبع",
+        "select_skills": "انتخاب مهارت‌ها",
+        "select_tools": "انتخاب ابزارها",
+        "confirm_execute": "تأیید و اجرا",
+        "results": "نتایج"
+      },
+      "target_project_help": "مسیر ریشه پروژه مقصد را وارد کنید.",
+      "source_skills_help": "مسیر منبع مهارت‌ها (محل دریافت مهارت‌های تولیدشده).",
+      "select_skills_help": "مهارت‌های مورد نظر برای تزریق را انتخاب کنید (یک یا چند مورد).",
+      "select_tools_help": "ابزارهای AI مورد نظر برای تزریق سیم‌لینک را انتخاب کنید.",
+      "sort_by": "مرتب‌سازی بر اساس:",
+      "project_root": "ریشه پروژه",
+      "source_skills_path": "مسیر منبع مهارت‌ها",
+      "syncing_skill": "همگام‌سازی مهارت {index}/{total}: {name}...",
+      "injecting_skill": "تزریق مهارت {index}/{total}: {name}...",
+      "starting": "شروع...",
+      "updating_skills": "به‌روزرسانی مهارت‌ها..."
+    },
+
+    "update": {
+      "title": "به‌روزرسانی مهارت‌ها",
+      "subtitle": "همگام‌سازی تمام مهارت‌ها از منبع به پروژه مقصد."
+    },
+
+    "skills_library": {
+      "title": "کتابخانه مهارت‌ها",
+      "subtitle": "{count} مهارت موجود",
+      "search_placeholder": "جستجوی مهارت‌ها...",
+      "view_skill_md": "مشاهده SKILL.md",
+      "skill_md_not_found": "SKILL.md یافت نشد",
+      "skill_md_dialog_title": "{name} — SKILL.md",
+      "error_reading_skill_md": "خطا در خواندن SKILL.md: {error}"
+    },
+
+    "generate_docs": {
+      "title": "تولید مستندات AI",
+      "subtitle": "اسکن پروژه با AI و تولید agents.md + .claude/claude.md",
+      "target_project_root": "ریشه پروژه مقصد",
+      "prompt_version": "نسخه پرامپت",
+      "result_success_title": "تولید کامل شد",
+      "result_fail_title": "تولید ناموفق بود"
+    },
+
+    "generate_rule": {
+      "title": "تولید قاعده",
+      "subtitle": "اسکن پروژه با AI و تولید فایل‌های قاعده Cursor (.mdc)",
+      "target_project_root": "ریشه پروژه مقصد",
+      "rule_topic": "موضوع قاعده",
+      "rule_topic_placeholder": "مثلاً استانداردهای مدیریت خطا، الگوهای کامپوننت React",
+      "prompt_version": "نسخه پرامپت",
+      "enter_rule_topic": "لطفاً موضوع قاعده را وارد کنید.",
+      "result_success_title": "تولید قاعده کامل شد",
+      "result_fail_title": "تولید قاعده ناموفق بود"
+    },
+
+    "delete_docs": {
+      "title": "حذف مستندات AI",
+      "subtitle": "حذف agents.md و سیم‌لینک‌های آن از پروژه مقصد.",
+      "target_project_root": "ریشه پروژه مقصد",
+      "no_docs_found": "مستندات AI در پروژه مقصد یافت نشد.",
+      "found_label": "یافت‌شده:",
+      "symlink": "سیم‌لینک",
+      "file": "فایل",
+      "no_docs_to_delete": "مستنداتی برای حذف یافت نشد.",
+      "deletion_complete": "حذف کامل شد",
+      "deletion_failed": "حذف ناموفق بود",
+      "removed_files": "{count} فایل حذف شد",
+      "cleaned_dirs": "{count} پوشه خالی پاک‌سازی شد"
+    },
+
+    "generate_skill": {
+      "title": "تولید مهارت",
+      "subtitle": "اسکن پروژه با AI و تولید یک SKILL.md اختصاصی دامنه",
+      "target_project_root": "ریشه پروژه مقصد",
+      "project_name": "نام پروژه",
+      "skill_scope": "حوزه مهارت",
+      "prompt_version": "نسخه پرامپت",
+      "also_add_to_current": "افزودن مهارت به پروژه فعلی نیز",
+      "skill_name_preview": "نام مهارت: {name}",
+      "result_success_title": "تولید مهارت کامل شد",
+      "result_fail_title": "تولید مهارت ناموفق بود",
+      "result_footer": "برای تزریق این مهارت به ابزارهای AI، دستور 'skillnir install' را اجرا کنید.",
+      "grid_skill_name": "نام مهارت",
+      "grid_target_skill_md": "SKILL.md مقصد",
+      "grid_source_skill_md": "SKILL.md منبع",
+      "grid_duration": "مدت زمان",
+      "grid_tools_used": "ابزارهای استفاده‌شده",
+      "grid_backend": "بک‌اند"
+    },
+
+    "delete_skill": {
+      "title": "حذف مهارت‌ها",
+      "subtitle": "حذف مهارت(ها) از پروژه مقصد، شامل سیم‌لینک‌ها در تمام پوشه‌های ابزار.",
+      "target_project_root": "ریشه پروژه مقصد",
+      "no_skills_found": "مهارتی در پروژه مقصد یافت نشد.",
+      "found_skills": "{count} مهارت یافت شد:",
+      "tool_installations": "{count} نصب ابزار",
+      "also_delete_data": "حذف داده‌های مهارت از .data/skills/ نیز",
+      "select_at_least_one": "حداقل یک مهارت را انتخاب کنید.",
+      "deletion_report": "گزارش حذف",
+      "error_badge": "خطا",
+      "deleted_badge": "حذف‌شده",
+      "deleted_summary": "({symlinks} سیم‌لینک، {dirs} پوشه پاک‌سازی‌شده)"
+    },
+
+    "init_skill": {
+      "title": "ایجاد مهارت",
+      "subtitle": "ایجاد قالب پیش‌فرض مهارت با فایل‌های جای‌نگهدار توضیح‌دار.",
+      "target_project_root": "ریشه پروژه مقصد",
+      "skill_name_label": "نام مهارت (حروف کوچک، فقط خط‌تیره)",
+      "will_create": "ایجاد خواهد شد:",
+      "scaffold_created": "قالب مهارت در {path} ایجاد شد",
+      "error_prefix": "خطا: {error}"
+    },
+
+    "init_docs": {
+      "title": "ایجاد مستندات AI",
+      "subtitle": "ایجاد قالب پیش‌فرض agents.md با بخش‌های توضیح‌دار و سیم‌لینک برای ابزارهای AI.",
+      "target_project_root": "ریشه پروژه مقصد",
+      "will_create": "ایجاد خواهد شد:",
+      "docs_created": "قالب مستندات AI ایجاد شد!",
+      "error_prefix": "خطا: {error}"
+    },
+
+    "ask": {
+      "title": "پرسش از AI",
+      "subtitle": "درباره یک پروژه سؤال بپرسید. AI بدون اعمال تغییرات پاسخ می‌دهد.",
+      "target_project_root": "ریشه پروژه مقصد",
+      "your_question": "سؤال شما",
+      "question_placeholder": "مثلاً ماژول احراز هویت چگونه کار می‌کند؟",
+      "enter_question": "لطفاً یک سؤال وارد کنید.",
+      "result_success_title": "پاسخ کامل شد",
+      "result_fail_title": "پرسش ناموفق بود"
+    },
+
+    "plan": {
+      "title": "برنامه‌ریزی",
+      "subtitle": "دریافت یک برنامه پیاده‌سازی دقیق از AI برای یک وظیفه یا قابلیت.",
+      "target_project_root": "ریشه پروژه مقصد",
+      "task_input_label": "برای چه چیزی به برنامه نیاز دارید؟",
+      "task_placeholder": "مثلاً افزودن احراز هویت کاربر با توکن‌های JWT",
+      "describe_task": "لطفاً وظیفه را شرح دهید.",
+      "result_success_title": "برنامه‌ریزی کامل شد",
+      "result_fail_title": "برنامه‌ریزی ناموفق بود"
+    },
+
+    "check_skill": {
+      "title": "بررسی مهارت",
+      "subtitle": "اجرای /skills از طریق بک‌اند AI روی پروژه مقصد.",
+      "target_project_root": "ریشه پروژه مقصد",
+      "result_success_title": "بررسی مهارت کامل شد",
+      "result_fail_title": "بررسی مهارت ناموفق بود"
+    },
+
+    "tools_registry": {
+      "title": "فهرست ابزارها",
+      "subtitle": "{count} ابزار AI پشتیبانی‌شده (+ تزریق خودکار .agents/)",
+      "search_placeholder": "جستجوی ابزارها...",
+      "columns": {
+        "name": "نام",
+        "company": "شرکت",
+        "dotdir": "پوشه تنظیمات",
+        "popularity": "محبوبیت",
+        "performance": "عملکرد",
+        "price": "قیمت"
+      }
+    },
+
+    "usage": {
+      "title": "مصرف توکن",
+      "subtitle": "مصرف توکن در سطح نشست برای تمام بک‌اندهای AI.",
+      "no_requests_title": "هنوز درخواست AI ثبت نشده",
+      "no_requests_subtitle": "مصرف توکن پس از تولید مستندات، مهارت‌ها یا پرسش از AI در اینجا نمایش داده می‌شود.",
+      "session_summary": "خلاصه نشست",
+      "total_tokens": "مجموع توکن‌ها",
+      "input_tokens": "توکن‌های ورودی",
+      "output_tokens": "توکن‌های خروجی",
+      "total_cost": "هزینه کل",
+      "requests": "درخواست‌ها",
+      "cache_tokens": "توکن‌های کش",
+      "cost": "هزینه"
+    },
+
+    "research": {
+      "title": "پژوهش مهندسی AI",
+      "subtitle": "جستجوی آخرین اخبار مهندسی AI، مطالعه عمیق مقالات و تولید خلاصه‌ها",
+      "topics_to_search": "موضوعات جستجو:",
+      "filter_by_source": "فیلتر بر اساس منبع (اختیاری):",
+      "articles_in_kb": "مقالات در پایگاه دانش",
+      "result_success_title": "پژوهش کامل شد",
+      "result_fail_title": "پژوهش ناموفق بود",
+      "grid_articles_found": "مقالات یافت‌شده",
+      "grid_new_articles": "مقالات جدید",
+      "grid_skipped_dedup": "رد شده (تکراری)",
+      "grid_duration": "مدت زمان",
+      "select_at_least_one_topic": "حداقل یک موضوع را انتخاب کنید",
+      "generated_html_pages": "{count} صفحه HTML مقاله تولید شد",
+      "all_articles_have_html": "تمام مقالات از قبل صفحه HTML دارند"
+    },
+
+    "events": {
+      "title": "رویدادها و کنفرانس‌های AI",
+      "subtitle": "یافتن کنفرانس‌ها، گردهمایی‌ها و کارگاه‌های AI در سراسر جهان",
+      "countries_to_search": "کشورهای مورد جستجو:",
+      "events_in_kb": "رویدادها در پایگاه دانش",
+      "result_success_title": "جستجوی رویدادها کامل شد",
+      "result_fail_title": "جستجوی رویدادها ناموفق بود",
+      "grid_events_found": "رویدادهای یافت‌شده",
+      "grid_new_events": "رویدادهای جدید",
+      "grid_skipped_dedup": "رد شده (تکراری)",
+      "grid_duration": "مدت زمان",
+      "select_at_least_one_country": "حداقل یک کشور را انتخاب کنید",
+      "generated_html_pages": "{count} صفحه HTML رویداد تولید شد",
+      "all_events_have_html": "تمام رویدادها از قبل صفحه HTML دارند"
+    },
+
+    "settings": {
+      "title": "تنظیمات",
+      "subtitle": "پیکربندی ترجیحات برنامه.",
+      "dark_mode": {
+        "title": "حالت تاریک",
+        "description": "تغییر بین پوسته تاریک و روشن.",
+        "enabled": "حالت تاریک فعال شد",
+        "disabled": "حالت روشن فعال شد"
+      },
+      "sound_notifications": {
+        "title": "اعلان‌های فرایند",
+        "description": "پخش صدا هنگام اتمام تولید AI.",
+        "enabled": "اعلان‌های صوتی فعال شد",
+        "disabled": "اعلان‌های صوتی غیرفعال شد"
+      },
+      "ai_tool": {
+        "title": "ابزار AI",
+        "description": "در حال استفاده از {name}"
+      },
+      "model": {
+        "title": "مدل",
+        "description": "در حال استفاده از {model}"
+      },
+      "prompt_version": {
+        "title": "نسخه پرامپت",
+        "description": "در حال استفاده از {version}"
+      }
+    }
+  },
+
+  "buttons": {
+    "next": "بعدی",
+    "back": "قبلی",
+    "home": "خانه",
+    "execute": "اجرا",
+    "search": "جستجو",
+    "cancel": "لغو",
+    "close": "بستن",
+    "select": "انتخاب",
+    "switch": "تغییر",
+    "scan": "اسکن",
+    "reset": "بازنشانی",
+    "refresh": "بازآوری",
+    "try_again": "تلاش مجدد",
+    "start_over": "شروع مجدد",
+    "search_again": "جستجوی مجدد",
+    "select_all": "انتخاب همه",
+    "deselect_all": "لغو انتخاب همه",
+    "auto_detect": "تشخیص خودکار",
+    "next_select_tools": "بعدی — انتخاب ابزارها",
+    "next_confirm": "بعدی — تأیید",
+    "delete_selected": "حذف موارد انتخاب‌شده",
+    "delete_docs": "حذف مستندات",
+    "create_scaffold": "ایجاد قالب",
+    "create_docs_template": "ایجاد قالب مستندات",
+    "create_plan": "ایجاد برنامه",
+    "run_check": "اجرای بررسی",
+    "generate_ai_docs": "تولید مستندات AI",
+    "generate_rule": "تولید قاعده",
+    "generate_skill": "تولید مهارت",
+    "update_all_skills": "به‌روزرسانی تمام مهارت‌ها",
+    "search_latest_news": "جستجوی آخرین اخبار",
+    "search_events": "جستجوی رویدادها",
+    "view_landing_page": "مشاهده صفحه اصلی",
+    "generate_html_files": "تولید فایل‌های HTML",
+    "open_landing_page": "باز کردن صفحه اصلی",
+    "view_skill_md": "مشاهده SKILL.md",
+    "switch_tool": "تغییر ابزار",
+    "switch_model": "تغییر مدل",
+    "prompts": "پرامپت‌ها",
+    "usage": "مصرف",
+    "install_skill": "نصب مهارت",
+    "ask": "پرسش",
+    "hide_log": "پنهان کردن گزارش",
+    "show_log": "نمایش گزارش",
+    "got_it": "متوجه شدم"
+  },
+
+  "messages": {
+    "using_backend": "در حال استفاده: {name} ({model})",
+    "directory_not_found": "پوشه یافت نشد: {path}",
+    "source_directory_not_found": "پوشه منبع یافت نشد: {path}",
+    "no_skills_found_in_source": "مهارتی در منبع یافت نشد.",
+    "no_skills_found_in_target": "مهارتی در پروژه مقصد یافت نشد.",
+    "no_docs_found_in_target": "مستندات AI در پروژه مقصد یافت نشد.",
+    "no_tools_detected": "پوشه ابزاری در مقصد یافت نشد.",
+    "select_at_least_one_skill": "حداقل یک مهارت را انتخاب کنید.",
+    "select_at_least_one_tool": "حداقل یک ابزار را انتخاب کنید.",
+    "no_usage_info": "اطلاعات مصرفی موجود نیست.",
+    "found_tools": "{count} ابزار در {name}/ یافت شد",
+    "selected_count": "{count} انتخاب‌شده",
+    "skill_copied": "'{name}' نسخه {version} — کپی شد",
+    "skill_updated": "'{name}' — به‌روزرسانی شد",
+    "claude_sound_enabled": "اعلان‌های صوتی Claude فعال شد",
+    "claude_sound_disabled": "اعلان‌های صوتی Claude غیرفعال شد",
+    "exit_code": "کد خروج: {code}",
+    "agents_md_exists": "agents.md از قبل در {path} وجود دارد",
+    "enter_rule_topic": "لطفاً موضوع قاعده را وارد کنید.",
+    "enter_question": "لطفاً یک سؤال وارد کنید.",
+    "describe_task": "لطفاً وظیفه را شرح دهید.",
+    "no_skills_selected": "مهارتی انتخاب نشده. عملیات لغو شد.",
+    "no_tools_selected": "ابزاری انتخاب نشده. عملیات لغو شد.",
+    "no_question_provided": "سؤالی وارد نشده. عملیات لغو شد.",
+    "no_task_provided": "وظیفه‌ای وارد نشده. عملیات لغو شد.",
+    "aborted": "لغو شد.",
+    "done": "انجام شد.",
+    "timed_out": "{name} پس از ۱۰ دقیقه به پایان رسید.",
+    "cli_not_found": "CLI {command} در PATH یافت نشد.",
+    "no_backends_available": "بک‌اندی موجود نیست. claude، gemini یا copilot CLI را نصب کنید."
+  },
+
+  "components": {
+    "hero": {
+      "title": "Skillnir",
+      "tagline": "تزریق مهارت‌های کدنویسی AI به پوشه تنظیمات هر ابزار.",
+      "skills_badge": "{count} مهارت",
+      "tools_badge": "{count} ابزار AI",
+      "dotdirs_badge": "{count} پوشه تنظیمات"
+    },
+    "welcome_dialog": {
+      "title": "به Skillnir خوش آمدید",
+      "description": "Skillnir ابزارهای کدنویسی AI را از طریق اجراکننده‌های CLI آن‌ها هماهنگ می‌کند. برای شروع، CLI حداقل یکی از بک‌اندهای زیر را نصب کرده و وارد حساب خود شوید.",
+      "dont_show_again": "دیگر نمایش نده",
+      "cli_guide_title": "راهنمای نصب CLI",
+      "cli_guide_description": "CLI اجراکننده هر بک‌اند AI مورد نظر خود را نصب کرده و وارد شوید.",
+      "install_label": "نصب",
+      "login_label": "ورود",
+      "verify_label": "تأیید",
+      "or_label": "یا",
+      "backends": {
+        "claude_code": {
+          "name": "Claude Code",
+          "notes": "نیاز به Node.js نسخه ۱۸ به بالا دارد. همچنین می‌توانید از طریق Homebrew نصب کنید."
+        },
+        "cursor_agent": {
+          "name": "Cursor Agent",
+          "notes": "نیاز به Node.js نسخه ۱۸ به بالا دارد. همچنین از طریق Cursor IDE قابل استفاده است."
+        },
+        "gemini_cli": {
+          "name": "Gemini CLI",
+          "notes": "نیاز به Node.js نسخه ۱۸ به بالا و حساب Google AI دارد."
+        },
+        "github_copilot": {
+          "name": "GitHub Copilot",
+          "notes": "نیاز به حساب GitHub با دسترسی Copilot دارد."
+        }
+      }
+    },
+    "backend_picker": {
+      "switch_ai_tool_title": "تغییر ابزار AI",
+      "switch_model_title": "تغییر مدل",
+      "switch_prompt_version_title": "تغییر نسخه پرامپت",
+      "ai_tool_label": "ابزار AI: {name}",
+      "active_badge": "فعال",
+      "current_badge": "فعلی",
+      "default_badge": "پیش‌فرض"
+    },
+    "backend_chip": {
+      "model_label": "مدل: {model}"
+    },
+    "stat_card": {
+      "created": "ایجادشده",
+      "skipped": "ردشده",
+      "errors": "خطاها",
+      "copied": "کپی‌شده",
+      "updated": "به‌روزشده"
+    },
+    "progress_panel": {
+      "initializing": "در حال راه‌اندازی...",
+      "preparing": "در حال آماده‌سازی...",
+      "elapsed": "سپری‌شده",
+      "tools_used": "ابزارهای استفاده‌شده",
+      "lines_output": "خطوط خروجی",
+      "live_output": "خروجی زنده",
+      "log_output": "خروجی گزارش"
+    },
+    "empty_state": {
+      "no_ai_requests": "هنوز درخواست AI ثبت نشده",
+      "no_ai_requests_subtitle": "مصرف توکن پس از تولید مستندات، مهارت‌ها یا پرسش از AI در اینجا نمایش داده می‌شود."
+    }
+  },
+
+  "layout": {
+    "injection_summary": "خلاصه تزریق",
+    "target": "مقصد:",
+    "skills": "مهارت‌ها:",
+    "tools": "ابزارها:",
+    "tools_selected_auto": "{count} انتخاب‌شده + .agents/ (خودکار)",
+    "symlinks_to_create": "سیم‌لینک‌های قابل ایجاد:",
+    "injection_report": "گزارش تزریق",
+    "sync_report": "گزارش همگام‌سازی",
+    "no_skills_in_source": "مهارتی در منبع یافت نشد.",
+    "created_label": "ایجادشده:",
+    "already_existed_label": "از قبل موجود:",
+    "errors_label": "خطاها:",
+    "installed_badge": "نصب‌شده",
+    "score_labels": {
+      "pop": "محبوبیت",
+      "perf": "عملکرد",
+      "price": "قیمت"
+    },
+    "tooltips": {
+      "cli_setup_guide": "راهنمای راه‌اندازی CLI",
+      "toggle_dark_light": "تغییر حالت تاریک/روشن",
+      "toggle_sound": "تغییر صدای اعلان"
+    }
+  },
+
+  "cli": {
+    "description": "تزریق مهارت‌های کدنویسی AI به پوشه تنظیمات هر ابزار.",
+    "command_help": "install (پیش‌فرض): همگام‌سازی مهارت‌ها + تزریق به ابزارها. update: فقط همگام‌سازی مهارت‌ها. delete-skill: حذف مهارت(ها) از پروژه. delete-docs: حذف مستندات AI از پروژه. init-skill: ایجاد قالب پیش‌فرض مهارت. init-docs: ایجاد قالب پیش‌فرض مستندات AI. ui: اجرای رابط وب. generate-docs: تولید agents.md با AI. generate-skill: تولید SKILL.md با AI. generate-rule: تولید قاعده Cursor (.mdc) با AI. check-skill: اجرای /skills از طریق بک‌اند AI. ask: پرسش از AI. plan: دریافت برنامه پیاده‌سازی. research: جستجوی آخرین اخبار مهندسی AI و تولید خلاصه. events: جستجوی رویدادها و کنفرانس‌های AI در سراسر جهان. config: مدیریت بک‌اند/مدل. sound: مدیریت اعلان‌های صوتی Claude Code.",
+    "prompts": {
+      "target_project_root": "ریشه پروژه مقصد:",
+      "source_skills_path": "مسیر منبع مهارت‌ها:",
+      "select_skills": "مهارت‌های مورد نظر برای تزریق را انتخاب کنید (فاصله=تغییر، اینتر=تأیید):",
+      "how_sort_tools": "ابزارها چگونه مرتب شوند؟",
+      "select_tools": "ابزارهای AI مورد نظر برای تزریق را انتخاب کنید (فاصله=تغییر، اینتر=تأیید):",
+      "proceed_injection": "آیا تزریق انجام شود؟",
+      "proceed_docs_generation": "آیا تولید مستندات AI انجام شود؟",
+      "proceed_skill_generation": "آیا تولید مهارت انجام شود؟",
+      "proceed_rule_generation": "آیا تولید قاعده انجام شود؟",
+      "project_name": "نام پروژه:",
+      "select_skill_scope": "حوزه مهارت را انتخاب کنید:",
+      "also_add_to_current": "آیا مهارت تولیدشده به پروژه فعلی نیز اضافه شود؟",
+      "rule_topic": "موضوع قاعده (مثلاً 'استانداردهای مدیریت خطا'، 'الگوهای React'):",
+      "enter_rule_topic": "لطفاً موضوع قاعده را وارد کنید",
+      "your_question": "سؤال شما:",
+      "what_plan_for": "برای چه چیزی به برنامه نیاز دارید؟",
+      "run_skill_check": "بررسی مهارت اجرا شود؟",
+      "select_skills_to_delete": "مهارت‌های مورد نظر برای حذف را انتخاب کنید:",
+      "also_delete_data": "آیا داده‌های مهارت از .data/skills/ نیز حذف شود؟",
+      "proceed_deletion": "آیا حذف انجام شود؟",
+      "skill_name": "نام مهارت (حروف کوچک، فقط خط‌تیره):",
+      "create_skill_scaffold": "قالب مهارت ایجاد شود؟",
+      "create_docs_template": "قالب مستندات AI ایجاد شود؟",
+      "filter_by_source": "فیلتر بر اساس منبع (خالی بگذارید برای همه):",
+      "search_latest_articles": "آخرین مقالات جستجو شود؟",
+      "select_countries": "کشورهای مورد جستجو را انتخاب کنید (خالی بگذارید برای همه):",
+      "search_upcoming_events": "رویدادهای آینده جستجو شود؟",
+      "open_landing_page": "صفحه اصلی در مرورگر باز شود؟",
+      "what_to_do": "چه کاری مایلید انجام دهید؟"
+    },
+    "sort_modes": {
+      "default": "پیش‌فرض (پیشنهادی)",
+      "popularity": "مرتب‌سازی بر اساس محبوبیت",
+      "performance": "مرتب‌سازی بر اساس عملکرد",
+      "price": "مرتب‌سازی بر اساس قیمت (ارزان‌ترین)",
+      "alpha": "مرتب‌سازی الفبایی"
+    },
+    "install": {
+      "found_skill": "۱ مهارت یافت شد: {name} (نسخه {version})",
+      "no_skills_in_source": "مهارتی در منبع یافت نشد. چیزی برای تزریق نیست.",
+      "target_label": "مقصد: {path}",
+      "skills_label": "مهارت‌ها: {names}",
+      "tools_label": "ابزارها:  {count} انتخاب‌شده + .agents/ (خودکار)",
+      "done": "انجام شد. {created} جدید، {skipped} رد شده، {errors} خطا."
+    },
+    "sync_report": {
+      "title": "گزارش همگام‌سازی مهارت",
+      "copied": "کپی‌شده",
+      "updated": "به‌روزشده",
+      "skipped": "رد شده (نسخه یکسان)",
+      "summary": "{copied} کپی‌شده، {updated} به‌روزشده، {skipped} رد شده."
+    },
+    "injection_report": {
+      "title": "گزارش تزریق: {name}",
+      "created": "ایجادشده ({count}):",
+      "already_existed": "از قبل موجود ({count}):",
+      "errors": "خطاها ({count}):"
+    },
+    "generate_docs": {
+      "generating": "در حال تولید مستندات AI...",
+      "complete": "تولید کامل شد!",
+      "failed": "تولید ناموفق بود: {error}",
+      "will_generate": "پروژه با AI اسکن شده و موارد زیر تولید می‌شود:",
+      "agents_md": "agents.md (ریشه پروژه)",
+      "claude_md": ".claude/claude.md (سیم‌لینک)"
+    },
+    "generate_skill": {
+      "generating": "در حال تولید مهارت {name}...",
+      "complete": "تولید مهارت کامل شد!",
+      "failed": "تولید مهارت ناموفق بود: {error}",
+      "run_install": "برای تزریق این مهارت به ابزارهای AI، دستور 'skillnir install' را اجرا کنید."
+    },
+    "generate_rule": {
+      "generating": "در حال تولید قاعده Cursor...",
+      "complete": "تولید قاعده کامل شد!",
+      "failed": "تولید قاعده ناموفق بود: {error}"
+    },
+    "check_skill": {
+      "running": "در حال اجرای بررسی {command}...",
+      "complete": "بررسی مهارت کامل شد!",
+      "failed": "بررسی مهارت ناموفق بود (کد خروج {code})"
+    },
+    "ask": {
+      "asking": "در حال پرسش از AI...",
+      "done": "انجام شد.",
+      "failed": "ناموفق بود (کد خروج {code})"
+    },
+    "plan": {
+      "planning": "در حال برنامه‌ریزی...",
+      "complete": "برنامه‌ریزی کامل شد.",
+      "failed": "برنامه‌ریزی ناموفق بود (کد خروج {code})"
+    },
+    "research": {
+      "title": "پژوهش مهندسی AI",
+      "topics_header": "موضوعات جستجو:",
+      "searching": "در حال جستجو و خلاصه‌سازی...",
+      "articles_found": "مقالات یافت‌شده:   {count}",
+      "new_articles": "مقالات جدید:     {count}",
+      "skipped_dedup": "رد شده (تکراری):  {count}",
+      "landing_page": "صفحه اصلی:     {path}",
+      "failed": "ناموفق: {error}",
+      "regenerating": "در حال بازتولید صفحات HTML مقالات و صفحه اصلی...",
+      "generated_pages": "{count} صفحه HTML مقاله تولید شد",
+      "all_have_html": "تمام مقالات از قبل صفحه HTML دارند"
+    },
+    "events": {
+      "title": "جستجوی رویدادهای AI",
+      "searching": "در حال جستجوی رویدادها...",
+      "events_found": "رویدادهای یافت‌شده:     {count}",
+      "new_events": "رویدادهای جدید:       {count}",
+      "skipped_dedup": "رد شده (تکراری):  {count}",
+      "landing_page": "صفحه اصلی:     {path}",
+      "failed": "ناموفق: {error}",
+      "regenerating": "در حال بازتولید صفحات HTML رویدادها و صفحه اصلی...",
+      "generated_pages": "{count} صفحه HTML رویداد تولید شد",
+      "all_have_html": "تمام رویدادها از قبل صفحه HTML دارند"
+    },
+    "delete_skill": {
+      "no_skills": "مهارتی در پروژه مقصد یافت نشد.",
+      "will_delete": "حذف خواهد شد:",
+      "delete_summary": "{name} ({count} نصب ابزار{suffix})",
+      "success": "{name}: {symlinks} سیم‌لینک حذف شد، {dirs} پوشه پاک‌سازی شد",
+      "error": "{name}: {error}"
+    },
+    "delete_docs": {
+      "no_docs": "مستندات AI در پروژه مقصد یافت نشد.",
+      "will_delete": "حذف خواهد شد:",
+      "removed_files": "{count} فایل حذف شد",
+      "cleaned_dirs": "{count} پوشه خالی پاک‌سازی شد",
+      "error": "خطا: {error}"
+    },
+    "init_skill": {
+      "will_create_at": "قالب در مسیر زیر ایجاد می‌شود: {path}",
+      "created": "قالب مهارت در {path} ایجاد شد",
+      "error": "خطا: {error}"
+    },
+    "init_docs": {
+      "will_create_in": "در {path} ایجاد می‌شود:",
+      "agents_md_template": "agents.md (قالب)",
+      "claude_md_symlink": ".claude/claude.md (سیم‌لینک)",
+      "copilot_md_symlink": ".github/copilot-instructions.md (سیم‌لینک)",
+      "created": "قالب مستندات AI ایجاد شد",
+      "error": "خطا: {error}"
+    },
+    "sound": {
+      "title": "اعلان صوتی Claude Code",
+      "status": "وضعیت: {status}",
+      "enabled": "فعال",
+      "disabled": "غیرفعال",
+      "enable_option": "فعال‌سازی اعلان‌های صوتی",
+      "disable_option": "غیرفعال‌سازی اعلان‌های صوتی",
+      "reset_option": "بازنشانی تنظیمات Claude به پیش‌فرض (حذف تمام هوک‌ها)",
+      "exit_option": "خروج",
+      "already_enabled": "از قبل فعال است",
+      "already_disabled": "از قبل غیرفعال است",
+      "sound_enabled_msg": "اعلان‌های صوتی فعال شد (Stop + PermissionRequest).",
+      "sound_disabled_msg": "اعلان‌های صوتی غیرفعال شد.",
+      "reset_confirm": "تمام هوک‌ها از ~/.claude/settings.json حذف خواهد شد. ادامه می‌دهید؟",
+      "reset_done": "تنظیمات Claude بازنشانی شد — تمام هوک‌ها حذف شدند.",
+      "restart_notice": "برای اعمال تغییرات، Claude Code را مجدداً راه‌اندازی کنید."
+    },
+    "config": {
+      "title": "پیکربندی Skillnir",
+      "backend_label": "بک‌اند:  {name}",
+      "model_label": "مدل:    {model}",
+      "prompts_label": "پرامپت:  {version}",
+      "version_label": "نسخه:  {version}",
+      "available_backends": "بک‌اندهای موجود:",
+      "not_installed": "[نصب نشده]",
+      "current_suffix": "(فعلی)",
+      "actions": {
+        "switch_tool": "تغییر ابزار AI",
+        "switch_model": "تغییر مدل",
+        "switch_prompt_version": "تغییر نسخه پرامپت",
+        "show_usage": "نمایش اطلاعات مصرف",
+        "exit": "خروج"
+      },
+      "select_backend": "بک‌اند را انتخاب کنید:",
+      "select_model": "مدل را انتخاب کنید:",
+      "select_prompt_version": "نسخه پرامپت را انتخاب کنید:",
+      "backend_set": "بک‌اند تنظیم شد: {name} (مدل: {model})",
+      "model_set": "مدل تنظیم شد: {model}",
+      "prompt_version_set": "نسخه پرامپت تنظیم شد: {version}",
+      "usage_info": "اطلاعات مصرف {name}:",
+      "no_cli_usage": "{name} اطلاعات مصرف CLI ارائه نمی‌دهد.",
+      "check_usage_at": "مصرف را در {url} بررسی کنید.",
+      "no_usage_available": "اطلاعات مصرفی برای {name} موجود نیست."
+    }
+  }
+}

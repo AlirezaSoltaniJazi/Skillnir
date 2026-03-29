@@ -1,0 +1,748 @@
+{
+  "nav": {
+    "groups": {
+      "skill_management": "КЕРУВАННЯ НАВИЧКАМИ",
+      "ai_context": "КОНТЕКСТ AI",
+      "templates": "ШАБЛОНИ",
+      "ai_assistant": "АСИСТЕНТ AI",
+      "tools_data": "ІНСТРУМЕНТИ ТА ДАНІ"
+    },
+    "items": {
+      "install": "Встановити",
+      "update": "Оновити",
+      "check": "Перевірити",
+      "delete": "Видалити",
+      "generate_skill": "Генерувати навичку",
+      "generate_rule": "Генерувати правило",
+      "generate_docs": "Генерувати документацію",
+      "delete_docs": "Видалити документацію",
+      "init_skill": "Ініціювати навичку",
+      "init_docs": "Ініціювати документацію",
+      "ask_ai": "Запитати AI",
+      "plan": "План",
+      "skills_library": "Бібліотека навичок",
+      "tools_registry": "Реєстр інструментів",
+      "usage": "Використання",
+      "research": "Дослідження",
+      "events": "Події",
+      "settings": "Налаштування"
+    },
+    "sort_modes": {
+      "default": "За замовчуванням",
+      "popularity": "Популярність",
+      "performance": "Продуктивність",
+      "price": "Ціна (найдешевше)",
+      "alpha": "За алфавітом"
+    }
+  },
+
+  "pages": {
+    "home": {
+      "sections": {
+        "skill": {
+          "title": "Навичка",
+          "desc": "Встановлюйте, оновлюйте, перевіряйте, видаляйте або генеруйте навички для своїх проєктів.",
+          "items": {
+            "install": "Встановити",
+            "update": "Оновити",
+            "check": "Перевірити",
+            "delete": "Видалити",
+            "generate_skill": "Генерувати навичку"
+          }
+        },
+        "ai_context": {
+          "title": "Контекст AI",
+          "desc": "Генеруйте правила, документацію AI або видаляйте наявну документацію з проєктів.",
+          "items": {
+            "generate_rule": "Генерувати правило",
+            "generate_docs": "Генерувати документацію AI",
+            "delete_docs": "Видалити документацію"
+          }
+        },
+        "default_template": {
+          "title": "Шаблон за замовчуванням",
+          "desc": "Створіть порожній шаблон навички або документації з коментарями-заповнювачами.",
+          "items": {
+            "init_skill": "Ініціювати навичку",
+            "init_docs": "Ініціювати документацію"
+          }
+        },
+        "claude_tools": {
+          "title": "Інструменти Claude",
+          "desc": "Активуйте або деактивуйте звукові сповіщення Claude Code.",
+          "sound_notifications": "Звукові сповіщення"
+        },
+        "usage": {
+          "title": "Використання",
+          "desc": "Переглядайте статистику токенів та інформацію про використання по кожному бекенду.",
+          "items": {
+            "token_stats": "Статистика токенів"
+          }
+        },
+        "supported_tools": {
+          "title": "Підтримувані інструменти",
+          "desc": "Переглядайте всі підтримувані інструменти AI та їхні моделі.",
+          "items": {
+            "models_tools": "Моделі та інструменти"
+          }
+        },
+        "research": {
+          "title": "Дослідження",
+          "desc": "Шукайте в інтернеті, переглядайте наявні статті або видаляйте дослідницькі дані.",
+          "items": {
+            "research_hub": "Центр досліджень"
+          }
+        },
+        "events": {
+          "title": "Події",
+          "desc": "Знаходьте майбутні конференції, зустрічі та воркшопи з AI по всьому світу.",
+          "items": {
+            "events_hub": "Центр подій"
+          }
+        },
+        "settings": {
+          "title": "Налаштування",
+          "desc": "Світла/темна тема, перемикач сповіщень та параметри додатку.",
+          "items": {
+            "preferences": "Параметри"
+          }
+        },
+        "ai_extra": {
+          "title": "AI Додатково",
+          "desc": "Ставте запитання AI або отримуйте детальні плани реалізації.",
+          "items": {
+            "ask_ai": "Запитати AI",
+            "plan_with_ai": "Планувати з AI"
+          }
+        }
+      },
+      "quick_actions": {
+        "install_skill": "Встановити навичку",
+        "generate_docs": "Генерувати документацію",
+        "generate_skill": "Генерувати навичку",
+        "ask_ai": "Запитати AI"
+      }
+    },
+
+    "install": {
+      "title": "Встановити навички",
+      "subtitle": "Впровадити навички кодування AI у ваш проєкт.",
+      "steps": {
+        "target_source": "Ціль та джерело",
+        "select_skills": "Вибрати навички",
+        "select_tools": "Вибрати інструменти",
+        "confirm_execute": "Підтвердити та виконати",
+        "results": "Результати"
+      },
+      "target_project_help": "Введіть кореневий шлях цільового проєкту.",
+      "source_skills_help": "Шлях до джерела навичок (звідки отримати згенеровані навички).",
+      "select_skills_help": "Оберіть навички для впровадження (виберіть одну або більше).",
+      "select_tools_help": "Оберіть інструменти AI для впровадження символічних посилань.",
+      "sort_by": "Сортувати за:",
+      "project_root": "Кореневий каталог проєкту",
+      "source_skills_path": "Шлях до джерела навичок",
+      "syncing_skill": "Синхронізація навички {index}/{total}: {name}...",
+      "injecting_skill": "Впровадження навички {index}/{total}: {name}...",
+      "starting": "Запуск...",
+      "updating_skills": "Оновлення навичок..."
+    },
+
+    "update": {
+      "title": "Оновити навички",
+      "subtitle": "Синхронізувати всі навички з джерела до цільового проєкту."
+    },
+
+    "skills_library": {
+      "title": "Бібліотека навичок",
+      "subtitle": "{count} доступних навичок",
+      "search_placeholder": "Пошук навичок...",
+      "view_skill_md": "Переглянути SKILL.md",
+      "skill_md_not_found": "SKILL.md не знайдено",
+      "skill_md_dialog_title": "{name} — SKILL.md",
+      "error_reading_skill_md": "Помилка читання SKILL.md: {error}"
+    },
+
+    "generate_docs": {
+      "title": "Генерувати документацію AI",
+      "subtitle": "Сканувати проєкт за допомогою AI та згенерувати agents.md + .claude/claude.md",
+      "target_project_root": "Кореневий каталог цільового проєкту",
+      "prompt_version": "Версія промпту",
+      "result_success_title": "Генерування завершено",
+      "result_fail_title": "Генерування не вдалося"
+    },
+
+    "generate_rule": {
+      "title": "Генерувати правило",
+      "subtitle": "Сканувати проєкт за допомогою AI та згенерувати файли правил Cursor (.mdc)",
+      "target_project_root": "Кореневий каталог цільового проєкту",
+      "rule_topic": "Тема правила",
+      "rule_topic_placeholder": "напр., стандарти обробки помилок, шаблони компонентів React",
+      "prompt_version": "Версія промпту",
+      "enter_rule_topic": "Введіть тему правила.",
+      "result_success_title": "Генерування правила завершено",
+      "result_fail_title": "Генерування правила не вдалося"
+    },
+
+    "delete_docs": {
+      "title": "Видалити документацію AI",
+      "subtitle": "Видалити agents.md та його символічні посилання з цільового проєкту.",
+      "target_project_root": "Кореневий каталог цільового проєкту",
+      "no_docs_found": "Документацію AI не знайдено в цільовому проєкті.",
+      "found_label": "Знайдено:",
+      "symlink": "символічне посилання",
+      "file": "файл",
+      "no_docs_to_delete": "Документацію для видалення не знайдено.",
+      "deletion_complete": "Видалення завершено",
+      "deletion_failed": "Видалення не вдалося",
+      "removed_files": "Видалено {count} файл(ів)",
+      "cleaned_dirs": "Очищено {count} порожній(х) каталог(ів)"
+    },
+
+    "generate_skill": {
+      "title": "Генерувати навичку",
+      "subtitle": "Сканувати проєкт за допомогою AI та згенерувати спеціалізований SKILL.md",
+      "target_project_root": "Кореневий каталог цільового проєкту",
+      "project_name": "Назва проєкту",
+      "skill_scope": "Область навички",
+      "prompt_version": "Версія промпту",
+      "also_add_to_current": "Також додати навичку до поточного проєкту",
+      "skill_name_preview": "Назва навички: {name}",
+      "result_success_title": "Генерування навички завершено",
+      "result_fail_title": "Генерування навички не вдалося",
+      "result_footer": "Виконайте 'skillnir install', щоб впровадити цю навичку в інструменти AI.",
+      "grid_skill_name": "Назва навички",
+      "grid_target_skill_md": "Цільовий SKILL.md",
+      "grid_source_skill_md": "Джерельний SKILL.md",
+      "grid_duration": "Тривалість",
+      "grid_tools_used": "Використані інструменти",
+      "grid_backend": "Бекенд"
+    },
+
+    "delete_skill": {
+      "title": "Видалити навички",
+      "subtitle": "Видалити навичку(и) з цільового проєкту, включаючи символічні посилання з усіх каталогів інструментів.",
+      "target_project_root": "Кореневий каталог цільового проєкту",
+      "no_skills_found": "Навичок не знайдено в цільовому проєкті.",
+      "found_skills": "Знайдено {count} навичку(ок):",
+      "tool_installations": "{count} встановлення інструментів",
+      "also_delete_data": "Також видалити дані навички з .data/skills/",
+      "select_at_least_one": "Оберіть принаймні одну навичку.",
+      "deletion_report": "Звіт видалення",
+      "error_badge": "помилка",
+      "deleted_badge": "видалено",
+      "deleted_summary": "({symlinks} посилань, {dirs} каталогів очищено)"
+    },
+
+    "init_skill": {
+      "title": "Ініціювати навичку",
+      "subtitle": "Створити каркас навички за замовчуванням з файлами-заповнювачами з коментарями.",
+      "target_project_root": "Кореневий каталог цільового проєкту",
+      "skill_name_label": "Назва навички (малі літери, лише дефіси)",
+      "will_create": "Буде створено:",
+      "scaffold_created": "Каркас навички створено в {path}",
+      "error_prefix": "Помилка: {error}"
+    },
+
+    "init_docs": {
+      "title": "Ініціювати документацію AI",
+      "subtitle": "Створити шаблон agents.md за замовчуванням з коментованими розділами та символічними посиланнями для інструментів AI.",
+      "target_project_root": "Кореневий каталог цільового проєкту",
+      "will_create": "Буде створено:",
+      "docs_created": "Шаблон документації AI створено!",
+      "error_prefix": "Помилка: {error}"
+    },
+
+    "ask": {
+      "title": "Запитати AI",
+      "subtitle": "Поставте запитання про проєкт. AI відповідає без внесення змін.",
+      "target_project_root": "Кореневий каталог цільового проєкту",
+      "your_question": "Ваше запитання",
+      "question_placeholder": "напр., Як працює модуль автентифікації?",
+      "enter_question": "Введіть запитання.",
+      "result_success_title": "Відповідь готова",
+      "result_fail_title": "Запит не вдався"
+    },
+
+    "plan": {
+      "title": "План",
+      "subtitle": "Отримайте детальний план реалізації від AI для завдання або функції.",
+      "target_project_root": "Кореневий каталог цільового проєкту",
+      "task_input_label": "Для чого вам потрібен план?",
+      "task_placeholder": "напр., Додати автентифікацію користувачів з токенами JWT",
+      "describe_task": "Опишіть завдання.",
+      "result_success_title": "План готовий",
+      "result_fail_title": "Планування не вдалося"
+    },
+
+    "check_skill": {
+      "title": "Перевірити навичку",
+      "subtitle": "Виконати /skills через бекенд AI на цільовому проєкті.",
+      "target_project_root": "Кореневий каталог цільового проєкту",
+      "result_success_title": "Перевірка навички завершена",
+      "result_fail_title": "Перевірка навички не вдалася"
+    },
+
+    "tools_registry": {
+      "title": "Реєстр інструментів",
+      "subtitle": "{count} підтримуваних інструментів AI (+ автоматичне впровадження .agents/)",
+      "search_placeholder": "Пошук інструментів...",
+      "columns": {
+        "name": "Назва",
+        "company": "Компанія",
+        "dotdir": "Dotdir",
+        "popularity": "Популярність",
+        "performance": "Продуктивність",
+        "price": "Ціна"
+      }
+    },
+
+    "usage": {
+      "title": "Використання токенів",
+      "subtitle": "Використання токенів на рівні сесії по всіх бекендах AI.",
+      "no_requests_title": "Запитів AI ще немає",
+      "no_requests_subtitle": "Використання токенів з'явиться тут після генерування документації, навичок або запитань до AI.",
+      "session_summary": "Підсумок сесії",
+      "total_tokens": "Загальна кількість токенів",
+      "input_tokens": "Вхідні токени",
+      "output_tokens": "Вихідні токени",
+      "total_cost": "Загальна вартість",
+      "requests": "Запити",
+      "cache_tokens": "Токени кешу",
+      "cost": "Вартість"
+    },
+
+    "research": {
+      "title": "Дослідження інженерії AI",
+      "subtitle": "Шукайте найновіші новини з інженерії AI, читайте статті та генеруйте підсумки",
+      "topics_to_search": "Теми для пошуку:",
+      "filter_by_source": "Фільтрувати за джерелом (необов'язково):",
+      "articles_in_kb": "Статті в базі знань",
+      "result_success_title": "Дослідження завершено",
+      "result_fail_title": "Дослідження не вдалося",
+      "grid_articles_found": "Знайдені статті",
+      "grid_new_articles": "Нові статті",
+      "grid_skipped_dedup": "Пропущені (дедуплікація)",
+      "grid_duration": "Тривалість",
+      "select_at_least_one_topic": "Оберіть принаймні одну тему",
+      "generated_html_pages": "Згенеровано {count} HTML-сторінку(ок) статей",
+      "all_articles_have_html": "Усі статті вже мають HTML-сторінки"
+    },
+
+    "events": {
+      "title": "Події та конференції AI",
+      "subtitle": "Знаходьте майбутні конференції, зустрічі та воркшопи з AI по всьому світу",
+      "countries_to_search": "Країни для пошуку:",
+      "events_in_kb": "Події в базі знань",
+      "result_success_title": "Пошук подій завершено",
+      "result_fail_title": "Пошук подій не вдався",
+      "grid_events_found": "Знайдені події",
+      "grid_new_events": "Нові події",
+      "grid_skipped_dedup": "Пропущені (дедуплікація)",
+      "grid_duration": "Тривалість",
+      "select_at_least_one_country": "Оберіть принаймні одну країну",
+      "generated_html_pages": "Згенеровано {count} HTML-сторінку(ок) подій",
+      "all_events_have_html": "Усі події вже мають HTML-сторінки"
+    },
+
+    "settings": {
+      "title": "Налаштування",
+      "subtitle": "Налаштуйте параметри додатку.",
+      "dark_mode": {
+        "title": "Темна тема",
+        "description": "Перемикання між темною та світлою темою інтерфейсу.",
+        "enabled": "Темну тему увімкнено",
+        "disabled": "Світлу тему увімкнено"
+      },
+      "sound_notifications": {
+        "title": "Сповіщення про процеси",
+        "description": "Відтворювати звук після завершення генерування AI.",
+        "enabled": "Звукові сповіщення увімкнено",
+        "disabled": "Звукові сповіщення вимкнено"
+      },
+      "ai_tool": {
+        "title": "Інструмент AI",
+        "description": "Наразі використовується: {name}"
+      },
+      "model": {
+        "title": "Модель",
+        "description": "Наразі використовується: {model}"
+      },
+      "prompt_version": {
+        "title": "Версія промпту",
+        "description": "Наразі використовується: {version}"
+      }
+    }
+  },
+
+  "buttons": {
+    "next": "Далі",
+    "back": "Назад",
+    "home": "Головна",
+    "execute": "Виконати",
+    "search": "Шукати",
+    "cancel": "Скасувати",
+    "close": "Закрити",
+    "select": "Вибрати",
+    "switch": "Перемкнути",
+    "scan": "Сканувати",
+    "reset": "Скинути",
+    "refresh": "Оновити",
+    "try_again": "Спробувати знову",
+    "start_over": "Почати спочатку",
+    "search_again": "Шукати знову",
+    "select_all": "Вибрати все",
+    "deselect_all": "Зняти вибір",
+    "auto_detect": "Автовиявлення",
+    "next_select_tools": "Далі — Вибрати інструменти",
+    "next_confirm": "Далі — Підтвердити",
+    "delete_selected": "Видалити вибрані",
+    "delete_docs": "Видалити документацію",
+    "create_scaffold": "Створити каркас",
+    "create_docs_template": "Створити шаблон документації",
+    "create_plan": "Створити план",
+    "run_check": "Запустити перевірку",
+    "generate_ai_docs": "Генерувати документацію AI",
+    "generate_rule": "Генерувати правило",
+    "generate_skill": "Генерувати навичку",
+    "update_all_skills": "Оновити всі навички",
+    "search_latest_news": "Шукати останні новини",
+    "search_events": "Шукати події",
+    "view_landing_page": "Переглянути головну сторінку",
+    "generate_html_files": "Генерувати HTML-файли",
+    "open_landing_page": "Відкрити головну сторінку",
+    "view_skill_md": "Переглянути SKILL.md",
+    "switch_tool": "Перемкнути інструмент",
+    "switch_model": "Перемкнути модель",
+    "prompts": "Промпти",
+    "usage": "Використання",
+    "install_skill": "Встановити навичку",
+    "ask": "Запитати",
+    "hide_log": "Сховати журнал",
+    "show_log": "Показати журнал",
+    "got_it": "Зрозуміло"
+  },
+
+  "messages": {
+    "using_backend": "Використовується: {name} ({model})",
+    "directory_not_found": "Каталог не знайдено: {path}",
+    "source_directory_not_found": "Каталог джерела не знайдено: {path}",
+    "no_skills_found_in_source": "Навичок у джерелі не знайдено.",
+    "no_skills_found_in_target": "Навичок у цільовому проєкті не знайдено.",
+    "no_docs_found_in_target": "Документацію AI у цільовому проєкті не знайдено.",
+    "no_tools_detected": "Каталоги інструментів у цільовому проєкті не знайдено.",
+    "select_at_least_one_skill": "Оберіть принаймні одну навичку.",
+    "select_at_least_one_tool": "Оберіть принаймні один інструмент.",
+    "no_usage_info": "Інформація про використання недоступна.",
+    "found_tools": "Знайдено {count} інструментів у {name}/",
+    "selected_count": "{count} вибрано",
+    "skill_copied": "'{name}' v{version} — скопійовано",
+    "skill_updated": "'{name}' — оновлено",
+    "claude_sound_enabled": "Звукові сповіщення Claude увімкнено",
+    "claude_sound_disabled": "Звукові сповіщення Claude вимкнено",
+    "exit_code": "Код виходу: {code}",
+    "agents_md_exists": "agents.md вже існує за шляхом {path}",
+    "enter_rule_topic": "Введіть тему правила.",
+    "enter_question": "Введіть запитання.",
+    "describe_task": "Опишіть завдання.",
+    "no_skills_selected": "Навичок не вибрано. Переривання.",
+    "no_tools_selected": "Інструментів не вибрано. Переривання.",
+    "no_question_provided": "Запитання не надано. Переривання.",
+    "no_task_provided": "Завдання не надано. Переривання.",
+    "aborted": "Перервано.",
+    "done": "Готово.",
+    "timed_out": "{name} перевищив час очікування після 10 хвилин.",
+    "cli_not_found": "CLI {command} не знайдено в PATH.",
+    "no_backends_available": "Бекенди недоступні. Встановіть claude, gemini або copilot CLI."
+  },
+
+  "components": {
+    "hero": {
+      "title": "Skillnir",
+      "tagline": "Впроваджуйте навички кодування AI у каталог будь-якого інструменту.",
+      "skills_badge": "{count} навичок",
+      "tools_badge": "{count} інструментів AI",
+      "dotdirs_badge": "{count} каталогів"
+    },
+    "welcome_dialog": {
+      "title": "Ласкаво просимо до Skillnir",
+      "description": "Skillnir керує інструментами кодування AI через їхні CLI. Щоб почати, встановіть CLI принаймні для одного бекенду нижче та увійдіть у свій обліковий запис.",
+      "dont_show_again": "Більше не показувати",
+      "cli_guide_title": "Посібник з встановлення CLI",
+      "cli_guide_description": "Встановіть та увійдіть у CLI кожного бекенду AI, який ви хочете використовувати зі Skillnir.",
+      "install_label": "Встановити",
+      "login_label": "Увійти",
+      "verify_label": "Перевірити",
+      "or_label": "або",
+      "backends": {
+        "claude_code": {
+          "name": "Claude Code",
+          "notes": "Потрібен Node.js 18+. Також можна встановити через Homebrew."
+        },
+        "cursor_agent": {
+          "name": "Cursor Agent",
+          "notes": "Потрібен Node.js 18+. Також можна використовувати через IDE Cursor."
+        },
+        "gemini_cli": {
+          "name": "Gemini CLI",
+          "notes": "Потрібен Node.js 18+ та обліковий запис Google AI."
+        },
+        "github_copilot": {
+          "name": "GitHub Copilot",
+          "notes": "Потрібен обліковий запис GitHub з доступом до Copilot."
+        }
+      }
+    },
+    "backend_picker": {
+      "switch_ai_tool_title": "Перемкнути інструмент AI",
+      "switch_model_title": "Перемкнути модель",
+      "switch_prompt_version_title": "Перемкнути версію промпту",
+      "ai_tool_label": "Інструмент AI: {name}",
+      "active_badge": "активний",
+      "current_badge": "поточний",
+      "default_badge": "за замовчуванням"
+    },
+    "backend_chip": {
+      "model_label": "Модель: {model}"
+    },
+    "stat_card": {
+      "created": "Створено",
+      "skipped": "Пропущено",
+      "errors": "Помилки",
+      "copied": "Скопійовано",
+      "updated": "Оновлено"
+    },
+    "progress_panel": {
+      "initializing": "Ініціалізація...",
+      "preparing": "Підготовка...",
+      "elapsed": "минуло",
+      "tools_used": "Використані інструменти",
+      "lines_output": "Рядки виводу",
+      "live_output": "Вивід у реальному часі",
+      "log_output": "Журнал"
+    },
+    "empty_state": {
+      "no_ai_requests": "Запитів AI ще немає",
+      "no_ai_requests_subtitle": "Використання токенів з'явиться тут після генерування документації, навичок або запитань до AI."
+    }
+  },
+
+  "layout": {
+    "injection_summary": "Підсумок впровадження",
+    "target": "Ціль:",
+    "skills": "Навички:",
+    "tools": "Інструменти:",
+    "tools_selected_auto": "{count} вибрано + .agents/ (авто)",
+    "symlinks_to_create": "Символічні посилання для створення:",
+    "injection_report": "Звіт впровадження",
+    "sync_report": "Звіт синхронізації",
+    "no_skills_in_source": "Навичок у джерелі не знайдено.",
+    "created_label": "Створено:",
+    "already_existed_label": "Вже існували:",
+    "errors_label": "Помилки:",
+    "installed_badge": "Встановлено",
+    "score_labels": {
+      "pop": "поп",
+      "perf": "прод",
+      "price": "ціна"
+    },
+    "tooltips": {
+      "cli_setup_guide": "Посібник налаштування CLI",
+      "toggle_dark_light": "Перемкнути темну/світлу тему",
+      "toggle_sound": "Перемкнути звук сповіщень"
+    }
+  },
+
+  "cli": {
+    "description": "Впроваджуйте навички кодування AI у каталог будь-якого інструменту.",
+    "command_help": "install (за замовчуванням): синхронізувати навички + впровадити в інструменти. update: лише синхронізувати навички. delete-skill: видалити навичку(и) з проєкту. delete-docs: видалити документацію AI з проєкту. init-skill: створити каркас навички за замовчуванням. init-docs: створити шаблон документації AI за замовчуванням. ui: запустити вебінтерфейс. generate-docs: згенерувати agents.md за допомогою AI. generate-skill: згенерувати SKILL.md за допомогою AI. generate-rule: згенерувати правило Cursor (.mdc) за допомогою AI. check-skill: виконати /skills через бекенд AI. ask: запитати AI. plan: отримати план реалізації. research: шукати останні новини з інженерії AI та генерувати підсумки. events: шукати майбутні події та конференції AI по всьому світу. config: керувати бекендом/моделлю. sound: керувати звуковими сповіщеннями Claude Code.",
+    "prompts": {
+      "target_project_root": "Кореневий каталог цільового проєкту:",
+      "source_skills_path": "Шлях до джерела навичок:",
+      "select_skills": "Оберіть навички для впровадження (пробіл=перемкнути, enter=підтвердити):",
+      "how_sort_tools": "Як відсортувати інструменти?",
+      "select_tools": "Оберіть інструменти AI для впровадження (пробіл=перемкнути, enter=підтвердити):",
+      "proceed_injection": "Продовжити впровадження?",
+      "proceed_docs_generation": "Продовжити генерування документації AI?",
+      "proceed_skill_generation": "Продовжити генерування навички?",
+      "proceed_rule_generation": "Продовжити генерування правила?",
+      "project_name": "Назва проєкту:",
+      "select_skill_scope": "Оберіть область навички:",
+      "also_add_to_current": "Також додати згенеровану навичку до поточного проєкту?",
+      "rule_topic": "Тема правила (напр., 'стандарти обробки помилок', 'шаблони React'):",
+      "enter_rule_topic": "Введіть тему правила",
+      "your_question": "Ваше запитання:",
+      "what_plan_for": "Для чого вам потрібен план?",
+      "run_skill_check": "Запустити перевірку навички?",
+      "select_skills_to_delete": "Оберіть навички для видалення:",
+      "also_delete_data": "Також видалити дані навички з .data/skills/?",
+      "proceed_deletion": "Продовжити видалення?",
+      "skill_name": "Назва навички (малі літери, лише дефіси):",
+      "create_skill_scaffold": "Створити каркас навички?",
+      "create_docs_template": "Створити шаблон документації AI?",
+      "filter_by_source": "Фільтрувати за джерелом (залиште порожнім для всіх):",
+      "search_latest_articles": "Шукати останні статті?",
+      "select_countries": "Оберіть країни для пошуку (залиште порожнім для всіх):",
+      "search_upcoming_events": "Шукати майбутні події?",
+      "open_landing_page": "Відкрити головну сторінку у браузері?",
+      "what_to_do": "Що б ви хотіли зробити?"
+    },
+    "sort_modes": {
+      "default": "За замовчуванням (рекомендовано)",
+      "popularity": "Сортувати за популярністю",
+      "performance": "Сортувати за продуктивністю",
+      "price": "Сортувати за ціною (спочатку найдешевші)",
+      "alpha": "Сортувати за алфавітом"
+    },
+    "install": {
+      "found_skill": "Знайдено 1 навичку: {name} (v{version})",
+      "no_skills_in_source": "Навичок у джерелі не знайдено. Нічого впроваджувати.",
+      "target_label": "Ціль: {path}",
+      "skills_label": "Навички: {names}",
+      "tools_label": "Інструменти:  {count} вибрано + .agents/ (авто)",
+      "done": "Готово. {created} нових, {skipped} пропущених, {errors} помилок."
+    },
+    "sync_report": {
+      "title": "Звіт синхронізації навичок",
+      "copied": "скопійовано",
+      "updated": "оновлено",
+      "skipped": "пропущено (та сама версія)",
+      "summary": "{copied} скопійовано, {updated} оновлено, {skipped} пропущено."
+    },
+    "injection_report": {
+      "title": "Звіт впровадження: {name}",
+      "created": "Створено ({count}):",
+      "already_existed": "Вже існували ({count}):",
+      "errors": "Помилки ({count}):"
+    },
+    "generate_docs": {
+      "generating": "Генерування документації AI...",
+      "complete": "Генерування завершено!",
+      "failed": "Генерування не вдалося: {error}",
+      "will_generate": "Це просканує проєкт за допомогою AI та згенерує:",
+      "agents_md": "agents.md (кореневий каталог проєкту)",
+      "claude_md": ".claude/claude.md (символічне посилання)"
+    },
+    "generate_skill": {
+      "generating": "Генерування навички {name}...",
+      "complete": "Генерування навички завершено!",
+      "failed": "Генерування навички не вдалося: {error}",
+      "run_install": "Виконайте 'skillnir install', щоб впровадити цю навичку в інструменти AI."
+    },
+    "generate_rule": {
+      "generating": "Генерування правила Cursor...",
+      "complete": "Генерування правила завершено!",
+      "failed": "Генерування правила не вдалося: {error}"
+    },
+    "check_skill": {
+      "running": "Виконання перевірки {command}...",
+      "complete": "Перевірка навички завершена!",
+      "failed": "Перевірка навички не вдалася (код виходу {code})"
+    },
+    "ask": {
+      "asking": "Запитуємо AI...",
+      "done": "Готово.",
+      "failed": "Не вдалося (код виходу {code})"
+    },
+    "plan": {
+      "planning": "Планування...",
+      "complete": "План готовий.",
+      "failed": "Планування не вдалося (код виходу {code})"
+    },
+    "research": {
+      "title": "Дослідження інженерії AI",
+      "topics_header": "Теми для пошуку:",
+      "searching": "Пошук та підсумовування...",
+      "articles_found": "Знайдені статті:      {count}",
+      "new_articles": "Нові статті:          {count}",
+      "skipped_dedup": "Пропущені (деdup):    {count}",
+      "landing_page": "Головна сторінка:     {path}",
+      "failed": "Не вдалося: {error}",
+      "regenerating": "Повторне генерування HTML-сторінок статей та головної сторінки...",
+      "generated_pages": "Згенеровано {count} HTML-сторінку(ок) статей",
+      "all_have_html": "Усі статті вже мають HTML-сторінки"
+    },
+    "events": {
+      "title": "Пошук подій AI",
+      "searching": "Пошук подій...",
+      "events_found": "Знайдені події:       {count}",
+      "new_events": "Нові події:           {count}",
+      "skipped_dedup": "Пропущені (деdup):    {count}",
+      "landing_page": "Головна сторінка:     {path}",
+      "failed": "Не вдалося: {error}",
+      "regenerating": "Повторне генерування HTML-сторінок подій та головної сторінки...",
+      "generated_pages": "Згенеровано {count} HTML-сторінку(ок) подій",
+      "all_have_html": "Усі події вже мають HTML-сторінки"
+    },
+    "delete_skill": {
+      "no_skills": "Навичок у цільовому проєкті не знайдено.",
+      "will_delete": "Буде видалено:",
+      "delete_summary": "{name} ({count} встановлень інструментів{suffix})",
+      "success": "{name}: видалено {symlinks} посилань, {dirs} каталогів очищено",
+      "error": "{name}: {error}"
+    },
+    "delete_docs": {
+      "no_docs": "Документацію AI у цільовому проєкті не знайдено.",
+      "will_delete": "Буде видалено:",
+      "removed_files": "Видалено {count} файлів",
+      "cleaned_dirs": "Очищено {count} порожніх каталогів",
+      "error": "Помилка: {error}"
+    },
+    "init_skill": {
+      "will_create_at": "Каркас буде створено за шляхом: {path}",
+      "created": "Каркас навички створено за шляхом {path}",
+      "error": "Помилка: {error}"
+    },
+    "init_docs": {
+      "will_create_in": "Буде створено в {path}:",
+      "agents_md_template": "agents.md (шаблон)",
+      "claude_md_symlink": ".claude/claude.md (символічне посилання)",
+      "copilot_md_symlink": ".github/copilot-instructions.md (символічне посилання)",
+      "created": "Шаблон документації AI створено",
+      "error": "Помилка: {error}"
+    },
+    "sound": {
+      "title": "Звукові сповіщення Claude Code",
+      "status": "Статус: {status}",
+      "enabled": "увімкнено",
+      "disabled": "вимкнено",
+      "enable_option": "Увімкнути звукові сповіщення",
+      "disable_option": "Вимкнути звукові сповіщення",
+      "reset_option": "Скинути конфігурацію Claude до стандартної (видалити всі хуки)",
+      "exit_option": "Вихід",
+      "already_enabled": "вже увімкнено",
+      "already_disabled": "вже вимкнено",
+      "sound_enabled_msg": "Звукові сповіщення увімкнено (Stop + PermissionRequest).",
+      "sound_disabled_msg": "Звукові сповіщення вимкнено.",
+      "reset_confirm": "Це видалить УСІ хуки з ~/.claude/settings.json. Продовжити?",
+      "reset_done": "Конфігурацію Claude скинуто — всі хуки видалено.",
+      "restart_notice": "Перезапустіть Claude Code, щоб зміни набули чинності."
+    },
+    "config": {
+      "title": "Конфігурація Skillnir",
+      "backend_label": "Бекенд:   {name}",
+      "model_label": "Модель:    {model}",
+      "prompts_label": "Промпти:   {version}",
+      "version_label": "Версія:    {version}",
+      "available_backends": "Доступні бекенди:",
+      "not_installed": "[не встановлено]",
+      "current_suffix": "(поточний)",
+      "actions": {
+        "switch_tool": "Перемкнути інструмент AI",
+        "switch_model": "Перемкнути модель",
+        "switch_prompt_version": "Перемкнути версію промпту",
+        "show_usage": "Показати інформацію про використання",
+        "exit": "Вихід"
+      },
+      "select_backend": "Оберіть бекенд:",
+      "select_model": "Оберіть модель:",
+      "select_prompt_version": "Оберіть версію промпту:",
+      "backend_set": "Бекенд встановлено: {name} (модель: {model})",
+      "model_set": "Модель встановлено: {model}",
+      "prompt_version_set": "Версію промпту встановлено: {version}",
+      "usage_info": "Інформація про використання {name}:",
+      "no_cli_usage": "{name} не надає інформації про використання CLI.",
+      "check_usage_at": "Перевірте використання за адресою: {url}",
+      "no_usage_available": "Інформація про використання для {name} недоступна."
+    }
+  }
+}

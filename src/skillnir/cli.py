@@ -1001,6 +1001,77 @@ def _research_cmd() -> None:
     print(f"{'─' * 50}\n")
 
 
+def _events_cmd() -> None:
+    """Search for upcoming AI events, conferences, and meetups worldwide."""
+    import asyncio
+    import webbrowser
+
+    from skillnir.backends import BACKENDS, load_config
+    from skillnir.events import EVENT_COUNTRIES, search_events
+
+    # Handle --regenerate flag
+    if "--regenerate" in sys.argv:
+        from skillnir.events import regenerate_landing
+
+        print("\n  Regenerating HTML event pages and landing page...")
+        count, index_path = regenerate_landing()
+        if count:
+            print(f"  Generated {count} HTML event page(s)")
+        else:
+            print("  All events already have HTML pages")
+        if index_path:
+            print(f"  Landing page: {index_path}")
+            if questionary.confirm("Open landing page in browser?").ask():
+                webbrowser.open(str(index_path))
+        return
+
+    config = load_config()
+    backend_info = BACKENDS[config.backend]
+
+    print("\n  AI Events Search")
+    print(f"  Backend: {backend_info.name} ({config.model})")
+
+    country_choices = questionary.checkbox(
+        "\n  Select countries to search (leave blank for all):",
+        choices=[
+            questionary.Choice(name, value=code)
+            for code, name in EVENT_COUNTRIES.items()
+        ],
+    ).ask()
+
+    if not questionary.confirm("\n  Search for upcoming events?", default=True).ask():
+        sys.exit(0)
+
+    def on_progress(p) -> None:
+        if p.kind == "phase":
+            print(f"\n  >>> {p.content}")
+        elif p.kind == "status":
+            print(f"      {p.content}")
+        elif p.kind == "error":
+            print(f"  [ERROR] {p.content}")
+
+    print(f"\n{'─' * 50}\nSearching for events...\n")
+
+    result = asyncio.run(
+        search_events(on_progress=on_progress, countries=country_choices or None)
+    )
+
+    print(f"\n{'─' * 50}")
+    if result.success:
+        print(f"  Events found:     {result.events_found}")
+        print(f"  New events:       {result.events_new}")
+        print(f"  Skipped (dedup):  {result.events_skipped}")
+        if result.index_path:
+            print(f"  Landing page:     {result.index_path}")
+            if questionary.confirm(
+                "\n  Open landing page in browser?", default=True
+            ).ask():
+                webbrowser.open(result.index_path.as_uri())
+    else:
+        print(f"  Failed: {result.error}")
+    print(f"{'─' * 50}\n")
+
+
 def _update() -> None:
     """Update flow: sync skills only (no tool selection or symlinks)."""
     # Step 0: Target project
@@ -1170,10 +1241,11 @@ def main() -> None:
             "ask",
             "plan",
             "research",
+            "events",
             "config",
             "sound",
         ],
-        help="install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. config: manage backend/model. sound: manage Claude Code sound notifications.",
+        help="install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. events: search upcoming AI events and conferences worldwide. config: manage backend/model. sound: manage Claude Code sound notifications.",
     )
     args = parser.parse_args()
 
@@ -1195,6 +1267,8 @@ def main() -> None:
         _plan_cmd()
     elif args.command == "research":
         _research_cmd()
+    elif args.command == "events":
+        _events_cmd()
     elif args.command == "delete-skill":
         _delete_skill_cmd()
     elif args.command == "delete-docs":

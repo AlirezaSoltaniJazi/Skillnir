@@ -22,9 +22,11 @@ CLI + Web UI tool that generates, manages, and injects domain-specific AI skills
 
 ```
 src/skillnir/              # Core package (all modules)
-├── cli.py                 # CLI entry point — 15 commands, argparse + questionary
+├── cli.py                 # CLI entry point — 16 commands, argparse + questionary
 ├── skill_generator.py     # Multi-backend skill generation (async SDK + subprocess)
 ├── researcher.py          # AI news research and summarization
+├── events.py              # AI events search pipeline (per-country)
+├── i18n.py                # Internationalization (9 languages, t() function)
 ├── backends.py            # Backend registry (Claude, Cursor, Gemini, Copilot)
 ├── generator.py           # AI docs (agents.md) generation
 ├── rule_generator.py      # Cursor rule (.mdc) generation
@@ -36,11 +38,12 @@ src/skillnir/              # Core package (all modules)
 ├── hooks.py               # Claude Code sound notification hooks
 ├── skills.py              # Skill discovery and YAML frontmatter parsing
 ├── usage.py               # Usage statistics tracking
+├── locales/               # Translation files (en, de, nl, pl, fa, uk, sq, fr, ar)
 ├── ui/                    # NiceGUI web interface
-│   ├── layout.py          # Navigation structure (NAV_GROUPS)
-│   ├── pages/             # 13+ page modules (one per feature)
+│   ├── layout.py          # Navigation structure (get_nav_groups + i18n)
+│   ├── pages/             # 14+ page modules (one per feature)
 │   └── components/        # 12 reusable UI components
-└── resources/             # Static assets
+└── resources/             # HTML templates and static assets
 .data/                     # Central skill storage (SOURCE OF TRUTH)
 ├── skills/                # Installed skills (symlinked into tool dotdirs)
 │   └── <skillName>/       # camelCase directories
@@ -51,7 +54,8 @@ src/skillnir/              # Core package (all modules)
 │       ├── scripts/       # Validation scripts
 │       └── agents/        # Sub-agent definitions
 ├── promptsv1/             # 26+ skill generation prompt templates
-└── research/articles/     # 100+ research articles on AI
+├── research/articles/     # 500+ research articles (organized by topic)
+└── events/                # AI events data (organized by topic)
 tests/                     # 14 test files (pytest, class-based)
 ```
 
@@ -134,13 +138,15 @@ OS/file errors caught with specific exceptions (`OSError`, `FileNotFoundError`, 
 
 | File                        | Purpose                                                                         |
 | --------------------------- | ------------------------------------------------------------------------------- |
-| `src/skillnir/cli.py`       | CLI entry point — `main()` at bottom, 15 commands                               |
+| `src/skillnir/cli.py`       | CLI entry point — `main()` at bottom, 16 commands                               |
 | `src/skillnir/tools.py`     | AI tool registry — `TOOLS` tuple, `AITool` dataclass, `SOURCE_DOTDIR` constant  |
 | `src/skillnir/backends.py`  | Backend configs — `BACKENDS` dict, `BackendInfo`, model lists                   |
 | `src/skillnir/skills.py`    | Skill discovery — `Skill` dataclass, `parse_frontmatter()`, `discover_skills()` |
 | `src/skillnir/injector.py`  | Symlink creation — `inject_skill()`                                             |
 | `src/skillnir/scaffold.py`  | Skill template scaffolding                                                      |
-| `src/skillnir/ui/layout.py` | Web UI navigation structure                                                     |
+| `src/skillnir/events.py`    | Events pipeline — `Event`, `search_events()`, 12 countries                      |
+| `src/skillnir/i18n.py`      | Internationalization — `t()`, `load_locale()`, 9 languages                      |
+| `src/skillnir/ui/layout.py` | Web UI navigation structure + language picker                                   |
 | `pyproject.toml`            | Build config, deps, entry point                                                 |
 | `.pylintrc`                 | Linting rules (100 char, snake_case)                                            |
 | `.pre-commit-config.yaml`   | 7 pre-commit hooks                                                              |

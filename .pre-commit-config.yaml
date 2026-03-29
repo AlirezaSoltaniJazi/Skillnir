@@ -10,6 +10,7 @@ repos:
         args: [ --allow-multiple-documents ]
       - id: check-added-large-files
       - id: check-ast # check .py files are valid python files
+        exclude: ^(\.data/|\..*skills/)
       - id: check-merge-conflict
   # A pre-commit hook to check your Python dependencies against safety-db.
   - repo: https://github.com/Lucas-C/pre-commit-hooks-safety

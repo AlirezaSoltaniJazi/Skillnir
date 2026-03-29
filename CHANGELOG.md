@@ -5,6 +5,39 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-03-29
+
+### Added
+
+- **Events feature** -- search for upcoming AI conferences, meetups, workshops, and hackathons across 12 countries (UK, US, Germany, Netherlands, Poland, Iran, Ukraine, Albania, Canada, Australia, Austria, UAE)
+  - New `events` CLI command with `--regenerate` flag and interactive country selection
+  - Web UI page at `/events` with country chips, progress panel, and landing page viewer
+  - Events landing page with three-filter system: topic, country, and free/paid
+  - Individual event detail pages with registration links
+  - Per-country AI search pipeline mirroring the research architecture
+- **Country flags** -- 12 country flag icons (PNG) displayed in event chips, landing page badges, and filter chips
+  - Iran uses the historical Lion and Sun (Shir-o-Khorshid) flag
+- **Internationalization (i18n)** -- multi-language support for the web UI and CLI
+  - 9 languages: English, German (Deutsch), Dutch (Nederlands), Polish (Polski), Persian (فارسی), Ukrainian (Українська), Albanian (Shqip), French (Français), Arabic (العربية)
+  - ~540 translation keys covering all UI pages, navigation, buttons, and messages
+  - `t()` translation function with dot-notation keys and English fallback
+  - Language picker in header bar and settings page
+  - RTL language support flagged for Arabic and Persian
+  - Language preference persisted in user config
+- **Research article categorization** -- articles organized into topic subdirectories (`articles/{topic}/`) instead of a flat directory, with automatic migration of existing data
+
+### Changed
+
+- Research landing page article links updated to `articles/{topic}/{id}.html` path structure
+- Article HTML template back-link updated for new directory depth (`../../index.html`)
+- Navigation updated with Events entry in "Tools & Data" group
+- Home page updated with Events section card
+
+### Fixed
+
+- Welcome dialog `TimeoutError` when browser connection is slow (increased timeout to 3s with graceful fallback)
+- `check-ast` pre-commit hook now excludes `.data/` and skills directories containing template files with non-Python syntax
+
 ## [1.0.0] - 2026-03-29
 
 First stable release of Skillnir -- a system for generating, managing, and injecting domain-specific AI skills into the configuration directories of 35+ AI coding tools.
@@ -115,6 +148,7 @@ skill-name/
 | `ask`            | Ask AI a read-only question about a project                     |
 | `plan`           | Get an AI-generated implementation plan                         |
 | `research`       | Search and summarize AI engineering news                        |
+| `events`         | Search upcoming AI events and conferences worldwide             |
 | `delete-skill`   | Remove skill(s) from a project                                  |
 | `delete-docs`    | Remove AI documentation from a project                          |
 | `init-skill`     | Create a blank skill scaffold                                   |
@@ -155,4 +189,5 @@ NiceGUI-based dashboard with pages for skill generation, installation, deletion,
 - Rollback strategy and cloud cost awareness in backend generator
 - Severity classification in security sections across backend, frontend, and infra generators
 
+[1.0.1]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.0.1
 [1.0.0]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.0.0

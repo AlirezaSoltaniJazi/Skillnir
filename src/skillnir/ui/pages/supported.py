@@ -2,6 +2,7 @@
 
 from nicegui import ui
 
+from skillnir.i18n import get_current_language, t
 from skillnir.tools import TOOLS
 from skillnir.ui.components.page_header import page_header
 from skillnir.ui.layout import header
@@ -9,19 +10,20 @@ from skillnir.ui.layout import header
 
 @ui.page('/tools')
 def page_tools():
+    lang = get_current_language()
     _audio, _snd = header()
 
     with ui.column().classes('w-full max-w-6xl mx-auto px-8 py-8 gap-6'):
         page_header(
-            'Tools Registry',
-            f'{len(TOOLS)} AI tools supported (+ .agents/ auto-inject)',
+            t('pages.tools_registry.title', lang),
+            t('pages.tools_registry.subtitle', lang, count=str(len(TOOLS))),
             icon='devices',
         )
 
         # ── Search filter ──
         search_input = (
             ui.input(
-                placeholder='Search tools...',
+                placeholder=t('pages.tools_registry.search_placeholder', lang),
                 on_change=lambda e: _filter_table(e.value),
             )
             .classes('w-64')
@@ -31,51 +33,56 @@ def page_tools():
         columns = [
             {
                 'name': 'name',
-                'label': 'Name',
+                'label': t('pages.tools_registry.columns.name', lang),
                 'field': 'name',
                 'sortable': True,
                 'align': 'left',
             },
             {
                 'name': 'company',
-                'label': 'Company',
+                'label': t('pages.tools_registry.columns.company', lang),
                 'field': 'company',
                 'sortable': True,
                 'align': 'left',
             },
             {
                 'name': 'dotdir',
-                'label': 'Dotdir',
+                'label': t('pages.tools_registry.columns.dotdir', lang),
                 'field': 'dotdir',
                 'sortable': True,
                 'align': 'left',
             },
             {
                 'name': 'popularity',
-                'label': 'Popularity',
+                'label': t('pages.tools_registry.columns.popularity', lang),
                 'field': 'popularity',
                 'sortable': True,
             },
             {
                 'name': 'performance',
-                'label': 'Performance',
+                'label': t('pages.tools_registry.columns.performance', lang),
                 'field': 'performance',
                 'sortable': True,
             },
-            {'name': 'price', 'label': 'Price', 'field': 'price', 'sortable': True},
+            {
+                'name': 'price',
+                'label': t('pages.tools_registry.columns.price', lang),
+                'field': 'price',
+                'sortable': True,
+            },
         ]
 
         all_rows = [
             {
-                'name': t.name,
-                'company': t.company,
-                'dotdir': t.dotdir + '/',
-                'popularity': t.popularity,
-                'performance': t.performance,
-                'price': t.price,
-                'icon_url': t.icon_url,
+                'name': tool.name,
+                'company': tool.company,
+                'dotdir': tool.dotdir + '/',
+                'popularity': tool.popularity,
+                'performance': tool.performance,
+                'price': tool.price,
+                'icon_url': tool.icon_url,
             }
-            for t in TOOLS
+            for tool in TOOLS
         ]
 
         table = (

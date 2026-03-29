@@ -5,6 +5,7 @@ from pathlib import Path
 
 from nicegui import ui
 
+from skillnir.i18n import t, get_current_language
 from skillnir.syncer import sync_skill
 from skillnir.ui.components.page_header import page_header
 from skillnir.ui.components.progress_panel import (
@@ -20,6 +21,7 @@ from skillnir.ui.layout import header, play_notification
 @ui.page('/generate-skill')
 async def page_generate_skill():
     audio_el, sound_state = header()
+    lang = get_current_language()
 
     from skillnir.backends import BACKENDS, PROMPT_VERSION_LABELS, load_config
 
@@ -28,28 +30,36 @@ async def page_generate_skill():
 
     with ui.column().classes('w-full max-w-5xl mx-auto px-8 py-8 gap-6'):
         page_header(
-            'Generate Skill',
-            'Scan a project with AI and generate a domain-specific SKILL.md',
+            t('pages.generate_skill.title', lang),
+            t('pages.generate_skill.subtitle', lang),
             icon='psychology',
         )
 
         # ── Backend info ──
         with ui.row().classes('items-center gap-2'):
             ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
-            ui.label(f'Using: {backend_info.name} ({config.model})').classes(
-                'text-sm text-gray-400'
-            )
+            ui.label(
+                t(
+                    'messages.using_backend',
+                    lang,
+                    name=backend_info.name,
+                    model=config.model,
+                )
+            ).classes('text-sm text-gray-400')
 
         # ── Form ──
         with ui.card().classes('w-full p-6').props('flat bordered'):
             target_input = (
-                ui.input('Target project root', value=str(Path.cwd()))
+                ui.input(
+                    t('pages.generate_skill.target_project_root', lang),
+                    value=str(Path.cwd()),
+                )
                 .classes('w-full max-w-xl')
                 .props('outlined dense rounded')
             )
 
             add_to_current_cb = ui.checkbox(
-                'Also add skill to current project', value=True
+                t('pages.generate_skill.also_add_to_current', lang), value=True
             ).classes('hidden')
 
             def _on_target_change():
@@ -62,7 +72,10 @@ async def page_generate_skill():
             target_input.on_value_change(lambda _: _on_target_change())
 
             name_input = (
-                ui.input('Project name', value=Path.cwd().name)
+                ui.input(
+                    t('pages.generate_skill.project_name', lang),
+                    value=Path.cwd().name,
+                )
                 .classes('w-full max-w-xl')
                 .props('outlined dense rounded')
             )
@@ -72,7 +85,7 @@ async def page_generate_skill():
             with ui.row().classes('gap-4'):
                 scope_select = (
                     ui.select(
-                        label='Skill scope',
+                        label=t('pages.generate_skill.skill_scope', lang),
                         options={k: v for k, v in SCOPE_LABELS.items()},
                         value='backend',
                     )
@@ -82,7 +95,7 @@ async def page_generate_skill():
 
                 skill_version_select = (
                     ui.select(
-                        label='Prompt version',
+                        label=t('pages.generate_skill.prompt_version', lang),
                         options=PROMPT_VERSION_LABELS,
                         value=config.prompt_version,
                     )
@@ -91,14 +104,22 @@ async def page_generate_skill():
                 )
 
             skill_name_label = ui.label(
-                f'Skill name: {Path.cwd().name}-backend'
+                t(
+                    'pages.generate_skill.skill_name_preview',
+                    lang,
+                    name=f'{Path.cwd().name}-backend',
+                )
             ).classes('text-lg font-medium gradient-text')
 
             def update_preview():
                 from skillnir.skill_generator import to_camel_case
 
                 name = name_input.value or Path(target_input.value).name
-                skill_name_label.text = f'Skill name: {to_camel_case(name)}'
+                skill_name_label.text = t(
+                    'pages.generate_skill.skill_name_preview',
+                    lang,
+                    name=to_camel_case(name),
+                )
 
             target_input.on_value_change(lambda _: update_preview())
             name_input.on_value_change(lambda _: update_preview())
@@ -109,7 +130,10 @@ async def page_generate_skill():
         async def do_generate():
             target = Path(target_input.value).resolve()
             if not target.is_dir():
-                ui.notify(f'Directory not found: {target}', type='negative')
+                ui.notify(
+                    t('messages.directory_not_found', lang, path=str(target)),
+                    type='negative',
+                )
                 return
 
             project_name = name_input.value or target.name
@@ -159,15 +183,23 @@ async def page_generate_skill():
                     )
 
                 grid = {
-                    'Skill name': result.skill_name,
-                    'Target SKILL.md': str(result.target_skill_path),
+                    t('pages.generate_skill.grid_skill_name', lang): result.skill_name,
+                    t('pages.generate_skill.grid_target_skill_md', lang): str(
+                        result.target_skill_path
+                    ),
                 }
                 if result.source_skill_path:
-                    grid['Source SKILL.md'] = str(result.source_skill_path)
-                grid['Duration'] = format_duration(secs)
-                grid['Tools used'] = str(counters['tools'])
+                    grid[t('pages.generate_skill.grid_source_skill_md', lang)] = str(
+                        result.source_skill_path
+                    )
+                grid[t('pages.generate_skill.grid_duration', lang)] = format_duration(
+                    secs
+                )
+                grid[t('pages.generate_skill.grid_tools_used', lang)] = str(
+                    counters['tools']
+                )
                 if result.backend_used:
-                    grid['Backend'] = (
+                    grid[t('pages.generate_skill.grid_backend', lang)] = (
                         BACKENDS[result.backend_used].name
                         if result.backend_used in BACKENDS
                         else result.backend_used.value
@@ -175,33 +207,35 @@ async def page_generate_skill():
                 result_card(
                     results_container,
                     success=True,
-                    title='Skill Generation Complete',
+                    title=t('pages.generate_skill.result_success_title', lang),
                     grid_data=grid,
-                    footer_text="Run 'skillnir install' to inject this skill into AI tools.",
+                    footer_text=t('pages.generate_skill.result_footer', lang),
                 )
             else:
                 result_card(
                     results_container,
                     success=False,
-                    title='Skill Generation Failed',
+                    title=t('pages.generate_skill.result_fail_title', lang),
                     error=result.error,
                 )
 
             with results_container:
                 with ui.row().classes('gap-3 mt-4'):
                     ui.button(
-                        'Try Again',
+                        t('buttons.try_again', lang),
                         on_click=lambda: ui.navigate.to('/generate-skill'),
                         icon='refresh',
                     ).props('unelevated rounded')
                     ui.button(
-                        'Home', on_click=lambda: ui.navigate.to('/'), icon='home'
+                        t('buttons.home', lang),
+                        on_click=lambda: ui.navigate.to('/'),
+                        icon='home',
                     ).props('flat rounded')
 
             play_notification(audio_el, sound_state)
 
         generate_btn = ui.button(
-            'Generate Skill',
+            t('buttons.generate_skill', lang),
             on_click=do_generate,
             icon='psychology',
         ).props('unelevated rounded color=positive')

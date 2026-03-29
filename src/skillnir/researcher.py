@@ -286,13 +286,63 @@ def _save_index(research_dir: Path, articles: dict[str, Article]) -> None:
 
 
 # ---------------------------------------------------------------------------
+# Migration: flat articles → topic subdirectories
+# ---------------------------------------------------------------------------
+
+
+def _migrate_articles_to_topic_dirs(research_dir: Path) -> int:
+    """Move articles from flat articles/ into articles/{topic}/ subdirectories.
+
+    Handles both indexed articles and orphan files (by reading frontmatter).
+    Returns the number of files moved.
+    """
+    articles_dir = research_dir / "articles"
+    if not articles_dir.is_dir():
+        return 0
+
+    # Build id→topic map from index
+    articles = _load_index(research_dir)
+    id_to_topic: dict[str, str] = {a.id: a.topic for a in articles.values()}
+
+    # Collect flat .md files to discover orphan topics via frontmatter
+    valid_topics = set(TOPIC_LABELS.keys())
+    for md_file in articles_dir.glob("*.md"):
+        stem = md_file.stem
+        if stem in id_to_topic:
+            continue
+        try:
+            text = md_file.read_text(encoding="utf-8")[:500]
+            match = re.search(r"^topic:\s*(.+)$", text, re.MULTILINE)
+            if match:
+                topic = match.group(1).strip()
+                if topic in valid_topics:
+                    id_to_topic[stem] = topic
+        except OSError:
+            continue
+
+    moved = 0
+    for article_id, topic in id_to_topic.items():
+        topic_dir = articles_dir / topic
+        for ext in (".md", ".html"):
+            old_path = articles_dir / f"{article_id}{ext}"
+            new_path = topic_dir / f"{article_id}{ext}"
+            if old_path.exists() and not new_path.exists():
+                topic_dir.mkdir(exist_ok=True)
+                old_path.rename(new_path)
+                moved += 1
+    return moved
+
+
+# ---------------------------------------------------------------------------
 # Article MD writer
 # ---------------------------------------------------------------------------
 
 
 def _write_article_md(article: Article, articles_dir: Path) -> Path:
     """Write individual article summary as markdown."""
-    md_path = articles_dir / f"{article.id}.md"
+    topic_dir = articles_dir / article.topic
+    topic_dir.mkdir(exist_ok=True)
+    md_path = topic_dir / f"{article.id}.md"
     insights = "\n".join(
         f"{i + 1}. {ins}" for i, ins in enumerate(article.key_insights)
     )
@@ -366,7 +416,9 @@ def _generate_article_html(article: Article) -> str:
 
 def _write_article_html(article: Article, articles_dir: Path) -> Path:
     """Write individual article as styled HTML page."""
-    html_path = articles_dir / f"{article.id}.html"
+    topic_dir = articles_dir / article.topic
+    topic_dir.mkdir(exist_ok=True)
+    html_path = topic_dir / f"{article.id}.html"
     html_path.write_text(_generate_article_html(article), encoding="utf-8")
     return html_path
 
@@ -411,7 +463,7 @@ def _generate_landing_html(
         source_attr = html.escape(a.source_name, quote=True)
         insights_preview = html.escape(a.key_insights[0]) if a.key_insights else ""
         rows.append(f"""\
-        <tr onclick="window.open('articles/{a.id}.html','_blank')" style="cursor:pointer;" class="row" data-topic="{a.topic}" data-source="{source_attr}">
+        <tr onclick="window.open('articles/{a.topic}/{a.id}.html','_blank')" style="cursor:pointer;" class="row" data-topic="{a.topic}" data-source="{source_attr}">
           <td style="padding:12px 16px;">
             <div style="font-weight:600;color:#e2e8f0;">{title_escaped}{badge}</div>
             <div style="font-size:13px;color:#94a3b8;margin-top:4px;">{insights_preview}</div>
@@ -754,8 +806,9 @@ def backfill_article_html(research_dir: Path | None = None) -> int:
     articles_dir = research_dir / "articles"
     count = 0
     for article in articles.values():
-        html_path = articles_dir / f"{article.id}.html"
-        md_path = articles_dir / f"{article.id}.md"
+        topic_dir = articles_dir / article.topic
+        html_path = topic_dir / f"{article.id}.html"
+        md_path = topic_dir / f"{article.id}.md"
         if md_path.exists() and not html_path.exists():
             _write_article_html(article, articles_dir)
             count += 1
@@ -769,6 +822,7 @@ def regenerate_landing(research_dir: Path | None = None) -> tuple[int, Path | No
     """
     if research_dir is None:
         research_dir = _get_research_dir()
+    _migrate_articles_to_topic_dirs(research_dir)
     articles = _load_index(research_dir)
     if not articles:
         return 0, None
@@ -802,6 +856,9 @@ async def research(
     research_dir = _get_research_dir()
     articles_dir = research_dir / "articles"
     articles_dir.mkdir(exist_ok=True)
+
+    # Migrate flat articles into topic subdirectories
+    _migrate_articles_to_topic_dirs(research_dir)
 
     # Load existing index for dedup
     existing = _load_index(research_dir)

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 30">
+  <!-- Red bars -->
+  <rect width="10" height="30" fill="#FF0000"/>
+  <rect x="30" width="10" height="30" fill="#FF0000"/>
+  <!-- White center -->
+  <rect x="10" width="20" height="30" fill="#fff"/>
+  <!-- Maple leaf -->
+  <g transform="translate(20,15)" fill="#FF0000">
+    <path d="M0 -6L1 -3.5L3.5 -4L2.5 -2L4.5 -1L3 0L3.5 2.5L1.5 1.5L0 4L-1.5 1.5L-3.5 2.5L-3 0L-4.5 -1L-2.5 -2L-3.5 -4L-1 -3.5Z"/>
+    <!-- Stem -->
+    <rect x="-0.4" y="4" width="0.8" height="2"/>
+  </g>
+</svg>

@@ -1,0 +1,748 @@
+{
+  "nav": {
+    "groups": {
+      "skill_management": "SKILL MANAGEMENT",
+      "ai_context": "AI CONTEXT",
+      "templates": "TEMPLATES",
+      "ai_assistant": "AI ASSISTANT",
+      "tools_data": "TOOLS & DATA"
+    },
+    "items": {
+      "install": "Install",
+      "update": "Update",
+      "check": "Check",
+      "delete": "Delete",
+      "generate_skill": "Generate Skill",
+      "generate_rule": "Generate Rule",
+      "generate_docs": "Generate Docs",
+      "delete_docs": "Delete Docs",
+      "init_skill": "Init Skill",
+      "init_docs": "Init Docs",
+      "ask_ai": "Ask AI",
+      "plan": "Plan",
+      "skills_library": "Skills Library",
+      "tools_registry": "Tools Registry",
+      "usage": "Usage",
+      "research": "Research",
+      "events": "Events",
+      "settings": "Settings"
+    },
+    "sort_modes": {
+      "default": "Default",
+      "popularity": "Popularity",
+      "performance": "Performance",
+      "price": "Price (cheapest)",
+      "alpha": "Alphabetical"
+    }
+  },
+
+  "pages": {
+    "home": {
+      "sections": {
+        "skill": {
+          "title": "Skill",
+          "desc": "Install, update, check, delete, or generate skills for your projects.",
+          "items": {
+            "install": "Install",
+            "update": "Update",
+            "check": "Check",
+            "delete": "Delete",
+            "generate_skill": "Generate Skill"
+          }
+        },
+        "ai_context": {
+          "title": "AI Context",
+          "desc": "Generate rules, AI docs, or delete existing docs from projects.",
+          "items": {
+            "generate_rule": "Generate Rule",
+            "generate_docs": "Generate AI Docs",
+            "delete_docs": "Delete Docs"
+          }
+        },
+        "default_template": {
+          "title": "Default Template",
+          "desc": "Scaffold blank skill or docs templates with commented placeholders.",
+          "items": {
+            "init_skill": "Init Skill",
+            "init_docs": "Init Docs"
+          }
+        },
+        "claude_tools": {
+          "title": "Claude Tools",
+          "desc": "Activate or deactivate Claude Code sound notifications.",
+          "sound_notifications": "Sound Notifications"
+        },
+        "usage": {
+          "title": "Usage",
+          "desc": "View token stats and per-backend usage information.",
+          "items": {
+            "token_stats": "Token Stats"
+          }
+        },
+        "supported_tools": {
+          "title": "Supported Tools",
+          "desc": "Browse all supported AI tools and their models.",
+          "items": {
+            "models_tools": "Models & Tools"
+          }
+        },
+        "research": {
+          "title": "Research",
+          "desc": "Do web research, view existing articles, or delete research data.",
+          "items": {
+            "research_hub": "Research Hub"
+          }
+        },
+        "events": {
+          "title": "Events",
+          "desc": "Find upcoming AI conferences, meetups, and workshops worldwide.",
+          "items": {
+            "events_hub": "Events Hub"
+          }
+        },
+        "settings": {
+          "title": "Settings",
+          "desc": "Light/dark mode, notification toggle, and app preferences.",
+          "items": {
+            "preferences": "Preferences"
+          }
+        },
+        "ai_extra": {
+          "title": "AI Extra",
+          "desc": "Ask AI questions or get detailed implementation plans.",
+          "items": {
+            "ask_ai": "Ask AI",
+            "plan_with_ai": "Plan with AI"
+          }
+        }
+      },
+      "quick_actions": {
+        "install_skill": "Install Skill",
+        "generate_docs": "Generate Docs",
+        "generate_skill": "Generate Skill",
+        "ask_ai": "Ask AI"
+      }
+    },
+
+    "install": {
+      "title": "Install Skills",
+      "subtitle": "Inject AI coding skills into your project.",
+      "steps": {
+        "target_source": "Target & Source",
+        "select_skills": "Select Skills",
+        "select_tools": "Select Tools",
+        "confirm_execute": "Confirm & Execute",
+        "results": "Results"
+      },
+      "target_project_help": "Enter the root path of the target project.",
+      "source_skills_help": "Source skills path (where to fetch generated skills from).",
+      "select_skills_help": "Choose skills to inject (select one or more).",
+      "select_tools_help": "Choose AI tools to inject symlinks into.",
+      "sort_by": "Sort by:",
+      "project_root": "Project root",
+      "source_skills_path": "Source skills path",
+      "syncing_skill": "Syncing skill {index}/{total}: {name}...",
+      "injecting_skill": "Injecting skill {index}/{total}: {name}...",
+      "starting": "Starting...",
+      "updating_skills": "Updating skills..."
+    },
+
+    "update": {
+      "title": "Update Skills",
+      "subtitle": "Sync all skills from source to a target project."
+    },
+
+    "skills_library": {
+      "title": "Skills Library",
+      "subtitle": "{count} skills available",
+      "search_placeholder": "Search skills...",
+      "view_skill_md": "View SKILL.md",
+      "skill_md_not_found": "SKILL.md not found",
+      "skill_md_dialog_title": "{name} — SKILL.md",
+      "error_reading_skill_md": "Error reading SKILL.md: {error}"
+    },
+
+    "generate_docs": {
+      "title": "Generate AI Docs",
+      "subtitle": "Scan a project with AI and generate agents.md + .claude/claude.md",
+      "target_project_root": "Target project root",
+      "prompt_version": "Prompt version",
+      "result_success_title": "Generation Complete",
+      "result_fail_title": "Generation Failed"
+    },
+
+    "generate_rule": {
+      "title": "Generate Rule",
+      "subtitle": "Scan a project with AI and generate Cursor rule files (.mdc)",
+      "target_project_root": "Target project root",
+      "rule_topic": "Rule topic",
+      "rule_topic_placeholder": "e.g., error handling standards, React component patterns",
+      "prompt_version": "Prompt version",
+      "enter_rule_topic": "Please enter a rule topic.",
+      "result_success_title": "Rule Generation Complete",
+      "result_fail_title": "Rule Generation Failed"
+    },
+
+    "delete_docs": {
+      "title": "Delete AI Docs",
+      "subtitle": "Remove agents.md and its symlinks from a target project.",
+      "target_project_root": "Target project root",
+      "no_docs_found": "No AI docs found in target project.",
+      "found_label": "Found:",
+      "symlink": "symlink",
+      "file": "file",
+      "no_docs_to_delete": "No docs found to delete.",
+      "deletion_complete": "Deletion Complete",
+      "deletion_failed": "Deletion Failed",
+      "removed_files": "Removed {count} file(s)",
+      "cleaned_dirs": "Cleaned {count} empty dir(s)"
+    },
+
+    "generate_skill": {
+      "title": "Generate Skill",
+      "subtitle": "Scan a project with AI and generate a domain-specific SKILL.md",
+      "target_project_root": "Target project root",
+      "project_name": "Project name",
+      "skill_scope": "Skill scope",
+      "prompt_version": "Prompt version",
+      "also_add_to_current": "Also add skill to current project",
+      "skill_name_preview": "Skill name: {name}",
+      "result_success_title": "Skill Generation Complete",
+      "result_fail_title": "Skill Generation Failed",
+      "result_footer": "Run 'skillnir install' to inject this skill into AI tools.",
+      "grid_skill_name": "Skill name",
+      "grid_target_skill_md": "Target SKILL.md",
+      "grid_source_skill_md": "Source SKILL.md",
+      "grid_duration": "Duration",
+      "grid_tools_used": "Tools used",
+      "grid_backend": "Backend"
+    },
+
+    "delete_skill": {
+      "title": "Delete Skills",
+      "subtitle": "Remove skill(s) from a target project, including symlinks in all tool directories.",
+      "target_project_root": "Target project root",
+      "no_skills_found": "No skills found in target project.",
+      "found_skills": "Found {count} skill(s):",
+      "tool_installations": "{count} tool installation(s)",
+      "also_delete_data": "Also delete skill data from .data/skills/",
+      "select_at_least_one": "Select at least one skill.",
+      "deletion_report": "Deletion Report",
+      "error_badge": "error",
+      "deleted_badge": "deleted",
+      "deleted_summary": "({symlinks} symlinks, {dirs} dirs cleaned)"
+    },
+
+    "init_skill": {
+      "title": "Init Skill",
+      "subtitle": "Create a default skill scaffold with commented placeholder files.",
+      "target_project_root": "Target project root",
+      "skill_name_label": "Skill name (lowercase, hyphens only)",
+      "will_create": "Will create:",
+      "scaffold_created": "Skill scaffold created at {path}",
+      "error_prefix": "Error: {error}"
+    },
+
+    "init_docs": {
+      "title": "Init AI Docs",
+      "subtitle": "Create a default agents.md template with commented sections and symlinks for AI tools.",
+      "target_project_root": "Target project root",
+      "will_create": "Will create:",
+      "docs_created": "AI docs template created!",
+      "error_prefix": "Error: {error}"
+    },
+
+    "ask": {
+      "title": "Ask AI",
+      "subtitle": "Ask a question about a project. AI answers without making changes.",
+      "target_project_root": "Target project root",
+      "your_question": "Your question",
+      "question_placeholder": "e.g., How does the authentication module work?",
+      "enter_question": "Please enter a question.",
+      "result_success_title": "Answer Complete",
+      "result_fail_title": "Ask Failed"
+    },
+
+    "plan": {
+      "title": "Plan",
+      "subtitle": "Get a detailed implementation plan from AI for a task or feature.",
+      "target_project_root": "Target project root",
+      "task_input_label": "What do you need a plan for?",
+      "task_placeholder": "e.g., Add user authentication with JWT tokens",
+      "describe_task": "Please describe the task.",
+      "result_success_title": "Plan Complete",
+      "result_fail_title": "Planning Failed"
+    },
+
+    "check_skill": {
+      "title": "Check Skill",
+      "subtitle": "Run /skills via AI backend on a target project.",
+      "target_project_root": "Target project root",
+      "result_success_title": "Skill Check Complete",
+      "result_fail_title": "Skill Check Failed"
+    },
+
+    "tools_registry": {
+      "title": "Tools Registry",
+      "subtitle": "{count} AI tools supported (+ .agents/ auto-inject)",
+      "search_placeholder": "Search tools...",
+      "columns": {
+        "name": "Name",
+        "company": "Company",
+        "dotdir": "Dotdir",
+        "popularity": "Popularity",
+        "performance": "Performance",
+        "price": "Price"
+      }
+    },
+
+    "usage": {
+      "title": "Token Usage",
+      "subtitle": "Session-level token usage across all AI backends.",
+      "no_requests_title": "No AI requests yet",
+      "no_requests_subtitle": "Token usage will appear here after you generate docs, skills, or ask AI questions.",
+      "session_summary": "Session Summary",
+      "total_tokens": "Total Tokens",
+      "input_tokens": "Input Tokens",
+      "output_tokens": "Output Tokens",
+      "total_cost": "Total Cost",
+      "requests": "Requests",
+      "cache_tokens": "Cache Tokens",
+      "cost": "Cost"
+    },
+
+    "research": {
+      "title": "AI Engineering Research",
+      "subtitle": "Search latest AI engineering news, deep-read articles, and generate summaries",
+      "topics_to_search": "Topics to search:",
+      "filter_by_source": "Filter by source (optional):",
+      "articles_in_kb": "Articles in knowledge base",
+      "result_success_title": "Research Complete",
+      "result_fail_title": "Research Failed",
+      "grid_articles_found": "Articles found",
+      "grid_new_articles": "New articles",
+      "grid_skipped_dedup": "Skipped (dedup)",
+      "grid_duration": "Duration",
+      "select_at_least_one_topic": "Select at least one topic",
+      "generated_html_pages": "Generated {count} HTML article page(s)",
+      "all_articles_have_html": "All articles already have HTML pages"
+    },
+
+    "events": {
+      "title": "AI Events & Conferences",
+      "subtitle": "Find upcoming AI conferences, meetups, and workshops worldwide",
+      "countries_to_search": "Countries to search:",
+      "events_in_kb": "Events in knowledge base",
+      "result_success_title": "Events Search Complete",
+      "result_fail_title": "Events Search Failed",
+      "grid_events_found": "Events found",
+      "grid_new_events": "New events",
+      "grid_skipped_dedup": "Skipped (dedup)",
+      "grid_duration": "Duration",
+      "select_at_least_one_country": "Select at least one country",
+      "generated_html_pages": "Generated {count} HTML event page(s)",
+      "all_events_have_html": "All events already have HTML pages"
+    },
+
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Configure application preferences.",
+      "dark_mode": {
+        "title": "Dark Mode",
+        "description": "Toggle between dark and light interface theme.",
+        "enabled": "Dark mode enabled",
+        "disabled": "Light mode enabled"
+      },
+      "sound_notifications": {
+        "title": "Process Notifications",
+        "description": "Play a sound when AI generation completes.",
+        "enabled": "Sound notifications enabled",
+        "disabled": "Sound notifications disabled"
+      },
+      "ai_tool": {
+        "title": "AI Tool",
+        "description": "Currently using {name}"
+      },
+      "model": {
+        "title": "Model",
+        "description": "Currently using {model}"
+      },
+      "prompt_version": {
+        "title": "Prompt Version",
+        "description": "Currently using {version}"
+      }
+    }
+  },
+
+  "buttons": {
+    "next": "Next",
+    "back": "Back",
+    "home": "Home",
+    "execute": "Execute",
+    "search": "Search",
+    "cancel": "Cancel",
+    "close": "Close",
+    "select": "Select",
+    "switch": "Switch",
+    "scan": "Scan",
+    "reset": "Reset",
+    "refresh": "Refresh",
+    "try_again": "Try Again",
+    "start_over": "Start Over",
+    "search_again": "Search Again",
+    "select_all": "Select All",
+    "deselect_all": "Deselect All",
+    "auto_detect": "Auto-detect",
+    "next_select_tools": "Next — Select Tools",
+    "next_confirm": "Next — Confirm",
+    "delete_selected": "Delete Selected",
+    "delete_docs": "Delete Docs",
+    "create_scaffold": "Create Scaffold",
+    "create_docs_template": "Create Docs Template",
+    "create_plan": "Create Plan",
+    "run_check": "Run Check",
+    "generate_ai_docs": "Generate AI Docs",
+    "generate_rule": "Generate Rule",
+    "generate_skill": "Generate Skill",
+    "update_all_skills": "Update All Skills",
+    "search_latest_news": "Search Latest News",
+    "search_events": "Search Events",
+    "view_landing_page": "View Landing Page",
+    "generate_html_files": "Generate HTML Files",
+    "open_landing_page": "Open Landing Page",
+    "view_skill_md": "View SKILL.md",
+    "switch_tool": "Switch Tool",
+    "switch_model": "Switch Model",
+    "prompts": "Prompts",
+    "usage": "Usage",
+    "install_skill": "Install Skill",
+    "ask": "Ask",
+    "hide_log": "Hide Log",
+    "show_log": "Show Log",
+    "got_it": "Got it"
+  },
+
+  "messages": {
+    "using_backend": "Using: {name} ({model})",
+    "directory_not_found": "Directory not found: {path}",
+    "source_directory_not_found": "Source directory not found: {path}",
+    "no_skills_found_in_source": "No skills found in source.",
+    "no_skills_found_in_target": "No skills found in target project.",
+    "no_docs_found_in_target": "No AI docs found in target project.",
+    "no_tools_detected": "No tool directories found in target.",
+    "select_at_least_one_skill": "Select at least one skill.",
+    "select_at_least_one_tool": "Select at least one tool.",
+    "no_usage_info": "No usage info available.",
+    "found_tools": "Found {count} tools in {name}/",
+    "selected_count": "{count} selected",
+    "skill_copied": "'{name}' v{version} — copied",
+    "skill_updated": "'{name}' — updated",
+    "claude_sound_enabled": "Claude sound notifications enabled",
+    "claude_sound_disabled": "Claude sound notifications disabled",
+    "exit_code": "Exit code: {code}",
+    "agents_md_exists": "agents.md already exists at {path}",
+    "enter_rule_topic": "Please enter a rule topic.",
+    "enter_question": "Please enter a question.",
+    "describe_task": "Please describe the task.",
+    "no_skills_selected": "No skills selected. Aborting.",
+    "no_tools_selected": "No tools selected. Aborting.",
+    "no_question_provided": "No question provided. Aborting.",
+    "no_task_provided": "No task provided. Aborting.",
+    "aborted": "Aborted.",
+    "done": "Done.",
+    "timed_out": "{name} timed out after 10 minutes.",
+    "cli_not_found": "{command} CLI not found in PATH.",
+    "no_backends_available": "No backends available. Install claude, gemini, or copilot CLI."
+  },
+
+  "components": {
+    "hero": {
+      "title": "Skillnir",
+      "tagline": "Inject AI coding skills into any tool's dotdir.",
+      "skills_badge": "{count} Skills",
+      "tools_badge": "{count} AI Tools",
+      "dotdirs_badge": "{count} Dotdirs"
+    },
+    "welcome_dialog": {
+      "title": "Welcome to Skillnir",
+      "description": "Skillnir orchestrates AI coding tools via their CLI runners. To get started, install the CLI for at least one backend below and sign in to your account.",
+      "dont_show_again": "Don't show this again",
+      "cli_guide_title": "CLI Installation Guide",
+      "cli_guide_description": "Install and sign in to the CLI runner for each AI backend you want to use with Skillnir.",
+      "install_label": "Install",
+      "login_label": "Login",
+      "verify_label": "Verify",
+      "or_label": "or",
+      "backends": {
+        "claude_code": {
+          "name": "Claude Code",
+          "notes": "Requires Node.js 18+. You can also install via Homebrew."
+        },
+        "cursor_agent": {
+          "name": "Cursor Agent",
+          "notes": "Requires Node.js 18+. Can also be used through the Cursor IDE."
+        },
+        "gemini_cli": {
+          "name": "Gemini CLI",
+          "notes": "Requires Node.js 18+ and a Google AI account."
+        },
+        "github_copilot": {
+          "name": "GitHub Copilot",
+          "notes": "Requires a GitHub account with Copilot access."
+        }
+      }
+    },
+    "backend_picker": {
+      "switch_ai_tool_title": "Switch AI Tool",
+      "switch_model_title": "Switch Model",
+      "switch_prompt_version_title": "Switch Prompt Version",
+      "ai_tool_label": "AI Tool: {name}",
+      "active_badge": "active",
+      "current_badge": "current",
+      "default_badge": "default"
+    },
+    "backend_chip": {
+      "model_label": "Model: {model}"
+    },
+    "stat_card": {
+      "created": "Created",
+      "skipped": "Skipped",
+      "errors": "Errors",
+      "copied": "Copied",
+      "updated": "Updated"
+    },
+    "progress_panel": {
+      "initializing": "Initializing...",
+      "preparing": "Preparing...",
+      "elapsed": "elapsed",
+      "tools_used": "Tools used",
+      "lines_output": "Lines output",
+      "live_output": "Live Output",
+      "log_output": "Log Output"
+    },
+    "empty_state": {
+      "no_ai_requests": "No AI requests yet",
+      "no_ai_requests_subtitle": "Token usage will appear here after you generate docs, skills, or ask AI questions."
+    }
+  },
+
+  "layout": {
+    "injection_summary": "Injection Summary",
+    "target": "Target:",
+    "skills": "Skills:",
+    "tools": "Tools:",
+    "tools_selected_auto": "{count} selected + .agents/ (auto)",
+    "symlinks_to_create": "Symlinks to create:",
+    "injection_report": "Injection Report",
+    "sync_report": "Sync Report",
+    "no_skills_in_source": "No skills found in source.",
+    "created_label": "Created:",
+    "already_existed_label": "Already existed:",
+    "errors_label": "Errors:",
+    "installed_badge": "Installed",
+    "score_labels": {
+      "pop": "pop",
+      "perf": "perf",
+      "price": "price"
+    },
+    "tooltips": {
+      "cli_setup_guide": "CLI setup guide",
+      "toggle_dark_light": "Toggle dark/light mode",
+      "toggle_sound": "Toggle notification sound"
+    }
+  },
+
+  "cli": {
+    "description": "Inject AI coding skills into any tool's dotdir.",
+    "command_help": "install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. events: search upcoming AI events and conferences worldwide. config: manage backend/model. sound: manage Claude Code sound notifications.",
+    "prompts": {
+      "target_project_root": "Target project root:",
+      "source_skills_path": "Source skills path:",
+      "select_skills": "Select skills to inject (space=toggle, enter=confirm):",
+      "how_sort_tools": "How should tools be sorted?",
+      "select_tools": "Select AI tools to inject into (space=toggle, enter=confirm):",
+      "proceed_injection": "Proceed with injection?",
+      "proceed_docs_generation": "Proceed with AI docs generation?",
+      "proceed_skill_generation": "Proceed with skill generation?",
+      "proceed_rule_generation": "Proceed with rule generation?",
+      "project_name": "Project name:",
+      "select_skill_scope": "Select skill scope:",
+      "also_add_to_current": "Also add generated skill to current project?",
+      "rule_topic": "Rule topic (e.g., 'error handling standards', 'React patterns'):",
+      "enter_rule_topic": "Please enter a rule topic",
+      "your_question": "Your question:",
+      "what_plan_for": "What do you need a plan for?",
+      "run_skill_check": "Run skill check?",
+      "select_skills_to_delete": "Select skills to delete:",
+      "also_delete_data": "Also delete skill data from .data/skills/?",
+      "proceed_deletion": "Proceed with deletion?",
+      "skill_name": "Skill name (lowercase, hyphens only):",
+      "create_skill_scaffold": "Create skill scaffold?",
+      "create_docs_template": "Create AI docs template?",
+      "filter_by_source": "Filter by source (leave blank for all):",
+      "search_latest_articles": "Search for latest articles?",
+      "select_countries": "Select countries to search (leave blank for all):",
+      "search_upcoming_events": "Search for upcoming events?",
+      "open_landing_page": "Open landing page in browser?",
+      "what_to_do": "What would you like to do?"
+    },
+    "sort_modes": {
+      "default": "Default (recommended)",
+      "popularity": "Sort by popularity",
+      "performance": "Sort by performance",
+      "price": "Sort by price (cheapest first)",
+      "alpha": "Sort alphabetically"
+    },
+    "install": {
+      "found_skill": "Found 1 skill: {name} (v{version})",
+      "no_skills_in_source": "No skills found in source. Nothing to inject.",
+      "target_label": "Target: {path}",
+      "skills_label": "Skills: {names}",
+      "tools_label": "Tools:  {count} selected + .agents/ (auto)",
+      "done": "Done. {created} new, {skipped} skipped, {errors} errors."
+    },
+    "sync_report": {
+      "title": "Skill Sync Report",
+      "copied": "copied",
+      "updated": "updated",
+      "skipped": "skipped (same version)",
+      "summary": "{copied} copied, {updated} updated, {skipped} skipped."
+    },
+    "injection_report": {
+      "title": "Injection Report: {name}",
+      "created": "Created ({count}):",
+      "already_existed": "Already existed ({count}):",
+      "errors": "Errors ({count}):"
+    },
+    "generate_docs": {
+      "generating": "Generating AI docs...",
+      "complete": "Generation complete!",
+      "failed": "Generation failed: {error}",
+      "will_generate": "This will scan the project with AI and generate:",
+      "agents_md": "agents.md (project root)",
+      "claude_md": ".claude/claude.md (symlink)"
+    },
+    "generate_skill": {
+      "generating": "Generating {name} skill...",
+      "complete": "Skill generation complete!",
+      "failed": "Skill generation failed: {error}",
+      "run_install": "Run 'skillnir install' to inject this skill into AI tools."
+    },
+    "generate_rule": {
+      "generating": "Generating Cursor rule...",
+      "complete": "Rule generation complete!",
+      "failed": "Rule generation failed: {error}"
+    },
+    "check_skill": {
+      "running": "Running {command} check...",
+      "complete": "Skill check complete!",
+      "failed": "Skill check failed (exit code {code})"
+    },
+    "ask": {
+      "asking": "Asking AI...",
+      "done": "Done.",
+      "failed": "Failed (exit code {code})"
+    },
+    "plan": {
+      "planning": "Planning...",
+      "complete": "Plan complete.",
+      "failed": "Planning failed (exit code {code})"
+    },
+    "research": {
+      "title": "AI Engineering Research",
+      "topics_header": "Topics to search:",
+      "searching": "Searching and summarizing...",
+      "articles_found": "Articles found:   {count}",
+      "new_articles": "New articles:     {count}",
+      "skipped_dedup": "Skipped (dedup):  {count}",
+      "landing_page": "Landing page:     {path}",
+      "failed": "Failed: {error}",
+      "regenerating": "Regenerating HTML article pages and landing page...",
+      "generated_pages": "Generated {count} HTML article page(s)",
+      "all_have_html": "All articles already have HTML pages"
+    },
+    "events": {
+      "title": "AI Events Search",
+      "searching": "Searching for events...",
+      "events_found": "Events found:     {count}",
+      "new_events": "New events:       {count}",
+      "skipped_dedup": "Skipped (dedup):  {count}",
+      "landing_page": "Landing page:     {path}",
+      "failed": "Failed: {error}",
+      "regenerating": "Regenerating HTML event pages and landing page...",
+      "generated_pages": "Generated {count} HTML event page(s)",
+      "all_have_html": "All events already have HTML pages"
+    },
+    "delete_skill": {
+      "no_skills": "No skills found in target project.",
+      "will_delete": "Will delete:",
+      "delete_summary": "{name} ({count} tool installations{suffix})",
+      "success": "{name}: removed {symlinks} symlinks, {dirs} dirs cleaned",
+      "error": "{name}: {error}"
+    },
+    "delete_docs": {
+      "no_docs": "No AI docs found in target project.",
+      "will_delete": "Will delete:",
+      "removed_files": "Removed {count} files",
+      "cleaned_dirs": "Cleaned {count} empty directories",
+      "error": "Error: {error}"
+    },
+    "init_skill": {
+      "will_create_at": "Will create scaffold at: {path}",
+      "created": "Created skill scaffold at {path}",
+      "error": "Error: {error}"
+    },
+    "init_docs": {
+      "will_create_in": "Will create in {path}:",
+      "agents_md_template": "agents.md (template)",
+      "claude_md_symlink": ".claude/claude.md (symlink)",
+      "copilot_md_symlink": ".github/copilot-instructions.md (symlink)",
+      "created": "Created AI docs template",
+      "error": "Error: {error}"
+    },
+    "sound": {
+      "title": "Claude Code Sound Notification",
+      "status": "Status: {status}",
+      "enabled": "enabled",
+      "disabled": "disabled",
+      "enable_option": "Enable sound notifications",
+      "disable_option": "Disable sound notifications",
+      "reset_option": "Reset Claude config to default (remove all hooks)",
+      "exit_option": "Exit",
+      "already_enabled": "already enabled",
+      "already_disabled": "already disabled",
+      "sound_enabled_msg": "Sound notifications enabled (Stop + PermissionRequest).",
+      "sound_disabled_msg": "Sound notifications disabled.",
+      "reset_confirm": "This will remove ALL hooks from ~/.claude/settings.json. Continue?",
+      "reset_done": "Claude config reset — all hooks removed.",
+      "restart_notice": "Restart Claude Code for changes to take effect."
+    },
+    "config": {
+      "title": "Skillnir Configuration",
+      "backend_label": "Backend:  {name}",
+      "model_label": "Model:    {model}",
+      "prompts_label": "Prompts:  {version}",
+      "version_label": "Version:  {version}",
+      "available_backends": "Available backends:",
+      "not_installed": "[not installed]",
+      "current_suffix": "(current)",
+      "actions": {
+        "switch_tool": "Switch AI Tool",
+        "switch_model": "Switch model",
+        "switch_prompt_version": "Switch prompt version",
+        "show_usage": "Show usage info",
+        "exit": "Exit"
+      },
+      "select_backend": "Select backend:",
+      "select_model": "Select model:",
+      "select_prompt_version": "Select prompt version:",
+      "backend_set": "Backend set to: {name} (model: {model})",
+      "model_set": "Model set to: {model}",
+      "prompt_version_set": "Prompt version set to: {version}",
+      "usage_info": "{name} Usage Info:",
+      "no_cli_usage": "{name} does not provide CLI usage info.",
+      "check_usage_at": "Check usage at: {url}",
+      "no_usage_available": "No usage info available for {name}."
+    }
+  }
+}

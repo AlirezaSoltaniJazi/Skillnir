@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 30">
+  <!-- Red vertical stripe on hoist side -->
+  <rect width="10" height="30" fill="#FF0000"/>
+  <!-- Three horizontal stripes -->
+  <rect x="10" width="30" height="10" fill="#00732F"/>
+  <rect x="10" y="10" width="30" height="10" fill="#fff"/>
+  <rect x="10" y="20" width="30" height="10" fill="#000"/>
+</svg>

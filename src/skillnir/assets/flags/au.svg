@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 30">
+  <!-- Blue background -->
+  <rect width="40" height="30" fill="#00008B"/>
+  <!-- Union Jack canton -->
+  <g clip-path="url(#canton)">
+    <rect width="20" height="15" fill="#012169"/>
+    <path d="M0 0L20 15M20 0L0 15" stroke="#fff" stroke-width="2.5"/>
+    <path d="M0 0L20 15M20 0L0 15" stroke="#C8102E" stroke-width="1.5"/>
+    <path d="M10 0V15M0 7.5H20" stroke="#fff" stroke-width="3.5"/>
+    <path d="M10 0V15M0 7.5H20" stroke="#C8102E" stroke-width="2"/>
+  </g>
+  <clipPath id="canton"><rect width="20" height="15"/></clipPath>
+  <!-- Commonwealth Star (7-pointed, below canton) -->
+  <g fill="#fff">
+    <circle cx="10" cy="22" r="2.2"/>
+  </g>
+  <!-- Southern Cross stars (right half) -->
+  <g fill="#fff">
+    <!-- Alpha Crucis (bottom) -->
+    <circle cx="32" cy="24" r="1"/>
+    <!-- Beta Crucis (left) -->
+    <circle cx="27" cy="20" r="1"/>
+    <!-- Gamma Crucis (top) -->
+    <circle cx="32" cy="10" r="1"/>
+    <!-- Delta Crucis (right) -->
+    <circle cx="36" cy="17" r="1"/>
+    <!-- Epsilon Crucis (small, inside) -->
+    <circle cx="33.5" cy="18.5" r="0.6"/>
+  </g>
+</svg>

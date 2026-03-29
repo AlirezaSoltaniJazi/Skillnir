@@ -4,6 +4,7 @@ from pathlib import Path
 
 from nicegui import ui
 
+from skillnir.i18n import t, get_current_language
 from skillnir.injector import inject_skill
 from skillnir.skills import discover_skills_from_dir
 from skillnir.syncer import get_source_skills_dir, sync_skill, sync_skills
@@ -25,6 +26,7 @@ from skillnir.ui.layout import (
 @ui.page('/install')
 def page_install():
     audio_el, sound_state = header()
+    lang = get_current_language()
 
     state = {
         'target_root': str(Path.cwd()),
@@ -39,28 +41,34 @@ def page_install():
 
     with ui.column().classes('w-full max-w-5xl mx-auto px-8 py-8 gap-6'):
         page_header(
-            'Install Skills',
-            'Inject AI coding skills into your project.',
+            t('pages.install.title', lang),
+            t('pages.install.subtitle', lang),
             icon='download',
         )
 
         with ui.stepper().props('vertical animated').classes('w-full') as stepper:
 
             # Step 1: Target Project & Source
-            with ui.step('Target & Source'):
-                ui.label('Enter the root path of the target project.').classes(
+            with ui.step(t('pages.install.steps.target_source', lang)):
+                ui.label(t('pages.install.target_project_help', lang)).classes(
                     'text-gray-400 mb-2'
                 )
                 target_input = (
-                    ui.input('Project root', value=state['target_root'])
+                    ui.input(
+                        t('pages.install.project_root', lang),
+                        value=state['target_root'],
+                    )
                     .classes('w-full max-w-xl')
                     .props('outlined dense rounded')
                 )
-                ui.label(
-                    'Source skills path (where to fetch generated skills from).'
-                ).classes('text-gray-400 mb-2 mt-4')
+                ui.label(t('pages.install.source_skills_help', lang)).classes(
+                    'text-gray-400 mb-2 mt-4'
+                )
                 source_input = (
-                    ui.input('Source skills path', value=default_source)
+                    ui.input(
+                        t('pages.install.source_skills_path', lang),
+                        value=default_source,
+                    )
                     .classes('w-full max-w-xl')
                     .props('outlined dense rounded')
                 )
@@ -69,19 +77,25 @@ def page_install():
                 def validate_and_next():
                     path = Path(target_input.value).resolve()
                     if not path.is_dir():
-                        target_error.text = f'Directory not found: {path}'
+                        target_error.text = t(
+                            'messages.directory_not_found', lang, path=str(path)
+                        )
                         target_error.classes(remove='hidden')
                         return
                     src = Path(source_input.value).resolve()
                     if not src.is_dir():
-                        target_error.text = f'Source directory not found: {src}'
+                        target_error.text = t(
+                            'messages.source_directory_not_found', lang, path=str(src)
+                        )
                         target_error.classes(remove='hidden')
                         return
                     target_error.classes(add='hidden')
                     state['target_root'] = str(path)
                     state['skills'] = discover_skills_from_dir(src)
                     if not state['skills']:
-                        target_error.text = 'No skills found in source.'
+                        target_error.text = t(
+                            'messages.no_skills_found_in_source', lang
+                        )
                         target_error.classes(remove='hidden')
                         return
                     build_skill_cards(skill_container, state, stepper, tool_container)
@@ -89,23 +103,25 @@ def page_install():
 
                 with ui.row().classes('mt-4'):
                     ui.button(
-                        'Next', on_click=validate_and_next, icon='arrow_forward'
+                        t('buttons.next', lang),
+                        on_click=validate_and_next,
+                        icon='arrow_forward',
                     ).props('unelevated rounded')
 
             # Step 2: Select Skills
-            with ui.step('Select Skills'):
-                ui.label('Choose skills to inject (select one or more).').classes(
+            with ui.step(t('pages.install.steps.select_skills', lang)):
+                ui.label(t('pages.install.select_skills_help', lang)).classes(
                     'text-gray-400 mb-2'
                 )
                 skill_container = ui.column().classes('w-full gap-3')
 
             # Step 3: Select Tools
-            with ui.step('Select Tools'):
-                ui.label('Choose AI tools to inject symlinks into.').classes(
+            with ui.step(t('pages.install.steps.select_tools', lang)):
+                ui.label(t('pages.install.select_tools_help', lang)).classes(
                     'text-gray-400 mb-2'
                 )
                 with ui.row().classes('items-center gap-2 mb-3'):
-                    ui.label('Sort by:').classes('font-medium')
+                    ui.label(t('pages.install.sort_by', lang)).classes('font-medium')
                     sort_select = (
                         ui.select(options=SORT_MODES, value='default')
                         .classes('w-48')
@@ -122,30 +138,37 @@ def page_install():
 
                 with ui.row().classes('mt-4 gap-2'):
                     ui.button(
-                        'Back', on_click=stepper.previous, icon='arrow_back'
+                        t('buttons.back', lang),
+                        on_click=stepper.previous,
+                        icon='arrow_back',
                     ).props('flat rounded')
 
                     def go_to_confirm():
                         if not state['selected_tools']:
-                            ui.notify('Select at least one tool.', type='warning')
+                            ui.notify(
+                                t('messages.select_at_least_one_tool', lang),
+                                type='warning',
+                            )
                             return
                         build_confirm(confirm_container, state)
                         stepper.next()
 
                     ui.button(
-                        'Next — Confirm',
+                        t('buttons.next_confirm', lang),
                         on_click=go_to_confirm,
                         icon='arrow_forward',
                     ).props('unelevated rounded')
 
             # Step 4: Confirm & Execute
-            with ui.step('Confirm & Execute'):
+            with ui.step(t('pages.install.steps.confirm_execute', lang)):
                 confirm_container = ui.column().classes('w-full')
                 execute_progress_container = ui.column().classes('w-full')
 
                 with ui.row().classes('mt-4 gap-2'):
                     ui.button(
-                        'Back', on_click=stepper.previous, icon='arrow_back'
+                        t('buttons.back', lang),
+                        on_click=stepper.previous,
+                        icon='arrow_back',
                     ).props('flat rounded')
 
                     def do_execute():
@@ -154,7 +177,9 @@ def page_install():
                         with execute_progress_container:
                             with ui.row().classes('items-center gap-3 mt-2'):
                                 ui.spinner('dots', size='lg')
-                                progress_label = ui.label('Starting...')
+                                progress_label = ui.label(
+                                    t('pages.install.starting', lang)
+                                )
 
                         target_root = Path(state['target_root'])
                         total = len(state['selected_skills'])
@@ -163,28 +188,46 @@ def page_install():
                         source_dir_inner = Path(source_input.value).resolve()
                         target_skills_dir = target_root / '.data' / 'skills'
                         for i, s in enumerate(state['selected_skills'], 1):
-                            progress_label.text = (
-                                f'Syncing skill {i}/{total}: {s.name}...'
+                            progress_label.text = t(
+                                'pages.install.syncing_skill',
+                                lang,
+                                index=str(i),
+                                total=str(total),
+                                name=s.name,
                             )
                             result = sync_skill(
                                 source_dir_inner, target_skills_dir, s.dir_name
                             )
                             if result.action == 'copied':
                                 ui.notify(
-                                    f"'{result.skill_name}' v{result.source_version} — copied",
+                                    t(
+                                        'messages.skill_copied',
+                                        lang,
+                                        name=result.skill_name,
+                                        version=result.source_version,
+                                    ),
                                     type='positive',
                                 )
                             elif result.action == 'updated':
                                 ui.notify(
-                                    f"'{result.skill_name}' — updated", type='info'
+                                    t(
+                                        'messages.skill_updated',
+                                        lang,
+                                        name=result.skill_name,
+                                    ),
+                                    type='info',
                                 )
 
                         # Phase 2: Inject
                         all_tools = [AUTO_INJECT_TOOL] + state['selected_tools']
                         all_results = []
                         for i, skill in enumerate(state['selected_skills'], 1):
-                            progress_label.text = (
-                                f'Injecting skill {i}/{total}: {skill.name}...'
+                            progress_label.text = t(
+                                'pages.install.injecting_skill',
+                                lang,
+                                index=str(i),
+                                total=str(total),
+                                name=skill.name,
                             )
                             results = inject_skill(target_root, skill, all_tools)
                             all_results.append((skill, results))
@@ -197,39 +240,42 @@ def page_install():
                         stepper.next()
 
                     execute_btn = ui.button(
-                        'Execute',
+                        t('buttons.execute', lang),
                         on_click=do_execute,
                         icon='rocket_launch',
                     ).props('unelevated rounded color=positive')
 
             # Step 5: Results
-            with ui.step('Results'):
+            with ui.step(t('pages.install.steps.results', lang)):
                 results_container = ui.column().classes('w-full')
                 with ui.row().classes('mt-4 gap-2'):
                     ui.button(
-                        'Start Over',
+                        t('buttons.start_over', lang),
                         on_click=lambda: ui.navigate.to('/install'),
                         icon='refresh',
                     ).props('unelevated rounded')
                     ui.button(
-                        'Home', on_click=lambda: ui.navigate.to('/'), icon='home'
+                        t('buttons.home', lang),
+                        on_click=lambda: ui.navigate.to('/'),
+                        icon='home',
                     ).props('flat rounded')
 
 
 @ui.page('/update')
 def page_update():
     audio_el, sound_state = header()
+    lang = get_current_language()
 
     with ui.column().classes('w-full max-w-5xl mx-auto px-8 py-8 gap-6'):
         page_header(
-            'Update Skills',
-            'Sync all skills from source to a target project.',
+            t('pages.update.title', lang),
+            t('pages.update.subtitle', lang),
             icon='sync',
         )
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
             target_input = (
-                ui.input('Target project root', value=str(Path.cwd()))
+                ui.input(t('pages.install.project_root', lang), value=str(Path.cwd()))
                 .classes('w-full max-w-xl')
                 .props('outlined dense rounded')
             )
@@ -240,7 +286,10 @@ def page_update():
         def do_update():
             target = Path(target_input.value).resolve()
             if not target.is_dir():
-                ui.notify(f'Directory not found: {target}', type='negative')
+                ui.notify(
+                    t('messages.directory_not_found', lang, path=str(target)),
+                    type='negative',
+                )
                 return
             update_btn.disable()
             results_container.clear()
@@ -248,7 +297,7 @@ def page_update():
             with update_progress_container:
                 with ui.row().classes('items-center gap-3 mt-2'):
                     ui.spinner('dots', size='lg')
-                    ui.label('Updating skills...')
+                    ui.label(t('pages.install.updating_skills', lang))
 
             source_dir = get_source_skills_dir()
             target_skills_dir = target / '.data' / 'skills'
@@ -261,16 +310,18 @@ def page_update():
             with results_container:
                 with ui.row().classes('gap-3 mt-4'):
                     ui.button(
-                        'Try Again',
+                        t('buttons.try_again', lang),
                         on_click=lambda: ui.navigate.to('/update'),
                         icon='refresh',
                     ).props('unelevated rounded')
                     ui.button(
-                        'Home', on_click=lambda: ui.navigate.to('/'), icon='home'
+                        t('buttons.home', lang),
+                        on_click=lambda: ui.navigate.to('/'),
+                        icon='home',
                     ).props('flat rounded')
 
         update_btn = ui.button(
-            'Update All Skills',
+            t('buttons.update_all_skills', lang),
             on_click=do_update,
             icon='sync',
         ).props('unelevated rounded color=positive')
@@ -279,18 +330,21 @@ def page_update():
 @ui.page('/skills')
 def page_skills():
     _audio, _snd = header()
+    lang = get_current_language()
     source_dir = get_source_skills_dir()
     skills = discover_skills_from_dir(source_dir)
 
     with ui.column().classes('w-full max-w-6xl mx-auto px-8 py-8 gap-6'):
         page_header(
-            'Skills Library', f'{len(skills)} skills available', icon='inventory_2'
+            t('pages.skills_library.title', lang),
+            t('pages.skills_library.subtitle', lang, count=str(len(skills))),
+            icon='inventory_2',
         )
 
         # ── Search ──
         search_input = (
             ui.input(
-                placeholder='Search skills...',
+                placeholder=t('pages.skills_library.search_placeholder', lang),
             )
             .classes('w-64')
             .props('outlined dense rounded clearable')
@@ -344,9 +398,13 @@ def page_skills():
                                         with ui.row().classes(
                                             'items-center justify-between w-full mb-3'
                                         ):
-                                            ui.label(f'{name} — SKILL.md').classes(
-                                                'text-lg font-bold'
-                                            )
+                                            ui.label(
+                                                t(
+                                                    'pages.skills_library.skill_md_dialog_title',
+                                                    lang,
+                                                    name=name,
+                                                )
+                                            ).classes('text-lg font-bold')
                                             ui.button(
                                                 icon='close', on_click=dlg.close
                                             ).props('flat round dense')
@@ -356,18 +414,24 @@ def page_skills():
                                     dlg.open()
                                 except Exception as e:
                                     ui.notify(
-                                        f'Error reading SKILL.md: {e}', type='negative'
+                                        t(
+                                            'pages.skills_library.error_reading_skill_md',
+                                            lang,
+                                            error=str(e),
+                                        ),
+                                        type='negative',
                                     )
 
                             ui.button(
-                                'View SKILL.md',
+                                t('pages.skills_library.view_skill_md', lang),
                                 on_click=show_skill_md,
                                 icon='description',
                             ).props('flat dense rounded').classes('mt-2')
                         else:
-                            ui.button('SKILL.md not found', icon='error_outline').props(
-                                'flat dense disabled'
-                            ).classes('mt-2 text-gray-600')
+                            ui.button(
+                                t('pages.skills_library.skill_md_not_found', lang),
+                                icon='error_outline',
+                            ).props('flat dense disabled').classes('mt-2 text-gray-600')
 
         _render_skills()
         search_input.on_value_change(lambda e: _render_skills(e.value or ''))

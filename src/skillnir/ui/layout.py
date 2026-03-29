@@ -2,6 +2,13 @@
 
 from pathlib import Path
 
+from skillnir.i18n import (
+    t,
+    get_current_language,
+    is_rtl,
+    SUPPORTED_LANGUAGES,
+    set_language,
+)
 from skillnir.skills import Skill
 from skillnir.syncer import SyncResult
 from skillnir.tools import AITool, AUTO_INJECT_TOOL, TOOLS, detect_tools
@@ -60,9 +67,58 @@ NAV_GROUPS = [
             ('devices', 'Tools Registry', '/tools'),
             ('analytics', 'Usage', '/usage'),
             ('science', 'Research', '/research'),
+            ('event', 'Events', '/events'),
         ],
     ),
 ]
+
+
+def get_nav_groups(lang: str | None = None) -> list:
+    """Return navigation groups with translated labels."""
+    return [
+        (
+            t("nav.groups.skill_management", lang),
+            [
+                ("download", t("nav.items.install", lang), "/install"),
+                ("sync", t("nav.items.update", lang), "/update"),
+                ("fact_check", t("nav.items.check", lang), "/check-skill"),
+                ("delete", t("nav.items.delete", lang), "/delete-skill"),
+                ("psychology", t("nav.items.generate_skill", lang), "/generate-skill"),
+            ],
+        ),
+        (
+            t("nav.groups.ai_context", lang),
+            [
+                ("gavel", t("nav.items.generate_rule", lang), "/generate-rule"),
+                ("auto_stories", t("nav.items.generate_docs", lang), "/generate-docs"),
+                ("delete_sweep", t("nav.items.delete_docs", lang), "/delete-docs"),
+            ],
+        ),
+        (
+            t("nav.groups.templates", lang),
+            [
+                ("note_add", t("nav.items.init_skill", lang), "/init-skill"),
+                ("description", t("nav.items.init_docs", lang), "/init-docs"),
+            ],
+        ),
+        (
+            t("nav.groups.ai_assistant", lang),
+            [
+                ("chat", t("nav.items.ask_ai", lang), "/ask"),
+                ("map", t("nav.items.plan", lang), "/plan"),
+            ],
+        ),
+        (
+            t("nav.groups.tools_data", lang),
+            [
+                ("inventory_2", t("nav.items.skills_library", lang), "/skills"),
+                ("devices", t("nav.items.tools_registry", lang), "/tools"),
+                ("analytics", t("nav.items.usage", lang), "/usage"),
+                ("science", t("nav.items.research", lang), "/research"),
+                ("event", t("nav.items.events", lang), "/events"),
+            ],
+        ),
+    ]
 
 
 def _sort_tools(tools: tuple[AITool, ...] | list[AITool], mode: str) -> list[AITool]:
@@ -126,6 +182,9 @@ def header() -> tuple:
 
     # ── Detect current route for active highlighting ──
     current_path = ui.context.client.page.path
+    lang = get_current_language()
+    is_rtl(lang)
+    nav_groups = get_nav_groups(lang)
 
     # ── Left Drawer ──
     with (
@@ -141,7 +200,7 @@ def header() -> tuple:
             )
 
         # Nav groups
-        for group_label, items in NAV_GROUPS:
+        for group_label, items in nav_groups:
             ui.label(group_label).classes(
                 'text-[10px] font-bold text-gray-500 tracking-widest px-5 mt-4 mb-1'
             )
@@ -179,7 +238,7 @@ def header() -> tuple:
             color = 'primary' if is_settings else 'grey'
             ui.icon('settings', color=color).classes('text-lg')
             text_cls = 'text-sm font-medium' if is_settings else 'text-sm text-gray-400'
-            ui.label('Settings').classes(text_cls)
+            ui.label(t("nav.items.settings", lang)).classes(text_cls)
 
     # ── Top App Bar ──
     ui.add_head_html(
@@ -239,6 +298,19 @@ def header() -> tuple:
                 .props(_hdr)
                 .classes('hdr-btn')
                 .tooltip("Toggle notification sound")
+            )
+
+            lang_options = {code: name for code, name in SUPPORTED_LANGUAGES.items()}
+
+            def on_lang_change(e):
+                set_language(e.value)
+                ui.navigate.to(current_path)
+
+            (
+                ui.select(lang_options, value=lang, on_change=on_lang_change)
+                .props('dense outlined')
+                .classes('min-w-[100px]')
+                .tooltip("Language")
             )
 
     audio_el = ui.audio("/static/notification.mp3").props("preload=auto")
