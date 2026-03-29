@@ -1,0 +1,29 @@
+# GitHub Actions Workflow Template for Skillnir
+# Copy this template and customize for your new workflow
+#
+# Checklist:
+# - [ ] Set descriptive name
+# - [ ] Set appropriate trigger
+# - [ ] Set timeout-minutes: 10
+# - [ ] Pin all action versions
+# - [ ] Add minimal permissions (only if needed)
+# - [ ] Checkout before local composite actions
+
+name: <Descriptive Name>
+on: pull_request
+
+jobs:
+  <job-name>:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # permissions:
+    #   pull-requests: write  # Only if needed
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-python
+        # with:
+        #   python-version: '3.14'  # Override if needed
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+      - name: <Step description>
+        run: <command>

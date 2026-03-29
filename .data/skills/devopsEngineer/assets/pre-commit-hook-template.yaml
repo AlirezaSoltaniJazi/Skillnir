@@ -1,0 +1,28 @@
+# Pre-commit Hook Entry Template for Skillnir
+# Add this to .pre-commit-config.yaml
+#
+# Checklist:
+# - [ ] Pin rev to exact version tag
+# - [ ] Add exclude for .data/ if code quality hook
+# - [ ] Match flags with CI workflow (check-style.yml)
+# - [ ] Test with: pre-commit run --all-files
+
+# Option 1: Remote hook (from GitHub repo)
+- repo: https://github.com/<org>/<repo>
+  rev: vX.Y.Z
+  hooks:
+    - id: <hook-id>
+      args: [--flag1, --flag2]
+      exclude: '\.data/'
+
+# Option 2: Local hook (system-installed tool)
+- repo: local
+  hooks:
+    - id: <hook-id>
+      name: <descriptive name>
+      entry: <command>
+      language: system
+      types: [python]
+      args: [-flag1, -flag2]
+      require_serial: true
+      exclude: '\.data/'
