@@ -1,0 +1,748 @@
+{
+  "nav": {
+    "groups": {
+      "skill_management": "ZARZĄDZANIE UMIEJĘTNOŚCIAMI",
+      "ai_context": "KONTEKST AI",
+      "templates": "SZABLONY",
+      "ai_assistant": "ASYSTENT AI",
+      "tools_data": "NARZĘDZIA I DANE"
+    },
+    "items": {
+      "install": "Zainstaluj",
+      "update": "Aktualizuj",
+      "check": "Sprawdź",
+      "delete": "Usuń",
+      "generate_skill": "Generuj umiejętność",
+      "generate_rule": "Generuj regułę",
+      "generate_docs": "Generuj dokumentację",
+      "delete_docs": "Usuń dokumentację",
+      "init_skill": "Inicjuj umiejętność",
+      "init_docs": "Inicjuj dokumentację",
+      "ask_ai": "Zapytaj AI",
+      "plan": "Plan",
+      "skills_library": "Biblioteka umiejętności",
+      "tools_registry": "Rejestr narzędzi",
+      "usage": "Użycie",
+      "research": "Badania",
+      "events": "Wydarzenia",
+      "settings": "Ustawienia"
+    },
+    "sort_modes": {
+      "default": "Domyślnie",
+      "popularity": "Popularność",
+      "performance": "Wydajność",
+      "price": "Cena (najtańsze)",
+      "alpha": "Alfabetycznie"
+    }
+  },
+
+  "pages": {
+    "home": {
+      "sections": {
+        "skill": {
+          "title": "Umiejętność",
+          "desc": "Instaluj, aktualizuj, sprawdzaj, usuwaj lub generuj umiejętności dla swoich projektów.",
+          "items": {
+            "install": "Zainstaluj",
+            "update": "Aktualizuj",
+            "check": "Sprawdź",
+            "delete": "Usuń",
+            "generate_skill": "Generuj umiejętność"
+          }
+        },
+        "ai_context": {
+          "title": "Kontekst AI",
+          "desc": "Generuj reguły, dokumentację AI lub usuń istniejącą dokumentację z projektów.",
+          "items": {
+            "generate_rule": "Generuj regułę",
+            "generate_docs": "Generuj dokumentację AI",
+            "delete_docs": "Usuń dokumentację"
+          }
+        },
+        "default_template": {
+          "title": "Szablon domyślny",
+          "desc": "Utwórz pusty szablon umiejętności lub dokumentacji z komentarzami zastępczymi.",
+          "items": {
+            "init_skill": "Inicjuj umiejętność",
+            "init_docs": "Inicjuj dokumentację"
+          }
+        },
+        "claude_tools": {
+          "title": "Narzędzia Claude",
+          "desc": "Aktywuj lub dezaktywuj powiadomienia dźwiękowe Claude Code.",
+          "sound_notifications": "Powiadomienia dźwiękowe"
+        },
+        "usage": {
+          "title": "Użycie",
+          "desc": "Wyświetl statystyki tokenów i informacje o użyciu poszczególnych backendów.",
+          "items": {
+            "token_stats": "Statystyki tokenów"
+          }
+        },
+        "supported_tools": {
+          "title": "Obsługiwane narzędzia",
+          "desc": "Przeglądaj wszystkie obsługiwane narzędzia AI i ich modele.",
+          "items": {
+            "models_tools": "Modele i narzędzia"
+          }
+        },
+        "research": {
+          "title": "Badania",
+          "desc": "Przeszukuj internet, przeglądaj istniejące artykuły lub usuwaj dane badawcze.",
+          "items": {
+            "research_hub": "Centrum badań"
+          }
+        },
+        "events": {
+          "title": "Wydarzenia",
+          "desc": "Znajdź nadchodzące konferencje, spotkania i warsztaty AI na całym świecie.",
+          "items": {
+            "events_hub": "Centrum wydarzeń"
+          }
+        },
+        "settings": {
+          "title": "Ustawienia",
+          "desc": "Tryb jasny/ciemny, przełącznik powiadomień i preferencje aplikacji.",
+          "items": {
+            "preferences": "Preferencje"
+          }
+        },
+        "ai_extra": {
+          "title": "AI Extra",
+          "desc": "Zadawaj pytania AI lub uzyskuj szczegółowe plany implementacji.",
+          "items": {
+            "ask_ai": "Zapytaj AI",
+            "plan_with_ai": "Planuj z AI"
+          }
+        }
+      },
+      "quick_actions": {
+        "install_skill": "Zainstaluj umiejętność",
+        "generate_docs": "Generuj dokumentację",
+        "generate_skill": "Generuj umiejętność",
+        "ask_ai": "Zapytaj AI"
+      }
+    },
+
+    "install": {
+      "title": "Zainstaluj umiejętności",
+      "subtitle": "Wstrzyknij umiejętności kodowania AI do swojego projektu.",
+      "steps": {
+        "target_source": "Cel i źródło",
+        "select_skills": "Wybierz umiejętności",
+        "select_tools": "Wybierz narzędzia",
+        "confirm_execute": "Potwierdź i wykonaj",
+        "results": "Wyniki"
+      },
+      "target_project_help": "Wprowadź ścieżkę główną projektu docelowego.",
+      "source_skills_help": "Ścieżka źródłowa umiejętności (skąd pobrać wygenerowane umiejętności).",
+      "select_skills_help": "Wybierz umiejętności do wstrzyknięcia (zaznacz jedną lub więcej).",
+      "select_tools_help": "Wybierz narzędzia AI, do których wstrzyknąć dowiązania symboliczne.",
+      "sort_by": "Sortuj według:",
+      "project_root": "Katalog główny projektu",
+      "source_skills_path": "Ścieżka źródłowa umiejętności",
+      "syncing_skill": "Synchronizacja umiejętności {index}/{total}: {name}...",
+      "injecting_skill": "Wstrzykiwanie umiejętności {index}/{total}: {name}...",
+      "starting": "Uruchamianie...",
+      "updating_skills": "Aktualizowanie umiejętności..."
+    },
+
+    "update": {
+      "title": "Aktualizuj umiejętności",
+      "subtitle": "Synchronizuj wszystkie umiejętności ze źródła do projektu docelowego."
+    },
+
+    "skills_library": {
+      "title": "Biblioteka umiejętności",
+      "subtitle": "{count} dostępnych umiejętności",
+      "search_placeholder": "Szukaj umiejętności...",
+      "view_skill_md": "Wyświetl SKILL.md",
+      "skill_md_not_found": "Nie znaleziono SKILL.md",
+      "skill_md_dialog_title": "{name} — SKILL.md",
+      "error_reading_skill_md": "Błąd odczytu SKILL.md: {error}"
+    },
+
+    "generate_docs": {
+      "title": "Generuj dokumentację AI",
+      "subtitle": "Skanuj projekt za pomocą AI i generuj agents.md + .claude/claude.md",
+      "target_project_root": "Katalog główny projektu docelowego",
+      "prompt_version": "Wersja promptu",
+      "result_success_title": "Generowanie zakończone",
+      "result_fail_title": "Generowanie nie powiodło się"
+    },
+
+    "generate_rule": {
+      "title": "Generuj regułę",
+      "subtitle": "Skanuj projekt za pomocą AI i generuj pliki reguł Cursor (.mdc)",
+      "target_project_root": "Katalog główny projektu docelowego",
+      "rule_topic": "Temat reguły",
+      "rule_topic_placeholder": "np. standardy obsługi błędów, wzorce komponentów React",
+      "prompt_version": "Wersja promptu",
+      "enter_rule_topic": "Wprowadź temat reguły.",
+      "result_success_title": "Generowanie reguły zakończone",
+      "result_fail_title": "Generowanie reguły nie powiodło się"
+    },
+
+    "delete_docs": {
+      "title": "Usuń dokumentację AI",
+      "subtitle": "Usuń agents.md i jego dowiązania symboliczne z projektu docelowego.",
+      "target_project_root": "Katalog główny projektu docelowego",
+      "no_docs_found": "Nie znaleziono dokumentacji AI w projekcie docelowym.",
+      "found_label": "Znaleziono:",
+      "symlink": "dowiązanie symboliczne",
+      "file": "plik",
+      "no_docs_to_delete": "Nie znaleziono dokumentacji do usunięcia.",
+      "deletion_complete": "Usuwanie zakończone",
+      "deletion_failed": "Usuwanie nie powiodło się",
+      "removed_files": "Usunięto {count} plik(ów)",
+      "cleaned_dirs": "Wyczyszczono {count} pusty(ch) katalog(ów)"
+    },
+
+    "generate_skill": {
+      "title": "Generuj umiejętność",
+      "subtitle": "Skanuj projekt za pomocą AI i generuj specjalistyczny SKILL.md",
+      "target_project_root": "Katalog główny projektu docelowego",
+      "project_name": "Nazwa projektu",
+      "skill_scope": "Zakres umiejętności",
+      "prompt_version": "Wersja promptu",
+      "also_add_to_current": "Dodaj również umiejętność do bieżącego projektu",
+      "skill_name_preview": "Nazwa umiejętności: {name}",
+      "result_success_title": "Generowanie umiejętności zakończone",
+      "result_fail_title": "Generowanie umiejętności nie powiodło się",
+      "result_footer": "Uruchom 'skillnir install', aby wstrzyknąć tę umiejętność do narzędzi AI.",
+      "grid_skill_name": "Nazwa umiejętności",
+      "grid_target_skill_md": "Docelowy SKILL.md",
+      "grid_source_skill_md": "Źródłowy SKILL.md",
+      "grid_duration": "Czas trwania",
+      "grid_tools_used": "Użyte narzędzia",
+      "grid_backend": "Backend"
+    },
+
+    "delete_skill": {
+      "title": "Usuń umiejętności",
+      "subtitle": "Usuń umiejętność(ci) z projektu docelowego, w tym dowiązania symboliczne ze wszystkich katalogów narzędzi.",
+      "target_project_root": "Katalog główny projektu docelowego",
+      "no_skills_found": "Nie znaleziono umiejętności w projekcie docelowym.",
+      "found_skills": "Znaleziono {count} umiejętność(ci):",
+      "tool_installations": "{count} instalacja(e) narzędzi",
+      "also_delete_data": "Usuń również dane umiejętności z .data/skills/",
+      "select_at_least_one": "Wybierz co najmniej jedną umiejętność.",
+      "deletion_report": "Raport usuwania",
+      "error_badge": "błąd",
+      "deleted_badge": "usunięto",
+      "deleted_summary": "({symlinks} dowiązań, {dirs} katalogów wyczyszczonych)"
+    },
+
+    "init_skill": {
+      "title": "Inicjuj umiejętność",
+      "subtitle": "Utwórz domyślny szkielet umiejętności z plikami zastępczymi z komentarzami.",
+      "target_project_root": "Katalog główny projektu docelowego",
+      "skill_name_label": "Nazwa umiejętności (małe litery, tylko myślniki)",
+      "will_create": "Zostaną utworzone:",
+      "scaffold_created": "Szkielet umiejętności utworzony w {path}",
+      "error_prefix": "Błąd: {error}"
+    },
+
+    "init_docs": {
+      "title": "Inicjuj dokumentację AI",
+      "subtitle": "Utwórz domyślny szablon agents.md z sekcjami komentarzy i dowiązaniami symbolicznymi dla narzędzi AI.",
+      "target_project_root": "Katalog główny projektu docelowego",
+      "will_create": "Zostaną utworzone:",
+      "docs_created": "Szablon dokumentacji AI utworzony!",
+      "error_prefix": "Błąd: {error}"
+    },
+
+    "ask": {
+      "title": "Zapytaj AI",
+      "subtitle": "Zadaj pytanie dotyczące projektu. AI odpowiada bez wprowadzania zmian.",
+      "target_project_root": "Katalog główny projektu docelowego",
+      "your_question": "Twoje pytanie",
+      "question_placeholder": "np. Jak działa moduł uwierzytelniania?",
+      "enter_question": "Wprowadź pytanie.",
+      "result_success_title": "Odpowiedź gotowa",
+      "result_fail_title": "Zapytanie nie powiodło się"
+    },
+
+    "plan": {
+      "title": "Plan",
+      "subtitle": "Uzyskaj szczegółowy plan implementacji od AI dla zadania lub funkcji.",
+      "target_project_root": "Katalog główny projektu docelowego",
+      "task_input_label": "Do czego potrzebujesz planu?",
+      "task_placeholder": "np. Dodaj uwierzytelnianie użytkowników z tokenami JWT",
+      "describe_task": "Opisz zadanie.",
+      "result_success_title": "Plan gotowy",
+      "result_fail_title": "Planowanie nie powiodło się"
+    },
+
+    "check_skill": {
+      "title": "Sprawdź umiejętność",
+      "subtitle": "Uruchom /skills za pomocą backendu AI na projekcie docelowym.",
+      "target_project_root": "Katalog główny projektu docelowego",
+      "result_success_title": "Sprawdzanie umiejętności zakończone",
+      "result_fail_title": "Sprawdzanie umiejętności nie powiodło się"
+    },
+
+    "tools_registry": {
+      "title": "Rejestr narzędzi",
+      "subtitle": "{count} obsługiwanych narzędzi AI (+ automatyczne wstrzykiwanie .agents/)",
+      "search_placeholder": "Szukaj narzędzi...",
+      "columns": {
+        "name": "Nazwa",
+        "company": "Firma",
+        "dotdir": "Dotdir",
+        "popularity": "Popularność",
+        "performance": "Wydajność",
+        "price": "Cena"
+      }
+    },
+
+    "usage": {
+      "title": "Użycie tokenów",
+      "subtitle": "Użycie tokenów na poziomie sesji we wszystkich backendach AI.",
+      "no_requests_title": "Brak żądań AI",
+      "no_requests_subtitle": "Użycie tokenów pojawi się tutaj po wygenerowaniu dokumentacji, umiejętności lub zadaniu pytań AI.",
+      "session_summary": "Podsumowanie sesji",
+      "total_tokens": "Łączna liczba tokenów",
+      "input_tokens": "Tokeny wejściowe",
+      "output_tokens": "Tokeny wyjściowe",
+      "total_cost": "Łączny koszt",
+      "requests": "Żądania",
+      "cache_tokens": "Tokeny cache",
+      "cost": "Koszt"
+    },
+
+    "research": {
+      "title": "Badania inżynierii AI",
+      "subtitle": "Szukaj najnowszych wiadomości z inżynierii AI, czytaj artykuły i generuj podsumowania",
+      "topics_to_search": "Tematy do wyszukania:",
+      "filter_by_source": "Filtruj według źródła (opcjonalnie):",
+      "articles_in_kb": "Artykuły w bazie wiedzy",
+      "result_success_title": "Badanie zakończone",
+      "result_fail_title": "Badanie nie powiodło się",
+      "grid_articles_found": "Znalezione artykuły",
+      "grid_new_articles": "Nowe artykuły",
+      "grid_skipped_dedup": "Pominięte (deduplikacja)",
+      "grid_duration": "Czas trwania",
+      "select_at_least_one_topic": "Wybierz co najmniej jeden temat",
+      "generated_html_pages": "Wygenerowano {count} stron(ę) HTML artykułów",
+      "all_articles_have_html": "Wszystkie artykuły mają już strony HTML"
+    },
+
+    "events": {
+      "title": "Wydarzenia i konferencje AI",
+      "subtitle": "Znajdź nadchodzące konferencje, spotkania i warsztaty AI na całym świecie",
+      "countries_to_search": "Kraje do wyszukania:",
+      "events_in_kb": "Wydarzenia w bazie wiedzy",
+      "result_success_title": "Wyszukiwanie wydarzeń zakończone",
+      "result_fail_title": "Wyszukiwanie wydarzeń nie powiodło się",
+      "grid_events_found": "Znalezione wydarzenia",
+      "grid_new_events": "Nowe wydarzenia",
+      "grid_skipped_dedup": "Pominięte (deduplikacja)",
+      "grid_duration": "Czas trwania",
+      "select_at_least_one_country": "Wybierz co najmniej jeden kraj",
+      "generated_html_pages": "Wygenerowano {count} stron(ę) HTML wydarzeń",
+      "all_events_have_html": "Wszystkie wydarzenia mają już strony HTML"
+    },
+
+    "settings": {
+      "title": "Ustawienia",
+      "subtitle": "Konfiguruj preferencje aplikacji.",
+      "dark_mode": {
+        "title": "Tryb ciemny",
+        "description": "Przełącz między ciemnym a jasnym motywem interfejsu.",
+        "enabled": "Tryb ciemny włączony",
+        "disabled": "Tryb jasny włączony"
+      },
+      "sound_notifications": {
+        "title": "Powiadomienia o procesach",
+        "description": "Odtwórz dźwięk po zakończeniu generowania AI.",
+        "enabled": "Powiadomienia dźwiękowe włączone",
+        "disabled": "Powiadomienia dźwiękowe wyłączone"
+      },
+      "ai_tool": {
+        "title": "Narzędzie AI",
+        "description": "Aktualnie używane: {name}"
+      },
+      "model": {
+        "title": "Model",
+        "description": "Aktualnie używany: {model}"
+      },
+      "prompt_version": {
+        "title": "Wersja promptu",
+        "description": "Aktualnie używana: {version}"
+      }
+    }
+  },
+
+  "buttons": {
+    "next": "Dalej",
+    "back": "Wstecz",
+    "home": "Strona główna",
+    "execute": "Wykonaj",
+    "search": "Szukaj",
+    "cancel": "Anuluj",
+    "close": "Zamknij",
+    "select": "Wybierz",
+    "switch": "Przełącz",
+    "scan": "Skanuj",
+    "reset": "Resetuj",
+    "refresh": "Odśwież",
+    "try_again": "Spróbuj ponownie",
+    "start_over": "Zacznij od nowa",
+    "search_again": "Szukaj ponownie",
+    "select_all": "Zaznacz wszystko",
+    "deselect_all": "Odznacz wszystko",
+    "auto_detect": "Autowykrywanie",
+    "next_select_tools": "Dalej — Wybierz narzędzia",
+    "next_confirm": "Dalej — Potwierdź",
+    "delete_selected": "Usuń zaznaczone",
+    "delete_docs": "Usuń dokumentację",
+    "create_scaffold": "Utwórz szkielet",
+    "create_docs_template": "Utwórz szablon dokumentacji",
+    "create_plan": "Utwórz plan",
+    "run_check": "Uruchom sprawdzanie",
+    "generate_ai_docs": "Generuj dokumentację AI",
+    "generate_rule": "Generuj regułę",
+    "generate_skill": "Generuj umiejętność",
+    "update_all_skills": "Aktualizuj wszystkie umiejętności",
+    "search_latest_news": "Szukaj najnowszych wiadomości",
+    "search_events": "Szukaj wydarzeń",
+    "view_landing_page": "Wyświetl stronę główną",
+    "generate_html_files": "Generuj pliki HTML",
+    "open_landing_page": "Otwórz stronę główną",
+    "view_skill_md": "Wyświetl SKILL.md",
+    "switch_tool": "Przełącz narzędzie",
+    "switch_model": "Przełącz model",
+    "prompts": "Prompty",
+    "usage": "Użycie",
+    "install_skill": "Zainstaluj umiejętność",
+    "ask": "Zapytaj",
+    "hide_log": "Ukryj dziennik",
+    "show_log": "Pokaż dziennik",
+    "got_it": "Rozumiem"
+  },
+
+  "messages": {
+    "using_backend": "Używany: {name} ({model})",
+    "directory_not_found": "Nie znaleziono katalogu: {path}",
+    "source_directory_not_found": "Nie znaleziono katalogu źródłowego: {path}",
+    "no_skills_found_in_source": "Nie znaleziono umiejętności w źródle.",
+    "no_skills_found_in_target": "Nie znaleziono umiejętności w projekcie docelowym.",
+    "no_docs_found_in_target": "Nie znaleziono dokumentacji AI w projekcie docelowym.",
+    "no_tools_detected": "Nie znaleziono katalogów narzędzi w projekcie docelowym.",
+    "select_at_least_one_skill": "Wybierz co najmniej jedną umiejętność.",
+    "select_at_least_one_tool": "Wybierz co najmniej jedno narzędzie.",
+    "no_usage_info": "Brak dostępnych informacji o użyciu.",
+    "found_tools": "Znaleziono {count} narzędzi w {name}/",
+    "selected_count": "{count} zaznaczonych",
+    "skill_copied": "'{name}' v{version} — skopiowano",
+    "skill_updated": "'{name}' — zaktualizowano",
+    "claude_sound_enabled": "Powiadomienia dźwiękowe Claude włączone",
+    "claude_sound_disabled": "Powiadomienia dźwiękowe Claude wyłączone",
+    "exit_code": "Kod wyjścia: {code}",
+    "agents_md_exists": "agents.md już istnieje w {path}",
+    "enter_rule_topic": "Wprowadź temat reguły.",
+    "enter_question": "Wprowadź pytanie.",
+    "describe_task": "Opisz zadanie.",
+    "no_skills_selected": "Nie wybrano umiejętności. Przerywanie.",
+    "no_tools_selected": "Nie wybrano narzędzi. Przerywanie.",
+    "no_question_provided": "Nie podano pytania. Przerywanie.",
+    "no_task_provided": "Nie podano zadania. Przerywanie.",
+    "aborted": "Przerwano.",
+    "done": "Gotowe.",
+    "timed_out": "{name} przekroczył limit czasu po 10 minutach.",
+    "cli_not_found": "CLI {command} nie znaleziono w PATH.",
+    "no_backends_available": "Brak dostępnych backendów. Zainstaluj claude, gemini lub copilot CLI."
+  },
+
+  "components": {
+    "hero": {
+      "title": "Skillnir",
+      "tagline": "Wstrzykuj umiejętności kodowania AI do katalogu dowolnego narzędzia.",
+      "skills_badge": "{count} umiejętności",
+      "tools_badge": "{count} narzędzi AI",
+      "dotdirs_badge": "{count} katalogów"
+    },
+    "welcome_dialog": {
+      "title": "Witaj w Skillnir",
+      "description": "Skillnir zarządza narzędziami kodowania AI za pośrednictwem ich interfejsów CLI. Aby rozpocząć, zainstaluj CLI dla co najmniej jednego backendu poniżej i zaloguj się na swoje konto.",
+      "dont_show_again": "Nie pokazuj ponownie",
+      "cli_guide_title": "Przewodnik instalacji CLI",
+      "cli_guide_description": "Zainstaluj i zaloguj się do interfejsu CLI każdego backendu AI, którego chcesz używać ze Skillnir.",
+      "install_label": "Zainstaluj",
+      "login_label": "Zaloguj się",
+      "verify_label": "Zweryfikuj",
+      "or_label": "lub",
+      "backends": {
+        "claude_code": {
+          "name": "Claude Code",
+          "notes": "Wymaga Node.js 18+. Można również zainstalować przez Homebrew."
+        },
+        "cursor_agent": {
+          "name": "Cursor Agent",
+          "notes": "Wymaga Node.js 18+. Można również używać przez IDE Cursor."
+        },
+        "gemini_cli": {
+          "name": "Gemini CLI",
+          "notes": "Wymaga Node.js 18+ i konta Google AI."
+        },
+        "github_copilot": {
+          "name": "GitHub Copilot",
+          "notes": "Wymaga konta GitHub z dostępem do Copilot."
+        }
+      }
+    },
+    "backend_picker": {
+      "switch_ai_tool_title": "Przełącz narzędzie AI",
+      "switch_model_title": "Przełącz model",
+      "switch_prompt_version_title": "Przełącz wersję promptu",
+      "ai_tool_label": "Narzędzie AI: {name}",
+      "active_badge": "aktywne",
+      "current_badge": "bieżące",
+      "default_badge": "domyślne"
+    },
+    "backend_chip": {
+      "model_label": "Model: {model}"
+    },
+    "stat_card": {
+      "created": "Utworzono",
+      "skipped": "Pominięto",
+      "errors": "Błędy",
+      "copied": "Skopiowano",
+      "updated": "Zaktualizowano"
+    },
+    "progress_panel": {
+      "initializing": "Inicjowanie...",
+      "preparing": "Przygotowywanie...",
+      "elapsed": "upłynęło",
+      "tools_used": "Użyte narzędzia",
+      "lines_output": "Linie wyjściowe",
+      "live_output": "Wyjście na żywo",
+      "log_output": "Dziennik"
+    },
+    "empty_state": {
+      "no_ai_requests": "Brak żądań AI",
+      "no_ai_requests_subtitle": "Użycie tokenów pojawi się tutaj po wygenerowaniu dokumentacji, umiejętności lub zadaniu pytań AI."
+    }
+  },
+
+  "layout": {
+    "injection_summary": "Podsumowanie wstrzykiwania",
+    "target": "Cel:",
+    "skills": "Umiejętności:",
+    "tools": "Narzędzia:",
+    "tools_selected_auto": "{count} wybranych + .agents/ (auto)",
+    "symlinks_to_create": "Dowiązania symboliczne do utworzenia:",
+    "injection_report": "Raport wstrzykiwania",
+    "sync_report": "Raport synchronizacji",
+    "no_skills_in_source": "Nie znaleziono umiejętności w źródle.",
+    "created_label": "Utworzono:",
+    "already_existed_label": "Już istniały:",
+    "errors_label": "Błędy:",
+    "installed_badge": "Zainstalowano",
+    "score_labels": {
+      "pop": "pop",
+      "perf": "wyd",
+      "price": "cena"
+    },
+    "tooltips": {
+      "cli_setup_guide": "Przewodnik konfiguracji CLI",
+      "toggle_dark_light": "Przełącz tryb ciemny/jasny",
+      "toggle_sound": "Przełącz dźwięk powiadomień"
+    }
+  },
+
+  "cli": {
+    "description": "Wstrzykuj umiejętności kodowania AI do katalogu dowolnego narzędzia.",
+    "command_help": "install (domyślnie): synchronizuj umiejętności + wstrzyknij do narzędzi. update: tylko synchronizuj umiejętności. delete-skill: usuń umiejętność(ci) z projektu. delete-docs: usuń dokumentację AI z projektu. init-skill: utwórz domyślny szkielet umiejętności. init-docs: utwórz domyślny szablon dokumentacji AI. ui: uruchom interfejs webowy. generate-docs: generuj agents.md za pomocą AI. generate-skill: generuj SKILL.md za pomocą AI. generate-rule: generuj regułę Cursor (.mdc) za pomocą AI. check-skill: uruchom /skills za pomocą backendu AI. ask: zadaj pytanie AI. plan: uzyskaj plan implementacji. research: szukaj najnowszych wiadomości z inżynierii AI i generuj podsumowania. events: szukaj nadchodzących wydarzeń i konferencji AI na całym świecie. config: zarządzaj backendem/modelem. sound: zarządzaj powiadomieniami dźwiękowymi Claude Code.",
+    "prompts": {
+      "target_project_root": "Katalog główny projektu docelowego:",
+      "source_skills_path": "Ścieżka źródłowa umiejętności:",
+      "select_skills": "Wybierz umiejętności do wstrzyknięcia (spacja=przełącz, enter=potwierdź):",
+      "how_sort_tools": "Jak posortować narzędzia?",
+      "select_tools": "Wybierz narzędzia AI do wstrzyknięcia (spacja=przełącz, enter=potwierdź):",
+      "proceed_injection": "Kontynuować wstrzykiwanie?",
+      "proceed_docs_generation": "Kontynuować generowanie dokumentacji AI?",
+      "proceed_skill_generation": "Kontynuować generowanie umiejętności?",
+      "proceed_rule_generation": "Kontynuować generowanie reguły?",
+      "project_name": "Nazwa projektu:",
+      "select_skill_scope": "Wybierz zakres umiejętności:",
+      "also_add_to_current": "Dodać wygenerowaną umiejętność do bieżącego projektu?",
+      "rule_topic": "Temat reguły (np. 'standardy obsługi błędów', 'wzorce React'):",
+      "enter_rule_topic": "Wprowadź temat reguły",
+      "your_question": "Twoje pytanie:",
+      "what_plan_for": "Do czego potrzebujesz planu?",
+      "run_skill_check": "Uruchomić sprawdzanie umiejętności?",
+      "select_skills_to_delete": "Wybierz umiejętności do usunięcia:",
+      "also_delete_data": "Usunąć również dane umiejętności z .data/skills/?",
+      "proceed_deletion": "Kontynuować usuwanie?",
+      "skill_name": "Nazwa umiejętności (małe litery, tylko myślniki):",
+      "create_skill_scaffold": "Utworzyć szkielet umiejętności?",
+      "create_docs_template": "Utworzyć szablon dokumentacji AI?",
+      "filter_by_source": "Filtruj według źródła (pozostaw puste dla wszystkich):",
+      "search_latest_articles": "Szukać najnowszych artykułów?",
+      "select_countries": "Wybierz kraje do wyszukania (pozostaw puste dla wszystkich):",
+      "search_upcoming_events": "Szukać nadchodzących wydarzeń?",
+      "open_landing_page": "Otworzyć stronę główną w przeglądarce?",
+      "what_to_do": "Co chcesz zrobić?"
+    },
+    "sort_modes": {
+      "default": "Domyślnie (zalecane)",
+      "popularity": "Sortuj według popularności",
+      "performance": "Sortuj według wydajności",
+      "price": "Sortuj według ceny (najtańsze najpierw)",
+      "alpha": "Sortuj alfabetycznie"
+    },
+    "install": {
+      "found_skill": "Znaleziono 1 umiejętność: {name} (v{version})",
+      "no_skills_in_source": "Nie znaleziono umiejętności w źródle. Brak elementów do wstrzyknięcia.",
+      "target_label": "Cel: {path}",
+      "skills_label": "Umiejętności: {names}",
+      "tools_label": "Narzędzia:  {count} wybranych + .agents/ (auto)",
+      "done": "Gotowe. {created} nowych, {skipped} pominiętych, {errors} błędów."
+    },
+    "sync_report": {
+      "title": "Raport synchronizacji umiejętności",
+      "copied": "skopiowano",
+      "updated": "zaktualizowano",
+      "skipped": "pominięto (ta sama wersja)",
+      "summary": "{copied} skopiowanych, {updated} zaktualizowanych, {skipped} pominiętych."
+    },
+    "injection_report": {
+      "title": "Raport wstrzykiwania: {name}",
+      "created": "Utworzono ({count}):",
+      "already_existed": "Już istniały ({count}):",
+      "errors": "Błędy ({count}):"
+    },
+    "generate_docs": {
+      "generating": "Generowanie dokumentacji AI...",
+      "complete": "Generowanie zakończone!",
+      "failed": "Generowanie nie powiodło się: {error}",
+      "will_generate": "Spowoduje to skanowanie projektu za pomocą AI i wygenerowanie:",
+      "agents_md": "agents.md (katalog główny projektu)",
+      "claude_md": ".claude/claude.md (dowiązanie symboliczne)"
+    },
+    "generate_skill": {
+      "generating": "Generowanie umiejętności {name}...",
+      "complete": "Generowanie umiejętności zakończone!",
+      "failed": "Generowanie umiejętności nie powiodło się: {error}",
+      "run_install": "Uruchom 'skillnir install', aby wstrzyknąć tę umiejętność do narzędzi AI."
+    },
+    "generate_rule": {
+      "generating": "Generowanie reguły Cursor...",
+      "complete": "Generowanie reguły zakończone!",
+      "failed": "Generowanie reguły nie powiodło się: {error}"
+    },
+    "check_skill": {
+      "running": "Uruchamianie sprawdzania {command}...",
+      "complete": "Sprawdzanie umiejętności zakończone!",
+      "failed": "Sprawdzanie umiejętności nie powiodło się (kod wyjścia {code})"
+    },
+    "ask": {
+      "asking": "Pytanie AI...",
+      "done": "Gotowe.",
+      "failed": "Nie powiodło się (kod wyjścia {code})"
+    },
+    "plan": {
+      "planning": "Planowanie...",
+      "complete": "Plan gotowy.",
+      "failed": "Planowanie nie powiodło się (kod wyjścia {code})"
+    },
+    "research": {
+      "title": "Badania inżynierii AI",
+      "topics_header": "Tematy do wyszukania:",
+      "searching": "Wyszukiwanie i podsumowywanie...",
+      "articles_found": "Znalezione artykuły:   {count}",
+      "new_articles": "Nowe artykuły:        {count}",
+      "skipped_dedup": "Pominięte (dedup):    {count}",
+      "landing_page": "Strona główna:        {path}",
+      "failed": "Nie powiodło się: {error}",
+      "regenerating": "Ponowne generowanie stron HTML artykułów i strony głównej...",
+      "generated_pages": "Wygenerowano {count} stron(ę) HTML artykułów",
+      "all_have_html": "Wszystkie artykuły mają już strony HTML"
+    },
+    "events": {
+      "title": "Wyszukiwanie wydarzeń AI",
+      "searching": "Wyszukiwanie wydarzeń...",
+      "events_found": "Znalezione wydarzenia:  {count}",
+      "new_events": "Nowe wydarzenia:       {count}",
+      "skipped_dedup": "Pominięte (dedup):     {count}",
+      "landing_page": "Strona główna:         {path}",
+      "failed": "Nie powiodło się: {error}",
+      "regenerating": "Ponowne generowanie stron HTML wydarzeń i strony głównej...",
+      "generated_pages": "Wygenerowano {count} stron(ę) HTML wydarzeń",
+      "all_have_html": "Wszystkie wydarzenia mają już strony HTML"
+    },
+    "delete_skill": {
+      "no_skills": "Nie znaleziono umiejętności w projekcie docelowym.",
+      "will_delete": "Zostaną usunięte:",
+      "delete_summary": "{name} ({count} instalacji narzędzi{suffix})",
+      "success": "{name}: usunięto {symlinks} dowiązań, {dirs} katalogów wyczyszczonych",
+      "error": "{name}: {error}"
+    },
+    "delete_docs": {
+      "no_docs": "Nie znaleziono dokumentacji AI w projekcie docelowym.",
+      "will_delete": "Zostaną usunięte:",
+      "removed_files": "Usunięto {count} plików",
+      "cleaned_dirs": "Wyczyszczono {count} pustych katalogów",
+      "error": "Błąd: {error}"
+    },
+    "init_skill": {
+      "will_create_at": "Szkielet zostanie utworzony w: {path}",
+      "created": "Utworzono szkielet umiejętności w {path}",
+      "error": "Błąd: {error}"
+    },
+    "init_docs": {
+      "will_create_in": "Zostaną utworzone w {path}:",
+      "agents_md_template": "agents.md (szablon)",
+      "claude_md_symlink": ".claude/claude.md (dowiązanie symboliczne)",
+      "copilot_md_symlink": ".github/copilot-instructions.md (dowiązanie symboliczne)",
+      "created": "Utworzono szablon dokumentacji AI",
+      "error": "Błąd: {error}"
+    },
+    "sound": {
+      "title": "Powiadomienia dźwiękowe Claude Code",
+      "status": "Status: {status}",
+      "enabled": "włączone",
+      "disabled": "wyłączone",
+      "enable_option": "Włącz powiadomienia dźwiękowe",
+      "disable_option": "Wyłącz powiadomienia dźwiękowe",
+      "reset_option": "Zresetuj konfigurację Claude do domyślnej (usuń wszystkie hooki)",
+      "exit_option": "Zakończ",
+      "already_enabled": "już włączone",
+      "already_disabled": "już wyłączone",
+      "sound_enabled_msg": "Powiadomienia dźwiękowe włączone (Stop + PermissionRequest).",
+      "sound_disabled_msg": "Powiadomienia dźwiękowe wyłączone.",
+      "reset_confirm": "Spowoduje to usunięcie WSZYSTKICH hooków z ~/.claude/settings.json. Kontynuować?",
+      "reset_done": "Konfiguracja Claude zresetowana — wszystkie hooki usunięte.",
+      "restart_notice": "Uruchom ponownie Claude Code, aby zmiany zaczęły obowiązywać."
+    },
+    "config": {
+      "title": "Konfiguracja Skillnir",
+      "backend_label": "Backend:  {name}",
+      "model_label": "Model:    {model}",
+      "prompts_label": "Prompty:  {version}",
+      "version_label": "Wersja:   {version}",
+      "available_backends": "Dostępne backendy:",
+      "not_installed": "[nie zainstalowano]",
+      "current_suffix": "(bieżący)",
+      "actions": {
+        "switch_tool": "Przełącz narzędzie AI",
+        "switch_model": "Przełącz model",
+        "switch_prompt_version": "Przełącz wersję promptu",
+        "show_usage": "Pokaż informacje o użyciu",
+        "exit": "Zakończ"
+      },
+      "select_backend": "Wybierz backend:",
+      "select_model": "Wybierz model:",
+      "select_prompt_version": "Wybierz wersję promptu:",
+      "backend_set": "Backend ustawiony na: {name} (model: {model})",
+      "model_set": "Model ustawiony na: {model}",
+      "prompt_version_set": "Wersja promptu ustawiona na: {version}",
+      "usage_info": "Informacje o użyciu {name}:",
+      "no_cli_usage": "{name} nie udostępnia informacji o użyciu CLI.",
+      "check_usage_at": "Sprawdź użycie na: {url}",
+      "no_usage_available": "Brak dostępnych informacji o użyciu dla {name}."
+    }
+  }
+}

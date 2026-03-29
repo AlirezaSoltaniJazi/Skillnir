@@ -1,0 +1,748 @@
+{
+  "nav": {
+    "groups": {
+      "skill_management": "SKILL-VERWALTUNG",
+      "ai_context": "AI-KONTEXT",
+      "templates": "VORLAGEN",
+      "ai_assistant": "AI-ASSISTENT",
+      "tools_data": "TOOLS & DATEN"
+    },
+    "items": {
+      "install": "Installieren",
+      "update": "Aktualisieren",
+      "check": "Pruefen",
+      "delete": "Loeschen",
+      "generate_skill": "Skill generieren",
+      "generate_rule": "Regel generieren",
+      "generate_docs": "Docs generieren",
+      "delete_docs": "Docs loeschen",
+      "init_skill": "Skill initialisieren",
+      "init_docs": "Docs initialisieren",
+      "ask_ai": "AI fragen",
+      "plan": "Planen",
+      "skills_library": "Skill-Bibliothek",
+      "tools_registry": "Tool-Verzeichnis",
+      "usage": "Nutzung",
+      "research": "Forschung",
+      "events": "Veranstaltungen",
+      "settings": "Einstellungen"
+    },
+    "sort_modes": {
+      "default": "Standard",
+      "popularity": "Beliebtheit",
+      "performance": "Leistung",
+      "price": "Preis (guenstigste)",
+      "alpha": "Alphabetisch"
+    }
+  },
+
+  "pages": {
+    "home": {
+      "sections": {
+        "skill": {
+          "title": "Skill",
+          "desc": "Skills fuer Ihre Projekte installieren, aktualisieren, pruefen, loeschen oder generieren.",
+          "items": {
+            "install": "Installieren",
+            "update": "Aktualisieren",
+            "check": "Pruefen",
+            "delete": "Loeschen",
+            "generate_skill": "Skill generieren"
+          }
+        },
+        "ai_context": {
+          "title": "AI-Kontext",
+          "desc": "Regeln, AI-Docs generieren oder bestehende Docs aus Projekten entfernen.",
+          "items": {
+            "generate_rule": "Regel generieren",
+            "generate_docs": "AI-Docs generieren",
+            "delete_docs": "Docs loeschen"
+          }
+        },
+        "default_template": {
+          "title": "Standardvorlage",
+          "desc": "Leere Skill- oder Docs-Vorlagen mit kommentierten Platzhaltern erstellen.",
+          "items": {
+            "init_skill": "Skill initialisieren",
+            "init_docs": "Docs initialisieren"
+          }
+        },
+        "claude_tools": {
+          "title": "Claude Tools",
+          "desc": "Tonbenachrichtigungen fuer Claude Code aktivieren oder deaktivieren.",
+          "sound_notifications": "Tonbenachrichtigungen"
+        },
+        "usage": {
+          "title": "Nutzung",
+          "desc": "Token-Statistiken und Nutzungsinformationen pro Backend anzeigen.",
+          "items": {
+            "token_stats": "Token-Statistiken"
+          }
+        },
+        "supported_tools": {
+          "title": "Unterstuetzte Tools",
+          "desc": "Alle unterstuetzten AI-Tools und deren Modelle durchsuchen.",
+          "items": {
+            "models_tools": "Modelle & Tools"
+          }
+        },
+        "research": {
+          "title": "Forschung",
+          "desc": "Webrecherche durchfuehren, vorhandene Artikel anzeigen oder Forschungsdaten loeschen.",
+          "items": {
+            "research_hub": "Forschungszentrum"
+          }
+        },
+        "events": {
+          "title": "Veranstaltungen",
+          "desc": "Kommende AI-Konferenzen, Meetups und Workshops weltweit finden.",
+          "items": {
+            "events_hub": "Veranstaltungszentrum"
+          }
+        },
+        "settings": {
+          "title": "Einstellungen",
+          "desc": "Hell-/Dunkelmodus, Benachrichtigungseinstellungen und App-Einstellungen.",
+          "items": {
+            "preferences": "Einstellungen"
+          }
+        },
+        "ai_extra": {
+          "title": "AI Extra",
+          "desc": "AI Fragen stellen oder detaillierte Implementierungsplaene erhalten.",
+          "items": {
+            "ask_ai": "AI fragen",
+            "plan_with_ai": "Mit AI planen"
+          }
+        }
+      },
+      "quick_actions": {
+        "install_skill": "Skill installieren",
+        "generate_docs": "Docs generieren",
+        "generate_skill": "Skill generieren",
+        "ask_ai": "AI fragen"
+      }
+    },
+
+    "install": {
+      "title": "Skills installieren",
+      "subtitle": "AI-Coding-Skills in Ihr Projekt injizieren.",
+      "steps": {
+        "target_source": "Ziel & Quelle",
+        "select_skills": "Skills auswaehlen",
+        "select_tools": "Tools auswaehlen",
+        "confirm_execute": "Bestaetigen & Ausfuehren",
+        "results": "Ergebnisse"
+      },
+      "target_project_help": "Geben Sie den Stammpfad des Zielprojekts ein.",
+      "source_skills_help": "Quellpfad fuer Skills (von wo generierte Skills abgerufen werden).",
+      "select_skills_help": "Waehlen Sie Skills zum Injizieren aus (einen oder mehrere auswaehlen).",
+      "select_tools_help": "Waehlen Sie AI-Tools, in die Symlinks injiziert werden sollen.",
+      "sort_by": "Sortieren nach:",
+      "project_root": "Projektstamm",
+      "source_skills_path": "Quellpfad fuer Skills",
+      "syncing_skill": "Synchronisiere Skill {index}/{total}: {name}...",
+      "injecting_skill": "Injiziere Skill {index}/{total}: {name}...",
+      "starting": "Wird gestartet...",
+      "updating_skills": "Skills werden aktualisiert..."
+    },
+
+    "update": {
+      "title": "Skills aktualisieren",
+      "subtitle": "Alle Skills von der Quelle in ein Zielprojekt synchronisieren."
+    },
+
+    "skills_library": {
+      "title": "Skill-Bibliothek",
+      "subtitle": "{count} Skills verfuegbar",
+      "search_placeholder": "Skills suchen...",
+      "view_skill_md": "SKILL.md anzeigen",
+      "skill_md_not_found": "SKILL.md nicht gefunden",
+      "skill_md_dialog_title": "{name} — SKILL.md",
+      "error_reading_skill_md": "Fehler beim Lesen der SKILL.md: {error}"
+    },
+
+    "generate_docs": {
+      "title": "AI-Docs generieren",
+      "subtitle": "Ein Projekt mit AI scannen und agents.md + .claude/claude.md generieren",
+      "target_project_root": "Zielprojekt-Stammpfad",
+      "prompt_version": "Prompt-Version",
+      "result_success_title": "Generierung abgeschlossen",
+      "result_fail_title": "Generierung fehlgeschlagen"
+    },
+
+    "generate_rule": {
+      "title": "Regel generieren",
+      "subtitle": "Ein Projekt mit AI scannen und Cursor-Regeldateien (.mdc) generieren",
+      "target_project_root": "Zielprojekt-Stammpfad",
+      "rule_topic": "Regelthema",
+      "rule_topic_placeholder": "z.B. Fehlerbehandlungsstandards, React-Komponentenmuster",
+      "prompt_version": "Prompt-Version",
+      "enter_rule_topic": "Bitte geben Sie ein Regelthema ein.",
+      "result_success_title": "Regelgenerierung abgeschlossen",
+      "result_fail_title": "Regelgenerierung fehlgeschlagen"
+    },
+
+    "delete_docs": {
+      "title": "AI-Docs loeschen",
+      "subtitle": "agents.md und deren Symlinks aus einem Zielprojekt entfernen.",
+      "target_project_root": "Zielprojekt-Stammpfad",
+      "no_docs_found": "Keine AI-Docs im Zielprojekt gefunden.",
+      "found_label": "Gefunden:",
+      "symlink": "Symlink",
+      "file": "Datei",
+      "no_docs_to_delete": "Keine Docs zum Loeschen gefunden.",
+      "deletion_complete": "Loeschung abgeschlossen",
+      "deletion_failed": "Loeschung fehlgeschlagen",
+      "removed_files": "{count} Datei(en) entfernt",
+      "cleaned_dirs": "{count} leere(s) Verzeichnis(se) bereinigt"
+    },
+
+    "generate_skill": {
+      "title": "Skill generieren",
+      "subtitle": "Ein Projekt mit AI scannen und eine domainspezifische SKILL.md generieren",
+      "target_project_root": "Zielprojekt-Stammpfad",
+      "project_name": "Projektname",
+      "skill_scope": "Skill-Umfang",
+      "prompt_version": "Prompt-Version",
+      "also_add_to_current": "Skill auch zum aktuellen Projekt hinzufuegen",
+      "skill_name_preview": "Skill-Name: {name}",
+      "result_success_title": "Skill-Generierung abgeschlossen",
+      "result_fail_title": "Skill-Generierung fehlgeschlagen",
+      "result_footer": "Fuehren Sie 'skillnir install' aus, um diesen Skill in AI-Tools zu injizieren.",
+      "grid_skill_name": "Skill-Name",
+      "grid_target_skill_md": "Ziel-SKILL.md",
+      "grid_source_skill_md": "Quell-SKILL.md",
+      "grid_duration": "Dauer",
+      "grid_tools_used": "Verwendete Tools",
+      "grid_backend": "Backend"
+    },
+
+    "delete_skill": {
+      "title": "Skills loeschen",
+      "subtitle": "Skill(s) aus einem Zielprojekt entfernen, einschliesslich Symlinks in allen Tool-Verzeichnissen.",
+      "target_project_root": "Zielprojekt-Stammpfad",
+      "no_skills_found": "Keine Skills im Zielprojekt gefunden.",
+      "found_skills": "{count} Skill(s) gefunden:",
+      "tool_installations": "{count} Tool-Installation(en)",
+      "also_delete_data": "Skill-Daten auch aus .data/skills/ loeschen",
+      "select_at_least_one": "Waehlen Sie mindestens einen Skill aus.",
+      "deletion_report": "Loeschbericht",
+      "error_badge": "Fehler",
+      "deleted_badge": "geloescht",
+      "deleted_summary": "({symlinks} Symlinks, {dirs} Verzeichnisse bereinigt)"
+    },
+
+    "init_skill": {
+      "title": "Skill initialisieren",
+      "subtitle": "Ein Standard-Skill-Geruest mit kommentierten Platzhalterdateien erstellen.",
+      "target_project_root": "Zielprojekt-Stammpfad",
+      "skill_name_label": "Skill-Name (Kleinbuchstaben, nur Bindestriche)",
+      "will_create": "Wird erstellt:",
+      "scaffold_created": "Skill-Geruest erstellt unter {path}",
+      "error_prefix": "Fehler: {error}"
+    },
+
+    "init_docs": {
+      "title": "AI-Docs initialisieren",
+      "subtitle": "Eine Standard-agents.md-Vorlage mit kommentierten Abschnitten und Symlinks fuer AI-Tools erstellen.",
+      "target_project_root": "Zielprojekt-Stammpfad",
+      "will_create": "Wird erstellt:",
+      "docs_created": "AI-Docs-Vorlage erstellt!",
+      "error_prefix": "Fehler: {error}"
+    },
+
+    "ask": {
+      "title": "AI fragen",
+      "subtitle": "Stellen Sie eine Frage zu einem Projekt. AI antwortet ohne Aenderungen vorzunehmen.",
+      "target_project_root": "Zielprojekt-Stammpfad",
+      "your_question": "Ihre Frage",
+      "question_placeholder": "z.B. Wie funktioniert das Authentifizierungsmodul?",
+      "enter_question": "Bitte geben Sie eine Frage ein.",
+      "result_success_title": "Antwort abgeschlossen",
+      "result_fail_title": "Anfrage fehlgeschlagen"
+    },
+
+    "plan": {
+      "title": "Planen",
+      "subtitle": "Einen detaillierten Implementierungsplan von AI fuer eine Aufgabe oder Funktion erhalten.",
+      "target_project_root": "Zielprojekt-Stammpfad",
+      "task_input_label": "Wofuer benoetigen Sie einen Plan?",
+      "task_placeholder": "z.B. Benutzerauthentifizierung mit JWT-Tokens hinzufuegen",
+      "describe_task": "Bitte beschreiben Sie die Aufgabe.",
+      "result_success_title": "Plan abgeschlossen",
+      "result_fail_title": "Planung fehlgeschlagen"
+    },
+
+    "check_skill": {
+      "title": "Skill pruefen",
+      "subtitle": "/skills ueber AI-Backend auf einem Zielprojekt ausfuehren.",
+      "target_project_root": "Zielprojekt-Stammpfad",
+      "result_success_title": "Skill-Pruefung abgeschlossen",
+      "result_fail_title": "Skill-Pruefung fehlgeschlagen"
+    },
+
+    "tools_registry": {
+      "title": "Tool-Verzeichnis",
+      "subtitle": "{count} AI-Tools unterstuetzt (+ .agents/ Auto-Inject)",
+      "search_placeholder": "Tools suchen...",
+      "columns": {
+        "name": "Name",
+        "company": "Unternehmen",
+        "dotdir": "Dotdir",
+        "popularity": "Beliebtheit",
+        "performance": "Leistung",
+        "price": "Preis"
+      }
+    },
+
+    "usage": {
+      "title": "Token-Nutzung",
+      "subtitle": "Token-Nutzung auf Sitzungsebene ueber alle AI-Backends.",
+      "no_requests_title": "Noch keine AI-Anfragen",
+      "no_requests_subtitle": "Token-Nutzung wird hier angezeigt, nachdem Sie Docs, Skills generiert oder AI-Fragen gestellt haben.",
+      "session_summary": "Sitzungszusammenfassung",
+      "total_tokens": "Tokens gesamt",
+      "input_tokens": "Eingabe-Tokens",
+      "output_tokens": "Ausgabe-Tokens",
+      "total_cost": "Gesamtkosten",
+      "requests": "Anfragen",
+      "cache_tokens": "Cache-Tokens",
+      "cost": "Kosten"
+    },
+
+    "research": {
+      "title": "AI-Engineering-Forschung",
+      "subtitle": "Neueste AI-Engineering-Nachrichten suchen, Artikel vertiefen und Zusammenfassungen generieren",
+      "topics_to_search": "Zu suchende Themen:",
+      "filter_by_source": "Nach Quelle filtern (optional):",
+      "articles_in_kb": "Artikel in der Wissensdatenbank",
+      "result_success_title": "Forschung abgeschlossen",
+      "result_fail_title": "Forschung fehlgeschlagen",
+      "grid_articles_found": "Artikel gefunden",
+      "grid_new_articles": "Neue Artikel",
+      "grid_skipped_dedup": "Uebersprungen (Duplikat)",
+      "grid_duration": "Dauer",
+      "select_at_least_one_topic": "Waehlen Sie mindestens ein Thema aus",
+      "generated_html_pages": "{count} HTML-Artikelseite(n) generiert",
+      "all_articles_have_html": "Alle Artikel haben bereits HTML-Seiten"
+    },
+
+    "events": {
+      "title": "AI-Veranstaltungen & Konferenzen",
+      "subtitle": "Kommende AI-Konferenzen, Meetups und Workshops weltweit finden",
+      "countries_to_search": "Zu durchsuchende Laender:",
+      "events_in_kb": "Veranstaltungen in der Wissensdatenbank",
+      "result_success_title": "Veranstaltungssuche abgeschlossen",
+      "result_fail_title": "Veranstaltungssuche fehlgeschlagen",
+      "grid_events_found": "Veranstaltungen gefunden",
+      "grid_new_events": "Neue Veranstaltungen",
+      "grid_skipped_dedup": "Uebersprungen (Duplikat)",
+      "grid_duration": "Dauer",
+      "select_at_least_one_country": "Waehlen Sie mindestens ein Land aus",
+      "generated_html_pages": "{count} HTML-Veranstaltungsseite(n) generiert",
+      "all_events_have_html": "Alle Veranstaltungen haben bereits HTML-Seiten"
+    },
+
+    "settings": {
+      "title": "Einstellungen",
+      "subtitle": "Anwendungseinstellungen konfigurieren.",
+      "dark_mode": {
+        "title": "Dunkelmodus",
+        "description": "Zwischen dunklem und hellem Oberflaechenthema wechseln.",
+        "enabled": "Dunkelmodus aktiviert",
+        "disabled": "Hellmodus aktiviert"
+      },
+      "sound_notifications": {
+        "title": "Prozessbenachrichtigungen",
+        "description": "Einen Ton abspielen, wenn die AI-Generierung abgeschlossen ist.",
+        "enabled": "Tonbenachrichtigungen aktiviert",
+        "disabled": "Tonbenachrichtigungen deaktiviert"
+      },
+      "ai_tool": {
+        "title": "AI-Tool",
+        "description": "Aktuell verwendet: {name}"
+      },
+      "model": {
+        "title": "Modell",
+        "description": "Aktuell verwendet: {model}"
+      },
+      "prompt_version": {
+        "title": "Prompt-Version",
+        "description": "Aktuell verwendet: {version}"
+      }
+    }
+  },
+
+  "buttons": {
+    "next": "Weiter",
+    "back": "Zurueck",
+    "home": "Startseite",
+    "execute": "Ausfuehren",
+    "search": "Suchen",
+    "cancel": "Abbrechen",
+    "close": "Schliessen",
+    "select": "Auswaehlen",
+    "switch": "Wechseln",
+    "scan": "Scannen",
+    "reset": "Zuruecksetzen",
+    "refresh": "Aktualisieren",
+    "try_again": "Erneut versuchen",
+    "start_over": "Neu beginnen",
+    "search_again": "Erneut suchen",
+    "select_all": "Alle auswaehlen",
+    "deselect_all": "Alle abwaehlen",
+    "auto_detect": "Automatisch erkennen",
+    "next_select_tools": "Weiter — Tools auswaehlen",
+    "next_confirm": "Weiter — Bestaetigen",
+    "delete_selected": "Ausgewaehlte loeschen",
+    "delete_docs": "Docs loeschen",
+    "create_scaffold": "Geruest erstellen",
+    "create_docs_template": "Docs-Vorlage erstellen",
+    "create_plan": "Plan erstellen",
+    "run_check": "Pruefung ausfuehren",
+    "generate_ai_docs": "AI-Docs generieren",
+    "generate_rule": "Regel generieren",
+    "generate_skill": "Skill generieren",
+    "update_all_skills": "Alle Skills aktualisieren",
+    "search_latest_news": "Neueste Nachrichten suchen",
+    "search_events": "Veranstaltungen suchen",
+    "view_landing_page": "Landingpage anzeigen",
+    "generate_html_files": "HTML-Dateien generieren",
+    "open_landing_page": "Landingpage oeffnen",
+    "view_skill_md": "SKILL.md anzeigen",
+    "switch_tool": "Tool wechseln",
+    "switch_model": "Modell wechseln",
+    "prompts": "Prompts",
+    "usage": "Nutzung",
+    "install_skill": "Skill installieren",
+    "ask": "Fragen",
+    "hide_log": "Log ausblenden",
+    "show_log": "Log anzeigen",
+    "got_it": "Verstanden"
+  },
+
+  "messages": {
+    "using_backend": "Verwendet: {name} ({model})",
+    "directory_not_found": "Verzeichnis nicht gefunden: {path}",
+    "source_directory_not_found": "Quellverzeichnis nicht gefunden: {path}",
+    "no_skills_found_in_source": "Keine Skills in der Quelle gefunden.",
+    "no_skills_found_in_target": "Keine Skills im Zielprojekt gefunden.",
+    "no_docs_found_in_target": "Keine AI-Docs im Zielprojekt gefunden.",
+    "no_tools_detected": "Keine Tool-Verzeichnisse im Ziel gefunden.",
+    "select_at_least_one_skill": "Waehlen Sie mindestens einen Skill aus.",
+    "select_at_least_one_tool": "Waehlen Sie mindestens ein Tool aus.",
+    "no_usage_info": "Keine Nutzungsinformationen verfuegbar.",
+    "found_tools": "{count} Tools in {name}/ gefunden",
+    "selected_count": "{count} ausgewaehlt",
+    "skill_copied": "'{name}' v{version} — kopiert",
+    "skill_updated": "'{name}' — aktualisiert",
+    "claude_sound_enabled": "Claude-Tonbenachrichtigungen aktiviert",
+    "claude_sound_disabled": "Claude-Tonbenachrichtigungen deaktiviert",
+    "exit_code": "Exit-Code: {code}",
+    "agents_md_exists": "agents.md existiert bereits unter {path}",
+    "enter_rule_topic": "Bitte geben Sie ein Regelthema ein.",
+    "enter_question": "Bitte geben Sie eine Frage ein.",
+    "describe_task": "Bitte beschreiben Sie die Aufgabe.",
+    "no_skills_selected": "Keine Skills ausgewaehlt. Abbruch.",
+    "no_tools_selected": "Keine Tools ausgewaehlt. Abbruch.",
+    "no_question_provided": "Keine Frage angegeben. Abbruch.",
+    "no_task_provided": "Keine Aufgabe angegeben. Abbruch.",
+    "aborted": "Abgebrochen.",
+    "done": "Fertig.",
+    "timed_out": "{name} hat nach 10 Minuten das Zeitlimit ueberschritten.",
+    "cli_not_found": "{command} CLI nicht im PATH gefunden.",
+    "no_backends_available": "Keine Backends verfuegbar. Installieren Sie claude, gemini oder copilot CLI."
+  },
+
+  "components": {
+    "hero": {
+      "title": "Skillnir",
+      "tagline": "AI-Coding-Skills in jedes Tool-Dotdir injizieren.",
+      "skills_badge": "{count} Skills",
+      "tools_badge": "{count} AI-Tools",
+      "dotdirs_badge": "{count} Dotdirs"
+    },
+    "welcome_dialog": {
+      "title": "Willkommen bei Skillnir",
+      "description": "Skillnir orchestriert AI-Coding-Tools ueber deren CLI-Runner. Um zu beginnen, installieren Sie den CLI fuer mindestens ein Backend unten und melden Sie sich bei Ihrem Konto an.",
+      "dont_show_again": "Nicht mehr anzeigen",
+      "cli_guide_title": "CLI-Installationsanleitung",
+      "cli_guide_description": "Installieren Sie den CLI-Runner fuer jedes AI-Backend, das Sie mit Skillnir verwenden moechten, und melden Sie sich an.",
+      "install_label": "Installieren",
+      "login_label": "Anmelden",
+      "verify_label": "Verifizieren",
+      "or_label": "oder",
+      "backends": {
+        "claude_code": {
+          "name": "Claude Code",
+          "notes": "Erfordert Node.js 18+. Kann auch ueber Homebrew installiert werden."
+        },
+        "cursor_agent": {
+          "name": "Cursor Agent",
+          "notes": "Erfordert Node.js 18+. Kann auch ueber die Cursor IDE verwendet werden."
+        },
+        "gemini_cli": {
+          "name": "Gemini CLI",
+          "notes": "Erfordert Node.js 18+ und ein Google AI-Konto."
+        },
+        "github_copilot": {
+          "name": "GitHub Copilot",
+          "notes": "Erfordert ein GitHub-Konto mit Copilot-Zugang."
+        }
+      }
+    },
+    "backend_picker": {
+      "switch_ai_tool_title": "AI-Tool wechseln",
+      "switch_model_title": "Modell wechseln",
+      "switch_prompt_version_title": "Prompt-Version wechseln",
+      "ai_tool_label": "AI-Tool: {name}",
+      "active_badge": "aktiv",
+      "current_badge": "aktuell",
+      "default_badge": "Standard"
+    },
+    "backend_chip": {
+      "model_label": "Modell: {model}"
+    },
+    "stat_card": {
+      "created": "Erstellt",
+      "skipped": "Uebersprungen",
+      "errors": "Fehler",
+      "copied": "Kopiert",
+      "updated": "Aktualisiert"
+    },
+    "progress_panel": {
+      "initializing": "Initialisierung...",
+      "preparing": "Vorbereitung...",
+      "elapsed": "vergangen",
+      "tools_used": "Verwendete Tools",
+      "lines_output": "Ausgabezeilen",
+      "live_output": "Live-Ausgabe",
+      "log_output": "Log-Ausgabe"
+    },
+    "empty_state": {
+      "no_ai_requests": "Noch keine AI-Anfragen",
+      "no_ai_requests_subtitle": "Token-Nutzung wird hier angezeigt, nachdem Sie Docs, Skills generiert oder AI-Fragen gestellt haben."
+    }
+  },
+
+  "layout": {
+    "injection_summary": "Injektionszusammenfassung",
+    "target": "Ziel:",
+    "skills": "Skills:",
+    "tools": "Tools:",
+    "tools_selected_auto": "{count} ausgewaehlt + .agents/ (auto)",
+    "symlinks_to_create": "Zu erstellende Symlinks:",
+    "injection_report": "Injektionsbericht",
+    "sync_report": "Synchronisierungsbericht",
+    "no_skills_in_source": "Keine Skills in der Quelle gefunden.",
+    "created_label": "Erstellt:",
+    "already_existed_label": "Bereits vorhanden:",
+    "errors_label": "Fehler:",
+    "installed_badge": "Installiert",
+    "score_labels": {
+      "pop": "Bel.",
+      "perf": "Leist.",
+      "price": "Preis"
+    },
+    "tooltips": {
+      "cli_setup_guide": "CLI-Einrichtungsanleitung",
+      "toggle_dark_light": "Hell-/Dunkelmodus umschalten",
+      "toggle_sound": "Benachrichtigungston umschalten"
+    }
+  },
+
+  "cli": {
+    "description": "AI-Coding-Skills in jedes Tool-Dotdir injizieren.",
+    "command_help": "install (Standard): Skills synchronisieren + in Tools injizieren. update: nur Skills synchronisieren. delete-skill: Skill(s) aus einem Projekt entfernen. delete-docs: AI-Docs aus einem Projekt entfernen. init-skill: ein Standard-Skill-Geruest erstellen. init-docs: eine Standard-AI-Docs-Vorlage erstellen. ui: Weboberflaeche starten. generate-docs: agents.md mit AI generieren. generate-skill: eine SKILL.md mit AI generieren. generate-rule: Cursor-Regel (.mdc) mit AI generieren. check-skill: /skills ueber AI-Backend ausfuehren. ask: AI eine Frage stellen. plan: einen Implementierungsplan erhalten. research: neueste AI-Engineering-Nachrichten suchen und Zusammenfassungen generieren. events: kommende AI-Veranstaltungen und Konferenzen weltweit suchen. config: Backend/Modell verwalten. sound: Claude Code-Tonbenachrichtigungen verwalten.",
+    "prompts": {
+      "target_project_root": "Zielprojekt-Stammpfad:",
+      "source_skills_path": "Quellpfad fuer Skills:",
+      "select_skills": "Skills zum Injizieren auswaehlen (Leertaste=umschalten, Enter=bestaetigen):",
+      "how_sort_tools": "Wie sollen Tools sortiert werden?",
+      "select_tools": "AI-Tools zum Injizieren auswaehlen (Leertaste=umschalten, Enter=bestaetigen):",
+      "proceed_injection": "Mit der Injektion fortfahren?",
+      "proceed_docs_generation": "Mit der AI-Docs-Generierung fortfahren?",
+      "proceed_skill_generation": "Mit der Skill-Generierung fortfahren?",
+      "proceed_rule_generation": "Mit der Regelgenerierung fortfahren?",
+      "project_name": "Projektname:",
+      "select_skill_scope": "Skill-Umfang auswaehlen:",
+      "also_add_to_current": "Generierten Skill auch zum aktuellen Projekt hinzufuegen?",
+      "rule_topic": "Regelthema (z.B. 'Fehlerbehandlungsstandards', 'React-Muster'):",
+      "enter_rule_topic": "Bitte geben Sie ein Regelthema ein",
+      "your_question": "Ihre Frage:",
+      "what_plan_for": "Wofuer benoetigen Sie einen Plan?",
+      "run_skill_check": "Skill-Pruefung ausfuehren?",
+      "select_skills_to_delete": "Skills zum Loeschen auswaehlen:",
+      "also_delete_data": "Skill-Daten auch aus .data/skills/ loeschen?",
+      "proceed_deletion": "Mit der Loeschung fortfahren?",
+      "skill_name": "Skill-Name (Kleinbuchstaben, nur Bindestriche):",
+      "create_skill_scaffold": "Skill-Geruest erstellen?",
+      "create_docs_template": "AI-Docs-Vorlage erstellen?",
+      "filter_by_source": "Nach Quelle filtern (leer lassen fuer alle):",
+      "search_latest_articles": "Nach neuesten Artikeln suchen?",
+      "select_countries": "Laender zum Suchen auswaehlen (leer lassen fuer alle):",
+      "search_upcoming_events": "Nach kommenden Veranstaltungen suchen?",
+      "open_landing_page": "Landingpage im Browser oeffnen?",
+      "what_to_do": "Was moechten Sie tun?"
+    },
+    "sort_modes": {
+      "default": "Standard (empfohlen)",
+      "popularity": "Nach Beliebtheit sortieren",
+      "performance": "Nach Leistung sortieren",
+      "price": "Nach Preis sortieren (guenstigste zuerst)",
+      "alpha": "Alphabetisch sortieren"
+    },
+    "install": {
+      "found_skill": "1 Skill gefunden: {name} (v{version})",
+      "no_skills_in_source": "Keine Skills in der Quelle gefunden. Nichts zu injizieren.",
+      "target_label": "Ziel: {path}",
+      "skills_label": "Skills: {names}",
+      "tools_label": "Tools:  {count} ausgewaehlt + .agents/ (auto)",
+      "done": "Fertig. {created} neu, {skipped} uebersprungen, {errors} Fehler."
+    },
+    "sync_report": {
+      "title": "Skill-Synchronisierungsbericht",
+      "copied": "kopiert",
+      "updated": "aktualisiert",
+      "skipped": "uebersprungen (gleiche Version)",
+      "summary": "{copied} kopiert, {updated} aktualisiert, {skipped} uebersprungen."
+    },
+    "injection_report": {
+      "title": "Injektionsbericht: {name}",
+      "created": "Erstellt ({count}):",
+      "already_existed": "Bereits vorhanden ({count}):",
+      "errors": "Fehler ({count}):"
+    },
+    "generate_docs": {
+      "generating": "AI-Docs werden generiert...",
+      "complete": "Generierung abgeschlossen!",
+      "failed": "Generierung fehlgeschlagen: {error}",
+      "will_generate": "Das Projekt wird mit AI gescannt und folgendes generiert:",
+      "agents_md": "agents.md (Projektstamm)",
+      "claude_md": ".claude/claude.md (Symlink)"
+    },
+    "generate_skill": {
+      "generating": "{name}-Skill wird generiert...",
+      "complete": "Skill-Generierung abgeschlossen!",
+      "failed": "Skill-Generierung fehlgeschlagen: {error}",
+      "run_install": "Fuehren Sie 'skillnir install' aus, um diesen Skill in AI-Tools zu injizieren."
+    },
+    "generate_rule": {
+      "generating": "Cursor-Regel wird generiert...",
+      "complete": "Regelgenerierung abgeschlossen!",
+      "failed": "Regelgenerierung fehlgeschlagen: {error}"
+    },
+    "check_skill": {
+      "running": "{command}-Pruefung wird ausgefuehrt...",
+      "complete": "Skill-Pruefung abgeschlossen!",
+      "failed": "Skill-Pruefung fehlgeschlagen (Exit-Code {code})"
+    },
+    "ask": {
+      "asking": "AI wird gefragt...",
+      "done": "Fertig.",
+      "failed": "Fehlgeschlagen (Exit-Code {code})"
+    },
+    "plan": {
+      "planning": "Planung...",
+      "complete": "Plan abgeschlossen.",
+      "failed": "Planung fehlgeschlagen (Exit-Code {code})"
+    },
+    "research": {
+      "title": "AI-Engineering-Forschung",
+      "topics_header": "Zu suchende Themen:",
+      "searching": "Suche und Zusammenfassung...",
+      "articles_found": "Artikel gefunden:       {count}",
+      "new_articles": "Neue Artikel:           {count}",
+      "skipped_dedup": "Uebersprungen (Duplikat): {count}",
+      "landing_page": "Landingpage:            {path}",
+      "failed": "Fehlgeschlagen: {error}",
+      "regenerating": "HTML-Artikelseiten und Landingpage werden neu generiert...",
+      "generated_pages": "{count} HTML-Artikelseite(n) generiert",
+      "all_have_html": "Alle Artikel haben bereits HTML-Seiten"
+    },
+    "events": {
+      "title": "AI-Veranstaltungssuche",
+      "searching": "Veranstaltungen werden gesucht...",
+      "events_found": "Veranstaltungen gefunden: {count}",
+      "new_events": "Neue Veranstaltungen:     {count}",
+      "skipped_dedup": "Uebersprungen (Duplikat): {count}",
+      "landing_page": "Landingpage:              {path}",
+      "failed": "Fehlgeschlagen: {error}",
+      "regenerating": "HTML-Veranstaltungsseiten und Landingpage werden neu generiert...",
+      "generated_pages": "{count} HTML-Veranstaltungsseite(n) generiert",
+      "all_have_html": "Alle Veranstaltungen haben bereits HTML-Seiten"
+    },
+    "delete_skill": {
+      "no_skills": "Keine Skills im Zielprojekt gefunden.",
+      "will_delete": "Wird geloescht:",
+      "delete_summary": "{name} ({count} Tool-Installation(en){suffix})",
+      "success": "{name}: {symlinks} Symlinks entfernt, {dirs} Verzeichnisse bereinigt",
+      "error": "{name}: {error}"
+    },
+    "delete_docs": {
+      "no_docs": "Keine AI-Docs im Zielprojekt gefunden.",
+      "will_delete": "Wird geloescht:",
+      "removed_files": "{count} Dateien entfernt",
+      "cleaned_dirs": "{count} leere Verzeichnisse bereinigt",
+      "error": "Fehler: {error}"
+    },
+    "init_skill": {
+      "will_create_at": "Geruest wird erstellt unter: {path}",
+      "created": "Skill-Geruest erstellt unter {path}",
+      "error": "Fehler: {error}"
+    },
+    "init_docs": {
+      "will_create_in": "Wird erstellt in {path}:",
+      "agents_md_template": "agents.md (Vorlage)",
+      "claude_md_symlink": ".claude/claude.md (Symlink)",
+      "copilot_md_symlink": ".github/copilot-instructions.md (Symlink)",
+      "created": "AI-Docs-Vorlage erstellt",
+      "error": "Fehler: {error}"
+    },
+    "sound": {
+      "title": "Claude Code-Tonbenachrichtigung",
+      "status": "Status: {status}",
+      "enabled": "aktiviert",
+      "disabled": "deaktiviert",
+      "enable_option": "Tonbenachrichtigungen aktivieren",
+      "disable_option": "Tonbenachrichtigungen deaktivieren",
+      "reset_option": "Claude-Konfiguration auf Standard zuruecksetzen (alle Hooks entfernen)",
+      "exit_option": "Beenden",
+      "already_enabled": "bereits aktiviert",
+      "already_disabled": "bereits deaktiviert",
+      "sound_enabled_msg": "Tonbenachrichtigungen aktiviert (Stop + PermissionRequest).",
+      "sound_disabled_msg": "Tonbenachrichtigungen deaktiviert.",
+      "reset_confirm": "Dies entfernt ALLE Hooks aus ~/.claude/settings.json. Fortfahren?",
+      "reset_done": "Claude-Konfiguration zurueckgesetzt — alle Hooks entfernt.",
+      "restart_notice": "Starten Sie Claude Code neu, damit die Aenderungen wirksam werden."
+    },
+    "config": {
+      "title": "Skillnir-Konfiguration",
+      "backend_label": "Backend:  {name}",
+      "model_label": "Modell:   {model}",
+      "prompts_label": "Prompts:  {version}",
+      "version_label": "Version:  {version}",
+      "available_backends": "Verfuegbare Backends:",
+      "not_installed": "[nicht installiert]",
+      "current_suffix": "(aktuell)",
+      "actions": {
+        "switch_tool": "AI-Tool wechseln",
+        "switch_model": "Modell wechseln",
+        "switch_prompt_version": "Prompt-Version wechseln",
+        "show_usage": "Nutzungsinformationen anzeigen",
+        "exit": "Beenden"
+      },
+      "select_backend": "Backend auswaehlen:",
+      "select_model": "Modell auswaehlen:",
+      "select_prompt_version": "Prompt-Version auswaehlen:",
+      "backend_set": "Backend gesetzt auf: {name} (Modell: {model})",
+      "model_set": "Modell gesetzt auf: {model}",
+      "prompt_version_set": "Prompt-Version gesetzt auf: {version}",
+      "usage_info": "{name} Nutzungsinformationen:",
+      "no_cli_usage": "{name} bietet keine CLI-Nutzungsinformationen.",
+      "check_usage_at": "Nutzung pruefen unter: {url}",
+      "no_usage_available": "Keine Nutzungsinformationen fuer {name} verfuegbar."
+    }
+  }
+}

@@ -1,0 +1,748 @@
+{
+  "nav": {
+    "groups": {
+      "skill_management": "MENAXHIMI I AFTËSIVE",
+      "ai_context": "KONTEKSTI AI",
+      "templates": "SHABLLONE",
+      "ai_assistant": "ASISTENTI AI",
+      "tools_data": "MJETE DHE TË DHËNA"
+    },
+    "items": {
+      "install": "Instalo",
+      "update": "Përditëso",
+      "check": "Kontrollo",
+      "delete": "Fshi",
+      "generate_skill": "Gjenero aftësi",
+      "generate_rule": "Gjenero rregull",
+      "generate_docs": "Gjenero dokumentacion",
+      "delete_docs": "Fshi dokumentacionin",
+      "init_skill": "Inicializo aftësi",
+      "init_docs": "Inicializo dokumentacion",
+      "ask_ai": "Pyet AI",
+      "plan": "Plan",
+      "skills_library": "Biblioteka e aftësive",
+      "tools_registry": "Regjistri i mjeteve",
+      "usage": "Përdorimi",
+      "research": "Kërkim",
+      "events": "Ngjarje",
+      "settings": "Cilësimet"
+    },
+    "sort_modes": {
+      "default": "E parazgjedhur",
+      "popularity": "Popullariteti",
+      "performance": "Performanca",
+      "price": "Çmimi (më i lirë)",
+      "alpha": "Alfabetikisht"
+    }
+  },
+
+  "pages": {
+    "home": {
+      "sections": {
+        "skill": {
+          "title": "Aftësi",
+          "desc": "Instalo, përditëso, kontrollo, fshi ose gjenero aftësi për projektet tuaja.",
+          "items": {
+            "install": "Instalo",
+            "update": "Përditëso",
+            "check": "Kontrollo",
+            "delete": "Fshi",
+            "generate_skill": "Gjenero aftësi"
+          }
+        },
+        "ai_context": {
+          "title": "Konteksti AI",
+          "desc": "Gjenero rregulla, dokumentacion AI ose fshi dokumentacionin ekzistues nga projektet.",
+          "items": {
+            "generate_rule": "Gjenero rregull",
+            "generate_docs": "Gjenero dokumentacion AI",
+            "delete_docs": "Fshi dokumentacionin"
+          }
+        },
+        "default_template": {
+          "title": "Shabllon i parazgjedhur",
+          "desc": "Krijo një shabllon bosh aftësie ose dokumentacioni me vendmbajtës të komentuar.",
+          "items": {
+            "init_skill": "Inicializo aftësi",
+            "init_docs": "Inicializo dokumentacion"
+          }
+        },
+        "claude_tools": {
+          "title": "Mjetet Claude",
+          "desc": "Aktivo ose çaktivizo njoftimet zanore të Claude Code.",
+          "sound_notifications": "Njoftimet zanore"
+        },
+        "usage": {
+          "title": "Përdorimi",
+          "desc": "Shiko statistikat e tokenëve dhe informacionin e përdorimit për çdo backend.",
+          "items": {
+            "token_stats": "Statistikat e tokenëve"
+          }
+        },
+        "supported_tools": {
+          "title": "Mjetet e mbështetura",
+          "desc": "Shfleto të gjitha mjetet AI të mbështetura dhe modelet e tyre.",
+          "items": {
+            "models_tools": "Modele dhe mjete"
+          }
+        },
+        "research": {
+          "title": "Kërkim",
+          "desc": "Kërko në internet, shiko artikujt ekzistues ose fshi të dhënat kërkimore.",
+          "items": {
+            "research_hub": "Qendra e kërkimit"
+          }
+        },
+        "events": {
+          "title": "Ngjarje",
+          "desc": "Gjej konferenca, takime dhe punëtori të ardhshme AI në mbarë botën.",
+          "items": {
+            "events_hub": "Qendra e ngjarjeve"
+          }
+        },
+        "settings": {
+          "title": "Cilësimet",
+          "desc": "Mënyra e ndriçuar/e errët, çelësi i njoftimeve dhe preferencat e aplikacionit.",
+          "items": {
+            "preferences": "Preferencat"
+          }
+        },
+        "ai_extra": {
+          "title": "AI Ekstra",
+          "desc": "Bëj pyetje AI ose merr plane të detajuara implementimi.",
+          "items": {
+            "ask_ai": "Pyet AI",
+            "plan_with_ai": "Plano me AI"
+          }
+        }
+      },
+      "quick_actions": {
+        "install_skill": "Instalo aftësi",
+        "generate_docs": "Gjenero dokumentacion",
+        "generate_skill": "Gjenero aftësi",
+        "ask_ai": "Pyet AI"
+      }
+    },
+
+    "install": {
+      "title": "Instalo aftësitë",
+      "subtitle": "Injekto aftësi kodimi AI në projektin tënd.",
+      "steps": {
+        "target_source": "Objektivi dhe burimi",
+        "select_skills": "Zgjidh aftësitë",
+        "select_tools": "Zgjidh mjetet",
+        "confirm_execute": "Konfirmo dhe ekzekuto",
+        "results": "Rezultatet"
+      },
+      "target_project_help": "Vendos shtegun rrënjësor të projektit objektiv.",
+      "source_skills_help": "Shtegu i burimit të aftësive (nga ku të merren aftësitë e gjeneruara).",
+      "select_skills_help": "Zgjidh aftësitë për injektim (zgjidh një ose më shumë).",
+      "select_tools_help": "Zgjidh mjetet AI ku të injektohen lidhjet simbolike.",
+      "sort_by": "Rendit sipas:",
+      "project_root": "Direktoria rrënjësore e projektit",
+      "source_skills_path": "Shtegu i burimit të aftësive",
+      "syncing_skill": "Sinkronizimi i aftësisë {index}/{total}: {name}...",
+      "injecting_skill": "Injektimi i aftësisë {index}/{total}: {name}...",
+      "starting": "Fillimi...",
+      "updating_skills": "Përditësimi i aftësive..."
+    },
+
+    "update": {
+      "title": "Përditëso aftësitë",
+      "subtitle": "Sinkronizo të gjitha aftësitë nga burimi në projektin objektiv."
+    },
+
+    "skills_library": {
+      "title": "Biblioteka e aftësive",
+      "subtitle": "{count} aftësi të disponueshme",
+      "search_placeholder": "Kërko aftësi...",
+      "view_skill_md": "Shiko SKILL.md",
+      "skill_md_not_found": "SKILL.md nuk u gjet",
+      "skill_md_dialog_title": "{name} — SKILL.md",
+      "error_reading_skill_md": "Gabim gjatë leximit të SKILL.md: {error}"
+    },
+
+    "generate_docs": {
+      "title": "Gjenero dokumentacionin AI",
+      "subtitle": "Skano një projekt me AI dhe gjenero agents.md + .claude/claude.md",
+      "target_project_root": "Direktoria rrënjësore e projektit objektiv",
+      "prompt_version": "Versioni i promptit",
+      "result_success_title": "Gjenerimi u përfundua",
+      "result_fail_title": "Gjenerimi dështoi"
+    },
+
+    "generate_rule": {
+      "title": "Gjenero rregull",
+      "subtitle": "Skano një projekt me AI dhe gjenero skedarë rregullash Cursor (.mdc)",
+      "target_project_root": "Direktoria rrënjësore e projektit objektiv",
+      "rule_topic": "Tema e rregullit",
+      "rule_topic_placeholder": "p.sh., standardet e trajtimit të gabimeve, modelet e komponentëve React",
+      "prompt_version": "Versioni i promptit",
+      "enter_rule_topic": "Vendos temën e rregullit.",
+      "result_success_title": "Gjenerimi i rregullit u përfundua",
+      "result_fail_title": "Gjenerimi i rregullit dështoi"
+    },
+
+    "delete_docs": {
+      "title": "Fshi dokumentacionin AI",
+      "subtitle": "Hiq agents.md dhe lidhjet e tij simbolike nga projekti objektiv.",
+      "target_project_root": "Direktoria rrënjësore e projektit objektiv",
+      "no_docs_found": "Nuk u gjet dokumentacion AI në projektin objektiv.",
+      "found_label": "U gjetën:",
+      "symlink": "lidhje simbolike",
+      "file": "skedar",
+      "no_docs_to_delete": "Nuk u gjetën dokumente për t'u fshirë.",
+      "deletion_complete": "Fshirja u përfundua",
+      "deletion_failed": "Fshirja dështoi",
+      "removed_files": "U hoqën {count} skedar(ë)",
+      "cleaned_dirs": "U pastruan {count} direktori(a) bosh(e)"
+    },
+
+    "generate_skill": {
+      "title": "Gjenero aftësi",
+      "subtitle": "Skano një projekt me AI dhe gjenero një SKILL.md të specializuar",
+      "target_project_root": "Direktoria rrënjësore e projektit objektiv",
+      "project_name": "Emri i projektit",
+      "skill_scope": "Fusha e aftësisë",
+      "prompt_version": "Versioni i promptit",
+      "also_add_to_current": "Shto aftësinë edhe në projektin aktual",
+      "skill_name_preview": "Emri i aftësisë: {name}",
+      "result_success_title": "Gjenerimi i aftësisë u përfundua",
+      "result_fail_title": "Gjenerimi i aftësisë dështoi",
+      "result_footer": "Ekzekuto 'skillnir install' për të injektuar këtë aftësi në mjetet AI.",
+      "grid_skill_name": "Emri i aftësisë",
+      "grid_target_skill_md": "SKILL.md objektiv",
+      "grid_source_skill_md": "SKILL.md burimor",
+      "grid_duration": "Kohëzgjatja",
+      "grid_tools_used": "Mjetet e përdorura",
+      "grid_backend": "Backend"
+    },
+
+    "delete_skill": {
+      "title": "Fshi aftësitë",
+      "subtitle": "Hiq aftësinë(të) nga projekti objektiv, duke përfshirë lidhjet simbolike nga të gjitha direktoritë e mjeteve.",
+      "target_project_root": "Direktoria rrënjësore e projektit objektiv",
+      "no_skills_found": "Nuk u gjetën aftësi në projektin objektiv.",
+      "found_skills": "U gjetën {count} aftësi:",
+      "tool_installations": "{count} instalim(e) mjetesh",
+      "also_delete_data": "Fshi gjithashtu të dhënat e aftësisë nga .data/skills/",
+      "select_at_least_one": "Zgjidh të paktën një aftësi.",
+      "deletion_report": "Raporti i fshirjes",
+      "error_badge": "gabim",
+      "deleted_badge": "u fshi",
+      "deleted_summary": "({symlinks} lidhje, {dirs} direktori të pastruara)"
+    },
+
+    "init_skill": {
+      "title": "Inicializo aftësi",
+      "subtitle": "Krijo një strukturë bazë aftësie me skedarë vendmbajtës të komentuar.",
+      "target_project_root": "Direktoria rrënjësore e projektit objektiv",
+      "skill_name_label": "Emri i aftësisë (shkronja të vogla, vetëm viza lidhëse)",
+      "will_create": "Do të krijohet:",
+      "scaffold_created": "Struktura e aftësisë u krijua në {path}",
+      "error_prefix": "Gabim: {error}"
+    },
+
+    "init_docs": {
+      "title": "Inicializo dokumentacionin AI",
+      "subtitle": "Krijo një shabllon agents.md të parazgjedhur me seksione të komentuara dhe lidhje simbolike për mjetet AI.",
+      "target_project_root": "Direktoria rrënjësore e projektit objektiv",
+      "will_create": "Do të krijohet:",
+      "docs_created": "Shablloni i dokumentacionit AI u krijua!",
+      "error_prefix": "Gabim: {error}"
+    },
+
+    "ask": {
+      "title": "Pyet AI",
+      "subtitle": "Bëj një pyetje rreth një projekti. AI përgjigjet pa bërë ndryshime.",
+      "target_project_root": "Direktoria rrënjësore e projektit objektiv",
+      "your_question": "Pyetja juaj",
+      "question_placeholder": "p.sh., Si funksionon moduli i autentifikimit?",
+      "enter_question": "Vendos një pyetje.",
+      "result_success_title": "Përgjigja u përfundua",
+      "result_fail_title": "Pyetja dështoi"
+    },
+
+    "plan": {
+      "title": "Plan",
+      "subtitle": "Merr një plan të detajuar implementimi nga AI për një detyrë ose funksionalitet.",
+      "target_project_root": "Direktoria rrënjësore e projektit objektiv",
+      "task_input_label": "Për çfarë keni nevojë për plan?",
+      "task_placeholder": "p.sh., Shto autentifikimin e përdoruesve me tokenë JWT",
+      "describe_task": "Përshkruaj detyrën.",
+      "result_success_title": "Plani u përfundua",
+      "result_fail_title": "Planifikimi dështoi"
+    },
+
+    "check_skill": {
+      "title": "Kontrollo aftësinë",
+      "subtitle": "Ekzekuto /skills nëpërmjet backendit AI në projektin objektiv.",
+      "target_project_root": "Direktoria rrënjësore e projektit objektiv",
+      "result_success_title": "Kontrolli i aftësisë u përfundua",
+      "result_fail_title": "Kontrolli i aftësisë dështoi"
+    },
+
+    "tools_registry": {
+      "title": "Regjistri i mjeteve",
+      "subtitle": "{count} mjete AI të mbështetura (+ injektim automatik .agents/)",
+      "search_placeholder": "Kërko mjete...",
+      "columns": {
+        "name": "Emri",
+        "company": "Kompania",
+        "dotdir": "Dotdir",
+        "popularity": "Popullariteti",
+        "performance": "Performanca",
+        "price": "Çmimi"
+      }
+    },
+
+    "usage": {
+      "title": "Përdorimi i tokenëve",
+      "subtitle": "Përdorimi i tokenëve në nivel sesioni në të gjithë backendet AI.",
+      "no_requests_title": "Ende pa kërkesa AI",
+      "no_requests_subtitle": "Përdorimi i tokenëve do të shfaqet këtu pasi të gjeneroni dokumentacion, aftësi ose t'i bëni pyetje AI.",
+      "session_summary": "Përmbledhja e sesionit",
+      "total_tokens": "Tokenë gjithsej",
+      "input_tokens": "Tokenë hyrës",
+      "output_tokens": "Tokenë dalës",
+      "total_cost": "Kostoja totale",
+      "requests": "Kërkesa",
+      "cache_tokens": "Tokenë cache",
+      "cost": "Kostoja"
+    },
+
+    "research": {
+      "title": "Kërkimi i inxhinierisë AI",
+      "subtitle": "Kërko lajmet më të fundit të inxhinierisë AI, lexo artikuj dhe gjenero përmbledhje",
+      "topics_to_search": "Temat për kërkim:",
+      "filter_by_source": "Filtro sipas burimit (opsionale):",
+      "articles_in_kb": "Artikuj në bazën e njohurive",
+      "result_success_title": "Kërkimi u përfundua",
+      "result_fail_title": "Kërkimi dështoi",
+      "grid_articles_found": "Artikuj të gjetur",
+      "grid_new_articles": "Artikuj të rinj",
+      "grid_skipped_dedup": "Të kapërcyer (deduplikim)",
+      "grid_duration": "Kohëzgjatja",
+      "select_at_least_one_topic": "Zgjidh të paktën një temë",
+      "generated_html_pages": "U gjeneruan {count} faqe HTML artikujsh",
+      "all_articles_have_html": "Të gjithë artikujt kanë tashmë faqe HTML"
+    },
+
+    "events": {
+      "title": "Ngjarje dhe konferenca AI",
+      "subtitle": "Gjej konferenca, takime dhe punëtori të ardhshme AI në mbarë botën",
+      "countries_to_search": "Shtetet për kërkim:",
+      "events_in_kb": "Ngjarje në bazën e njohurive",
+      "result_success_title": "Kërkimi i ngjarjeve u përfundua",
+      "result_fail_title": "Kërkimi i ngjarjeve dështoi",
+      "grid_events_found": "Ngjarje të gjetura",
+      "grid_new_events": "Ngjarje të reja",
+      "grid_skipped_dedup": "Të kapërcyera (deduplikim)",
+      "grid_duration": "Kohëzgjatja",
+      "select_at_least_one_country": "Zgjidh të paktën një shtet",
+      "generated_html_pages": "U gjeneruan {count} faqe HTML ngjarjesh",
+      "all_events_have_html": "Të gjitha ngjarjet kanë tashmë faqe HTML"
+    },
+
+    "settings": {
+      "title": "Cilësimet",
+      "subtitle": "Konfiguro preferencat e aplikacionit.",
+      "dark_mode": {
+        "title": "Mënyra e errët",
+        "description": "Kalo midis temës së errët dhe asaj të ndriçuar.",
+        "enabled": "Mënyra e errët u aktivizua",
+        "disabled": "Mënyra e ndriçuar u aktivizua"
+      },
+      "sound_notifications": {
+        "title": "Njoftimet e proceseve",
+        "description": "Luaj një tingull kur gjenerimi AI përfundon.",
+        "enabled": "Njoftimet zanore u aktivizuan",
+        "disabled": "Njoftimet zanore u çaktivizuan"
+      },
+      "ai_tool": {
+        "title": "Mjeti AI",
+        "description": "Aktualisht po përdoret: {name}"
+      },
+      "model": {
+        "title": "Modeli",
+        "description": "Aktualisht po përdoret: {model}"
+      },
+      "prompt_version": {
+        "title": "Versioni i promptit",
+        "description": "Aktualisht po përdoret: {version}"
+      }
+    }
+  },
+
+  "buttons": {
+    "next": "Tjetri",
+    "back": "Mbrapa",
+    "home": "Kryefaqja",
+    "execute": "Ekzekuto",
+    "search": "Kërko",
+    "cancel": "Anulo",
+    "close": "Mbyll",
+    "select": "Zgjidh",
+    "switch": "Ndërro",
+    "scan": "Skano",
+    "reset": "Rivendos",
+    "refresh": "Rifresko",
+    "try_again": "Provo përsëri",
+    "start_over": "Fillo nga fillimi",
+    "search_again": "Kërko përsëri",
+    "select_all": "Zgjidh të gjitha",
+    "deselect_all": "Hiq zgjedhjen",
+    "auto_detect": "Zbulim automatik",
+    "next_select_tools": "Tjetri — Zgjidh mjetet",
+    "next_confirm": "Tjetri — Konfirmo",
+    "delete_selected": "Fshi të zgjedhurat",
+    "delete_docs": "Fshi dokumentacionin",
+    "create_scaffold": "Krijo strukturën",
+    "create_docs_template": "Krijo shabllonin e dokumentacionit",
+    "create_plan": "Krijo plan",
+    "run_check": "Ekzekuto kontrollin",
+    "generate_ai_docs": "Gjenero dokumentacionin AI",
+    "generate_rule": "Gjenero rregull",
+    "generate_skill": "Gjenero aftësi",
+    "update_all_skills": "Përditëso të gjitha aftësitë",
+    "search_latest_news": "Kërko lajmet e fundit",
+    "search_events": "Kërko ngjarje",
+    "view_landing_page": "Shiko faqen kryesore",
+    "generate_html_files": "Gjenero skedarë HTML",
+    "open_landing_page": "Hap faqen kryesore",
+    "view_skill_md": "Shiko SKILL.md",
+    "switch_tool": "Ndërro mjetin",
+    "switch_model": "Ndërro modelin",
+    "prompts": "Prompte",
+    "usage": "Përdorimi",
+    "install_skill": "Instalo aftësi",
+    "ask": "Pyet",
+    "hide_log": "Fshih regjistrin",
+    "show_log": "Shfaq regjistrin",
+    "got_it": "E kuptova"
+  },
+
+  "messages": {
+    "using_backend": "Po përdoret: {name} ({model})",
+    "directory_not_found": "Direktoria nuk u gjet: {path}",
+    "source_directory_not_found": "Direktoria burimorë nuk u gjet: {path}",
+    "no_skills_found_in_source": "Nuk u gjetën aftësi në burim.",
+    "no_skills_found_in_target": "Nuk u gjetën aftësi në projektin objektiv.",
+    "no_docs_found_in_target": "Nuk u gjet dokumentacion AI në projektin objektiv.",
+    "no_tools_detected": "Nuk u gjetën direktori mjetesh në objektiv.",
+    "select_at_least_one_skill": "Zgjidh të paktën një aftësi.",
+    "select_at_least_one_tool": "Zgjidh të paktën një mjet.",
+    "no_usage_info": "Nuk ka informacion përdorimi të disponueshëm.",
+    "found_tools": "U gjetën {count} mjete në {name}/",
+    "selected_count": "{count} të zgjedhura",
+    "skill_copied": "'{name}' v{version} — u kopjua",
+    "skill_updated": "'{name}' — u përditësua",
+    "claude_sound_enabled": "Njoftimet zanore të Claude u aktivizuan",
+    "claude_sound_disabled": "Njoftimet zanore të Claude u çaktivizuan",
+    "exit_code": "Kodi i daljes: {code}",
+    "agents_md_exists": "agents.md ekziston tashmë në {path}",
+    "enter_rule_topic": "Vendos temën e rregullit.",
+    "enter_question": "Vendos një pyetje.",
+    "describe_task": "Përshkruaj detyrën.",
+    "no_skills_selected": "Asnjë aftësi nuk u zgjodh. Po ndërpritet.",
+    "no_tools_selected": "Asnjë mjet nuk u zgjodh. Po ndërpritet.",
+    "no_question_provided": "Asnjë pyetje nuk u dha. Po ndërpritet.",
+    "no_task_provided": "Asnjë detyrë nuk u dha. Po ndërpritet.",
+    "aborted": "U ndërpre.",
+    "done": "U krye.",
+    "timed_out": "{name} kaloi kohën e pritjes pas 10 minutash.",
+    "cli_not_found": "CLI {command} nuk u gjet në PATH.",
+    "no_backends_available": "Nuk ka backende të disponueshme. Instalo claude, gemini ose copilot CLI."
+  },
+
+  "components": {
+    "hero": {
+      "title": "Skillnir",
+      "tagline": "Injekto aftësi kodimi AI në direktorinë e çdo mjeti.",
+      "skills_badge": "{count} aftësi",
+      "tools_badge": "{count} mjete AI",
+      "dotdirs_badge": "{count} direktori"
+    },
+    "welcome_dialog": {
+      "title": "Mirësevini në Skillnir",
+      "description": "Skillnir orkestron mjetet e kodimit AI nëpërmjet CLI-ve të tyre. Për të filluar, instalo CLI-në për të paktën një backend më poshtë dhe identifikohu në llogarinë tënde.",
+      "dont_show_again": "Mos e shfaq më",
+      "cli_guide_title": "Udhëzues instalimi CLI",
+      "cli_guide_description": "Instalo dhe identifikohu në CLI-në e çdo backendit AI që dëshiron të përdorësh me Skillnir.",
+      "install_label": "Instalo",
+      "login_label": "Identifikohu",
+      "verify_label": "Verifiko",
+      "or_label": "ose",
+      "backends": {
+        "claude_code": {
+          "name": "Claude Code",
+          "notes": "Kërkon Node.js 18+. Mund të instalohet edhe nëpërmjet Homebrew."
+        },
+        "cursor_agent": {
+          "name": "Cursor Agent",
+          "notes": "Kërkon Node.js 18+. Mund të përdoret edhe nëpërmjet IDE Cursor."
+        },
+        "gemini_cli": {
+          "name": "Gemini CLI",
+          "notes": "Kërkon Node.js 18+ dhe një llogari Google AI."
+        },
+        "github_copilot": {
+          "name": "GitHub Copilot",
+          "notes": "Kërkon një llogari GitHub me akses në Copilot."
+        }
+      }
+    },
+    "backend_picker": {
+      "switch_ai_tool_title": "Ndërro mjetin AI",
+      "switch_model_title": "Ndërro modelin",
+      "switch_prompt_version_title": "Ndërro versionin e promptit",
+      "ai_tool_label": "Mjeti AI: {name}",
+      "active_badge": "aktiv",
+      "current_badge": "aktual",
+      "default_badge": "i parazgjedhur"
+    },
+    "backend_chip": {
+      "model_label": "Modeli: {model}"
+    },
+    "stat_card": {
+      "created": "U krijuan",
+      "skipped": "U kapërcyen",
+      "errors": "Gabime",
+      "copied": "U kopjuan",
+      "updated": "U përditësuan"
+    },
+    "progress_panel": {
+      "initializing": "Po inicializohet...",
+      "preparing": "Po përgatitet...",
+      "elapsed": "kaluar",
+      "tools_used": "Mjetet e përdorura",
+      "lines_output": "Rreshta dalëse",
+      "live_output": "Dalja e drejtpërdrejtë",
+      "log_output": "Regjistri"
+    },
+    "empty_state": {
+      "no_ai_requests": "Ende pa kërkesa AI",
+      "no_ai_requests_subtitle": "Përdorimi i tokenëve do të shfaqet këtu pasi të gjeneroni dokumentacion, aftësi ose t'i bëni pyetje AI."
+    }
+  },
+
+  "layout": {
+    "injection_summary": "Përmbledhja e injektimit",
+    "target": "Objektivi:",
+    "skills": "Aftësitë:",
+    "tools": "Mjetet:",
+    "tools_selected_auto": "{count} të zgjedhura + .agents/ (auto)",
+    "symlinks_to_create": "Lidhje simbolike për t'u krijuar:",
+    "injection_report": "Raporti i injektimit",
+    "sync_report": "Raporti i sinkronizimit",
+    "no_skills_in_source": "Nuk u gjetën aftësi në burim.",
+    "created_label": "U krijuan:",
+    "already_existed_label": "Ekzistonin tashmë:",
+    "errors_label": "Gabime:",
+    "installed_badge": "I instaluar",
+    "score_labels": {
+      "pop": "pop",
+      "perf": "perf",
+      "price": "çmim"
+    },
+    "tooltips": {
+      "cli_setup_guide": "Udhëzues konfigurimi CLI",
+      "toggle_dark_light": "Kalo midis mënyrës së errët/ndriçuar",
+      "toggle_sound": "Kalo tingullin e njoftimeve"
+    }
+  },
+
+  "cli": {
+    "description": "Injekto aftësi kodimi AI në direktorinë e çdo mjeti.",
+    "command_help": "install (parazgjedhur): sinkronizo aftësitë + injekto në mjete. update: vetëm sinkronizo aftësitë. delete-skill: hiq aftësinë(të) nga një projekt. delete-docs: hiq dokumentacionin AI nga një projekt. init-skill: krijo strukturën bazë të aftësisë. init-docs: krijo shabllonin bazë të dokumentacionit AI. ui: hap ndërfaqen ueb. generate-docs: gjenero agents.md me AI. generate-skill: gjenero SKILL.md me AI. generate-rule: gjenero rregull Cursor (.mdc) me AI. check-skill: ekzekuto /skills nëpërmjet backendit AI. ask: bëj një pyetje AI. plan: merr një plan implementimi. research: kërko lajmet e fundit të inxhinierisë AI dhe gjenero përmbledhje. events: kërko ngjarje dhe konferenca të ardhshme AI në mbarë botën. config: menaxho backendin/modelin. sound: menaxho njoftimet zanore të Claude Code.",
+    "prompts": {
+      "target_project_root": "Direktoria rrënjësore e projektit objektiv:",
+      "source_skills_path": "Shtegu i burimit të aftësive:",
+      "select_skills": "Zgjidh aftësitë për injektim (hapësirë=kalo, enter=konfirmo):",
+      "how_sort_tools": "Si duhen renditur mjetet?",
+      "select_tools": "Zgjidh mjetet AI për injektim (hapësirë=kalo, enter=konfirmo):",
+      "proceed_injection": "Të vazhdohet me injektimin?",
+      "proceed_docs_generation": "Të vazhdohet me gjenerimin e dokumentacionit AI?",
+      "proceed_skill_generation": "Të vazhdohet me gjenerimin e aftësisë?",
+      "proceed_rule_generation": "Të vazhdohet me gjenerimin e rregullit?",
+      "project_name": "Emri i projektit:",
+      "select_skill_scope": "Zgjidh fushën e aftësisë:",
+      "also_add_to_current": "Të shtohet aftësia e gjeneruar edhe në projektin aktual?",
+      "rule_topic": "Tema e rregullit (p.sh., 'standardet e trajtimit të gabimeve', 'modelet React'):",
+      "enter_rule_topic": "Vendos temën e rregullit",
+      "your_question": "Pyetja juaj:",
+      "what_plan_for": "Për çfarë keni nevojë për plan?",
+      "run_skill_check": "Të ekzekutohet kontrolli i aftësisë?",
+      "select_skills_to_delete": "Zgjidh aftësitë për t'u fshirë:",
+      "also_delete_data": "Të fshihen gjithashtu të dhënat e aftësisë nga .data/skills/?",
+      "proceed_deletion": "Të vazhdohet me fshirjen?",
+      "skill_name": "Emri i aftësisë (shkronja të vogla, vetëm viza lidhëse):",
+      "create_skill_scaffold": "Të krijohet struktura e aftësisë?",
+      "create_docs_template": "Të krijohet shablloni i dokumentacionit AI?",
+      "filter_by_source": "Filtro sipas burimit (lëre bosh për të gjitha):",
+      "search_latest_articles": "Të kërkohen artikujt e fundit?",
+      "select_countries": "Zgjidh shtetet për kërkim (lëre bosh për të gjitha):",
+      "search_upcoming_events": "Të kërkohen ngjarjet e ardhshme?",
+      "open_landing_page": "Të hapet faqja kryesore në shfletues?",
+      "what_to_do": "Çfarë dëshironi të bëni?"
+    },
+    "sort_modes": {
+      "default": "E parazgjedhur (e rekomanduar)",
+      "popularity": "Rendit sipas popullaritetit",
+      "performance": "Rendit sipas performancës",
+      "price": "Rendit sipas çmimit (më i lirë fillimisht)",
+      "alpha": "Rendit alfabetikisht"
+    },
+    "install": {
+      "found_skill": "U gjet 1 aftësi: {name} (v{version})",
+      "no_skills_in_source": "Nuk u gjetën aftësi në burim. Asgjë për të injektuar.",
+      "target_label": "Objektivi: {path}",
+      "skills_label": "Aftësitë: {names}",
+      "tools_label": "Mjetet:  {count} të zgjedhura + .agents/ (auto)",
+      "done": "U krye. {created} të reja, {skipped} të kapërcyera, {errors} gabime."
+    },
+    "sync_report": {
+      "title": "Raporti i sinkronizimit të aftësive",
+      "copied": "u kopjua",
+      "updated": "u përditësua",
+      "skipped": "u kapërcye (versioni i njëjtë)",
+      "summary": "{copied} të kopjuara, {updated} të përditësuara, {skipped} të kapërcyera."
+    },
+    "injection_report": {
+      "title": "Raporti i injektimit: {name}",
+      "created": "U krijuan ({count}):",
+      "already_existed": "Ekzistonin tashmë ({count}):",
+      "errors": "Gabime ({count}):"
+    },
+    "generate_docs": {
+      "generating": "Po gjenerohet dokumentacioni AI...",
+      "complete": "Gjenerimi u përfundua!",
+      "failed": "Gjenerimi dështoi: {error}",
+      "will_generate": "Kjo do të skanojë projektin me AI dhe do të gjenerojë:",
+      "agents_md": "agents.md (rrënja e projektit)",
+      "claude_md": ".claude/claude.md (lidhje simbolike)"
+    },
+    "generate_skill": {
+      "generating": "Po gjenerohet aftësia {name}...",
+      "complete": "Gjenerimi i aftësisë u përfundua!",
+      "failed": "Gjenerimi i aftësisë dështoi: {error}",
+      "run_install": "Ekzekuto 'skillnir install' për të injektuar këtë aftësi në mjetet AI."
+    },
+    "generate_rule": {
+      "generating": "Po gjenerohet rregulla Cursor...",
+      "complete": "Gjenerimi i rregullit u përfundua!",
+      "failed": "Gjenerimi i rregullit dështoi: {error}"
+    },
+    "check_skill": {
+      "running": "Po ekzekutohet kontrolli {command}...",
+      "complete": "Kontrolli i aftësisë u përfundua!",
+      "failed": "Kontrolli i aftësisë dështoi (kodi i daljes {code})"
+    },
+    "ask": {
+      "asking": "Po pyetet AI...",
+      "done": "U krye.",
+      "failed": "Dështoi (kodi i daljes {code})"
+    },
+    "plan": {
+      "planning": "Po planifikohet...",
+      "complete": "Plani u përfundua.",
+      "failed": "Planifikimi dështoi (kodi i daljes {code})"
+    },
+    "research": {
+      "title": "Kërkimi i inxhinierisë AI",
+      "topics_header": "Temat për kërkim:",
+      "searching": "Po kërkohet dhe përmblidhet...",
+      "articles_found": "Artikuj të gjetur:     {count}",
+      "new_articles": "Artikuj të rinj:      {count}",
+      "skipped_dedup": "Të kapërcyer (dedup): {count}",
+      "landing_page": "Faqja kryesore:       {path}",
+      "failed": "Dështoi: {error}",
+      "regenerating": "Po rigjenerohen faqet HTML të artikujve dhe faqja kryesore...",
+      "generated_pages": "U gjeneruan {count} faqe HTML artikujsh",
+      "all_have_html": "Të gjithë artikujt kanë tashmë faqe HTML"
+    },
+    "events": {
+      "title": "Kërkimi i ngjarjeve AI",
+      "searching": "Po kërkohen ngjarje...",
+      "events_found": "Ngjarje të gjetura:   {count}",
+      "new_events": "Ngjarje të reja:      {count}",
+      "skipped_dedup": "Të kapërcyera (dedup):{count}",
+      "landing_page": "Faqja kryesore:       {path}",
+      "failed": "Dështoi: {error}",
+      "regenerating": "Po rigjenerohen faqet HTML të ngjarjeve dhe faqja kryesore...",
+      "generated_pages": "U gjeneruan {count} faqe HTML ngjarjesh",
+      "all_have_html": "Të gjitha ngjarjet kanë tashmë faqe HTML"
+    },
+    "delete_skill": {
+      "no_skills": "Nuk u gjetën aftësi në projektin objektiv.",
+      "will_delete": "Do të fshihen:",
+      "delete_summary": "{name} ({count} instalime mjetesh{suffix})",
+      "success": "{name}: u hoqën {symlinks} lidhje, {dirs} direktori u pastruan",
+      "error": "{name}: {error}"
+    },
+    "delete_docs": {
+      "no_docs": "Nuk u gjet dokumentacion AI në projektin objektiv.",
+      "will_delete": "Do të fshihen:",
+      "removed_files": "U hoqën {count} skedarë",
+      "cleaned_dirs": "U pastruan {count} direktori boshe",
+      "error": "Gabim: {error}"
+    },
+    "init_skill": {
+      "will_create_at": "Struktura do të krijohet në: {path}",
+      "created": "Struktura e aftësisë u krijua në {path}",
+      "error": "Gabim: {error}"
+    },
+    "init_docs": {
+      "will_create_in": "Do të krijohet në {path}:",
+      "agents_md_template": "agents.md (shabllon)",
+      "claude_md_symlink": ".claude/claude.md (lidhje simbolike)",
+      "copilot_md_symlink": ".github/copilot-instructions.md (lidhje simbolike)",
+      "created": "Shablloni i dokumentacionit AI u krijua",
+      "error": "Gabim: {error}"
+    },
+    "sound": {
+      "title": "Njoftimet zanore të Claude Code",
+      "status": "Statusi: {status}",
+      "enabled": "aktivizuar",
+      "disabled": "çaktivizuar",
+      "enable_option": "Aktivo njoftimet zanore",
+      "disable_option": "Çaktivo njoftimet zanore",
+      "reset_option": "Rivendos konfigurimin e Claude në parazgjedhje (hiq të gjithë hooket)",
+      "exit_option": "Dil",
+      "already_enabled": "tashmë i aktivizuar",
+      "already_disabled": "tashmë i çaktivizuar",
+      "sound_enabled_msg": "Njoftimet zanore u aktivizuan (Stop + PermissionRequest).",
+      "sound_disabled_msg": "Njoftimet zanore u çaktivizuan.",
+      "reset_confirm": "Kjo do të heqë TË GJITHË hooket nga ~/.claude/settings.json. Të vazhdohet?",
+      "reset_done": "Konfigurimi i Claude u rivendos — të gjithë hooket u hoqën.",
+      "restart_notice": "Rinisni Claude Code që ndryshimet të hyjnë në fuqi."
+    },
+    "config": {
+      "title": "Konfigurimi i Skillnir",
+      "backend_label": "Backend:  {name}",
+      "model_label": "Modeli:   {model}",
+      "prompts_label": "Prompte:  {version}",
+      "version_label": "Versioni: {version}",
+      "available_backends": "Backendet e disponueshme:",
+      "not_installed": "[i painstaluar]",
+      "current_suffix": "(aktual)",
+      "actions": {
+        "switch_tool": "Ndërro mjetin AI",
+        "switch_model": "Ndërro modelin",
+        "switch_prompt_version": "Ndërro versionin e promptit",
+        "show_usage": "Shfaq informacionin e përdorimit",
+        "exit": "Dil"
+      },
+      "select_backend": "Zgjidh backendin:",
+      "select_model": "Zgjidh modelin:",
+      "select_prompt_version": "Zgjidh versionin e promptit:",
+      "backend_set": "Backendi u vendos: {name} (modeli: {model})",
+      "model_set": "Modeli u vendos: {model}",
+      "prompt_version_set": "Versioni i promptit u vendos: {version}",
+      "usage_info": "Informacioni i përdorimit të {name}:",
+      "no_cli_usage": "{name} nuk ofron informacion përdorimi CLI.",
+      "check_usage_at": "Kontrollo përdorimin në: {url}",
+      "no_usage_available": "Nuk ka informacion përdorimi të disponueshëm për {name}."
+    }
+  }
+}

@@ -1,0 +1,748 @@
+{
+  "nav": {
+    "groups": {
+      "skill_management": "SKILLBEHEER",
+      "ai_context": "AI-CONTEXT",
+      "templates": "SJABLONEN",
+      "ai_assistant": "AI-ASSISTENT",
+      "tools_data": "TOOLS & GEGEVENS"
+    },
+    "items": {
+      "install": "Installeren",
+      "update": "Bijwerken",
+      "check": "Controleren",
+      "delete": "Verwijderen",
+      "generate_skill": "Skill genereren",
+      "generate_rule": "Regel genereren",
+      "generate_docs": "Docs genereren",
+      "delete_docs": "Docs verwijderen",
+      "init_skill": "Skill initialiseren",
+      "init_docs": "Docs initialiseren",
+      "ask_ai": "AI vragen",
+      "plan": "Plannen",
+      "skills_library": "Skillbibliotheek",
+      "tools_registry": "Toolregister",
+      "usage": "Gebruik",
+      "research": "Onderzoek",
+      "events": "Evenementen",
+      "settings": "Instellingen"
+    },
+    "sort_modes": {
+      "default": "Standaard",
+      "popularity": "Populariteit",
+      "performance": "Prestatie",
+      "price": "Prijs (goedkoopste)",
+      "alpha": "Alfabetisch"
+    }
+  },
+
+  "pages": {
+    "home": {
+      "sections": {
+        "skill": {
+          "title": "Skill",
+          "desc": "Skills voor uw projecten installeren, bijwerken, controleren, verwijderen of genereren.",
+          "items": {
+            "install": "Installeren",
+            "update": "Bijwerken",
+            "check": "Controleren",
+            "delete": "Verwijderen",
+            "generate_skill": "Skill genereren"
+          }
+        },
+        "ai_context": {
+          "title": "AI-Context",
+          "desc": "Regels, AI-docs genereren of bestaande docs uit projecten verwijderen.",
+          "items": {
+            "generate_rule": "Regel genereren",
+            "generate_docs": "AI-Docs genereren",
+            "delete_docs": "Docs verwijderen"
+          }
+        },
+        "default_template": {
+          "title": "Standaardsjabloon",
+          "desc": "Lege skill- of docs-sjablonen aanmaken met commentaarplaatshouders.",
+          "items": {
+            "init_skill": "Skill initialiseren",
+            "init_docs": "Docs initialiseren"
+          }
+        },
+        "claude_tools": {
+          "title": "Claude Tools",
+          "desc": "Geluidsmeldingen voor Claude Code activeren of deactiveren.",
+          "sound_notifications": "Geluidsmeldingen"
+        },
+        "usage": {
+          "title": "Gebruik",
+          "desc": "Tokenstatistieken en gebruiksinformatie per backend bekijken.",
+          "items": {
+            "token_stats": "Tokenstatistieken"
+          }
+        },
+        "supported_tools": {
+          "title": "Ondersteunde Tools",
+          "desc": "Alle ondersteunde AI-tools en hun modellen doorbladeren.",
+          "items": {
+            "models_tools": "Modellen & Tools"
+          }
+        },
+        "research": {
+          "title": "Onderzoek",
+          "desc": "Webonderzoek uitvoeren, bestaande artikelen bekijken of onderzoeksgegevens verwijderen.",
+          "items": {
+            "research_hub": "Onderzoekscentrum"
+          }
+        },
+        "events": {
+          "title": "Evenementen",
+          "desc": "Aankomende AI-conferenties, meetups en workshops wereldwijd vinden.",
+          "items": {
+            "events_hub": "Evenementencentrum"
+          }
+        },
+        "settings": {
+          "title": "Instellingen",
+          "desc": "Lichte/donkere modus, meldingsinstellingen en app-voorkeuren.",
+          "items": {
+            "preferences": "Voorkeuren"
+          }
+        },
+        "ai_extra": {
+          "title": "AI Extra",
+          "desc": "Stel vragen aan AI of ontvang gedetailleerde implementatieplannen.",
+          "items": {
+            "ask_ai": "AI vragen",
+            "plan_with_ai": "Plannen met AI"
+          }
+        }
+      },
+      "quick_actions": {
+        "install_skill": "Skill installeren",
+        "generate_docs": "Docs genereren",
+        "generate_skill": "Skill genereren",
+        "ask_ai": "AI vragen"
+      }
+    },
+
+    "install": {
+      "title": "Skills installeren",
+      "subtitle": "AI-codeervaardigheden in uw project injecteren.",
+      "steps": {
+        "target_source": "Doel & Bron",
+        "select_skills": "Skills selecteren",
+        "select_tools": "Tools selecteren",
+        "confirm_execute": "Bevestigen & Uitvoeren",
+        "results": "Resultaten"
+      },
+      "target_project_help": "Voer het hoofdpad van het doelproject in.",
+      "source_skills_help": "Bronpad voor skills (waar gegenereerde skills opgehaald worden).",
+      "select_skills_help": "Kies skills om te injecteren (selecteer een of meer).",
+      "select_tools_help": "Kies AI-tools om symlinks in te injecteren.",
+      "sort_by": "Sorteren op:",
+      "project_root": "Projecthoofdmap",
+      "source_skills_path": "Bronpad voor skills",
+      "syncing_skill": "Skill synchroniseren {index}/{total}: {name}...",
+      "injecting_skill": "Skill injecteren {index}/{total}: {name}...",
+      "starting": "Starten...",
+      "updating_skills": "Skills bijwerken..."
+    },
+
+    "update": {
+      "title": "Skills bijwerken",
+      "subtitle": "Alle skills van bron naar een doelproject synchroniseren."
+    },
+
+    "skills_library": {
+      "title": "Skillbibliotheek",
+      "subtitle": "{count} skills beschikbaar",
+      "search_placeholder": "Skills zoeken...",
+      "view_skill_md": "SKILL.md bekijken",
+      "skill_md_not_found": "SKILL.md niet gevonden",
+      "skill_md_dialog_title": "{name} — SKILL.md",
+      "error_reading_skill_md": "Fout bij het lezen van SKILL.md: {error}"
+    },
+
+    "generate_docs": {
+      "title": "AI-Docs genereren",
+      "subtitle": "Een project scannen met AI en agents.md + .claude/claude.md genereren",
+      "target_project_root": "Hoofdpad van het doelproject",
+      "prompt_version": "Promptversie",
+      "result_success_title": "Generatie voltooid",
+      "result_fail_title": "Generatie mislukt"
+    },
+
+    "generate_rule": {
+      "title": "Regel genereren",
+      "subtitle": "Een project scannen met AI en Cursor-regelbestanden (.mdc) genereren",
+      "target_project_root": "Hoofdpad van het doelproject",
+      "rule_topic": "Regelonderwerp",
+      "rule_topic_placeholder": "bijv. foutafhandelingsstandaarden, React-componentpatronen",
+      "prompt_version": "Promptversie",
+      "enter_rule_topic": "Voer een regelonderwerp in.",
+      "result_success_title": "Regelgeneratie voltooid",
+      "result_fail_title": "Regelgeneratie mislukt"
+    },
+
+    "delete_docs": {
+      "title": "AI-Docs verwijderen",
+      "subtitle": "agents.md en de bijbehorende symlinks uit een doelproject verwijderen.",
+      "target_project_root": "Hoofdpad van het doelproject",
+      "no_docs_found": "Geen AI-docs gevonden in het doelproject.",
+      "found_label": "Gevonden:",
+      "symlink": "symlink",
+      "file": "bestand",
+      "no_docs_to_delete": "Geen docs gevonden om te verwijderen.",
+      "deletion_complete": "Verwijdering voltooid",
+      "deletion_failed": "Verwijdering mislukt",
+      "removed_files": "{count} bestand(en) verwijderd",
+      "cleaned_dirs": "{count} lege map(pen) opgeruimd"
+    },
+
+    "generate_skill": {
+      "title": "Skill genereren",
+      "subtitle": "Een project scannen met AI en een domeinspecifieke SKILL.md genereren",
+      "target_project_root": "Hoofdpad van het doelproject",
+      "project_name": "Projectnaam",
+      "skill_scope": "Skillomvang",
+      "prompt_version": "Promptversie",
+      "also_add_to_current": "Skill ook aan huidig project toevoegen",
+      "skill_name_preview": "Skillnaam: {name}",
+      "result_success_title": "Skillgeneratie voltooid",
+      "result_fail_title": "Skillgeneratie mislukt",
+      "result_footer": "Voer 'skillnir install' uit om deze skill in AI-tools te injecteren.",
+      "grid_skill_name": "Skillnaam",
+      "grid_target_skill_md": "Doel-SKILL.md",
+      "grid_source_skill_md": "Bron-SKILL.md",
+      "grid_duration": "Duur",
+      "grid_tools_used": "Gebruikte tools",
+      "grid_backend": "Backend"
+    },
+
+    "delete_skill": {
+      "title": "Skills verwijderen",
+      "subtitle": "Skill(s) uit een doelproject verwijderen, inclusief symlinks in alle toolmappen.",
+      "target_project_root": "Hoofdpad van het doelproject",
+      "no_skills_found": "Geen skills gevonden in het doelproject.",
+      "found_skills": "{count} skill(s) gevonden:",
+      "tool_installations": "{count} toolinstallatie(s)",
+      "also_delete_data": "Skillgegevens ook verwijderen uit .data/skills/",
+      "select_at_least_one": "Selecteer minstens een skill.",
+      "deletion_report": "Verwijderingsrapport",
+      "error_badge": "fout",
+      "deleted_badge": "verwijderd",
+      "deleted_summary": "({symlinks} symlinks, {dirs} mappen opgeruimd)"
+    },
+
+    "init_skill": {
+      "title": "Skill initialiseren",
+      "subtitle": "Een standaard skillraamwerk aanmaken met plaatshouderbestanden met commentaar.",
+      "target_project_root": "Hoofdpad van het doelproject",
+      "skill_name_label": "Skillnaam (kleine letters, alleen streepjes)",
+      "will_create": "Wordt aangemaakt:",
+      "scaffold_created": "Skillraamwerk aangemaakt in {path}",
+      "error_prefix": "Fout: {error}"
+    },
+
+    "init_docs": {
+      "title": "AI-Docs initialiseren",
+      "subtitle": "Een standaard agents.md-sjabloon aanmaken met commentaarsecties en symlinks voor AI-tools.",
+      "target_project_root": "Hoofdpad van het doelproject",
+      "will_create": "Wordt aangemaakt:",
+      "docs_created": "AI-docs-sjabloon aangemaakt!",
+      "error_prefix": "Fout: {error}"
+    },
+
+    "ask": {
+      "title": "AI vragen",
+      "subtitle": "Stel een vraag over een project. AI antwoordt zonder wijzigingen aan te brengen.",
+      "target_project_root": "Hoofdpad van het doelproject",
+      "your_question": "Uw vraag",
+      "question_placeholder": "bijv. Hoe werkt de authenticatiemodule?",
+      "enter_question": "Voer een vraag in.",
+      "result_success_title": "Antwoord voltooid",
+      "result_fail_title": "Verzoek mislukt"
+    },
+
+    "plan": {
+      "title": "Plannen",
+      "subtitle": "Een gedetailleerd implementatieplan van AI ontvangen voor een taak of functie.",
+      "target_project_root": "Hoofdpad van het doelproject",
+      "task_input_label": "Waarvoor heeft u een plan nodig?",
+      "task_placeholder": "bijv. Gebruikersauthenticatie met JWT-tokens toevoegen",
+      "describe_task": "Beschrijf de taak.",
+      "result_success_title": "Plan voltooid",
+      "result_fail_title": "Planning mislukt"
+    },
+
+    "check_skill": {
+      "title": "Skill controleren",
+      "subtitle": "/skills via AI-backend uitvoeren op een doelproject.",
+      "target_project_root": "Hoofdpad van het doelproject",
+      "result_success_title": "Skillcontrole voltooid",
+      "result_fail_title": "Skillcontrole mislukt"
+    },
+
+    "tools_registry": {
+      "title": "Toolregister",
+      "subtitle": "{count} AI-tools ondersteund (+ .agents/ auto-inject)",
+      "search_placeholder": "Tools zoeken...",
+      "columns": {
+        "name": "Naam",
+        "company": "Bedrijf",
+        "dotdir": "Dotdir",
+        "popularity": "Populariteit",
+        "performance": "Prestatie",
+        "price": "Prijs"
+      }
+    },
+
+    "usage": {
+      "title": "Tokengebruik",
+      "subtitle": "Tokengebruik op sessieniveau over alle AI-backends.",
+      "no_requests_title": "Nog geen AI-verzoeken",
+      "no_requests_subtitle": "Tokengebruik verschijnt hier nadat u docs, skills heeft gegenereerd of vragen aan AI heeft gesteld.",
+      "session_summary": "Sessieoverzicht",
+      "total_tokens": "Totaal tokens",
+      "input_tokens": "Invoertokens",
+      "output_tokens": "Uitvoertokens",
+      "total_cost": "Totale kosten",
+      "requests": "Verzoeken",
+      "cache_tokens": "Cachetokens",
+      "cost": "Kosten"
+    },
+
+    "research": {
+      "title": "AI-Engineering Onderzoek",
+      "subtitle": "Laatste AI-engineeringnieuws zoeken, artikelen verdiepen en samenvattingen genereren",
+      "topics_to_search": "Te zoeken onderwerpen:",
+      "filter_by_source": "Filteren op bron (optioneel):",
+      "articles_in_kb": "Artikelen in de kennisbank",
+      "result_success_title": "Onderzoek voltooid",
+      "result_fail_title": "Onderzoek mislukt",
+      "grid_articles_found": "Artikelen gevonden",
+      "grid_new_articles": "Nieuwe artikelen",
+      "grid_skipped_dedup": "Overgeslagen (duplicaat)",
+      "grid_duration": "Duur",
+      "select_at_least_one_topic": "Selecteer minstens een onderwerp",
+      "generated_html_pages": "{count} HTML-artikelpagina('s) gegenereerd",
+      "all_articles_have_html": "Alle artikelen hebben al HTML-pagina's"
+    },
+
+    "events": {
+      "title": "AI-Evenementen & Conferenties",
+      "subtitle": "Aankomende AI-conferenties, meetups en workshops wereldwijd vinden",
+      "countries_to_search": "Te doorzoeken landen:",
+      "events_in_kb": "Evenementen in de kennisbank",
+      "result_success_title": "Evenementenzoekactie voltooid",
+      "result_fail_title": "Evenementenzoekactie mislukt",
+      "grid_events_found": "Evenementen gevonden",
+      "grid_new_events": "Nieuwe evenementen",
+      "grid_skipped_dedup": "Overgeslagen (duplicaat)",
+      "grid_duration": "Duur",
+      "select_at_least_one_country": "Selecteer minstens een land",
+      "generated_html_pages": "{count} HTML-evenementpagina('s) gegenereerd",
+      "all_events_have_html": "Alle evenementen hebben al HTML-pagina's"
+    },
+
+    "settings": {
+      "title": "Instellingen",
+      "subtitle": "Applicatievoorkeuren configureren.",
+      "dark_mode": {
+        "title": "Donkere modus",
+        "description": "Schakelen tussen donker en licht interfacethema.",
+        "enabled": "Donkere modus ingeschakeld",
+        "disabled": "Lichte modus ingeschakeld"
+      },
+      "sound_notifications": {
+        "title": "Procesmeldingen",
+        "description": "Een geluid afspelen wanneer de AI-generatie is voltooid.",
+        "enabled": "Geluidsmeldingen ingeschakeld",
+        "disabled": "Geluidsmeldingen uitgeschakeld"
+      },
+      "ai_tool": {
+        "title": "AI-Tool",
+        "description": "Momenteel in gebruik: {name}"
+      },
+      "model": {
+        "title": "Model",
+        "description": "Momenteel in gebruik: {model}"
+      },
+      "prompt_version": {
+        "title": "Promptversie",
+        "description": "Momenteel in gebruik: {version}"
+      }
+    }
+  },
+
+  "buttons": {
+    "next": "Volgende",
+    "back": "Terug",
+    "home": "Startpagina",
+    "execute": "Uitvoeren",
+    "search": "Zoeken",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "select": "Selecteren",
+    "switch": "Wisselen",
+    "scan": "Scannen",
+    "reset": "Herstellen",
+    "refresh": "Vernieuwen",
+    "try_again": "Opnieuw proberen",
+    "start_over": "Opnieuw beginnen",
+    "search_again": "Opnieuw zoeken",
+    "select_all": "Alles selecteren",
+    "deselect_all": "Alles deselecteren",
+    "auto_detect": "Automatisch detecteren",
+    "next_select_tools": "Volgende — Tools selecteren",
+    "next_confirm": "Volgende — Bevestigen",
+    "delete_selected": "Selectie verwijderen",
+    "delete_docs": "Docs verwijderen",
+    "create_scaffold": "Raamwerk aanmaken",
+    "create_docs_template": "Docs-sjabloon aanmaken",
+    "create_plan": "Plan aanmaken",
+    "run_check": "Controle uitvoeren",
+    "generate_ai_docs": "AI-Docs genereren",
+    "generate_rule": "Regel genereren",
+    "generate_skill": "Skill genereren",
+    "update_all_skills": "Alle skills bijwerken",
+    "search_latest_news": "Laatste nieuws zoeken",
+    "search_events": "Evenementen zoeken",
+    "view_landing_page": "Landingspagina bekijken",
+    "generate_html_files": "HTML-bestanden genereren",
+    "open_landing_page": "Landingspagina openen",
+    "view_skill_md": "SKILL.md bekijken",
+    "switch_tool": "Tool wisselen",
+    "switch_model": "Model wisselen",
+    "prompts": "Prompts",
+    "usage": "Gebruik",
+    "install_skill": "Skill installeren",
+    "ask": "Vragen",
+    "hide_log": "Log verbergen",
+    "show_log": "Log tonen",
+    "got_it": "Begrepen"
+  },
+
+  "messages": {
+    "using_backend": "In gebruik: {name} ({model})",
+    "directory_not_found": "Map niet gevonden: {path}",
+    "source_directory_not_found": "Bronmap niet gevonden: {path}",
+    "no_skills_found_in_source": "Geen skills gevonden in de bron.",
+    "no_skills_found_in_target": "Geen skills gevonden in het doelproject.",
+    "no_docs_found_in_target": "Geen AI-docs gevonden in het doelproject.",
+    "no_tools_detected": "Geen toolmappen gevonden in het doel.",
+    "select_at_least_one_skill": "Selecteer minstens een skill.",
+    "select_at_least_one_tool": "Selecteer minstens een tool.",
+    "no_usage_info": "Geen gebruiksinformatie beschikbaar.",
+    "found_tools": "{count} tools gevonden in {name}/",
+    "selected_count": "{count} geselecteerd",
+    "skill_copied": "'{name}' v{version} — gekopieerd",
+    "skill_updated": "'{name}' — bijgewerkt",
+    "claude_sound_enabled": "Claude-geluidsmeldingen ingeschakeld",
+    "claude_sound_disabled": "Claude-geluidsmeldingen uitgeschakeld",
+    "exit_code": "Exitcode: {code}",
+    "agents_md_exists": "agents.md bestaat al in {path}",
+    "enter_rule_topic": "Voer een regelonderwerp in.",
+    "enter_question": "Voer een vraag in.",
+    "describe_task": "Beschrijf de taak.",
+    "no_skills_selected": "Geen skills geselecteerd. Afgebroken.",
+    "no_tools_selected": "Geen tools geselecteerd. Afgebroken.",
+    "no_question_provided": "Geen vraag opgegeven. Afgebroken.",
+    "no_task_provided": "Geen taak opgegeven. Afgebroken.",
+    "aborted": "Afgebroken.",
+    "done": "Klaar.",
+    "timed_out": "{name} is na 10 minuten verlopen.",
+    "cli_not_found": "{command} CLI niet gevonden in PATH.",
+    "no_backends_available": "Geen backends beschikbaar. Installeer claude, gemini of copilot CLI."
+  },
+
+  "components": {
+    "hero": {
+      "title": "Skillnir",
+      "tagline": "Injecteer AI-codeervaardigheden in de dotdir van elke tool.",
+      "skills_badge": "{count} Skills",
+      "tools_badge": "{count} AI-Tools",
+      "dotdirs_badge": "{count} Dotdirs"
+    },
+    "welcome_dialog": {
+      "title": "Welkom bij Skillnir",
+      "description": "Skillnir orkestreert AI-codeertools via hun CLI-runners. Om te beginnen, installeer de CLI voor minstens een backend hieronder en meld u aan bij uw account.",
+      "dont_show_again": "Niet meer tonen",
+      "cli_guide_title": "CLI-installatiehandleiding",
+      "cli_guide_description": "Installeer en meld u aan bij de CLI-runner voor elke AI-backend die u met Skillnir wilt gebruiken.",
+      "install_label": "Installeren",
+      "login_label": "Aanmelden",
+      "verify_label": "Verifieren",
+      "or_label": "of",
+      "backends": {
+        "claude_code": {
+          "name": "Claude Code",
+          "notes": "Vereist Node.js 18+. Kan ook via Homebrew worden geinstalleerd."
+        },
+        "cursor_agent": {
+          "name": "Cursor Agent",
+          "notes": "Vereist Node.js 18+. Kan ook via de Cursor IDE worden gebruikt."
+        },
+        "gemini_cli": {
+          "name": "Gemini CLI",
+          "notes": "Vereist Node.js 18+ en een Google AI-account."
+        },
+        "github_copilot": {
+          "name": "GitHub Copilot",
+          "notes": "Vereist een GitHub-account met Copilot-toegang."
+        }
+      }
+    },
+    "backend_picker": {
+      "switch_ai_tool_title": "AI-tool wisselen",
+      "switch_model_title": "Model wisselen",
+      "switch_prompt_version_title": "Promptversie wisselen",
+      "ai_tool_label": "AI-Tool: {name}",
+      "active_badge": "actief",
+      "current_badge": "huidig",
+      "default_badge": "standaard"
+    },
+    "backend_chip": {
+      "model_label": "Model: {model}"
+    },
+    "stat_card": {
+      "created": "Aangemaakt",
+      "skipped": "Overgeslagen",
+      "errors": "Fouten",
+      "copied": "Gekopieerd",
+      "updated": "Bijgewerkt"
+    },
+    "progress_panel": {
+      "initializing": "Initialiseren...",
+      "preparing": "Voorbereiden...",
+      "elapsed": "verstreken",
+      "tools_used": "Gebruikte tools",
+      "lines_output": "Uitvoerregels",
+      "live_output": "Live-uitvoer",
+      "log_output": "Log-uitvoer"
+    },
+    "empty_state": {
+      "no_ai_requests": "Nog geen AI-verzoeken",
+      "no_ai_requests_subtitle": "Tokengebruik verschijnt hier nadat u docs, skills heeft gegenereerd of vragen aan AI heeft gesteld."
+    }
+  },
+
+  "layout": {
+    "injection_summary": "Injectieoverzicht",
+    "target": "Doel:",
+    "skills": "Skills:",
+    "tools": "Tools:",
+    "tools_selected_auto": "{count} geselecteerd + .agents/ (auto)",
+    "symlinks_to_create": "Aan te maken symlinks:",
+    "injection_report": "Injectierapport",
+    "sync_report": "Synchronisatierapport",
+    "no_skills_in_source": "Geen skills gevonden in de bron.",
+    "created_label": "Aangemaakt:",
+    "already_existed_label": "Bestond al:",
+    "errors_label": "Fouten:",
+    "installed_badge": "Geinstalleerd",
+    "score_labels": {
+      "pop": "pop.",
+      "perf": "prest.",
+      "price": "prijs"
+    },
+    "tooltips": {
+      "cli_setup_guide": "CLI-installatiehandleiding",
+      "toggle_dark_light": "Donker/licht modus schakelen",
+      "toggle_sound": "Meldingsgeluid schakelen"
+    }
+  },
+
+  "cli": {
+    "description": "Injecteer AI-codeervaardigheden in de dotdir van elke tool.",
+    "command_help": "install (standaard): skills synchroniseren + in tools injecteren. update: alleen skills synchroniseren. delete-skill: skill(s) uit een project verwijderen. delete-docs: AI-docs uit een project verwijderen. init-skill: een standaard skillraamwerk aanmaken. init-docs: een standaard AI-docs-sjabloon aanmaken. ui: webinterface starten. generate-docs: agents.md genereren met AI. generate-skill: een SKILL.md genereren met AI. generate-rule: Cursor-regel (.mdc) genereren met AI. check-skill: /skills uitvoeren via AI-backend. ask: een vraag stellen aan AI. plan: een implementatieplan ontvangen. research: laatste AI-engineeringnieuws zoeken en samenvattingen genereren. events: aankomende AI-evenementen en conferenties wereldwijd zoeken. config: backend/model beheren. sound: Claude Code-geluidsmeldingen beheren.",
+    "prompts": {
+      "target_project_root": "Hoofdpad van het doelproject:",
+      "source_skills_path": "Bronpad voor skills:",
+      "select_skills": "Selecteer skills om te injecteren (spatie=schakelen, enter=bevestigen):",
+      "how_sort_tools": "Hoe moeten tools worden gesorteerd?",
+      "select_tools": "Selecteer AI-tools om in te injecteren (spatie=schakelen, enter=bevestigen):",
+      "proceed_injection": "Doorgaan met injectie?",
+      "proceed_docs_generation": "Doorgaan met AI-docs generatie?",
+      "proceed_skill_generation": "Doorgaan met skillgeneratie?",
+      "proceed_rule_generation": "Doorgaan met regelgeneratie?",
+      "project_name": "Projectnaam:",
+      "select_skill_scope": "Skillomvang selecteren:",
+      "also_add_to_current": "Gegenereerde skill ook aan huidig project toevoegen?",
+      "rule_topic": "Regelonderwerp (bijv. 'foutafhandelingsstandaarden', 'React-patronen'):",
+      "enter_rule_topic": "Voer een regelonderwerp in",
+      "your_question": "Uw vraag:",
+      "what_plan_for": "Waarvoor heeft u een plan nodig?",
+      "run_skill_check": "Skillcontrole uitvoeren?",
+      "select_skills_to_delete": "Selecteer skills om te verwijderen:",
+      "also_delete_data": "Skillgegevens ook verwijderen uit .data/skills/?",
+      "proceed_deletion": "Doorgaan met verwijdering?",
+      "skill_name": "Skillnaam (kleine letters, alleen streepjes):",
+      "create_skill_scaffold": "Skillraamwerk aanmaken?",
+      "create_docs_template": "AI-docs-sjabloon aanmaken?",
+      "filter_by_source": "Filteren op bron (leeg laten voor alles):",
+      "search_latest_articles": "Naar de laatste artikelen zoeken?",
+      "select_countries": "Selecteer landen om te doorzoeken (leeg laten voor alles):",
+      "search_upcoming_events": "Naar aankomende evenementen zoeken?",
+      "open_landing_page": "Landingspagina openen in de browser?",
+      "what_to_do": "Wat wilt u doen?"
+    },
+    "sort_modes": {
+      "default": "Standaard (aanbevolen)",
+      "popularity": "Sorteren op populariteit",
+      "performance": "Sorteren op prestatie",
+      "price": "Sorteren op prijs (goedkoopste eerst)",
+      "alpha": "Alfabetisch sorteren"
+    },
+    "install": {
+      "found_skill": "1 skill gevonden: {name} (v{version})",
+      "no_skills_in_source": "Geen skills gevonden in de bron. Niets om te injecteren.",
+      "target_label": "Doel: {path}",
+      "skills_label": "Skills: {names}",
+      "tools_label": "Tools:  {count} geselecteerd + .agents/ (auto)",
+      "done": "Klaar. {created} nieuw, {skipped} overgeslagen, {errors} fouten."
+    },
+    "sync_report": {
+      "title": "Skillsynchronisatierapport",
+      "copied": "gekopieerd",
+      "updated": "bijgewerkt",
+      "skipped": "overgeslagen (zelfde versie)",
+      "summary": "{copied} gekopieerd, {updated} bijgewerkt, {skipped} overgeslagen."
+    },
+    "injection_report": {
+      "title": "Injectierapport: {name}",
+      "created": "Aangemaakt ({count}):",
+      "already_existed": "Bestond al ({count}):",
+      "errors": "Fouten ({count}):"
+    },
+    "generate_docs": {
+      "generating": "AI-docs worden gegenereerd...",
+      "complete": "Generatie voltooid!",
+      "failed": "Generatie mislukt: {error}",
+      "will_generate": "Het project wordt gescand met AI en het volgende wordt gegenereerd:",
+      "agents_md": "agents.md (projecthoofdmap)",
+      "claude_md": ".claude/claude.md (symlink)"
+    },
+    "generate_skill": {
+      "generating": "{name}-skill wordt gegenereerd...",
+      "complete": "Skillgeneratie voltooid!",
+      "failed": "Skillgeneratie mislukt: {error}",
+      "run_install": "Voer 'skillnir install' uit om deze skill in AI-tools te injecteren."
+    },
+    "generate_rule": {
+      "generating": "Cursor-regel wordt gegenereerd...",
+      "complete": "Regelgeneratie voltooid!",
+      "failed": "Regelgeneratie mislukt: {error}"
+    },
+    "check_skill": {
+      "running": "{command}-controle wordt uitgevoerd...",
+      "complete": "Skillcontrole voltooid!",
+      "failed": "Skillcontrole mislukt (exitcode {code})"
+    },
+    "ask": {
+      "asking": "AI wordt gevraagd...",
+      "done": "Klaar.",
+      "failed": "Mislukt (exitcode {code})"
+    },
+    "plan": {
+      "planning": "Plannen...",
+      "complete": "Plan voltooid.",
+      "failed": "Planning mislukt (exitcode {code})"
+    },
+    "research": {
+      "title": "AI-Engineering Onderzoek",
+      "topics_header": "Te zoeken onderwerpen:",
+      "searching": "Zoeken en samenvatten...",
+      "articles_found": "Artikelen gevonden:      {count}",
+      "new_articles": "Nieuwe artikelen:        {count}",
+      "skipped_dedup": "Overgeslagen (duplicaat): {count}",
+      "landing_page": "Landingspagina:          {path}",
+      "failed": "Mislukt: {error}",
+      "regenerating": "HTML-artikelpagina's en landingspagina worden opnieuw gegenereerd...",
+      "generated_pages": "{count} HTML-artikelpagina('s) gegenereerd",
+      "all_have_html": "Alle artikelen hebben al HTML-pagina's"
+    },
+    "events": {
+      "title": "AI-evenementen zoeken",
+      "searching": "Evenementen worden gezocht...",
+      "events_found": "Evenementen gevonden:      {count}",
+      "new_events": "Nieuwe evenementen:        {count}",
+      "skipped_dedup": "Overgeslagen (duplicaat):  {count}",
+      "landing_page": "Landingspagina:            {path}",
+      "failed": "Mislukt: {error}",
+      "regenerating": "HTML-evenementpagina's en landingspagina worden opnieuw gegenereerd...",
+      "generated_pages": "{count} HTML-evenementpagina('s) gegenereerd",
+      "all_have_html": "Alle evenementen hebben al HTML-pagina's"
+    },
+    "delete_skill": {
+      "no_skills": "Geen skills gevonden in het doelproject.",
+      "will_delete": "Wordt verwijderd:",
+      "delete_summary": "{name} ({count} toolinstallatie(s){suffix})",
+      "success": "{name}: {symlinks} symlinks verwijderd, {dirs} mappen opgeruimd",
+      "error": "{name}: {error}"
+    },
+    "delete_docs": {
+      "no_docs": "Geen AI-docs gevonden in het doelproject.",
+      "will_delete": "Wordt verwijderd:",
+      "removed_files": "{count} bestanden verwijderd",
+      "cleaned_dirs": "{count} lege mappen opgeruimd",
+      "error": "Fout: {error}"
+    },
+    "init_skill": {
+      "will_create_at": "Raamwerk wordt aangemaakt in: {path}",
+      "created": "Skillraamwerk aangemaakt in {path}",
+      "error": "Fout: {error}"
+    },
+    "init_docs": {
+      "will_create_in": "Wordt aangemaakt in {path}:",
+      "agents_md_template": "agents.md (sjabloon)",
+      "claude_md_symlink": ".claude/claude.md (symlink)",
+      "copilot_md_symlink": ".github/copilot-instructions.md (symlink)",
+      "created": "AI-docs-sjabloon aangemaakt",
+      "error": "Fout: {error}"
+    },
+    "sound": {
+      "title": "Claude Code-geluidsmelding",
+      "status": "Status: {status}",
+      "enabled": "ingeschakeld",
+      "disabled": "uitgeschakeld",
+      "enable_option": "Geluidsmeldingen inschakelen",
+      "disable_option": "Geluidsmeldingen uitschakelen",
+      "reset_option": "Claude-configuratie herstellen naar standaard (alle hooks verwijderen)",
+      "exit_option": "Afsluiten",
+      "already_enabled": "al ingeschakeld",
+      "already_disabled": "al uitgeschakeld",
+      "sound_enabled_msg": "Geluidsmeldingen ingeschakeld (Stop + PermissionRequest).",
+      "sound_disabled_msg": "Geluidsmeldingen uitgeschakeld.",
+      "reset_confirm": "Dit verwijdert ALLE hooks uit ~/.claude/settings.json. Doorgaan?",
+      "reset_done": "Claude-configuratie hersteld — alle hooks verwijderd.",
+      "restart_notice": "Herstart Claude Code om de wijzigingen door te voeren."
+    },
+    "config": {
+      "title": "Skillnir-configuratie",
+      "backend_label": "Backend:  {name}",
+      "model_label": "Model:    {model}",
+      "prompts_label": "Prompts:  {version}",
+      "version_label": "Versie:   {version}",
+      "available_backends": "Beschikbare backends:",
+      "not_installed": "[niet geinstalleerd]",
+      "current_suffix": "(huidig)",
+      "actions": {
+        "switch_tool": "AI-tool wisselen",
+        "switch_model": "Model wisselen",
+        "switch_prompt_version": "Promptversie wisselen",
+        "show_usage": "Gebruiksinformatie tonen",
+        "exit": "Afsluiten"
+      },
+      "select_backend": "Selecteer backend:",
+      "select_model": "Selecteer model:",
+      "select_prompt_version": "Selecteer promptversie:",
+      "backend_set": "Backend ingesteld op: {name} (model: {model})",
+      "model_set": "Model ingesteld op: {model}",
+      "prompt_version_set": "Promptversie ingesteld op: {version}",
+      "usage_info": "{name} gebruiksinformatie:",
+      "no_cli_usage": "{name} biedt geen CLI-gebruiksinformatie.",
+      "check_usage_at": "Gebruik controleren op: {url}",
+      "no_usage_available": "Geen gebruiksinformatie beschikbaar voor {name}."
+    }
+  }
+}

@@ -1,0 +1,748 @@
+{
+  "nav": {
+    "groups": {
+      "skill_management": "إدارة المهارات",
+      "ai_context": "سياق الذكاء الاصطناعي",
+      "templates": "القوالب",
+      "ai_assistant": "مساعد الذكاء الاصطناعي",
+      "tools_data": "الأدوات والبيانات"
+    },
+    "items": {
+      "install": "تثبيت",
+      "update": "تحديث",
+      "check": "فحص",
+      "delete": "حذف",
+      "generate_skill": "توليد مهارة",
+      "generate_rule": "توليد قاعدة",
+      "generate_docs": "توليد مستندات",
+      "delete_docs": "حذف المستندات",
+      "init_skill": "إنشاء مهارة",
+      "init_docs": "إنشاء مستندات",
+      "ask_ai": "سؤال AI",
+      "plan": "تخطيط",
+      "skills_library": "مكتبة المهارات",
+      "tools_registry": "سجل الأدوات",
+      "usage": "الاستهلاك",
+      "research": "البحث",
+      "events": "الفعاليات",
+      "settings": "الإعدادات"
+    },
+    "sort_modes": {
+      "default": "الافتراضي",
+      "popularity": "الشعبية",
+      "performance": "الأداء",
+      "price": "السعر (الأرخص)",
+      "alpha": "أبجدي"
+    }
+  },
+
+  "pages": {
+    "home": {
+      "sections": {
+        "skill": {
+          "title": "المهارة",
+          "desc": "تثبيت، تحديث، فحص، حذف أو توليد مهارات لمشاريعك.",
+          "items": {
+            "install": "تثبيت",
+            "update": "تحديث",
+            "check": "فحص",
+            "delete": "حذف",
+            "generate_skill": "توليد مهارة"
+          }
+        },
+        "ai_context": {
+          "title": "سياق AI",
+          "desc": "توليد قواعد أو مستندات AI أو حذف المستندات الموجودة من المشاريع.",
+          "items": {
+            "generate_rule": "توليد قاعدة",
+            "generate_docs": "توليد مستندات AI",
+            "delete_docs": "حذف المستندات"
+          }
+        },
+        "default_template": {
+          "title": "القالب الافتراضي",
+          "desc": "إنشاء قالب فارغ للمهارة أو المستندات مع عناصر نائبة موضحة.",
+          "items": {
+            "init_skill": "إنشاء مهارة",
+            "init_docs": "إنشاء مستندات"
+          }
+        },
+        "claude_tools": {
+          "title": "أدوات Claude",
+          "desc": "تفعيل أو تعطيل إشعارات Claude Code الصوتية.",
+          "sound_notifications": "الإشعارات الصوتية"
+        },
+        "usage": {
+          "title": "الاستهلاك",
+          "desc": "عرض إحصائيات التوكنات ومعلومات الاستهلاك لكل واجهة خلفية.",
+          "items": {
+            "token_stats": "إحصائيات التوكنات"
+          }
+        },
+        "supported_tools": {
+          "title": "الأدوات المدعومة",
+          "desc": "تصفح جميع أدوات AI المدعومة ونماذجها.",
+          "items": {
+            "models_tools": "النماذج والأدوات"
+          }
+        },
+        "research": {
+          "title": "البحث",
+          "desc": "إجراء بحث على الويب، عرض المقالات الموجودة أو حذف بيانات البحث.",
+          "items": {
+            "research_hub": "مركز البحث"
+          }
+        },
+        "events": {
+          "title": "الفعاليات",
+          "desc": "العثور على مؤتمرات ولقاءات وورش عمل AI القادمة حول العالم.",
+          "items": {
+            "events_hub": "مركز الفعاليات"
+          }
+        },
+        "settings": {
+          "title": "الإعدادات",
+          "desc": "الوضع الفاتح/الداكن، تبديل الإشعارات وتفضيلات التطبيق.",
+          "items": {
+            "preferences": "التفضيلات"
+          }
+        },
+        "ai_extra": {
+          "title": "إضافات AI",
+          "desc": "اسأل AI أسئلة أو احصل على خطط تنفيذ مفصلة.",
+          "items": {
+            "ask_ai": "سؤال AI",
+            "plan_with_ai": "التخطيط مع AI"
+          }
+        }
+      },
+      "quick_actions": {
+        "install_skill": "تثبيت مهارة",
+        "generate_docs": "توليد مستندات",
+        "generate_skill": "توليد مهارة",
+        "ask_ai": "سؤال AI"
+      }
+    },
+
+    "install": {
+      "title": "تثبيت المهارات",
+      "subtitle": "حقن مهارات البرمجة بالذكاء الاصطناعي في مشروعك.",
+      "steps": {
+        "target_source": "الهدف والمصدر",
+        "select_skills": "اختيار المهارات",
+        "select_tools": "اختيار الأدوات",
+        "confirm_execute": "التأكيد والتنفيذ",
+        "results": "النتائج"
+      },
+      "target_project_help": "أدخل المسار الجذري للمشروع الهدف.",
+      "source_skills_help": "مسار مصدر المهارات (مكان جلب المهارات المولدة).",
+      "select_skills_help": "اختر المهارات للحقن (واحدة أو أكثر).",
+      "select_tools_help": "اختر أدوات AI لحقن الروابط الرمزية فيها.",
+      "sort_by": "ترتيب حسب:",
+      "project_root": "جذر المشروع",
+      "source_skills_path": "مسار مصدر المهارات",
+      "syncing_skill": "مزامنة المهارة {index}/{total}: {name}...",
+      "injecting_skill": "حقن المهارة {index}/{total}: {name}...",
+      "starting": "جارٍ البدء...",
+      "updating_skills": "جارٍ تحديث المهارات..."
+    },
+
+    "update": {
+      "title": "تحديث المهارات",
+      "subtitle": "مزامنة جميع المهارات من المصدر إلى المشروع الهدف."
+    },
+
+    "skills_library": {
+      "title": "مكتبة المهارات",
+      "subtitle": "{count} مهارة متاحة",
+      "search_placeholder": "البحث عن مهارات...",
+      "view_skill_md": "عرض SKILL.md",
+      "skill_md_not_found": "SKILL.md غير موجود",
+      "skill_md_dialog_title": "{name} — SKILL.md",
+      "error_reading_skill_md": "خطأ في قراءة SKILL.md: {error}"
+    },
+
+    "generate_docs": {
+      "title": "توليد مستندات AI",
+      "subtitle": "فحص المشروع بالذكاء الاصطناعي وتوليد agents.md + .claude/claude.md",
+      "target_project_root": "جذر المشروع الهدف",
+      "prompt_version": "إصدار الموجه",
+      "result_success_title": "اكتمل التوليد",
+      "result_fail_title": "فشل التوليد"
+    },
+
+    "generate_rule": {
+      "title": "توليد قاعدة",
+      "subtitle": "فحص المشروع بالذكاء الاصطناعي وتوليد ملفات قواعد Cursor (.mdc)",
+      "target_project_root": "جذر المشروع الهدف",
+      "rule_topic": "موضوع القاعدة",
+      "rule_topic_placeholder": "مثال: معايير معالجة الأخطاء، أنماط مكونات React",
+      "prompt_version": "إصدار الموجه",
+      "enter_rule_topic": "يرجى إدخال موضوع القاعدة.",
+      "result_success_title": "اكتمل توليد القاعدة",
+      "result_fail_title": "فشل توليد القاعدة"
+    },
+
+    "delete_docs": {
+      "title": "حذف مستندات AI",
+      "subtitle": "إزالة agents.md وروابطه الرمزية من المشروع الهدف.",
+      "target_project_root": "جذر المشروع الهدف",
+      "no_docs_found": "لم يتم العثور على مستندات AI في المشروع الهدف.",
+      "found_label": "تم العثور على:",
+      "symlink": "رابط رمزي",
+      "file": "ملف",
+      "no_docs_to_delete": "لا توجد مستندات للحذف.",
+      "deletion_complete": "اكتمل الحذف",
+      "deletion_failed": "فشل الحذف",
+      "removed_files": "تم حذف {count} ملف(ات)",
+      "cleaned_dirs": "تم تنظيف {count} مجلد(ات) فارغ"
+    },
+
+    "generate_skill": {
+      "title": "توليد مهارة",
+      "subtitle": "فحص المشروع بالذكاء الاصطناعي وتوليد SKILL.md متخصص بالمجال",
+      "target_project_root": "جذر المشروع الهدف",
+      "project_name": "اسم المشروع",
+      "skill_scope": "نطاق المهارة",
+      "prompt_version": "إصدار الموجه",
+      "also_add_to_current": "إضافة المهارة إلى المشروع الحالي أيضاً",
+      "skill_name_preview": "اسم المهارة: {name}",
+      "result_success_title": "اكتمل توليد المهارة",
+      "result_fail_title": "فشل توليد المهارة",
+      "result_footer": "نفّذ 'skillnir install' لحقن هذه المهارة في أدوات AI.",
+      "grid_skill_name": "اسم المهارة",
+      "grid_target_skill_md": "SKILL.md الهدف",
+      "grid_source_skill_md": "SKILL.md المصدر",
+      "grid_duration": "المدة",
+      "grid_tools_used": "الأدوات المستخدمة",
+      "grid_backend": "الواجهة الخلفية"
+    },
+
+    "delete_skill": {
+      "title": "حذف المهارات",
+      "subtitle": "إزالة مهارة (أو أكثر) من المشروع الهدف، بما في ذلك الروابط الرمزية في جميع مجلدات الأدوات.",
+      "target_project_root": "جذر المشروع الهدف",
+      "no_skills_found": "لم يتم العثور على مهارات في المشروع الهدف.",
+      "found_skills": "تم العثور على {count} مهارة(ات):",
+      "tool_installations": "{count} تثبيت(ات) أداة",
+      "also_delete_data": "حذف بيانات المهارة من .data/skills/ أيضاً",
+      "select_at_least_one": "اختر مهارة واحدة على الأقل.",
+      "deletion_report": "تقرير الحذف",
+      "error_badge": "خطأ",
+      "deleted_badge": "محذوف",
+      "deleted_summary": "({symlinks} رابط رمزي، {dirs} مجلد تم تنظيفه)"
+    },
+
+    "init_skill": {
+      "title": "إنشاء مهارة",
+      "subtitle": "إنشاء قالب مهارة افتراضي مع ملفات عناصر نائبة موضحة.",
+      "target_project_root": "جذر المشروع الهدف",
+      "skill_name_label": "اسم المهارة (أحرف صغيرة، شرطات فقط)",
+      "will_create": "سيتم إنشاء:",
+      "scaffold_created": "تم إنشاء قالب المهارة في {path}",
+      "error_prefix": "خطأ: {error}"
+    },
+
+    "init_docs": {
+      "title": "إنشاء مستندات AI",
+      "subtitle": "إنشاء قالب agents.md افتراضي مع أقسام موضحة وروابط رمزية لأدوات AI.",
+      "target_project_root": "جذر المشروع الهدف",
+      "will_create": "سيتم إنشاء:",
+      "docs_created": "تم إنشاء قالب مستندات AI!",
+      "error_prefix": "خطأ: {error}"
+    },
+
+    "ask": {
+      "title": "سؤال AI",
+      "subtitle": "اطرح سؤالاً حول مشروع. يجيب AI دون إجراء تغييرات.",
+      "target_project_root": "جذر المشروع الهدف",
+      "your_question": "سؤالك",
+      "question_placeholder": "مثال: كيف يعمل وحدة المصادقة؟",
+      "enter_question": "يرجى إدخال سؤال.",
+      "result_success_title": "اكتملت الإجابة",
+      "result_fail_title": "فشل السؤال"
+    },
+
+    "plan": {
+      "title": "تخطيط",
+      "subtitle": "الحصول على خطة تنفيذ مفصلة من AI لمهمة أو ميزة.",
+      "target_project_root": "جذر المشروع الهدف",
+      "task_input_label": "ما الذي تحتاج خطة له؟",
+      "task_placeholder": "مثال: إضافة مصادقة المستخدم بتوكنات JWT",
+      "describe_task": "يرجى وصف المهمة.",
+      "result_success_title": "اكتمل التخطيط",
+      "result_fail_title": "فشل التخطيط"
+    },
+
+    "check_skill": {
+      "title": "فحص المهارة",
+      "subtitle": "تشغيل /skills عبر واجهة AI الخلفية على المشروع الهدف.",
+      "target_project_root": "جذر المشروع الهدف",
+      "result_success_title": "اكتمل فحص المهارة",
+      "result_fail_title": "فشل فحص المهارة"
+    },
+
+    "tools_registry": {
+      "title": "سجل الأدوات",
+      "subtitle": "{count} أداة AI مدعومة (+ حقن تلقائي .agents/)",
+      "search_placeholder": "البحث عن أدوات...",
+      "columns": {
+        "name": "الاسم",
+        "company": "الشركة",
+        "dotdir": "مجلد الإعدادات",
+        "popularity": "الشعبية",
+        "performance": "الأداء",
+        "price": "السعر"
+      }
+    },
+
+    "usage": {
+      "title": "استهلاك التوكنات",
+      "subtitle": "استهلاك التوكنات على مستوى الجلسة لجميع واجهات AI الخلفية.",
+      "no_requests_title": "لا توجد طلبات AI بعد",
+      "no_requests_subtitle": "سيظهر استهلاك التوكنات هنا بعد توليد المستندات أو المهارات أو طرح أسئلة على AI.",
+      "session_summary": "ملخص الجلسة",
+      "total_tokens": "إجمالي التوكنات",
+      "input_tokens": "توكنات الإدخال",
+      "output_tokens": "توكنات الإخراج",
+      "total_cost": "التكلفة الإجمالية",
+      "requests": "الطلبات",
+      "cache_tokens": "توكنات التخزين المؤقت",
+      "cost": "التكلفة"
+    },
+
+    "research": {
+      "title": "بحث هندسة AI",
+      "subtitle": "البحث عن أحدث أخبار هندسة AI، قراءة المقالات بعمق وتوليد الملخصات",
+      "topics_to_search": "المواضيع للبحث:",
+      "filter_by_source": "تصفية حسب المصدر (اختياري):",
+      "articles_in_kb": "مقالات في قاعدة المعرفة",
+      "result_success_title": "اكتمل البحث",
+      "result_fail_title": "فشل البحث",
+      "grid_articles_found": "المقالات الموجودة",
+      "grid_new_articles": "المقالات الجديدة",
+      "grid_skipped_dedup": "تم تخطيها (مكررة)",
+      "grid_duration": "المدة",
+      "select_at_least_one_topic": "اختر موضوعاً واحداً على الأقل",
+      "generated_html_pages": "تم توليد {count} صفحة(ات) HTML للمقالات",
+      "all_articles_have_html": "جميع المقالات لديها صفحات HTML بالفعل"
+    },
+
+    "events": {
+      "title": "فعاليات ومؤتمرات AI",
+      "subtitle": "العثور على مؤتمرات ولقاءات وورش عمل AI القادمة حول العالم",
+      "countries_to_search": "الدول للبحث:",
+      "events_in_kb": "فعاليات في قاعدة المعرفة",
+      "result_success_title": "اكتمل البحث عن الفعاليات",
+      "result_fail_title": "فشل البحث عن الفعاليات",
+      "grid_events_found": "الفعاليات الموجودة",
+      "grid_new_events": "الفعاليات الجديدة",
+      "grid_skipped_dedup": "تم تخطيها (مكررة)",
+      "grid_duration": "المدة",
+      "select_at_least_one_country": "اختر دولة واحدة على الأقل",
+      "generated_html_pages": "تم توليد {count} صفحة(ات) HTML للفعاليات",
+      "all_events_have_html": "جميع الفعاليات لديها صفحات HTML بالفعل"
+    },
+
+    "settings": {
+      "title": "الإعدادات",
+      "subtitle": "تكوين تفضيلات التطبيق.",
+      "dark_mode": {
+        "title": "الوضع الداكن",
+        "description": "التبديل بين المظهر الداكن والفاتح.",
+        "enabled": "تم تفعيل الوضع الداكن",
+        "disabled": "تم تفعيل الوضع الفاتح"
+      },
+      "sound_notifications": {
+        "title": "إشعارات العمليات",
+        "description": "تشغيل صوت عند اكتمال توليد AI.",
+        "enabled": "تم تفعيل الإشعارات الصوتية",
+        "disabled": "تم تعطيل الإشعارات الصوتية"
+      },
+      "ai_tool": {
+        "title": "أداة AI",
+        "description": "قيد الاستخدام حالياً: {name}"
+      },
+      "model": {
+        "title": "النموذج",
+        "description": "قيد الاستخدام حالياً: {model}"
+      },
+      "prompt_version": {
+        "title": "إصدار الموجه",
+        "description": "قيد الاستخدام حالياً: {version}"
+      }
+    }
+  },
+
+  "buttons": {
+    "next": "التالي",
+    "back": "السابق",
+    "home": "الرئيسية",
+    "execute": "تنفيذ",
+    "search": "بحث",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "select": "اختيار",
+    "switch": "تبديل",
+    "scan": "فحص",
+    "reset": "إعادة تعيين",
+    "refresh": "تحديث",
+    "try_again": "إعادة المحاولة",
+    "start_over": "البدء من جديد",
+    "search_again": "البحث مجدداً",
+    "select_all": "تحديد الكل",
+    "deselect_all": "إلغاء تحديد الكل",
+    "auto_detect": "اكتشاف تلقائي",
+    "next_select_tools": "التالي — اختيار الأدوات",
+    "next_confirm": "التالي — التأكيد",
+    "delete_selected": "حذف المحدد",
+    "delete_docs": "حذف المستندات",
+    "create_scaffold": "إنشاء القالب",
+    "create_docs_template": "إنشاء قالب المستندات",
+    "create_plan": "إنشاء خطة",
+    "run_check": "تشغيل الفحص",
+    "generate_ai_docs": "توليد مستندات AI",
+    "generate_rule": "توليد قاعدة",
+    "generate_skill": "توليد مهارة",
+    "update_all_skills": "تحديث جميع المهارات",
+    "search_latest_news": "البحث عن أحدث الأخبار",
+    "search_events": "البحث عن فعاليات",
+    "view_landing_page": "عرض الصفحة الرئيسية",
+    "generate_html_files": "توليد ملفات HTML",
+    "open_landing_page": "فتح الصفحة الرئيسية",
+    "view_skill_md": "عرض SKILL.md",
+    "switch_tool": "تبديل الأداة",
+    "switch_model": "تبديل النموذج",
+    "prompts": "الموجهات",
+    "usage": "الاستهلاك",
+    "install_skill": "تثبيت مهارة",
+    "ask": "اسأل",
+    "hide_log": "إخفاء السجل",
+    "show_log": "إظهار السجل",
+    "got_it": "فهمت"
+  },
+
+  "messages": {
+    "using_backend": "قيد الاستخدام: {name} ({model})",
+    "directory_not_found": "المجلد غير موجود: {path}",
+    "source_directory_not_found": "مجلد المصدر غير موجود: {path}",
+    "no_skills_found_in_source": "لم يتم العثور على مهارات في المصدر.",
+    "no_skills_found_in_target": "لم يتم العثور على مهارات في المشروع الهدف.",
+    "no_docs_found_in_target": "لم يتم العثور على مستندات AI في المشروع الهدف.",
+    "no_tools_detected": "لم يتم العثور على مجلدات أدوات في الهدف.",
+    "select_at_least_one_skill": "اختر مهارة واحدة على الأقل.",
+    "select_at_least_one_tool": "اختر أداة واحدة على الأقل.",
+    "no_usage_info": "لا تتوفر معلومات الاستهلاك.",
+    "found_tools": "تم العثور على {count} أداة في {name}/",
+    "selected_count": "{count} محدد",
+    "skill_copied": "'{name}' الإصدار {version} — تم النسخ",
+    "skill_updated": "'{name}' — تم التحديث",
+    "claude_sound_enabled": "تم تفعيل إشعارات Claude الصوتية",
+    "claude_sound_disabled": "تم تعطيل إشعارات Claude الصوتية",
+    "exit_code": "رمز الخروج: {code}",
+    "agents_md_exists": "agents.md موجود بالفعل في {path}",
+    "enter_rule_topic": "يرجى إدخال موضوع القاعدة.",
+    "enter_question": "يرجى إدخال سؤال.",
+    "describe_task": "يرجى وصف المهمة.",
+    "no_skills_selected": "لم يتم اختيار مهارات. تم الإلغاء.",
+    "no_tools_selected": "لم يتم اختيار أدوات. تم الإلغاء.",
+    "no_question_provided": "لم يتم تقديم سؤال. تم الإلغاء.",
+    "no_task_provided": "لم يتم تقديم مهمة. تم الإلغاء.",
+    "aborted": "تم الإلغاء.",
+    "done": "تم.",
+    "timed_out": "انتهت مهلة {name} بعد ١٠ دقائق.",
+    "cli_not_found": "CLI {command} غير موجود في PATH.",
+    "no_backends_available": "لا تتوفر واجهات خلفية. ثبّت claude أو gemini أو copilot CLI."
+  },
+
+  "components": {
+    "hero": {
+      "title": "Skillnir",
+      "tagline": "حقن مهارات البرمجة بالذكاء الاصطناعي في مجلد إعدادات أي أداة.",
+      "skills_badge": "{count} مهارة",
+      "tools_badge": "{count} أداة AI",
+      "dotdirs_badge": "{count} مجلد إعدادات"
+    },
+    "welcome_dialog": {
+      "title": "مرحباً بك في Skillnir",
+      "description": "يقوم Skillnir بتنسيق أدوات البرمجة بالذكاء الاصطناعي عبر مشغلات CLI الخاصة بها. للبدء، ثبّت CLI لواجهة خلفية واحدة على الأقل من القائمة أدناه وسجّل الدخول إلى حسابك.",
+      "dont_show_again": "لا تظهر هذا مجدداً",
+      "cli_guide_title": "دليل تثبيت CLI",
+      "cli_guide_description": "ثبّت وسجّل الدخول إلى مشغل CLI لكل واجهة AI خلفية تريد استخدامها مع Skillnir.",
+      "install_label": "تثبيت",
+      "login_label": "تسجيل الدخول",
+      "verify_label": "تحقق",
+      "or_label": "أو",
+      "backends": {
+        "claude_code": {
+          "name": "Claude Code",
+          "notes": "يتطلب Node.js الإصدار ١٨ أو أعلى. يمكنك أيضاً التثبيت عبر Homebrew."
+        },
+        "cursor_agent": {
+          "name": "Cursor Agent",
+          "notes": "يتطلب Node.js الإصدار ١٨ أو أعلى. يمكن استخدامه أيضاً من خلال Cursor IDE."
+        },
+        "gemini_cli": {
+          "name": "Gemini CLI",
+          "notes": "يتطلب Node.js الإصدار ١٨ أو أعلى وحساب Google AI."
+        },
+        "github_copilot": {
+          "name": "GitHub Copilot",
+          "notes": "يتطلب حساب GitHub مع صلاحية الوصول إلى Copilot."
+        }
+      }
+    },
+    "backend_picker": {
+      "switch_ai_tool_title": "تبديل أداة AI",
+      "switch_model_title": "تبديل النموذج",
+      "switch_prompt_version_title": "تبديل إصدار الموجه",
+      "ai_tool_label": "أداة AI: {name}",
+      "active_badge": "نشط",
+      "current_badge": "حالي",
+      "default_badge": "افتراضي"
+    },
+    "backend_chip": {
+      "model_label": "النموذج: {model}"
+    },
+    "stat_card": {
+      "created": "تم الإنشاء",
+      "skipped": "تم التخطي",
+      "errors": "أخطاء",
+      "copied": "تم النسخ",
+      "updated": "تم التحديث"
+    },
+    "progress_panel": {
+      "initializing": "جارٍ التهيئة...",
+      "preparing": "جارٍ التحضير...",
+      "elapsed": "الوقت المنقضي",
+      "tools_used": "الأدوات المستخدمة",
+      "lines_output": "سطور الإخراج",
+      "live_output": "الإخراج المباشر",
+      "log_output": "إخراج السجل"
+    },
+    "empty_state": {
+      "no_ai_requests": "لا توجد طلبات AI بعد",
+      "no_ai_requests_subtitle": "سيظهر استهلاك التوكنات هنا بعد توليد المستندات أو المهارات أو طرح أسئلة على AI."
+    }
+  },
+
+  "layout": {
+    "injection_summary": "ملخص الحقن",
+    "target": "الهدف:",
+    "skills": "المهارات:",
+    "tools": "الأدوات:",
+    "tools_selected_auto": "{count} محدد + .agents/ (تلقائي)",
+    "symlinks_to_create": "الروابط الرمزية المراد إنشاؤها:",
+    "injection_report": "تقرير الحقن",
+    "sync_report": "تقرير المزامنة",
+    "no_skills_in_source": "لم يتم العثور على مهارات في المصدر.",
+    "created_label": "تم الإنشاء:",
+    "already_existed_label": "موجود مسبقاً:",
+    "errors_label": "أخطاء:",
+    "installed_badge": "مثبّت",
+    "score_labels": {
+      "pop": "شعبية",
+      "perf": "أداء",
+      "price": "سعر"
+    },
+    "tooltips": {
+      "cli_setup_guide": "دليل إعداد CLI",
+      "toggle_dark_light": "تبديل الوضع الداكن/الفاتح",
+      "toggle_sound": "تبديل صوت الإشعارات"
+    }
+  },
+
+  "cli": {
+    "description": "حقن مهارات البرمجة بالذكاء الاصطناعي في مجلد إعدادات أي أداة.",
+    "command_help": "install (افتراضي): مزامنة المهارات + الحقن في الأدوات. update: مزامنة المهارات فقط. delete-skill: إزالة مهارة (أو أكثر) من مشروع. delete-docs: إزالة مستندات AI من مشروع. init-skill: إنشاء قالب مهارة افتراضي. init-docs: إنشاء قالب مستندات AI افتراضي. ui: تشغيل واجهة الويب. generate-docs: توليد agents.md بالذكاء الاصطناعي. generate-skill: توليد SKILL.md بالذكاء الاصطناعي. generate-rule: توليد قاعدة Cursor (.mdc) بالذكاء الاصطناعي. check-skill: تشغيل /skills عبر واجهة AI الخلفية. ask: سؤال AI. plan: الحصول على خطة تنفيذ. research: البحث عن أحدث أخبار هندسة AI وتوليد الملخصات. events: البحث عن فعاليات ومؤتمرات AI القادمة حول العالم. config: إدارة الواجهة الخلفية/النموذج. sound: إدارة إشعارات Claude Code الصوتية.",
+    "prompts": {
+      "target_project_root": "جذر المشروع الهدف:",
+      "source_skills_path": "مسار مصدر المهارات:",
+      "select_skills": "اختر المهارات للحقن (مسافة=تبديل، إدخال=تأكيد):",
+      "how_sort_tools": "كيف ترغب بترتيب الأدوات؟",
+      "select_tools": "اختر أدوات AI للحقن فيها (مسافة=تبديل، إدخال=تأكيد):",
+      "proceed_injection": "المتابعة بالحقن؟",
+      "proceed_docs_generation": "المتابعة بتوليد مستندات AI؟",
+      "proceed_skill_generation": "المتابعة بتوليد المهارة؟",
+      "proceed_rule_generation": "المتابعة بتوليد القاعدة؟",
+      "project_name": "اسم المشروع:",
+      "select_skill_scope": "اختر نطاق المهارة:",
+      "also_add_to_current": "إضافة المهارة المولدة إلى المشروع الحالي أيضاً؟",
+      "rule_topic": "موضوع القاعدة (مثال: 'معايير معالجة الأخطاء'، 'أنماط React'):",
+      "enter_rule_topic": "يرجى إدخال موضوع القاعدة",
+      "your_question": "سؤالك:",
+      "what_plan_for": "ما الذي تحتاج خطة له؟",
+      "run_skill_check": "تشغيل فحص المهارة؟",
+      "select_skills_to_delete": "اختر المهارات للحذف:",
+      "also_delete_data": "حذف بيانات المهارة من .data/skills/ أيضاً؟",
+      "proceed_deletion": "المتابعة بالحذف؟",
+      "skill_name": "اسم المهارة (أحرف صغيرة، شرطات فقط):",
+      "create_skill_scaffold": "إنشاء قالب المهارة؟",
+      "create_docs_template": "إنشاء قالب مستندات AI؟",
+      "filter_by_source": "تصفية حسب المصدر (اتركه فارغاً للكل):",
+      "search_latest_articles": "البحث عن أحدث المقالات؟",
+      "select_countries": "اختر الدول للبحث (اتركه فارغاً للكل):",
+      "search_upcoming_events": "البحث عن الفعاليات القادمة؟",
+      "open_landing_page": "فتح الصفحة الرئيسية في المتصفح؟",
+      "what_to_do": "ماذا تريد أن تفعل؟"
+    },
+    "sort_modes": {
+      "default": "الافتراضي (موصى به)",
+      "popularity": "ترتيب حسب الشعبية",
+      "performance": "ترتيب حسب الأداء",
+      "price": "ترتيب حسب السعر (الأرخص أولاً)",
+      "alpha": "ترتيب أبجدي"
+    },
+    "install": {
+      "found_skill": "تم العثور على مهارة واحدة: {name} (الإصدار {version})",
+      "no_skills_in_source": "لم يتم العثور على مهارات في المصدر. لا يوجد شيء للحقن.",
+      "target_label": "الهدف: {path}",
+      "skills_label": "المهارات: {names}",
+      "tools_label": "الأدوات:  {count} محدد + .agents/ (تلقائي)",
+      "done": "تم. {created} جديد، {skipped} تم تخطيه، {errors} أخطاء."
+    },
+    "sync_report": {
+      "title": "تقرير مزامنة المهارات",
+      "copied": "تم النسخ",
+      "updated": "تم التحديث",
+      "skipped": "تم التخطي (نفس الإصدار)",
+      "summary": "{copied} تم نسخه، {updated} تم تحديثه، {skipped} تم تخطيه."
+    },
+    "injection_report": {
+      "title": "تقرير الحقن: {name}",
+      "created": "تم الإنشاء ({count}):",
+      "already_existed": "موجود مسبقاً ({count}):",
+      "errors": "أخطاء ({count}):"
+    },
+    "generate_docs": {
+      "generating": "جارٍ توليد مستندات AI...",
+      "complete": "اكتمل التوليد!",
+      "failed": "فشل التوليد: {error}",
+      "will_generate": "سيتم فحص المشروع بالذكاء الاصطناعي وتوليد:",
+      "agents_md": "agents.md (جذر المشروع)",
+      "claude_md": ".claude/claude.md (رابط رمزي)"
+    },
+    "generate_skill": {
+      "generating": "جارٍ توليد مهارة {name}...",
+      "complete": "اكتمل توليد المهارة!",
+      "failed": "فشل توليد المهارة: {error}",
+      "run_install": "نفّذ 'skillnir install' لحقن هذه المهارة في أدوات AI."
+    },
+    "generate_rule": {
+      "generating": "جارٍ توليد قاعدة Cursor...",
+      "complete": "اكتمل توليد القاعدة!",
+      "failed": "فشل توليد القاعدة: {error}"
+    },
+    "check_skill": {
+      "running": "جارٍ تشغيل فحص {command}...",
+      "complete": "اكتمل فحص المهارة!",
+      "failed": "فشل فحص المهارة (رمز الخروج {code})"
+    },
+    "ask": {
+      "asking": "جارٍ سؤال AI...",
+      "done": "تم.",
+      "failed": "فشل (رمز الخروج {code})"
+    },
+    "plan": {
+      "planning": "جارٍ التخطيط...",
+      "complete": "اكتمل التخطيط.",
+      "failed": "فشل التخطيط (رمز الخروج {code})"
+    },
+    "research": {
+      "title": "بحث هندسة AI",
+      "topics_header": "المواضيع للبحث:",
+      "searching": "جارٍ البحث والتلخيص...",
+      "articles_found": "المقالات الموجودة:   {count}",
+      "new_articles": "المقالات الجديدة:     {count}",
+      "skipped_dedup": "تم تخطيها (مكررة):  {count}",
+      "landing_page": "الصفحة الرئيسية:     {path}",
+      "failed": "فشل: {error}",
+      "regenerating": "جارٍ إعادة توليد صفحات HTML للمقالات والصفحة الرئيسية...",
+      "generated_pages": "تم توليد {count} صفحة(ات) HTML للمقالات",
+      "all_have_html": "جميع المقالات لديها صفحات HTML بالفعل"
+    },
+    "events": {
+      "title": "البحث عن فعاليات AI",
+      "searching": "جارٍ البحث عن فعاليات...",
+      "events_found": "الفعاليات الموجودة:     {count}",
+      "new_events": "الفعاليات الجديدة:       {count}",
+      "skipped_dedup": "تم تخطيها (مكررة):  {count}",
+      "landing_page": "الصفحة الرئيسية:     {path}",
+      "failed": "فشل: {error}",
+      "regenerating": "جارٍ إعادة توليد صفحات HTML للفعاليات والصفحة الرئيسية...",
+      "generated_pages": "تم توليد {count} صفحة(ات) HTML للفعاليات",
+      "all_have_html": "جميع الفعاليات لديها صفحات HTML بالفعل"
+    },
+    "delete_skill": {
+      "no_skills": "لم يتم العثور على مهارات في المشروع الهدف.",
+      "will_delete": "سيتم الحذف:",
+      "delete_summary": "{name} ({count} تثبيت(ات) أداة{suffix})",
+      "success": "{name}: تم حذف {symlinks} رابط رمزي، تم تنظيف {dirs} مجلد",
+      "error": "{name}: {error}"
+    },
+    "delete_docs": {
+      "no_docs": "لم يتم العثور على مستندات AI في المشروع الهدف.",
+      "will_delete": "سيتم الحذف:",
+      "removed_files": "تم حذف {count} ملف(ات)",
+      "cleaned_dirs": "تم تنظيف {count} مجلد(ات) فارغ",
+      "error": "خطأ: {error}"
+    },
+    "init_skill": {
+      "will_create_at": "سيتم إنشاء القالب في: {path}",
+      "created": "تم إنشاء قالب المهارة في {path}",
+      "error": "خطأ: {error}"
+    },
+    "init_docs": {
+      "will_create_in": "سيتم الإنشاء في {path}:",
+      "agents_md_template": "agents.md (قالب)",
+      "claude_md_symlink": ".claude/claude.md (رابط رمزي)",
+      "copilot_md_symlink": ".github/copilot-instructions.md (رابط رمزي)",
+      "created": "تم إنشاء قالب مستندات AI",
+      "error": "خطأ: {error}"
+    },
+    "sound": {
+      "title": "إشعار Claude Code الصوتي",
+      "status": "الحالة: {status}",
+      "enabled": "مفعّل",
+      "disabled": "معطّل",
+      "enable_option": "تفعيل الإشعارات الصوتية",
+      "disable_option": "تعطيل الإشعارات الصوتية",
+      "reset_option": "إعادة تعيين إعدادات Claude إلى الافتراضي (حذف جميع الخطافات)",
+      "exit_option": "خروج",
+      "already_enabled": "مفعّل بالفعل",
+      "already_disabled": "معطّل بالفعل",
+      "sound_enabled_msg": "تم تفعيل الإشعارات الصوتية (Stop + PermissionRequest).",
+      "sound_disabled_msg": "تم تعطيل الإشعارات الصوتية.",
+      "reset_confirm": "سيتم حذف جميع الخطافات من ~/.claude/settings.json. هل تريد المتابعة؟",
+      "reset_done": "تمت إعادة تعيين إعدادات Claude — تم حذف جميع الخطافات.",
+      "restart_notice": "أعد تشغيل Claude Code لتطبيق التغييرات."
+    },
+    "config": {
+      "title": "تكوين Skillnir",
+      "backend_label": "الواجهة الخلفية:  {name}",
+      "model_label": "النموذج:    {model}",
+      "prompts_label": "الموجه:  {version}",
+      "version_label": "الإصدار:  {version}",
+      "available_backends": "الواجهات الخلفية المتاحة:",
+      "not_installed": "[غير مثبّت]",
+      "current_suffix": "(حالي)",
+      "actions": {
+        "switch_tool": "تبديل أداة AI",
+        "switch_model": "تبديل النموذج",
+        "switch_prompt_version": "تبديل إصدار الموجه",
+        "show_usage": "عرض معلومات الاستهلاك",
+        "exit": "خروج"
+      },
+      "select_backend": "اختر الواجهة الخلفية:",
+      "select_model": "اختر النموذج:",
+      "select_prompt_version": "اختر إصدار الموجه:",
+      "backend_set": "تم تعيين الواجهة الخلفية: {name} (النموذج: {model})",
+      "model_set": "تم تعيين النموذج: {model}",
+      "prompt_version_set": "تم تعيين إصدار الموجه: {version}",
+      "usage_info": "معلومات استهلاك {name}:",
+      "no_cli_usage": "{name} لا يوفر معلومات استهلاك CLI.",
+      "check_usage_at": "تحقق من الاستهلاك على: {url}",
+      "no_usage_available": "لا تتوفر معلومات استهلاك لـ {name}."
+    }
+  }
+}
