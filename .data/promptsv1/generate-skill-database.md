@@ -162,11 +162,11 @@ Integrate for the detected database engine and ORM:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent             | Role                                                  | Tools              | Spawn When                                                          |
-| ----------------- | ----------------------------------------------------- | ------------------ | ------------------------------------------------------------------- |
-| schema-reviewer   | Read-only schema analysis against SKILL.md patterns   | Read Glob Grep     | Schema review, data model audit, normalization compliance check     |
-| migration-auditor | Migration safety and rollback verification            | Read Glob Grep     | New migration review, pre-deploy migration check, rollback planning |
-| query-optimizer   | Query performance analysis and optimization           | Read Glob Grep Bash | Slow query investigation, EXPLAIN plan review, index recommendations |
+| Agent             | Role                                                | Tools               | Spawn When                                                           |
+| ----------------- | --------------------------------------------------- | ------------------- | -------------------------------------------------------------------- |
+| schema-reviewer   | Read-only schema analysis against SKILL.md patterns | Read Glob Grep      | Schema review, data model audit, normalization compliance check      |
+| migration-auditor | Migration safety and rollback verification          | Read Glob Grep      | New migration review, pre-deploy migration check, rollback planning  |
+| query-optimizer   | Query performance analysis and optimization         | Read Glob Grep Bash | Slow query investigation, EXPLAIN plan review, index recommendations |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

@@ -193,9 +193,9 @@ def header() -> tuple:
 
     with ui.header().classes('items-center justify-between px-4 h-12'):
         with ui.row().classes('items-center gap-2'):
-            ui.button(icon='menu', on_click=drawer.toggle).props(
-                _hdr
-            ).classes('hdr-btn')
+            ui.button(icon='menu', on_click=drawer.toggle).props(_hdr).classes(
+                'hdr-btn'
+            )
 
         with ui.row().classes('items-center gap-1'):
 
@@ -204,17 +204,15 @@ def header() -> tuple:
 
                 show_cli_guide_dialog()
 
-            ui.button(
-                icon='help_outline', on_click=_show_guide
-            ).props(_hdr).classes('hdr-btn').tooltip('CLI setup guide')
+            ui.button(icon='help_outline', on_click=_show_guide).props(_hdr).classes(
+                'hdr-btn'
+            ).tooltip('CLI setup guide')
 
             def toggle_dark():
                 is_dark_now = not dark.value
                 dark.value = is_dark_now
                 app.storage.user['dark_mode'] = is_dark_now
-                dark_btn.props(
-                    f'icon={"dark_mode" if is_dark_now else "light_mode"}'
-                )
+                dark_btn.props(f'icon={"dark_mode" if is_dark_now else "light_mode"}')
 
             dark_btn = (
                 ui.button(

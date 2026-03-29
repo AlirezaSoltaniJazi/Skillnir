@@ -188,11 +188,11 @@ Integrate for the detected Playwright configuration and project setup:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent            | Role                                                    | Tools                          | Spawn When                                                       |
-| ---------------- | ------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------- |
-| test-reviewer    | Read-only test analysis against SKILL.md patterns       | Read Glob Grep                 | PR review, test audit, pattern compliance check                  |
-| fixture-designer | Fixture architecture and composition analysis           | Read Glob Grep                 | Fixture refactoring, new fixture design, dependency analysis     |
-| flake-analyzer   | Flaky test detection and root cause analysis            | Read Glob Grep Bash            | Test instability, intermittent failures, CI flake investigation  |
+| Agent            | Role                                              | Tools               | Spawn When                                                      |
+| ---------------- | ------------------------------------------------- | ------------------- | --------------------------------------------------------------- |
+| test-reviewer    | Read-only test analysis against SKILL.md patterns | Read Glob Grep      | PR review, test audit, pattern compliance check                 |
+| fixture-designer | Fixture architecture and composition analysis     | Read Glob Grep      | Fixture refactoring, new fixture design, dependency analysis    |
+| flake-analyzer   | Flaky test detection and root cause analysis      | Read Glob Grep Bash | Test instability, intermittent failures, CI flake investigation |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

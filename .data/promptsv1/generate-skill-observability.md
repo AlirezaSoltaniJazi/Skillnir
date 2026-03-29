@@ -160,11 +160,11 @@ Integrate for the detected observability stack:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent                    | Role                                                        | Tools          | Spawn When                                                         |
-| ------------------------ | ----------------------------------------------------------- | -------------- | ------------------------------------------------------------------ |
-| instrumentation-auditor  | Audit instrumentation coverage and correctness              | Read Glob Grep | New service onboarding, coverage review, instrumentation PR review |
-| alert-designer           | Review and design alerting rules and SLO monitors           | Read Glob Grep | Alert creation, SLO definition, alert fatigue investigation        |
-| slo-reviewer             | Validate SLO/SLI definitions and error budget configuration | Read Glob Grep | SLO changes, error budget review, reliability planning             |
+| Agent                   | Role                                                        | Tools          | Spawn When                                                         |
+| ----------------------- | ----------------------------------------------------------- | -------------- | ------------------------------------------------------------------ |
+| instrumentation-auditor | Audit instrumentation coverage and correctness              | Read Glob Grep | New service onboarding, coverage review, instrumentation PR review |
+| alert-designer          | Review and design alerting rules and SLO monitors           | Read Glob Grep | Alert creation, SLO definition, alert fatigue investigation        |
+| slo-reviewer            | Validate SLO/SLI definitions and error budget configuration | Read Glob Grep | SLO changes, error budget review, reliability planning             |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

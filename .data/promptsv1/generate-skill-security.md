@@ -171,11 +171,11 @@ Note: Security analysis is primarily **read-only**. No `Edit` or `Write` — rem
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
 | Agent                 | Role                                                                 | Tools               | Spawn When                                                                  |
-| --------------------- | -------------------------------------------------------------------- | -------------------- | --------------------------------------------------------------------------- |
-| vulnerability-scanner | Static code analysis for security patterns across all platforms      | Read Glob Grep       | Security audit, code review, pre-deploy check, OWASP compliance scan        |
-| dependency-auditor    | Supply chain and dependency vulnerability analysis                   | Read Glob Grep Bash  | CVE alert triage, lockfile review, new dependency addition, update review    |
-| config-auditor        | Security misconfiguration detection for infrastructure, cloud, CI/CD | Read Glob Grep       | Docker/K8s security check, CI/CD pipeline audit, cloud config review, CORS  |
-| pentest-reviewer      | Penetration testing review and exploit chain analysis                | Read Glob Grep       | Pentest report review, threat modeling, attack surface assessment, red team  |
+| --------------------- | -------------------------------------------------------------------- | ------------------- | --------------------------------------------------------------------------- |
+| vulnerability-scanner | Static code analysis for security patterns across all platforms      | Read Glob Grep      | Security audit, code review, pre-deploy check, OWASP compliance scan        |
+| dependency-auditor    | Supply chain and dependency vulnerability analysis                   | Read Glob Grep Bash | CVE alert triage, lockfile review, new dependency addition, update review   |
+| config-auditor        | Security misconfiguration detection for infrastructure, cloud, CI/CD | Read Glob Grep      | Docker/K8s security check, CI/CD pipeline audit, cloud config review, CORS  |
+| pentest-reviewer      | Penetration testing review and exploit chain analysis                | Read Glob Grep      | Pentest report review, threat modeling, attack surface assessment, red team |
 
 All sub-agents are **read-only** — security analysis should never modify code. The `dependency-auditor` has Bash access scoped to running audit commands (`pip-audit`, `npm audit`, `trivy`).
 

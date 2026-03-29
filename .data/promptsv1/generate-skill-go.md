@@ -165,11 +165,11 @@ Integrate for the detected Go version and frameworks:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent         | Role                                             | Tools                          | Spawn When                                                        |
-| ------------- | ------------------------------------------------ | ------------------------------ | ----------------------------------------------------------------- |
-| code-reviewer | Read-only code analysis against SKILL.md patterns | Read Glob Grep                 | PR review, code audit, architecture compliance check              |
-| test-writer   | Test generation following project conventions    | Read Edit Write Glob Grep Bash | "write tests for X", new handler/service creation, coverage gaps  |
-| race-detector | Concurrency safety analysis and race detection   | Read Glob Grep Bash            | Concurrency review, goroutine audit, pre-deploy race check        |
+| Agent         | Role                                              | Tools                          | Spawn When                                                       |
+| ------------- | ------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------- |
+| code-reviewer | Read-only code analysis against SKILL.md patterns | Read Glob Grep                 | PR review, code audit, architecture compliance check             |
+| test-writer   | Test generation following project conventions     | Read Edit Write Glob Grep Bash | "write tests for X", new handler/service creation, coverage gaps |
+| race-detector | Concurrency safety analysis and race detection    | Read Glob Grep Bash            | Concurrency review, goroutine audit, pre-deploy race check       |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

@@ -156,11 +156,11 @@ Integrate for the detected framework:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent                  | Role                                                        | Tools                          | Spawn When                                                       |
-| ---------------------- | ----------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------- |
-| code-reviewer          | Read-only code analysis against SKILL.md patterns           | Read Glob Grep                 | PR review, code audit, architecture compliance check             |
+| Agent                   | Role                                                          | Tools                          | Spawn When                                                        |
+| ----------------------- | ------------------------------------------------------------- | ------------------------------ | ----------------------------------------------------------------- |
+| code-reviewer           | Read-only code analysis against SKILL.md patterns             | Read Glob Grep                 | PR review, code audit, architecture compliance check              |
 | platform-bridge-auditor | Audit native bridge safety, thread handling, type marshalling | Read Glob Grep                 | Native module changes, bridge code review, platform channel audit |
-| test-writer            | Test generation following project conventions               | Read Edit Write Glob Grep Bash | "write tests for X", new screen/widget creation, coverage gaps   |
+| test-writer             | Test generation following project conventions                 | Read Edit Write Glob Grep Bash | "write tests for X", new screen/widget creation, coverage gaps    |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

@@ -83,7 +83,7 @@ Concrete examples of using this skill.
 | Field                 | Purpose                   | Example                                      |
 | --------------------- | ------------------------- | -------------------------------------------- |
 | `compatibility`       | Detected stack + versions | `'Python 3.12 + Django 5.0 + PostgreSQL 16'` |
-| `metadata.author`     | Who generated it          | `skillnir`                                |
+| `metadata.author`     | Who generated it          | `skillnir`                                   |
 | `metadata.version`    | Semver                    | `'1.0.0'`                                    |
 | `metadata.sdlc-phase` | SDLC stage                | `development`, `testing`, `deployment`       |
 | `allowed-tools`       | Tools the skill may use   | `Read Edit Write Bash(python:*) Glob Grep`   |

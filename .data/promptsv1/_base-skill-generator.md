@@ -74,7 +74,7 @@ allowed-tools:
 | `name`                | Yes      | Max 64 chars, lowercase, hyphens only                                                                                          |
 | `description`         | Yes      | Max 1024 chars. Third person. Include WHAT + WHEN + trigger terms                                                              |
 | `compatibility`       | Yes      | Detected language, framework, key library versions                                                                             |
-| `metadata.author`     | Yes      | Always `skillnir`                                                                                                           |
+| `metadata.author`     | Yes      | Always `skillnir`                                                                                                              |
 | `metadata.version`    | Yes      | Semver string                                                                                                                  |
 | `metadata.sdlc-phase` | Yes      | Which SDLC phase this skill covers                                                                                             |
 | `allowed-tools`       | Yes      | Space-separated tool list. Use platform-specific scoping where possible. **Include `Agent` only when `sub-agents` is defined** |

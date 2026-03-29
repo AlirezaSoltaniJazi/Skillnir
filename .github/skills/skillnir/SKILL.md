@@ -113,18 +113,18 @@ See [references/code-style.md](references/code-style.md) for full formatting con
 
 ## Anti-Patterns
 
-| Anti-Pattern                                       | Why It's Wrong                                                         |
-| -------------------------------------------------- | ---------------------------------------------------------------------- |
-| Writing preferences to SKILL.md                    | SKILL.md is generated — use LEARNED.md for session learnings           |
-| Editing skill files without reading SKILL.md first | Miss instructions about where content belongs and file ownership rules |
-| Putting code examples in SKILL.md                  | SKILL.md budget is ≤300 lines — code goes in references/               |
-| Skipping LEARNED.md check on ambiguity             | May repeat a question the user already answered in a prior session     |
-| Mixing multiple rules in one LEARNED.md entry      | Makes entries hard to scan and apply selectively                       |
-| Wrong date format in LEARNED.md                    | Use `YYYY-MM-DD`, not `Mar 21` or `03/21/2026`                         |
-| Adding `Agent` to allowed-tools without agents/    | `Agent` in allowed-tools ↔ agents/ directory must be in sync           |
-| INJECT.md exceeding 150 tokens                     | Consumes context budget every response — keep minimal                  |
+| Anti-Pattern                                        | Why It's Wrong                                                         |
+| --------------------------------------------------- | ---------------------------------------------------------------------- |
+| Writing preferences to SKILL.md                     | SKILL.md is generated — use LEARNED.md for session learnings           |
+| Editing skill files without reading SKILL.md first  | Miss instructions about where content belongs and file ownership rules |
+| Putting code examples in SKILL.md                   | SKILL.md budget is ≤300 lines — code goes in references/               |
+| Skipping LEARNED.md check on ambiguity              | May repeat a question the user already answered in a prior session     |
+| Mixing multiple rules in one LEARNED.md entry       | Makes entries hard to scan and apply selectively                       |
+| Wrong date format in LEARNED.md                     | Use `YYYY-MM-DD`, not `Mar 21` or `03/21/2026`                         |
+| Adding `Agent` to allowed-tools without agents/     | `Agent` in allowed-tools ↔ agents/ directory must be in sync           |
+| INJECT.md exceeding 150 tokens                      | Consumes context budget every response — keep minimal                  |
 | Recording domain conventions in skillnir LEARNED.md | Domain learnings belong in the domain skill's LEARNED.md               |
-| Editing SKILL.md manually expecting persistence    | Regeneration overwrites manual changes — use LEARNED.md instead        |
+| Editing SKILL.md manually expecting persistence     | Regeneration overwrites manual changes — use LEARNED.md instead        |
 
 ## Code Generation Rules
 

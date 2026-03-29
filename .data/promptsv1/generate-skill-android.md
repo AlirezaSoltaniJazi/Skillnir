@@ -156,11 +156,11 @@ Integrate for the detected architecture:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent            | Role                                                            | Tools                          | Spawn When                                                                   |
-| ---------------- | --------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------------------- |
-| code-reviewer    | Read-only Kotlin/Java code analysis and architecture compliance | Read Glob Grep                 | PR review, architecture compliance check, Compose best practices audit       |
-| test-writer      | Android test generation (unit + instrumented)                   | Read Edit Write Glob Grep Bash | "write tests for X", new screen/feature creation, coverage gaps              |
-| security-scanner | OWASP Mobile Top 10 audit and Android security analysis         | Read Glob Grep                 | Security review, pre-release audit, insecure storage/intent/IPC analysis     |
+| Agent            | Role                                                            | Tools                          | Spawn When                                                               |
+| ---------------- | --------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------ |
+| code-reviewer    | Read-only Kotlin/Java code analysis and architecture compliance | Read Glob Grep                 | PR review, architecture compliance check, Compose best practices audit   |
+| test-writer      | Android test generation (unit + instrumented)                   | Read Edit Write Glob Grep Bash | "write tests for X", new screen/feature creation, coverage gaps          |
+| security-scanner | OWASP Mobile Top 10 audit and Android security analysis         | Read Glob Grep                 | Security review, pre-release audit, insecure storage/intent/IPC analysis |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

@@ -88,7 +88,7 @@ Ignore backend API, web app UI, and mobile code. Scan for:
 
 **Testing**
 
-- Unit testing (Jest/Vitest mocking chrome.* APIs with jest-chrome)
+- Unit testing (Jest/Vitest mocking chrome.\* APIs with jest-chrome)
 - E2E testing (Puppeteer/Playwright with --load-extension)
 - Integration testing service worker
 - Testing content scripts
@@ -136,7 +136,7 @@ Integrate for the detected manifest version and build tooling:
 
 ## DOMAIN OVERRIDES
 
-**Frontmatter `description`**: Must trigger for ANY Chrome extension task — manifest editing, content script development, service worker logic, popup/options UI, message passing, chrome.* API usage, extension debugging, permission management, Chrome Web Store publishing, extension security review.
+**Frontmatter `description`**: Must trigger for ANY Chrome extension task — manifest editing, content script development, service worker logic, popup/options UI, message passing, chrome.\* API usage, extension debugging, permission management, Chrome Web Store publishing, extension security review.
 
 **`allowed-tools`**: `Read Edit Write Bash(npm:*) Bash(npx:*) Bash(node:*) Glob Grep`
 
@@ -175,11 +175,11 @@ Integrate for the detected manifest version and build tooling:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent            | Role                                                    | Tools                          | Spawn When                                                       |
-| ---------------- | ------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------- |
-| code-reviewer    | Read-only code analysis against SKILL.md patterns       | Read Glob Grep                 | PR review, code audit, architecture compliance check             |
-| security-auditor | CSP and permissions audit for extension security        | Read Glob Grep                 | Security review, permission audit, CSP verification              |
-| test-writer      | Test generation following project conventions           | Read Edit Write Glob Grep Bash | "write tests for X", new content script creation, coverage gaps  |
+| Agent            | Role                                              | Tools                          | Spawn When                                                      |
+| ---------------- | ------------------------------------------------- | ------------------------------ | --------------------------------------------------------------- |
+| code-reviewer    | Read-only code analysis against SKILL.md patterns | Read Glob Grep                 | PR review, code audit, architecture compliance check            |
+| security-auditor | CSP and permissions audit for extension security  | Read Glob Grep                 | Security review, permission audit, CSP verification             |
+| test-writer      | Test generation following project conventions     | Read Edit Write Glob Grep Bash | "write tests for X", new content script creation, coverage gaps |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

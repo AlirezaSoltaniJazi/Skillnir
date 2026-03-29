@@ -163,11 +163,11 @@ Integrate for the detected language(s) and framework(s):
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent              | Role                                                    | Tools                    | Spawn When                                                          |
-| ------------------ | ------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------- |
-| profiler           | Run profiling tools and collect performance data        | Read Glob Grep Bash      | Performance investigation, CPU/memory analysis, hot path detection   |
-| bottleneck-analyzer | Identify performance anti-patterns in code             | Read Glob Grep           | Code review for performance, N+1 detection, allocation analysis     |
-| load-test-designer | Create and configure load test scenarios               | Read Edit Write Glob Grep | "create load test for X", new endpoint load testing, SLO validation |
+| Agent               | Role                                             | Tools                     | Spawn When                                                          |
+| ------------------- | ------------------------------------------------ | ------------------------- | ------------------------------------------------------------------- |
+| profiler            | Run profiling tools and collect performance data | Read Glob Grep Bash       | Performance investigation, CPU/memory analysis, hot path detection  |
+| bottleneck-analyzer | Identify performance anti-patterns in code       | Read Glob Grep            | Code review for performance, N+1 detection, allocation analysis     |
+| load-test-designer  | Create and configure load test scenarios         | Read Edit Write Glob Grep | "create load test for X", new endpoint load testing, SLO validation |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

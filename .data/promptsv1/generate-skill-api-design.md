@@ -164,11 +164,11 @@ Integrate for the detected API paradigm and tooling:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent                   | Role                                                    | Tools                    | Spawn When                                                             |
-| ----------------------- | ------------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------- |
-| contract-validator      | Read-only spec validation against SKILL.md patterns     | Read Glob Grep           | Spec review, naming audit, consistency check across endpoints          |
-| breaking-change-detector | Backward compatibility analysis between spec versions  | Read Glob Grep           | Pre-merge spec review, version bump, deprecation planning              |
-| doc-generator           | API documentation generation and maintenance            | Read Edit Write Glob Grep | New endpoint addition, spec update, documentation refresh              |
+| Agent                    | Role                                                  | Tools                     | Spawn When                                                    |
+| ------------------------ | ----------------------------------------------------- | ------------------------- | ------------------------------------------------------------- |
+| contract-validator       | Read-only spec validation against SKILL.md patterns   | Read Glob Grep            | Spec review, naming audit, consistency check across endpoints |
+| breaking-change-detector | Backward compatibility analysis between spec versions | Read Glob Grep            | Pre-merge spec review, version bump, deprecation planning     |
+| doc-generator            | API documentation generation and maintenance          | Read Edit Write Glob Grep | New endpoint addition, spec update, documentation refresh     |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

@@ -181,11 +181,11 @@ Integrate for the detected language/runner:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent                 | Role                                                        | Tools                | Spawn When                                                             |
-| --------------------- | ----------------------------------------------------------- | -------------------- | ---------------------------------------------------------------------- |
-| test-reviewer         | Read-only test analysis against SKILL.md patterns           | Read Glob Grep       | PR review, test audit, POM compliance check                           |
-| grid-configurator     | Grid setup and configuration analysis                       | Read Glob Grep       | Grid setup, Docker Selenium config, cloud provider integration         |
-| cross-browser-auditor | Cross-browser compatibility and browser options audit        | Read Glob Grep Bash  | Browser compatibility review, options audit, headless validation       |
+| Agent                 | Role                                                  | Tools               | Spawn When                                                       |
+| --------------------- | ----------------------------------------------------- | ------------------- | ---------------------------------------------------------------- |
+| test-reviewer         | Read-only test analysis against SKILL.md patterns     | Read Glob Grep      | PR review, test audit, POM compliance check                      |
+| grid-configurator     | Grid setup and configuration analysis                 | Read Glob Grep      | Grid setup, Docker Selenium config, cloud provider integration   |
+| cross-browser-auditor | Cross-browser compatibility and browser options audit | Read Glob Grep Bash | Browser compatibility review, options audit, headless validation |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

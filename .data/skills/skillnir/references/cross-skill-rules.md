@@ -8,10 +8,10 @@
 
 | Skill            | Domain                                | Activates For                                    |
 | ---------------- | ------------------------------------- | ------------------------------------------------ |
-| backendEngineer  | Python modules, CLI, async, testing   | Any code under `src/skillnir/`, `tests/`      |
+| backendEngineer  | Python modules, CLI, async, testing   | Any code under `src/skillnir/`, `tests/`         |
 | frontendEngineer | NiceGUI UI, Tailwind, HTML generation | `ui.py`, `researcher.py` HTML, styling           |
 | devopsEngineer   | CI/CD, Docker, pre-commit, UV         | Workflows, Dockerfiles, config, scripts          |
-| skillnir          | Skill system meta-rules               | Skill files, LEARNED.md entries, skill structure |
+| skillnir         | Skill system meta-rules               | Skill files, LEARNED.md entries, skill structure |
 
 ---
 
@@ -32,19 +32,19 @@ If the task clearly belongs to one domain, use that domain skill:
 
 Use the primary file being edited to select the skill:
 
-| File Pattern                                   | Skill                                                   |
-| ---------------------------------------------- | ------------------------------------------------------- |
-| `src/skillnir/*.py` (except `ui.py`)        | backendEngineer                                         |
-| `src/skillnir/ui.py`                        | frontendEngineer                                        |
-| `src/skillnir/researcher.py` (HTML parts)   | frontendEngineer                                        |
-| `src/skillnir/researcher.py` (Python logic) | backendEngineer                                         |
-| `tests/**/*.py`                                | backendEngineer                                         |
-| `.github/workflows/*.yml`                      | devopsEngineer                                          |
-| `pyproject.toml`, `uv.lock`                    | devopsEngineer                                          |
-| `.pre-commit-config.yaml`                      | devopsEngineer                                          |
-| `Dockerfile`, `docker-compose.yml`             | devopsEngineer                                          |
-| `.data/skills/**/*`                            | skillnir                                                 |
-| `scripts/validate-*.sh`                        | devopsEngineer (content) + skillnir (skill system rules) |
+| File Pattern                                | Skill                                                    |
+| ------------------------------------------- | -------------------------------------------------------- |
+| `src/skillnir/*.py` (except `ui.py`)        | backendEngineer                                          |
+| `src/skillnir/ui.py`                        | frontendEngineer                                         |
+| `src/skillnir/researcher.py` (HTML parts)   | frontendEngineer                                         |
+| `src/skillnir/researcher.py` (Python logic) | backendEngineer                                          |
+| `tests/**/*.py`                             | backendEngineer                                          |
+| `.github/workflows/*.yml`                   | devopsEngineer                                           |
+| `pyproject.toml`, `uv.lock`                 | devopsEngineer                                           |
+| `.pre-commit-config.yaml`                   | devopsEngineer                                           |
+| `Dockerfile`, `docker-compose.yml`          | devopsEngineer                                           |
+| `.data/skills/**/*`                         | skillnir                                                 |
+| `scripts/validate-*.sh`                     | devopsEngineer (content) + skillnir (skill system rules) |
 
 ### 3. Cross-Domain Tasks
 

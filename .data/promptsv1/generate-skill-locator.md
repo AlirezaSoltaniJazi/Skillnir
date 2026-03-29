@@ -20,7 +20,7 @@ Scan directories: `test/`, `tests/`, `e2e/`, `integration/`, `spec/`, `__tests__
 - Primary framework: Playwright / Cypress / WebDriverIO / Selenium / Robot Framework / Appium
 - Detection sources: config files (`playwright.config.*`, `cypress.config.*`, `wdio.conf.*`, `robot.yaml`, `selenium-*.json`), dependencies (`package.json`, `requirements.txt`, `pom.xml`, `build.gradle`), import patterns in test files
 - Language: JavaScript / TypeScript / Python / Java / C# / Ruby
-- Supporting libraries: @testing-library/*, axe-core, Pa11y, custom assertion libs
+- Supporting libraries: @testing-library/\*, axe-core, Pa11y, custom assertion libs
 
 **Current Locator Inventory**
 
@@ -96,8 +96,8 @@ Generate this decision table in the SKILL.md body. The AI must try the first app
 
 | Priority | Strategy                   | Use When                                                                       | Avoid When                                                  | Example (Playwright)              |
 | -------- | -------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------- | --------------------------------- |
-| 1        | Role + accessible name     | Element has a clear semantic role and accessible name                           | Multiple identical roles without distinguishing name        | `getByRole('button', {name: X})` |
-| 2        | Label association           | Form elements with associated labels                                           | Labels are dynamic or generated                             | `getByLabel('Email')`             |
+| 1        | Role + accessible name     | Element has a clear semantic role and accessible name                          | Multiple identical roles without distinguishing name        | `getByRole('button', {name: X})`  |
+| 2        | Label association          | Form elements with associated labels                                           | Labels are dynamic or generated                             | `getByLabel('Email')`             |
 | 3        | Text content               | Visible text uniquely identifies the element                                   | Text is localized, dynamic, or appears in multiple elements | `getByText('Submit')`             |
 | 4        | data-testid / data-test    | No reliable semantic selector; team maintains test attributes                  | Test attributes not in project convention                   | `getByTestId('login-form')`       |
 | 5        | CSS selector (attribute)   | Unique attributes (name, type, href) available                                 | Attribute values are dynamic or generated                   | `locator('[name="email"]')`       |
@@ -202,7 +202,7 @@ Generate framework-specific sections in references/ files. Each MUST include: pr
 - `references/playwright-locators.md` — Playwright locator API with full code examples: getByRole, getByTestId, getByText, getByLabel, locator(), chaining, filtering
 - `references/cypress-locators.md` — Cypress locator API with full code examples: cy.get, cy.contains, @testing-library integration, custom commands
 - `references/wdio-locators.md` — WDIO locator API with full code examples: $, $$, custom$, shadow$, aria selectors, custom strategies
-- `references/selenium-locators.md` — Selenium locator API with code examples per language (Java, Python, C#): By.*, WebDriverWait, relative locators
+- `references/selenium-locators.md` — Selenium locator API with code examples per language (Java, Python, C#): By.\*, WebDriverWait, relative locators
 - `references/robot-framework-locators.md` — Robot Framework locator API: SeleniumLibrary vs Browser library, locator prefixes, custom strategies
 - `references/shadow-dom-iframe-guide.md` — cross-framework guide for shadow DOM piercing and iframe access with code examples
 - `references/code-style.md` — locator naming conventions, page object organization, file structure patterns with examples
@@ -218,11 +218,11 @@ Generate framework-specific sections in references/ files. Each MUST include: pr
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent                 | Role                                                                 | Tools                     | Spawn When                                                                               |
-| --------------------- | -------------------------------------------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------- |
-| locator-auditor       | Audit existing locators for brittleness and suggest improvements     | Read Glob Grep Bash       | Locator review request, brittle selector audit, locator quality assessment, pre-refactor |
-| page-object-builder   | Generate or update page objects with proper locator strategies       | Read Edit Write Glob Grep | New page creation, page object refactoring, locator centralization task                   |
-| accessibility-checker | Verify locators follow a11y-first strategy and WCAG compliance       | Read Glob Grep            | Accessibility audit, a11y-first selector compliance check, ARIA role verification        |
+| Agent                 | Role                                                             | Tools                     | Spawn When                                                                               |
+| --------------------- | ---------------------------------------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------- |
+| locator-auditor       | Audit existing locators for brittleness and suggest improvements | Read Glob Grep Bash       | Locator review request, brittle selector audit, locator quality assessment, pre-refactor |
+| page-object-builder   | Generate or update page objects with proper locator strategies   | Read Edit Write Glob Grep | New page creation, page object refactoring, locator centralization task                  |
+| accessibility-checker | Verify locators follow a11y-first strategy and WCAG compliance   | Read Glob Grep            | Accessibility audit, a11y-first selector compliance check, ARIA role verification        |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

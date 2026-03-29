@@ -111,20 +111,20 @@ Integrate for the detected language/framework migration:
 
 **Body sections** (all required in SKILL.md):
 
-| # | Section | Content |
-| -- | ------- | ------- |
-| 1 | **When to Use** | 4-6 trigger conditions (framework upgrade, language bump, architecture refactor, data migration, dependency major version, deprecation cleanup) |
-| 2 | **Do NOT Use** | Cross-references to sibling skills (backend for new features, infra for provisioning, testing for test-only work) |
-| 3 | **Migration Scope** | Source/target version matrix, affected components diagram, blast radius estimate |
-| 4 | **Breaking Change Inventory** | Summary table only (component, breaking change, severity, mitigation). Full details in references/ only |
-| 5 | **Incremental Strategy** | Phased migration plan with rollback checkpoints, no code blocks |
-| 6 | **Compatibility Matrix** | Version compatibility table (component, min version, max version, notes) |
-| 7 | **Data Migration Patterns** | Rules list + link to references/data-migration-patterns.md |
-| 8 | **Rollback Procedures** | Numbered step lists per phase, no code examples |
-| 9 | **Feature Flag Strategy** | Flag naming, lifecycle, cleanup rules + link to references/feature-flag-guide.md |
-| 10 | **Anti-Patterns** | What NOT to do (with why) — big-bang migrations, skipping versions, untested rollbacks |
-| 11 | **References** | Key files, docs, resources |
-| 12 | **Adaptive Interaction Protocols** | Interaction modes with migration-specific detection signals (e.g., "upgrade failed" for Diagnostic, "migrate next component" for Efficient, "why did this API change" for Teaching), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md |
+| #   | Section                            | Content                                                                                                                                                                                                                                                                                                               |
+| --- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **When to Use**                    | 4-6 trigger conditions (framework upgrade, language bump, architecture refactor, data migration, dependency major version, deprecation cleanup)                                                                                                                                                                       |
+| 2   | **Do NOT Use**                     | Cross-references to sibling skills (backend for new features, infra for provisioning, testing for test-only work)                                                                                                                                                                                                     |
+| 3   | **Migration Scope**                | Source/target version matrix, affected components diagram, blast radius estimate                                                                                                                                                                                                                                      |
+| 4   | **Breaking Change Inventory**      | Summary table only (component, breaking change, severity, mitigation). Full details in references/ only                                                                                                                                                                                                               |
+| 5   | **Incremental Strategy**           | Phased migration plan with rollback checkpoints, no code blocks                                                                                                                                                                                                                                                       |
+| 6   | **Compatibility Matrix**           | Version compatibility table (component, min version, max version, notes)                                                                                                                                                                                                                                              |
+| 7   | **Data Migration Patterns**        | Rules list + link to references/data-migration-patterns.md                                                                                                                                                                                                                                                            |
+| 8   | **Rollback Procedures**            | Numbered step lists per phase, no code examples                                                                                                                                                                                                                                                                       |
+| 9   | **Feature Flag Strategy**          | Flag naming, lifecycle, cleanup rules + link to references/feature-flag-guide.md                                                                                                                                                                                                                                      |
+| 10  | **Anti-Patterns**                  | What NOT to do (with why) — big-bang migrations, skipping versions, untested rollbacks                                                                                                                                                                                                                                |
+| 11  | **References**                     | Key files, docs, resources                                                                                                                                                                                                                                                                                            |
+| 12  | **Adaptive Interaction Protocols** | Interaction modes with migration-specific detection signals (e.g., "upgrade failed" for Diagnostic, "migrate next component" for Efficient, "why did this API change" for Teaching), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md |
 
 **Suggested reference files**:
 
@@ -146,11 +146,11 @@ Integrate for the detected language/framework migration:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent                  | Role                                                        | Tools                | Spawn When                                                         |
-| ---------------------- | ----------------------------------------------------------- | -------------------- | ------------------------------------------------------------------ |
-| compatibility-analyzer | Checks breaking changes against codebase usage              | Read Glob Grep Bash  | Version upgrade planned, dependency bump, framework migration      |
-| risk-assessor          | Identifies high-risk areas and migration ordering            | Read Glob Grep       | Migration planning, blast radius analysis, rollback risk review    |
-| migration-validator    | Verifies migration completeness and no leftover deprecated code | Read Glob Grep Bash  | Post-migration check, phase gate verification, cleanup audit       |
+| Agent                  | Role                                                            | Tools               | Spawn When                                                      |
+| ---------------------- | --------------------------------------------------------------- | ------------------- | --------------------------------------------------------------- |
+| compatibility-analyzer | Checks breaking changes against codebase usage                  | Read Glob Grep Bash | Version upgrade planned, dependency bump, framework migration   |
+| risk-assessor          | Identifies high-risk areas and migration ordering               | Read Glob Grep      | Migration planning, blast radius analysis, rollback risk review |
+| migration-validator    | Verifies migration completeness and no leftover deprecated code | Read Glob Grep Bash | Post-migration check, phase gate verification, cleanup audit    |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

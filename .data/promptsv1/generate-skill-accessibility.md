@@ -153,10 +153,10 @@ Integrate for the detected platform(s) and framework(s):
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent                  | Role                                                    | Tools                | Spawn When                                                              |
-| ---------------------- | ------------------------------------------------------- | -------------------- | ----------------------------------------------------------------------- |
-| wcag-auditor           | WCAG checklist verification against codebase            | Read Glob Grep       | Full a11y audit, compliance check, pre-release review                   |
-| screen-reader-tester   | Screen reader compatibility analysis per component      | Read Glob Grep       | New component review, screen reader bug report, VoiceOver/TalkBack test |
+| Agent                  | Role                                                     | Tools               | Spawn When                                                              |
+| ---------------------- | -------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------- |
+| wcag-auditor           | WCAG checklist verification against codebase             | Read Glob Grep      | Full a11y audit, compliance check, pre-release review                   |
+| screen-reader-tester   | Screen reader compatibility analysis per component       | Read Glob Grep      | New component review, screen reader bug report, VoiceOver/TalkBack test |
 | color-contrast-checker | Automated contrast ratio verification across the project | Read Glob Grep Bash | Contrast audit, theme change review, dark mode verification             |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:

@@ -118,20 +118,20 @@ Integrate for the detected framework/tooling:
 
 **Body sections** (all required in SKILL.md):
 
-| # | Section | Content |
-| -- | ------- | ------- |
-| 1 | **When to Use** | 4-6 trigger conditions (data processing, model training, notebook work, experiment tracking, feature engineering, ML pipeline design) |
-| 2 | **Do NOT Use** | Cross-references to sibling skills (backend for API code, frontend for dashboards, infra for cluster provisioning) |
-| 3 | **Data Architecture** | Data flow diagram, storage locations, pipeline stages, key directories |
-| 4 | **ML Pipeline Patterns** | Summary table only (pattern name, approach, key rule). Full code examples in references/ only |
-| 5 | **Notebook Standards** | Rules table only. Cell ordering, naming, output management, execution rules in references/notebook-standards.md |
-| 6 | **Common Recipes** | Numbered step lists only, no code blocks (data loading, feature engineering, training, evaluation) |
-| 7 | **Experiment Tracking** | Rules list + link to references/experiment-tracking.md |
-| 8 | **Reproducibility Rules** | Bullet list, no code examples (seeds, versioning, determinism) |
-| 9 | **Data Quality** | Summary + link to references/data-validation-checklist.md for per-dataset verification |
-| 10 | **Anti-Patterns** | What NOT to do (with why) — data leakage, unversioned models, notebook hidden state |
-| 11 | **References** | Key files, docs, resources |
-| 12 | **Adaptive Interaction Protocols** | Interaction modes with data-science-specific detection signals (e.g., "model accuracy dropped" for Diagnostic, "train another model" for Efficient, "what is cross-validation" for Teaching), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md |
+| #   | Section                            | Content                                                                                                                                                                                                                                                                                                                        |
+| --- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | **When to Use**                    | 4-6 trigger conditions (data processing, model training, notebook work, experiment tracking, feature engineering, ML pipeline design)                                                                                                                                                                                          |
+| 2   | **Do NOT Use**                     | Cross-references to sibling skills (backend for API code, frontend for dashboards, infra for cluster provisioning)                                                                                                                                                                                                             |
+| 3   | **Data Architecture**              | Data flow diagram, storage locations, pipeline stages, key directories                                                                                                                                                                                                                                                         |
+| 4   | **ML Pipeline Patterns**           | Summary table only (pattern name, approach, key rule). Full code examples in references/ only                                                                                                                                                                                                                                  |
+| 5   | **Notebook Standards**             | Rules table only. Cell ordering, naming, output management, execution rules in references/notebook-standards.md                                                                                                                                                                                                                |
+| 6   | **Common Recipes**                 | Numbered step lists only, no code blocks (data loading, feature engineering, training, evaluation)                                                                                                                                                                                                                             |
+| 7   | **Experiment Tracking**            | Rules list + link to references/experiment-tracking.md                                                                                                                                                                                                                                                                         |
+| 8   | **Reproducibility Rules**          | Bullet list, no code examples (seeds, versioning, determinism)                                                                                                                                                                                                                                                                 |
+| 9   | **Data Quality**                   | Summary + link to references/data-validation-checklist.md for per-dataset verification                                                                                                                                                                                                                                         |
+| 10  | **Anti-Patterns**                  | What NOT to do (with why) — data leakage, unversioned models, notebook hidden state                                                                                                                                                                                                                                            |
+| 11  | **References**                     | Key files, docs, resources                                                                                                                                                                                                                                                                                                     |
+| 12  | **Adaptive Interaction Protocols** | Interaction modes with data-science-specific detection signals (e.g., "model accuracy dropped" for Diagnostic, "train another model" for Efficient, "what is cross-validation" for Teaching), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md |
 
 **Suggested reference files**:
 
@@ -153,11 +153,11 @@ Integrate for the detected framework/tooling:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent                | Role                                                        | Tools                | Spawn When                                                        |
-| -------------------- | ----------------------------------------------------------- | -------------------- | ----------------------------------------------------------------- |
-| data-quality-checker | Data validation, profiling, and schema verification         | Read Glob Grep Bash  | New data source, pipeline change, data drift suspected            |
-| notebook-reviewer    | Notebook best practices audit and hygiene check             | Read Glob Grep       | PR with notebooks, notebook cleanup, pre-publication review       |
-| pipeline-auditor     | ML pipeline reproducibility and correctness check           | Read Glob Grep       | Pipeline change, experiment reproducibility failure, model review |
+| Agent                | Role                                                | Tools               | Spawn When                                                        |
+| -------------------- | --------------------------------------------------- | ------------------- | ----------------------------------------------------------------- |
+| data-quality-checker | Data validation, profiling, and schema verification | Read Glob Grep Bash | New data source, pipeline change, data drift suspected            |
+| notebook-reviewer    | Notebook best practices audit and hygiene check     | Read Glob Grep      | PR with notebooks, notebook cleanup, pre-publication review       |
+| pipeline-auditor     | ML pipeline reproducibility and correctness check   | Read Glob Grep      | Pipeline change, experiment reproducibility failure, model review |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

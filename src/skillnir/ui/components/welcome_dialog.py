@@ -1,6 +1,5 @@
 """Welcome popup and CLI installation guide dialogs."""
 
-
 _CLI_SETUP_INFO: tuple[dict, ...] = (
     {
         'name': 'Claude Code',
@@ -61,9 +60,7 @@ def _cli_install_content() -> None:
                 ui.code(info['verify']).classes('text-sm w-full')
 
                 if info['notes']:
-                    ui.label(info['notes']).classes(
-                        'text-xs text-gray-400 italic mt-1'
-                    )
+                    ui.label(info['notes']).classes('text-xs text-gray-400 italic mt-1')
 
 
 async def show_welcome_dialog() -> None:
@@ -78,14 +75,13 @@ async def show_welcome_dialog() -> None:
 
     dont_show = {'checked': False}
 
-    with ui.dialog() as dlg, ui.card().classes(
-        'p-6 min-w-[540px] max-w-[640px] rounded-xl'
+    with (
+        ui.dialog() as dlg,
+        ui.card().classes('p-6 min-w-[540px] max-w-[640px] rounded-xl'),
     ):
         with ui.column().classes('items-center gap-1 w-full mb-2'):
             ui.icon('auto_fix_high', color='primary').classes('text-4xl')
-            ui.label('Welcome to Skillnir').classes(
-                'text-2xl font-bold gradient-text'
-            )
+            ui.label('Welcome to Skillnir').classes('text-2xl font-bold gradient-text')
         ui.label(
             'Skillnir orchestrates AI coding tools via their CLI runners. '
             'To get started, install the CLI for at least one backend below '
@@ -100,9 +96,9 @@ async def show_welcome_dialog() -> None:
                 "Don't show this again",
                 on_change=lambda e: dont_show.update(checked=e.value),
             )
-            ui.button(
-                'Got it', on_click=lambda: _dismiss(dlg, dont_show)
-            ).props('color=primary')
+            ui.button('Got it', on_click=lambda: _dismiss(dlg, dont_show)).props(
+                'color=primary'
+            )
 
     dlg.open()
 
@@ -112,9 +108,7 @@ def _dismiss(dlg, dont_show: dict) -> None:
     from nicegui import ui
 
     if dont_show['checked']:
-        ui.run_javascript(
-            'localStorage.setItem("skillnir_welcome_dismissed", "true")'
-        )
+        ui.run_javascript('localStorage.setItem("skillnir_welcome_dismissed", "true")')
     dlg.close()
 
 
@@ -122,8 +116,9 @@ def show_cli_guide_dialog() -> None:
     """Open the CLI installation guide dialog (always, no storage check)."""
     from nicegui import ui
 
-    with ui.dialog() as dlg, ui.card().classes(
-        'p-6 min-w-[540px] max-w-[640px] rounded-xl'
+    with (
+        ui.dialog() as dlg,
+        ui.card().classes('p-6 min-w-[540px] max-w-[640px] rounded-xl'),
     ):
         with ui.row().classes('items-center justify-between w-full mb-4'):
             with ui.row().classes('items-center gap-2'):

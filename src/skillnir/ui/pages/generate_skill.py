@@ -151,10 +151,7 @@ async def page_generate_skill():
 
             if result.success:
                 # Sync to current project if requested
-                if (
-                    add_to_current_cb.value
-                    and target != Path.cwd().resolve()
-                ):
+                if add_to_current_cb.value and target != Path.cwd().resolve():
                     sync_skill(
                         target / '.data' / 'skills',
                         Path.cwd() / '.data' / 'skills',

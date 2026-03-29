@@ -47,7 +47,7 @@ Ignore application source code and web test automation. Scan for:
 - Native
 - WebView (hybrid)
 - Mobile browser (Safari/Chrome)
-- Context switching (NATIVE_APP vs WEBVIEW_*)
+- Context switching (NATIVE*APP vs WEBVIEW*\*)
 - getContexts/switchContext patterns
 
 **Locator Strategies**
@@ -194,11 +194,11 @@ Integrate for the detected language/platform:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent              | Role                                                        | Tools                     | Spawn When                                                             |
-| ------------------ | ----------------------------------------------------------- | ------------------------- | ---------------------------------------------------------------------- |
-| test-reviewer      | Read-only test analysis against SKILL.md patterns           | Read Glob Grep            | PR review, test audit, POM compliance check                           |
-| capability-auditor | Capability configuration and compatibility analysis         | Read Glob Grep            | Capability review, driver version check, cloud config validation       |
-| gesture-designer   | Gesture implementation and abstraction patterns             | Read Edit Write Glob Grep | Complex gesture creation, swipe/scroll optimization, multi-touch flows |
+| Agent              | Role                                                | Tools                     | Spawn When                                                             |
+| ------------------ | --------------------------------------------------- | ------------------------- | ---------------------------------------------------------------------- |
+| test-reviewer      | Read-only test analysis against SKILL.md patterns   | Read Glob Grep            | PR review, test audit, POM compliance check                            |
+| capability-auditor | Capability configuration and compatibility analysis | Read Glob Grep            | Capability review, driver version check, cloud config validation       |
+| gesture-designer   | Gesture implementation and abstraction patterns     | Read Edit Write Glob Grep | Complex gesture creation, swipe/scroll optimization, multi-touch flows |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

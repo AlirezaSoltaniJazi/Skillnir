@@ -188,7 +188,13 @@ def _find_reference_skill(scope: str) -> Path | None:
         "go": ("go", "golang", "goroutine"),
         "performance": ("performance", "profiling", "benchmark", "load-test"),
         "cross-platform-mobile": ("react-native", "flutter", "kmp", "expo"),
-        "observability": ("observability", "tracing", "metrics", "opentelemetry", "slo"),
+        "observability": (
+            "observability",
+            "tracing",
+            "metrics",
+            "opentelemetry",
+            "slo",
+        ),
         "accessibility": ("accessibility", "a11y", "wcag", "aria", "screen-reader"),
         "chrome-extension": (
             "chrome",

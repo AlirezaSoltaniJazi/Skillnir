@@ -135,11 +135,11 @@ Integrate for the detected stack:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent              | Role                                                            | Tools                     | Spawn When                                                               |
-| ------------------ | --------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------ |
-| risk-analyzer      | Risk-based test prioritization and regression analysis          | Read Glob Grep            | Test strategy review, regression prioritization, risk assessment         |
-| scenario-generator | Test scenario generation with boundary analysis                 | Read Edit Write Glob Grep | "generate test cases for X", boundary analysis, equivalence partitioning |
-| coverage-mapper    | Automate gap detection against risk matrices and test plans     | Read Glob Grep            | Coverage analysis, gap identification, test plan vs implementation audit |
+| Agent              | Role                                                        | Tools                     | Spawn When                                                               |
+| ------------------ | ----------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------ |
+| risk-analyzer      | Risk-based test prioritization and regression analysis      | Read Glob Grep            | Test strategy review, regression prioritization, risk assessment         |
+| scenario-generator | Test scenario generation with boundary analysis             | Read Edit Write Glob Grep | "generate test cases for X", boundary analysis, equivalence partitioning |
+| coverage-mapper    | Automate gap detection against risk matrices and test plans | Read Glob Grep            | Coverage analysis, gap identification, test plan vs implementation audit |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

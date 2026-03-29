@@ -132,7 +132,7 @@ Integrate for the detected WDIO configuration and project setup:
 6. WebDriver BiDi adoption for modern features (network interception, console capture)
 7. Parallel safety (no shared state between specs, isolated test data)
 8. Allure reporting as default (rich reporting, screenshots, video, step annotations)
-9. Flakiness mitigation (specFileRetries, screenshot on failure, waitFor* over sleep)
+9. Flakiness mitigation (specFileRetries, screenshot on failure, waitFor\* over sleep)
 10. Cross-browser matrix strategy (capabilities array, cloud provider integration)
 
 ---
@@ -179,11 +179,11 @@ Integrate for the detected WDIO configuration and project setup:
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent            | Role                                                    | Tools                          | Spawn When                                                       |
-| ---------------- | ------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------- |
-| test-reviewer    | Read-only test analysis against SKILL.md patterns       | Read Glob Grep                 | PR review, test audit, pattern compliance check                  |
-| config-auditor   | WDIO configuration analysis and optimization            | Read Glob Grep                 | Config refactoring, service audit, capability review             |
-| service-designer | Service composition and custom command architecture     | Read Glob Grep                 | New service integration, custom command design, hook patterns    |
+| Agent            | Role                                                | Tools          | Spawn When                                                    |
+| ---------------- | --------------------------------------------------- | -------------- | ------------------------------------------------------------- |
+| test-reviewer    | Read-only test analysis against SKILL.md patterns   | Read Glob Grep | PR review, test audit, pattern compliance check               |
+| config-auditor   | WDIO configuration analysis and optimization        | Read Glob Grep | Config refactoring, service audit, capability review          |
+| service-designer | Service composition and custom command architecture | Read Glob Grep | New service integration, custom command design, hook patterns |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 
