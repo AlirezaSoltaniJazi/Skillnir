@@ -63,6 +63,11 @@ SKILL_SCOPES: tuple[str, ...] = (
     "cross-platform-mobile",
     "observability",
     "accessibility",
+    "chrome-extension",
+    "playwright",
+    "wdio",
+    "selenium",
+    "appium",
 )
 
 SCOPE_LABELS: dict[str, str] = {
@@ -87,6 +92,11 @@ SCOPE_LABELS: dict[str, str] = {
     "cross-platform-mobile": "Cross-Platform Mobile (React Native/Flutter/KMP/native bridges)",
     "observability": "Observability (OpenTelemetry/tracing/metrics/logging/SLOs/alerting)",
     "accessibility": "Accessibility (WCAG/ARIA/screen readers/keyboard navigation/color contrast)",
+    "chrome-extension": "Chrome Extension (Manifest V3/content scripts/service workers/chrome.* APIs)",
+    "playwright": "Playwright (fixtures/POM/visual regression/API testing/tracing/sharding)",
+    "wdio": "WebDriverIO (wdio.conf/custom commands/services/BiDi/reporters/visual testing)",
+    "selenium": "Selenium (Selenium 4+/Grid/multi-language/PageFactory/Actions API/waits)",
+    "appium": "Appium (Appium 2.0/XCUITest/UiAutomator2/gestures/hybrid apps/cloud testing)",
 }
 
 
@@ -171,6 +181,27 @@ def _find_reference_skill(scope: str) -> Path | None:
             "cypress",
             "selenium",
         ),
+        "database": ("database", "schema", "migration", "sql", "orm", "query"),
+        "api-design": ("api", "openapi", "swagger", "protobuf", "graphql", "contract"),
+        "migration": ("migration", "upgrade", "refactor", "compat"),
+        "data-science": ("data", "ml", "notebook", "jupyter", "pandas", "model"),
+        "go": ("go", "golang", "goroutine"),
+        "performance": ("performance", "profiling", "benchmark", "load-test"),
+        "cross-platform-mobile": ("react-native", "flutter", "kmp", "expo"),
+        "observability": ("observability", "tracing", "metrics", "opentelemetry", "slo"),
+        "accessibility": ("accessibility", "a11y", "wcag", "aria", "screen-reader"),
+        "chrome-extension": (
+            "chrome",
+            "extension",
+            "manifest",
+            "content-script",
+            "service-worker",
+            "popup",
+        ),
+        "playwright": ("playwright", "pw", "fixture", "visual-regression", "trace"),
+        "wdio": ("wdio", "webdriverio", "webdriver-io"),
+        "selenium": ("selenium", "webdriver", "grid", "pagefactory"),
+        "appium": ("appium", "mobile-test", "xcuitest", "uiautomator", "espresso"),
     }
 
     keywords = scope_keywords.get(scope, ())
