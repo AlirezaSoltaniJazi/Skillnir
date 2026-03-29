@@ -1,6 +1,6 @@
 [project]
 name = "skillnir"
-version = "0.1.0"
+version = "1.0.1"
 description = "Inject AI coding skills into any tool's dotdir"
 requires-python = ">=3.14"
 dependencies = [
