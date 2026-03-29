@@ -75,7 +75,7 @@ async def page_events():
                         f"flex items-center gap-1.5 px-3 py-1 rounded-full "
                         f"cursor-pointer select-none text-sm {sel_cls}"
                     ).on("click", _toggle):
-                        ui.image(f"/static/flags/{key}.svg").classes(
+                        ui.image(f"/static/flags/{key}.png").classes(
                             "w-5 h-3.5 rounded-sm"
                         ).style("flex-shrink:0")
                         if is_sel:

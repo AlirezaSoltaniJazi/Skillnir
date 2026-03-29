@@ -95,23 +95,23 @@ _FLAGS_DIR = Path(__file__).parent / "assets" / "flags"
 _flag_cache: dict[str, str] = {}
 
 
-def _load_flag_svg(country_code: str) -> str:
-    """Load a country flag SVG and return inline HTML img tag (base64 data URI)."""
+def _load_flag_img(country_code: str) -> str:
+    """Load a country flag PNG and return inline HTML img tag (base64 data URI)."""
     import base64
 
     if country_code in _flag_cache:
         return _flag_cache[country_code]
-    flag_path = _FLAGS_DIR / f"{country_code}.svg"
+    flag_path = _FLAGS_DIR / f"{country_code}.png"
     if not flag_path.exists():
         _flag_cache[country_code] = ""
         return ""
-    svg_data = flag_path.read_bytes()
-    b64 = base64.b64encode(svg_data).decode("ascii")
+    png_data = flag_path.read_bytes()
+    b64 = base64.b64encode(png_data).decode("ascii")
     img = (
-        f'<img src="data:image/svg+xml;base64,{b64}" '
+        f'<img src="data:image/png;base64,{b64}" '
         f'alt="{EVENT_COUNTRIES.get(country_code, country_code)}" '
-        f'style="width:24px;height:18px;vertical-align:middle;'
-        f'border-radius:2px;margin-right:6px;">'
+        f'style="width:22px;height:16px;vertical-align:middle;'
+        f'border-radius:2px;margin-right:6px;object-fit:cover;">'
     )
     _flag_cache[country_code] = img
     return img
@@ -364,7 +364,7 @@ def _generate_event_html(event: Event) -> str:
         .replace("<!-- ORGANIZER -->", organizer)
         .replace("<!-- EVENT_DATE -->", event_date)
         .replace("<!-- LOCATION -->", location)
-        .replace("<!-- COUNTRY_FLAG -->", _load_flag_svg(event.country))
+        .replace("<!-- COUNTRY_FLAG -->", _load_flag_img(event.country))
         .replace("<!-- COUNTRY -->", country)
         .replace("<!-- TOPIC_LABEL -->", topic_label)
         .replace("<!-- FREE_BADGE -->", free_badge)
@@ -434,7 +434,7 @@ def _generate_landing_html(
           <td style="padding:12px 16px;color:#94a3b8;font-family:monospace;font-size:13px;white-space:nowrap;">{e.event_date}</td>
           <td style="padding:12px 16px;color:#94a3b8;">{location_escaped}</td>
           <td style="padding:12px 16px;white-space:nowrap;">
-            <span style="background:{country_color};color:#fff;padding:2px 10px;border-radius:12px;font-size:12px;display:inline-flex;align-items:center;">{_load_flag_svg(e.country)}{country_name}</span>
+            <span style="background:{country_color};color:#fff;padding:2px 10px;border-radius:12px;font-size:12px;display:inline-flex;align-items:center;">{_load_flag_img(e.country)}{country_name}</span>
           </td>
           <td style="padding:12px 16px;white-space:nowrap;">
             <span style="background:{color};color:#fff;padding:2px 10px;border-radius:12px;font-size:12px;">{TOPIC_LABELS.get(e.topic, e.topic)}</span>
@@ -484,7 +484,7 @@ def _generate_landing_html(
         f"onclick=\"toggleCountry('{cc}')\" style=\"background:{COUNTRY_COLORS.get(cc, '#6b7280')};"
         f'color:#fff;padding:4px 12px;border-radius:16px;font-size:12px;cursor:pointer;'
         f'opacity:0.7;display:inline-flex;align-items:center;">'
-        f'{_load_flag_svg(cc)}{EVENT_COUNTRIES.get(cc, cc)}: {c}</span>'
+        f'{_load_flag_img(cc)}{EVENT_COUNTRIES.get(cc, cc)}: {c}</span>'
         for cc, c in sorted(country_counts.items(), key=lambda x: -x[1])
     )
     country_chips_html = all_country_chip + " " + country_chips
