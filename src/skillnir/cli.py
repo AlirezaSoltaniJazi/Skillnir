@@ -14,7 +14,7 @@ from skillnir.remover import (
     find_skill_installations,
 )
 from skillnir.scaffold import init_docs, init_skill, validate_skill_name
-from skillnir.skills import discover_skills
+from skillnir.skills import discover_skills, discover_skills_from_dir
 from skillnir.syncer import (
     SyncResult,
     get_source_skills_dir,
@@ -106,9 +106,21 @@ def _install() -> None:
     # Step 0: Target project
     target_root = _ask_target_project()
 
+    # Step 0b: Source skills path
+    default_source = str(get_source_skills_dir())
+    source_answer = questionary.text(
+        "Source skills path:",
+        default=default_source,
+    ).ask()
+    if source_answer is None:
+        sys.exit(0)
+    source_dir = Path(source_answer).resolve()
+    if not source_dir.is_dir():
+        print(f"Source directory not found: {source_dir}")
+        sys.exit(1)
+
     # Step 1: Discover skills from source
-    source_dir = get_source_skills_dir()
-    skills = discover_skills(source_dir.parent.parent)
+    skills = discover_skills_from_dir(source_dir)
     if not skills:
         print("No skills found in source. Nothing to inject.")
         sys.exit(1)
@@ -323,6 +335,16 @@ def _generate_skill() -> None:
         sys.exit(0)
     scope = scope_answer
 
+    # Step 2b: Add to current project?
+    add_to_current = False
+    if target_root.resolve() != Path.cwd().resolve():
+        add_to_current = questionary.confirm(
+            "Also add generated skill to current project?",
+            default=True,
+        ).ask()
+        if add_to_current is None:
+            sys.exit(0)
+
     # Step 3: Confirm
     from skillnir.backends import BACKENDS, PROMPT_VERSION_LABELS, load_config
 
@@ -384,6 +406,14 @@ def _generate_skill() -> None:
             print(f"    Source SKILL.md: {result.source_skill_path}")
         if result.backend_used:
             print(f"    Backend:         {result.backend_used.value}")
+        if add_to_current and result.success:
+            current_skills_dir = Path.cwd() / ".data" / "skills"
+            sync_result = sync_skill(
+                target_root / ".data" / "skills",
+                current_skills_dir,
+                result.skill_name,
+            )
+            print(f"    Current project: {sync_result.action}")
         print(f"\n  Run 'skillnir install' to inject this skill into AI tools.")
     else:
         print(f"  Skill generation failed: {result.error}")

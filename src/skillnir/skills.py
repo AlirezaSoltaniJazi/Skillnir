@@ -29,8 +29,8 @@ def parse_frontmatter(skill_md: Path) -> dict:
     return yaml.safe_load(text[3:end]) or {}
 
 
-def discover_skills(project_root: Path) -> list[Skill]:
-    skills_dir = project_root / ".data" / "skills"
+def discover_skills_from_dir(skills_dir: Path) -> list[Skill]:
+    """Discover skills from a given skills directory (e.g. .data/skills/)."""
     if not skills_dir.is_dir():
         return []
     results = []
@@ -48,3 +48,8 @@ def discover_skills(project_root: Path) -> list[Skill]:
                 )
             )
     return results
+
+
+def discover_skills(project_root: Path) -> list[Skill]:
+    """Discover skills from a project's .data/skills/ directory."""
+    return discover_skills_from_dir(project_root / ".data" / "skills")

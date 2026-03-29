@@ -5,6 +5,7 @@ from pathlib import Path
 
 from nicegui import ui
 
+from skillnir.syncer import sync_skill
 from skillnir.ui.components.page_header import page_header
 from skillnir.ui.components.progress_panel import (
     format_duration,
@@ -46,6 +47,19 @@ async def page_generate_skill():
                 .classes('w-full max-w-xl')
                 .props('outlined dense rounded')
             )
+
+            add_to_current_cb = ui.checkbox(
+                'Also add skill to current project', value=True
+            ).classes('hidden')
+
+            def _on_target_change():
+                target = Path(target_input.value).resolve()
+                if target != Path.cwd().resolve():
+                    add_to_current_cb.classes(remove='hidden')
+                else:
+                    add_to_current_cb.classes(add='hidden')
+
+            target_input.on_value_change(lambda _: _on_target_change())
 
             name_input = (
                 ui.input('Project name', value=Path.cwd().name)
@@ -136,6 +150,17 @@ async def page_generate_skill():
             skill_version_select.enable()
 
             if result.success:
+                # Sync to current project if requested
+                if (
+                    add_to_current_cb.value
+                    and target != Path.cwd().resolve()
+                ):
+                    sync_skill(
+                        target / '.data' / 'skills',
+                        Path.cwd() / '.data' / 'skills',
+                        result.skill_name,
+                    )
+
                 grid = {
                     'Skill name': result.skill_name,
                     'Target SKILL.md': str(result.target_skill_path),

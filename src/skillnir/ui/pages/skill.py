@@ -5,7 +5,7 @@ from pathlib import Path
 from nicegui import ui
 
 from skillnir.injector import inject_skill
-from skillnir.skills import discover_skills
+from skillnir.skills import discover_skills_from_dir
 from skillnir.syncer import get_source_skills_dir, sync_skill, sync_skills
 from skillnir.tools import AUTO_INJECT_TOOL
 from skillnir.ui.components.page_header import page_header
@@ -35,7 +35,7 @@ def page_install():
         'injection_results': None,
     }
 
-    source_dir = get_source_skills_dir()
+    default_source = str(get_source_skills_dir())
 
     with ui.column().classes('w-full max-w-5xl mx-auto px-8 py-8 gap-6'):
         page_header(
@@ -46,13 +46,21 @@ def page_install():
 
         with ui.stepper().props('vertical animated').classes('w-full') as stepper:
 
-            # Step 1: Target Project
-            with ui.step('Target Project'):
+            # Step 1: Target Project & Source
+            with ui.step('Target & Source'):
                 ui.label('Enter the root path of the target project.').classes(
                     'text-gray-400 mb-2'
                 )
                 target_input = (
                     ui.input('Project root', value=state['target_root'])
+                    .classes('w-full max-w-xl')
+                    .props('outlined dense rounded')
+                )
+                ui.label(
+                    'Source skills path (where to fetch generated skills from).'
+                ).classes('text-gray-400 mb-2 mt-4')
+                source_input = (
+                    ui.input('Source skills path', value=default_source)
                     .classes('w-full max-w-xl')
                     .props('outlined dense rounded')
                 )
@@ -64,9 +72,14 @@ def page_install():
                         target_error.text = f'Directory not found: {path}'
                         target_error.classes(remove='hidden')
                         return
+                    src = Path(source_input.value).resolve()
+                    if not src.is_dir():
+                        target_error.text = f'Source directory not found: {src}'
+                        target_error.classes(remove='hidden')
+                        return
                     target_error.classes(add='hidden')
                     state['target_root'] = str(path)
-                    state['skills'] = discover_skills(source_dir.parent.parent)
+                    state['skills'] = discover_skills_from_dir(src)
                     if not state['skills']:
                         target_error.text = 'No skills found in source.'
                         target_error.classes(remove='hidden')
@@ -147,7 +160,7 @@ def page_install():
                         total = len(state['selected_skills'])
 
                         # Phase 1: Sync
-                        source_dir_inner = get_source_skills_dir()
+                        source_dir_inner = Path(source_input.value).resolve()
                         target_skills_dir = target_root / '.data' / 'skills'
                         for i, s in enumerate(state['selected_skills'], 1):
                             progress_label.text = (
