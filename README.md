@@ -16,13 +16,16 @@ Skills are structured markdown files that teach AI assistants project-specific p
 ## Features
 
 - **Multi-backend skill generation** -- generate skills using Claude Code, Cursor, Gemini, or GitHub Copilot
-- **10 skill scopes** -- backend, frontend, android, ios, infra, testing, js, python, test-design, general-system
+- **26 skill scopes** -- backend, frontend, android, ios, infra, testing, js, python, test-design, general-system, and more
 - **Cross-tool injection** -- one skill, symlinked into `.claude/`, `.cursor/`, `.github/`, `.gemini/`, `.codex/`, `.agents/`, and more
 - **Web UI** -- NiceGUI-based dashboard for all operations
 - **CLI** -- full command set for scripting and automation
 - **Version-aware sync** -- update skills across projects with version comparison
 - **AI doc generation** -- generate `agents.md` with project-specific coding instructions
 - **Cursor rule generation** -- generate `.mdc` rule files for Cursor
+- **AI research** -- search and summarize AI engineering news, organized by topic
+- **AI events** -- search upcoming AI conferences, meetups, and workshops across 12 countries with country flags and free/paid filtering
+- **Multi-language UI** -- 9 languages (English, German, Dutch, Polish, Persian, Ukrainian, Albanian, French, Arabic) with RTL support
 
 ## Quick Start
 
@@ -94,6 +97,7 @@ bandit -lll -iii -r src/
 | `ask`            | Ask AI a question about a project (read-only)                      |
 | `plan`           | Get a detailed implementation plan from AI                         |
 | `research`       | Search latest AI engineering news and generate summaries           |
+| `events`         | Search upcoming AI events and conferences worldwide                |
 | `config`         | Manage backend and model configuration                             |
 | `sound`          | Manage Claude Code sound notification hooks                        |
 | `ui`             | Launch the web interface                                           |
@@ -102,29 +106,31 @@ bandit -lll -iii -r src/
 
 ```
 skillnir/
-├── src/skillnir/       # Core Python package
-│   ├── cli.py             # CLI entry point (argparse + questionary)
-│   ├── ui.py              # Web UI (NiceGUI)
-│   ├── injector.py        # Symlink injection logic
-│   ├── syncer.py          # Version-aware skill sync
-│   ├── remover.py         # Skill and docs removal
-│   ├── skill_generator.py # Multi-backend skill generation
-│   ├── generator.py       # AI doc generation
-│   ├── hooks.py           # Claude Code hook management
-│   ├── skills.py          # Skill discovery and parsing
-│   ├── tools.py           # AI tool definitions
-│   └── backends.py        # Backend configuration
+├── src/skillnir/          # Core Python package
+│   ├── cli.py                # CLI entry point (argparse + questionary)
+│   ├── injector.py           # Symlink injection logic
+│   ├── syncer.py             # Version-aware skill sync
+│   ├── remover.py            # Skill and docs removal
+│   ├── skill_generator.py    # Multi-backend skill generation
+│   ├── generator.py          # AI doc generation
+│   ├── researcher.py         # AI news research and summarization
+│   ├── events.py             # AI events search pipeline
+│   ├── i18n.py               # Internationalization (9 languages)
+│   ├── hooks.py              # Claude Code hook management
+│   ├── skills.py             # Skill discovery and parsing
+│   ├── tools.py              # AI tool definitions
+│   ├── backends.py           # Backend configuration
+│   ├── locales/              # Translation files (en, de, nl, pl, fa, uk, sq, fr, ar)
+│   ├── ui/                   # NiceGUI web interface
+│   └── resources/            # HTML templates and static assets
 ├── .data/
-│   ├── skills/            # Source skill directories
-│   └── promptsv1/         # Skill generation prompts
-├── .github/
-│   ├── workflows/         # CI pipelines
-│   └── actions/           # Reusable composite actions
-├── tests/                 # pytest test suite
-├── pyproject.toml         # Build config (hatchling)
-├── uv.lock                # Dependency lock
-├── .pre-commit-config.yaml
-└── .pylintrc
+│   ├── skills/               # Source skill directories
+│   ├── promptsv1/            # Skill generation prompts
+│   ├── research/             # Research articles (organized by topic)
+│   └── events/               # AI events data
+├── tests/                    # pytest test suite
+├── pyproject.toml            # Build config (hatchling)
+└── .pre-commit-config.yaml
 ```
 
 ## Skills
@@ -141,20 +147,15 @@ skillName/
 └── agents/        # Sub-agent definitions
 ```
 
-### Available Scopes
+### Available Scopes (26)
 
-| Scope          | Description                               |
-| -------------- | ----------------------------------------- |
-| backend        | Python/Django/Go/Java server-side         |
-| frontend       | React/Vue/Angular/Svelte                  |
-| android        | Kotlin/Java mobile                        |
-| ios            | Swift/Obj-C mobile                        |
-| infra          | Docker/CI/Terraform/K8s                   |
-| testing        | E2E/API/Integration test automation       |
-| js             | JavaScript/TypeScript (Node.js/React/Vue) |
-| python         | Python (FastAPI/Flask/scripts/data/CLI)   |
-| test-design    | Test strategy, coverage, scenarios        |
-| general-system | Cross-cutting skill rules and conventions |
+| Category                | Scopes                                                                 |
+| ----------------------- | ---------------------------------------------------------------------- |
+| Application Development | backend, frontend, android, ios, js, python, go, cross-platform-mobile |
+| Data & APIs             | database, api-design, data-science                                     |
+| Testing & Quality       | testing, test-design, locator, playwright, wdio, selenium, appium      |
+| Operations & Security   | infra, security, observability, performance                            |
+| Specialized             | chrome-extension, accessibility, migration, general-system             |
 
 ## Contributing
 
