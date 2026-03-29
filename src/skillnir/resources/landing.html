@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Engineering Research</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0f0f17; color: #e2e8f0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+    h1 {
+      font-size: 2.5rem; font-weight: 700; margin-bottom: 8px;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .subtitle { color: #94a3b8; margin-bottom: 24px; font-size: 15px; }
+    .filter-section { margin-bottom: 16px; }
+    .filter-label { color: #6b7280; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 8px; }
+    .stats { display: flex; flex-wrap: wrap; gap: 8px; }
+    table { width: 100%; border-collapse: collapse; background: #1a1a2e; border-radius: 12px; overflow: hidden; margin-top: 16px; }
+    thead th { text-align: left; padding: 12px 16px; background: #12121e; color: #6b7280; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
+    th.sortable { cursor: pointer; user-select: none; }
+    th.sortable:hover { color: #e2e8f0; }
+    .sort-arrow { margin-left: 4px; font-size: 11px; }
+    .row { border-bottom: 1px solid #1e1e36; transition: background 0.15s; }
+    .row:hover { background: #22223a; }
+    .row td { padding: 12px 16px; font-size: 14px; }
+    .row td a { color: #818cf8; text-decoration: none; font-weight: 500; }
+    .row td a:hover { color: #a5b4fc; text-decoration: underline; }
+    .chip {
+      display: inline-block; padding: 5px 14px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+    .chip:hover { opacity: 1 !important; transform: translateY(-1px); }
+    .chip.active { opacity: 1 !important; border-color: #fff; box-shadow: 0 0 0 1px rgba(255,255,255,0.2); }
+    .topic-badge {
+      display: inline-block; padding: 3px 10px; border-radius: 12px;
+      font-size: 11px; font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>AI Engineering Research</h1>
+    <p class="subtitle"><!-- SUBTITLE --></p>
+    <div class="filter-section">
+      <div class="filter-label">Topics</div>
+      <div class="stats"><!-- TOPIC_CHIPS --></div>
+    </div>
+    <div class="filter-section">
+      <div class="filter-label">Sources</div>
+      <div class="stats"><!-- SOURCE_CHIPS --></div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Article</th>
+          <th>Source</th>
+          <th>Topic</th>
+          <th class="sortable" onclick="toggleDateSort()">Published <span class="sort-arrow" id="sortArrow">&#x25bc;</span></th>
+        </tr>
+      </thead>
+      <tbody>
+<!-- TABLE_ROWS -->
+      </tbody>
+    </table>
+  </div>
+  <script>
+    const activeTopics = new Set();
+    const activeSources = new Set();
+    let sortAsc = false;
+    const TOTAL_ARTICLES = <!-- TOTAL_ARTICLES -->;
+
+    function toggleTopic(topic) {
+      const allChip = document.querySelector('.topic-chip[data-filter="all"]');
+      if (topic === 'all') {
+        activeTopics.clear();
+        document.querySelectorAll('.topic-chip').forEach(c => c.classList.remove('active'));
+        allChip.classList.add('active');
+      } else {
+        allChip.classList.remove('active');
+        if (activeTopics.has(topic)) {
+          activeTopics.delete(topic);
+        } else {
+          activeTopics.add(topic);
+        }
+        const chip = document.querySelector('.topic-chip[data-filter="' + topic + '"]');
+        if (chip) chip.classList.toggle('active');
+        if (activeTopics.size === 0) {
+          allChip.classList.add('active');
+        }
+      }
+      applyFilters();
+    }
+
+    function toggleSource(source) {
+      const allChip = document.querySelector('.source-chip[data-filter="all"]');
+      if (source === 'all') {
+        activeSources.clear();
+        document.querySelectorAll('.source-chip').forEach(c => c.classList.remove('active'));
+        allChip.classList.add('active');
+      } else {
+        allChip.classList.remove('active');
+        if (activeSources.has(source)) {
+          activeSources.delete(source);
+        } else {
+          activeSources.add(source);
+        }
+        const chip = document.querySelector('.source-chip[data-filter="' + CSS.escape(source) + '"]');
+        if (chip) chip.classList.toggle('active');
+        if (activeSources.size === 0) {
+          allChip.classList.add('active');
+        }
+      }
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const rows = document.querySelectorAll('tr.row');
+      const subtitle = document.querySelector('.subtitle');
+      let visible = 0;
+      rows.forEach(row => {
+        const topicMatch = activeTopics.size === 0 || activeTopics.has(row.dataset.topic);
+        const sourceMatch = activeSources.size === 0 || activeSources.has(row.dataset.source);
+        if (topicMatch && sourceMatch) {
+          row.style.display = '';
+          visible++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+      subtitle.textContent = visible + ' of ' + TOTAL_ARTICLES + ' articles';
+    }
+
+    function toggleDateSort() {
+      sortAsc = !sortAsc;
+      document.getElementById('sortArrow').textContent = sortAsc ? '\u25b2' : '\u25bc';
+      const tbody = document.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr.row'));
+      rows.sort((a, b) => {
+        const da = a.querySelector('td:last-child').textContent.trim();
+        const db = b.querySelector('td:last-child').textContent.trim();
+        return sortAsc ? da.localeCompare(db) : db.localeCompare(da);
+      });
+      rows.forEach(row => tbody.appendChild(row));
+    }
+  </script>
+</body>
+</html>

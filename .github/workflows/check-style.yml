@@ -1,0 +1,35 @@
+name: PR - Check Style
+
+on: [pull_request]
+
+jobs:
+    style:
+        name: Lint & Format Check
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Python
+              uses: ./.github/actions/setup-python
+
+            - name: Install dependencies
+              run: |
+                  pip install black autoflake pylint bandit pyyaml questionary nicegui
+
+            - name: Check formatting with Black
+              run: black --check -S src/ tests/
+
+            - name: Check unused imports with Autoflake
+              run: |
+                  autoflake --check --remove-all-unused-imports \
+                    --remove-unused-variables --expand-star-imports \
+                    --ignore-init-module-imports -r src/ tests/
+
+            - name: Lint with Pylint
+              run: pylint -rn --rcfile=.pylintrc src/skillnir/
+
+            - name: Security check with Bandit
+              run: bandit -lll -iii -r src/
