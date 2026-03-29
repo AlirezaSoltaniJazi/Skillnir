@@ -280,7 +280,7 @@ def page_update():
 def page_skills():
     _audio, _snd = header()
     source_dir = get_source_skills_dir()
-    skills = discover_skills(source_dir.parent.parent)
+    skills = discover_skills_from_dir(source_dir)
 
     with ui.column().classes('w-full max-w-6xl mx-auto px-8 py-8 gap-6'):
         page_header(
