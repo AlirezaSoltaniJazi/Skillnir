@@ -6,17 +6,17 @@ CLI + Web UI tool that generates, manages, and injects domain-specific AI skills
 
 ## Stack
 
-| Component       | Technology                                      |
-| --------------- | ----------------------------------------------- |
-| Language        | Python 3.14+                                    |
-| Build           | hatchling + uv (package manager)                |
-| CLI             | argparse + questionary (interactive prompts)     |
-| Web UI          | NiceGUI 2.0+                                    |
-| AI Generation   | claude-agent-sdk + subprocess backends           |
-| Config Parsing  | PyYAML (SKILL.md frontmatter)                   |
-| Testing         | pytest + pytest-asyncio                          |
-| Linting         | Black (-S), Pylint, Autoflake, Bandit, Prettier |
-| Pre-commit      | 7 hooks (trailing-whitespace, EOF, YAML, AST, merge-conflict, safety, bandit, autoflake, pylint, black, prettier) |
+| Component      | Technology                                                                                                        |
+| -------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Language       | Python 3.14+                                                                                                      |
+| Build          | hatchling + uv (package manager)                                                                                  |
+| CLI            | argparse + questionary (interactive prompts)                                                                      |
+| Web UI         | NiceGUI 2.0+                                                                                                      |
+| AI Generation  | claude-agent-sdk + subprocess backends                                                                            |
+| Config Parsing | PyYAML (SKILL.md frontmatter)                                                                                     |
+| Testing        | pytest + pytest-asyncio                                                                                           |
+| Linting        | Black (-S), Pylint, Autoflake, Bandit, Prettier                                                                   |
+| Pre-commit     | 7 hooks (trailing-whitespace, EOF, YAML, AST, merge-conflict, safety, bandit, autoflake, pylint, black, prettier) |
 
 ## Project Structure
 
@@ -90,13 +90,13 @@ uv run pre-commit run --all-files
 
 ### Naming Conventions
 
-| Context              | Convention   | Example                      |
-| -------------------- | ------------ | ---------------------------- |
-| Functions/variables  | snake_case   | `inject_skill`, `skill_name` |
-| Classes              | PascalCase   | `InjectionResult`, `AITool`  |
-| Constants            | UPPER_CASE   | `SOURCE_DOTDIR`, `TOOLS`     |
-| Skill directories    | camelCase    | `backendEngineer`, `skillnir`|
-| Module files         | snake_case   | `skill_generator.py`         |
+| Context             | Convention | Example                       |
+| ------------------- | ---------- | ----------------------------- |
+| Functions/variables | snake_case | `inject_skill`, `skill_name`  |
+| Classes             | PascalCase | `InjectionResult`, `AITool`   |
+| Constants           | UPPER_CASE | `SOURCE_DOTDIR`, `TOOLS`      |
+| Skill directories   | camelCase  | `backendEngineer`, `skillnir` |
+| Module files        | snake_case | `skill_generator.py`          |
 
 ### Error Handling
 
@@ -132,18 +132,18 @@ OS/file errors caught with specific exceptions (`OSError`, `FileNotFoundError`, 
 
 ## Files To Know
 
-| File                        | Purpose                                         |
-| --------------------------- | ----------------------------------------------- |
-| `src/skillnir/cli.py`      | CLI entry point — `main()` at bottom, 15 commands |
-| `src/skillnir/tools.py`    | AI tool registry — `TOOLS` tuple, `AITool` dataclass, `SOURCE_DOTDIR` constant |
-| `src/skillnir/backends.py` | Backend configs — `BACKENDS` dict, `BackendInfo`, model lists |
-| `src/skillnir/skills.py`   | Skill discovery — `Skill` dataclass, `parse_frontmatter()`, `discover_skills()` |
-| `src/skillnir/injector.py` | Symlink creation — `inject_skill()` |
-| `src/skillnir/scaffold.py` | Skill template scaffolding |
-| `src/skillnir/ui/layout.py`| Web UI navigation structure |
-| `pyproject.toml`           | Build config, deps, entry point |
-| `.pylintrc`                | Linting rules (100 char, snake_case) |
-| `.pre-commit-config.yaml`  | 7 pre-commit hooks |
+| File                        | Purpose                                                                         |
+| --------------------------- | ------------------------------------------------------------------------------- |
+| `src/skillnir/cli.py`       | CLI entry point — `main()` at bottom, 15 commands                               |
+| `src/skillnir/tools.py`     | AI tool registry — `TOOLS` tuple, `AITool` dataclass, `SOURCE_DOTDIR` constant  |
+| `src/skillnir/backends.py`  | Backend configs — `BACKENDS` dict, `BackendInfo`, model lists                   |
+| `src/skillnir/skills.py`    | Skill discovery — `Skill` dataclass, `parse_frontmatter()`, `discover_skills()` |
+| `src/skillnir/injector.py`  | Symlink creation — `inject_skill()`                                             |
+| `src/skillnir/scaffold.py`  | Skill template scaffolding                                                      |
+| `src/skillnir/ui/layout.py` | Web UI navigation structure                                                     |
+| `pyproject.toml`            | Build config, deps, entry point                                                 |
+| `.pylintrc`                 | Linting rules (100 char, snake_case)                                            |
+| `.pre-commit-config.yaml`   | 7 pre-commit hooks                                                              |
 
 ## Files To Never Touch
 
@@ -217,7 +217,7 @@ for skill in skills:
 No `.env` file used. Configuration stored in `~/.skillnir/config.json`:
 
 ```json
-{"backend": "claude", "model": "claude-opus-4-6", "prompt_version": "v1"}
+{ "backend": "claude", "model": "claude-opus-4-6", "prompt_version": "v1" }
 ```
 
 AI backends expect their CLIs in PATH: `claude`, `agent` (Cursor), `gemini`, `copilot`.
@@ -264,15 +264,15 @@ uv run pytest -k "test_creates_symlink"  # single test
 
 ## Freedom Levels
 
-| MUST follow                                    | SHOULD follow                    | CAN customize                       |
-| ---------------------------------------------- | -------------------------------- | ----------------------------------- |
-| Absolute imports only                          | Result dataclass error pattern   | UI page layout and components       |
-| `pathlib.Path` for all filesystem ops          | Class-based test organization    | Prompt template content             |
-| camelCase skill directory names                | questionary for CLI interaction  | Backend model lists                 |
-| Relative symlinks for injection                | `frozen=True` for config models  | Tool ratings (popularity/perf/price)|
-| Type hints on all function signatures          | Single-line docstrings           | Research article organization       |
-| Black -S formatting (double quotes)            | `tmp_path` fixture in tests      | CLI argument names                  |
-| `.data/skills/` as source of truth             | Streaming via callback pattern   | UI component styling                |
+| MUST follow                           | SHOULD follow                   | CAN customize                        |
+| ------------------------------------- | ------------------------------- | ------------------------------------ |
+| Absolute imports only                 | Result dataclass error pattern  | UI page layout and components        |
+| `pathlib.Path` for all filesystem ops | Class-based test organization   | Prompt template content              |
+| camelCase skill directory names       | questionary for CLI interaction | Backend model lists                  |
+| Relative symlinks for injection       | `frozen=True` for config models | Tool ratings (popularity/perf/price) |
+| Type hints on all function signatures | Single-line docstrings          | Research article organization        |
+| Black -S formatting (double quotes)   | `tmp_path` fixture in tests     | CLI argument names                   |
+| `.data/skills/` as source of truth    | Streaming via callback pattern  | UI component styling                 |
 
 ## AI Interaction Guidelines
 
