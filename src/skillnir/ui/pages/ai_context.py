@@ -5,6 +5,7 @@ from pathlib import Path
 
 from nicegui import ui
 
+from skillnir.i18n import t, get_current_language
 from skillnir.ui.components.page_header import page_header
 from skillnir.ui.components.progress_panel import (
     format_duration,
@@ -19,6 +20,7 @@ from skillnir.ui.layout import header, play_notification
 @ui.page('/generate-docs')
 async def page_generate_docs():
     audio_el, sound_state = header()
+    lang = get_current_language()
 
     from skillnir.backends import BACKENDS, PROMPT_VERSION_LABELS, load_config
 
@@ -27,26 +29,29 @@ async def page_generate_docs():
 
     with ui.column().classes('w-full max-w-5xl mx-auto px-8 py-8 gap-6'):
         page_header(
-            'Generate AI Docs',
-            'Scan a project with AI and generate agents.md + .claude/claude.md',
+            t('pages.generate_docs.title', lang),
+            t('pages.generate_docs.subtitle', lang),
             icon='auto_stories',
         )
 
         with ui.row().classes('items-center gap-2'):
             ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
-            ui.label(f'Using: {backend_info.name} ({config.model})').classes(
-                'text-sm text-gray-400'
-            )
+            ui.label(
+                t('messages.using_backend', lang, name=backend_info.name, model=config.model)
+            ).classes('text-sm text-gray-400')
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
             target_input = (
-                ui.input('Target project root', value=str(Path.cwd()))
+                ui.input(
+                    t('pages.generate_docs.target_project_root', lang),
+                    value=str(Path.cwd()),
+                )
                 .classes('w-full max-w-xl')
                 .props('outlined dense rounded')
             )
             version_select = (
                 ui.select(
-                    label='Prompt version',
+                    label=t('pages.generate_docs.prompt_version', lang),
                     options=PROMPT_VERSION_LABELS,
                     value=config.prompt_version,
                 )
@@ -60,7 +65,10 @@ async def page_generate_docs():
         async def do_generate():
             target = Path(target_input.value).resolve()
             if not target.is_dir():
-                ui.notify(f'Directory not found: {target}', type='negative')
+                ui.notify(
+                    t('messages.directory_not_found', lang, path=str(target)),
+                    type='negative',
+                )
                 return
 
             generate_btn.disable()
@@ -102,28 +110,36 @@ async def page_generate_docs():
                         else result.backend_used.value
                     )
                 result_card(
-                    results_container, True, 'Generation Complete', grid_data=grid
+                    results_container,
+                    True,
+                    t('pages.generate_docs.result_success_title', lang),
+                    grid_data=grid,
                 )
             else:
                 result_card(
-                    results_container, False, 'Generation Failed', error=result.error
+                    results_container,
+                    False,
+                    t('pages.generate_docs.result_fail_title', lang),
+                    error=result.error,
                 )
 
             with results_container:
                 with ui.row().classes('gap-3 mt-4'):
                     ui.button(
-                        'Try Again',
+                        t('buttons.try_again', lang),
                         on_click=lambda: ui.navigate.to('/generate-docs'),
                         icon='refresh',
                     ).props('unelevated rounded')
                     ui.button(
-                        'Home', on_click=lambda: ui.navigate.to('/'), icon='home'
+                        t('buttons.home', lang),
+                        on_click=lambda: ui.navigate.to('/'),
+                        icon='home',
                     ).props('flat rounded')
 
             play_notification(audio_el, sound_state)
 
         generate_btn = ui.button(
-            'Generate AI Docs',
+            t('buttons.generate_ai_docs', lang),
             on_click=do_generate,
             icon='auto_stories',
         ).props('unelevated rounded color=positive')
@@ -132,6 +148,7 @@ async def page_generate_docs():
 @ui.page('/generate-rule')
 async def page_generate_rule():
     audio_el, sound_state = header()
+    lang = get_current_language()
 
     from skillnir.backends import BACKENDS, PROMPT_VERSION_LABELS, load_config
 
@@ -140,34 +157,37 @@ async def page_generate_rule():
 
     with ui.column().classes('w-full max-w-5xl mx-auto px-8 py-8 gap-6'):
         page_header(
-            'Generate Rule',
-            'Scan a project with AI and generate Cursor rule files (.mdc)',
+            t('pages.generate_rule.title', lang),
+            t('pages.generate_rule.subtitle', lang),
             icon='gavel',
         )
 
         with ui.row().classes('items-center gap-2'):
             ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
-            ui.label(f'Using: {backend_info.name} ({config.model})').classes(
-                'text-sm text-gray-400'
-            )
+            ui.label(
+                t('messages.using_backend', lang, name=backend_info.name, model=config.model)
+            ).classes('text-sm text-gray-400')
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
             target_input = (
-                ui.input('Target project root', value=str(Path.cwd()))
+                ui.input(
+                    t('pages.generate_rule.target_project_root', lang),
+                    value=str(Path.cwd()),
+                )
                 .classes('w-full max-w-xl')
                 .props('outlined dense rounded')
             )
             topic_input = (
                 ui.textarea(
-                    'Rule topic',
-                    placeholder='e.g., error handling standards, React component patterns',
+                    t('pages.generate_rule.rule_topic', lang),
+                    placeholder=t('pages.generate_rule.rule_topic_placeholder', lang),
                 )
                 .classes('w-full max-w-xl')
                 .props('rows=3 outlined dense rounded')
             )
             rule_version_select = (
                 ui.select(
-                    label='Prompt version',
+                    label=t('pages.generate_rule.prompt_version', lang),
                     options=PROMPT_VERSION_LABELS,
                     value=config.prompt_version,
                 )
@@ -181,11 +201,16 @@ async def page_generate_rule():
         async def do_generate():
             target = Path(target_input.value).resolve()
             if not target.is_dir():
-                ui.notify(f'Directory not found: {target}', type='negative')
+                ui.notify(
+                    t('messages.directory_not_found', lang, path=str(target)),
+                    type='negative',
+                )
                 return
             rule_topic = topic_input.value.strip()
             if not rule_topic:
-                ui.notify('Please enter a rule topic.', type='warning')
+                ui.notify(
+                    t('pages.generate_rule.enter_rule_topic', lang), type='warning'
+                )
                 return
 
             generate_btn.disable()
@@ -230,31 +255,36 @@ async def page_generate_rule():
                         else result.backend_used.value
                     )
                 result_card(
-                    results_container, True, 'Rule Generation Complete', grid_data=grid
+                    results_container,
+                    True,
+                    t('pages.generate_rule.result_success_title', lang),
+                    grid_data=grid,
                 )
             else:
                 result_card(
                     results_container,
                     False,
-                    'Rule Generation Failed',
+                    t('pages.generate_rule.result_fail_title', lang),
                     error=result.error,
                 )
 
             with results_container:
                 with ui.row().classes('gap-3 mt-4'):
                     ui.button(
-                        'Try Again',
+                        t('buttons.try_again', lang),
                         on_click=lambda: ui.navigate.to('/generate-rule'),
                         icon='refresh',
                     ).props('unelevated rounded')
                     ui.button(
-                        'Home', on_click=lambda: ui.navigate.to('/'), icon='home'
+                        t('buttons.home', lang),
+                        on_click=lambda: ui.navigate.to('/'),
+                        icon='home',
                     ).props('flat rounded')
 
             play_notification(audio_el, sound_state)
 
         generate_btn = ui.button(
-            'Generate Rule',
+            t('buttons.generate_rule', lang),
             on_click=do_generate,
             icon='gavel',
         ).props('unelevated rounded color=positive')
@@ -263,17 +293,21 @@ async def page_generate_rule():
 @ui.page('/delete-docs')
 def page_delete_docs():
     header()
+    lang = get_current_language()
 
     with ui.column().classes('w-full max-w-5xl mx-auto px-8 py-8 gap-6'):
         page_header(
-            'Delete AI Docs',
-            'Remove agents.md and its symlinks from a target project.',
+            t('pages.delete_docs.title', lang),
+            t('pages.delete_docs.subtitle', lang),
             icon='delete_sweep',
         )
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
             target_input = (
-                ui.input('Target project root', value=str(Path.cwd()))
+                ui.input(
+                    t('pages.delete_docs.target_project_root', lang),
+                    value=str(Path.cwd()),
+                )
                 .classes('w-full max-w-xl')
                 .props('outlined dense rounded')
             )
@@ -287,32 +321,45 @@ def page_delete_docs():
 
             target = Path(target_input.value).resolve()
             if not target.is_dir():
-                ui.notify(f'Directory not found: {target}', type='negative')
+                ui.notify(
+                    t('messages.directory_not_found', lang, path=str(target)),
+                    type='negative',
+                )
                 return
             state['installations'] = find_docs_installations(target)
             results_container.clear()
             scan_container.clear()
             if not state['installations']:
                 with scan_container:
-                    ui.label('No AI docs found in target project.').classes(
+                    ui.label(t('pages.delete_docs.no_docs_found', lang)).classes(
                         'text-gray-400'
                     )
                 return
             with scan_container:
-                ui.label('Found:').classes('font-medium mb-2')
+                ui.label(t('pages.delete_docs.found_label', lang)).classes(
+                    'font-medium mb-2'
+                )
                 for path in state['installations']:
-                    label = 'symlink' if path.is_symlink() else 'file'
+                    label = (
+                        t('pages.delete_docs.symlink', lang)
+                        if path.is_symlink()
+                        else t('pages.delete_docs.file', lang)
+                    )
                     with ui.row().classes('items-center gap-2'):
                         ui.badge(label, color='info' if label == 'symlink' else 'grey')
                         ui.label(str(path)).classes('text-sm font-mono')
 
-        ui.button('Scan', on_click=scan_docs, icon='search').props('unelevated rounded')
+        ui.button(t('buttons.scan', lang), on_click=scan_docs, icon='search').props(
+            'unelevated rounded'
+        )
 
         def do_delete():
             from skillnir.remover import delete_docs
 
             if not state['installations']:
-                ui.notify('No docs found to delete.', type='warning')
+                ui.notify(
+                    t('pages.delete_docs.no_docs_to_delete', lang), type='warning'
+                )
                 return
             target = Path(target_input.value).resolve()
             result = delete_docs(target)
@@ -322,7 +369,7 @@ def page_delete_docs():
                     result_card(
                         results_container,
                         False,
-                        'Deletion Failed',
+                        t('pages.delete_docs.deletion_failed', lang),
                         error=result.error,
                     )
                 else:
@@ -335,9 +382,15 @@ def page_delete_docs():
                             ui.icon('check_circle', color='positive').classes(
                                 'text-2xl'
                             )
-                            ui.label('Deletion Complete').classes('text-xl font-bold')
+                            ui.label(
+                                t('pages.delete_docs.deletion_complete', lang)
+                            ).classes('text-xl font-bold')
                         ui.label(
-                            f'Removed {len(result.removed_files)} file(s)'
+                            t(
+                                'pages.delete_docs.removed_files',
+                                lang,
+                                count=str(len(result.removed_files)),
+                            )
                         ).classes('text-positive font-medium')
                         for path in result.removed_files:
                             ui.label(f'  - {path}').classes(
@@ -345,12 +398,16 @@ def page_delete_docs():
                             )
                         if result.cleaned_dirs:
                             ui.label(
-                                f'Cleaned {len(result.cleaned_dirs)} empty dir(s)'
+                                t(
+                                    'pages.delete_docs.cleaned_dirs',
+                                    lang,
+                                    count=str(len(result.cleaned_dirs)),
+                                )
                             ).classes('text-gray-400 mt-2')
             scan_docs()
 
         ui.button(
-            'Delete Docs',
+            t('buttons.delete_docs', lang),
             on_click=do_delete,
             icon='delete_sweep',
         ).props('unelevated rounded color=negative')

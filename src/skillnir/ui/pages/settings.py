@@ -2,6 +2,7 @@
 
 from nicegui import app, ui
 
+from skillnir.i18n import SUPPORTED_LANGUAGES, get_current_language, set_language, t
 from skillnir.ui.components.page_header import page_header
 from skillnir.ui.layout import header
 
@@ -135,3 +136,39 @@ def page_settings():
                         config, PROMPT_VERSIONS, PROMPT_VERSION_LABELS, save_config
                     ),
                 ).props('flat rounded')
+
+        # ── Language ──
+        lang = get_current_language()
+        lang_name = SUPPORTED_LANGUAGES.get(lang, lang)
+
+        with ui.card().classes('w-full p-5 card-hover'):
+            with ui.row().classes('items-center justify-between w-full'):
+                with ui.row().classes('items-center gap-4'):
+                    ui.icon('translate', color='deep-purple').classes('text-3xl')
+                    with ui.column().classes('gap-0'):
+                        ui.label(
+                            t('pages.settings.language_title', lang) or 'Language'
+                        ).classes('text-lg font-semibold')
+                        ui.label(f'Currently using {lang_name}').classes(
+                            'text-sm text-gray-400'
+                        )
+
+                lang_options = {
+                    code: name for code, name in SUPPORTED_LANGUAGES.items()
+                }
+
+                def on_language_change(e):
+                    new_code = e.value
+                    set_language(new_code)
+                    new_name = SUPPORTED_LANGUAGES.get(new_code, new_code)
+                    ui.notify(
+                        f'Language changed to {new_name}',
+                        type='info',
+                    )
+                    ui.navigate.to('/settings')
+
+                ui.select(
+                    options=lang_options,
+                    value=lang,
+                    on_change=on_language_change,
+                ).classes('w-40')

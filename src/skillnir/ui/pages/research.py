@@ -12,6 +12,7 @@ from skillnir.ui.components.progress_panel import (
 )
 from skillnir.ui.components.result_card import result_card
 from skillnir.ui.components.stat_card import stat_card
+from skillnir.i18n import t, get_current_language
 from skillnir.ui.layout import header, play_notification
 
 
@@ -29,25 +30,28 @@ async def page_research():
     audio_el, sound_state = header()
     config = load_config()
     backend_info = BACKENDS[config.backend]
+    lang = get_current_language()
 
     with ui.column().classes('w-full max-w-5xl mx-auto px-8 py-8 gap-6'):
         page_header(
-            'AI Engineering Research',
-            'Search latest AI engineering news, deep-read articles, and generate summaries',
+            t('pages.research.title', lang),
+            t('pages.research.subtitle', lang),
             icon='science',
         )
 
         with ui.row().classes('items-center gap-2'):
             ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
-            ui.label(f'Using: {backend_info.name} ({config.model})').classes(
-                'text-sm text-gray-400'
-            )
+            ui.label(
+                t('messages.using_backend', lang, name=backend_info.name, model=config.model)
+            ).classes('text-sm text-gray-400')
 
         # ── Topic chips ──
         selected_topics = list(TOPIC_LABELS.keys())
         selected_sources: list[str] = []
 
-        ui.label('Topics to search:').classes('text-sm font-medium text-gray-400')
+        ui.label(t('pages.research.topics_to_search', lang)).classes(
+            'text-sm font-medium text-gray-400'
+        )
         topic_chips_container = ui.row().classes('gap-2 flex-wrap')
 
         def _rebuild_topic_chips():
@@ -73,7 +77,7 @@ async def page_research():
         _rebuild_topic_chips()
 
         # ── Source chips ──
-        ui.label('Filter by source (optional):').classes(
+        ui.label(t('pages.research.filter_by_source', lang)).classes(
             'text-sm font-medium text-gray-400'
         )
         source_chips_container = ui.row().classes('gap-2 flex-wrap')
@@ -107,7 +111,7 @@ async def page_research():
             with ui.row().classes('gap-4 flex-wrap'):
                 stat_card(
                     str(len(existing)),
-                    'Articles in knowledge base',
+                    t('pages.research.articles_in_kb', lang),
                     icon='article',
                     color='info',
                 )
@@ -126,13 +130,13 @@ async def page_research():
                         count, _ = regenerate_landing(research_dir)
                         if count:
                             ui.notify(
-                                f'Generated {count} HTML article page(s)',
+                                t('pages.research.generated_html_pages', lang, count=str(count)),
                                 type='positive',
                             )
                         ui.navigate.to(_cache_bust_url(), new_tab=True)
 
                     ui.button(
-                        'View Landing Page',
+                        t('buttons.view_landing_page', lang),
                         on_click=view_landing,
                         icon='open_in_new',
                     ).props('flat rounded')
@@ -143,16 +147,16 @@ async def page_research():
                         count, _ = regenerate_landing(research_dir)
                         if count:
                             ui.notify(
-                                f'Generated {count} HTML article page(s)',
+                                t('pages.research.generated_html_pages', lang, count=str(count)),
                                 type='positive',
                             )
                         else:
                             ui.notify(
-                                'All articles already have HTML pages', type='info'
+                                t('pages.research.all_articles_have_html', lang), type='info'
                             )
 
                     ui.button(
-                        'Generate HTML Files',
+                        t('buttons.generate_html_files', lang),
                         on_click=generate_html_files,
                         icon='code',
                     ).props('flat rounded')
@@ -163,7 +167,7 @@ async def page_research():
         async def do_research():
             start_time = time.time()
             if not selected_topics:
-                ui.notify('Select at least one topic', type='warning')
+                ui.notify(t('pages.research.select_at_least_one_topic', lang), type='warning')
                 return
 
             research_btn.disable()
@@ -214,17 +218,21 @@ async def page_research():
             with progress_container:
                 log_visible = {'value': True}
                 with ui.row().classes('items-center gap-3'):
-                    ui.label('Log Output').classes('text-sm font-medium text-gray-400')
+                    ui.label(t('components.progress_panel.log_output', lang)).classes(
+                        'text-sm font-medium text-gray-400'
+                    )
 
                     def toggle_log():
                         log_visible['value'] = not log_visible['value']
                         saved_log.set_visibility(log_visible['value'])
                         toggle_btn.text = (
-                            'Hide Log' if log_visible['value'] else 'Show Log'
+                            t('buttons.hide_log', lang)
+                            if log_visible['value']
+                            else t('buttons.show_log', lang)
                         )
 
                     toggle_btn = ui.button(
-                        'Hide Log', on_click=toggle_log, icon='visibility_off'
+                        t('buttons.hide_log', lang), on_click=toggle_log, icon='visibility_off'
                     ).props('flat rounded dense')
                 saved_log = ui.log(max_lines=500).classes(
                     'w-full h-72 font-mono text-xs'
@@ -236,19 +244,22 @@ async def page_research():
 
             if result.success:
                 grid = {
-                    'Articles found': str(result.articles_found),
-                    'New articles': str(result.articles_new),
-                    'Skipped (dedup)': str(result.articles_skipped),
-                    'Duration': format_duration(secs),
+                    t('pages.research.grid_articles_found', lang): str(result.articles_found),
+                    t('pages.research.grid_new_articles', lang): str(result.articles_new),
+                    t('pages.research.grid_skipped_dedup', lang): str(result.articles_skipped),
+                    t('pages.research.grid_duration', lang): format_duration(secs),
                 }
                 result_card(
-                    results_container, True, 'Research Complete', grid_data=grid
+                    results_container,
+                    True,
+                    t('pages.research.result_success_title', lang),
+                    grid_data=grid,
                 )
 
                 if result.index_path and result.index_path.exists():
                     with results_container:
                         ui.button(
-                            'Open Landing Page',
+                            t('buttons.open_landing_page', lang),
                             on_click=lambda: ui.navigate.to(
                                 _cache_bust_url(), new_tab=True
                             ),
@@ -256,24 +267,29 @@ async def page_research():
                         ).props('unelevated rounded color=positive').classes('mt-3')
             else:
                 result_card(
-                    results_container, False, 'Research Failed', error=result.error
+                    results_container,
+                    False,
+                    t('pages.research.result_fail_title', lang),
+                    error=result.error,
                 )
 
             with results_container:
                 with ui.row().classes('gap-3 mt-4'):
                     ui.button(
-                        'Search Again',
+                        t('buttons.search_again', lang),
                         on_click=lambda: ui.navigate.to('/research'),
                         icon='refresh',
                     ).props('unelevated rounded')
                     ui.button(
-                        'Home', on_click=lambda: ui.navigate.to('/'), icon='home'
+                        t('buttons.home', lang),
+                        on_click=lambda: ui.navigate.to('/'),
+                        icon='home',
                     ).props('flat rounded')
 
             play_notification(audio_el, sound_state)
 
         research_btn = ui.button(
-            'Search Latest News',
+            t('buttons.search_latest_news', lang),
             on_click=do_research,
             icon='travel_explore',
         ).props('unelevated rounded color=positive')

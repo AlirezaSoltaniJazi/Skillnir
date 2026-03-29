@@ -2,6 +2,7 @@
 
 from nicegui import ui
 
+from skillnir.i18n import get_current_language, t
 from skillnir.skills import discover_skills
 from skillnir.syncer import get_source_skills_dir
 from skillnir.tools import TOOLS
@@ -17,95 +18,151 @@ from skillnir.ui.layout import header
 
 # ── Section definitions ──
 
-SECTIONS = [
-    {
-        'icon': 'inventory_2',
-        'color': 'primary',
-        'title': 'Skill',
-        'desc': 'Install, update, check, delete, or generate skills for your projects.',
-        'items': [
-            ('download', 'Install', '/install'),
-            ('sync', 'Update', '/update'),
-            ('fact_check', 'Check', '/check-skill'),
-            ('delete', 'Delete', '/delete-skill'),
-            ('psychology', 'Generate Skill', '/generate-skill'),
-        ],
-    },
-    {
-        'icon': 'auto_stories',
-        'color': 'info',
-        'title': 'AI Context',
-        'desc': 'Generate rules, AI docs, or delete existing docs from projects.',
-        'items': [
-            ('gavel', 'Generate Rule', '/generate-rule'),
-            ('auto_stories', 'Generate AI Docs', '/generate-docs'),
-            ('delete_sweep', 'Delete Docs', '/delete-docs'),
-        ],
-    },
-    {
-        'icon': 'note_add',
-        'color': 'secondary',
-        'title': 'Default Template',
-        'desc': 'Scaffold blank skill or docs templates with commented placeholders.',
-        'items': [
-            ('note_add', 'Init Skill', '/init-skill'),
-            ('description', 'Init Docs', '/init-docs'),
-        ],
-    },
-    {
-        'icon': 'terminal',
-        'color': 'amber',
-        'title': 'Claude Tools',
-        'desc': 'Activate or deactivate Claude Code sound notifications.',
-        'items': [],
-    },
-    {
-        'icon': 'analytics',
-        'color': 'teal',
-        'title': 'Usage',
-        'desc': 'View token stats and per-backend usage information.',
-        'items': [
-            ('analytics', 'Token Stats', '/usage'),
-        ],
-    },
-    {
-        'icon': 'devices',
-        'color': 'positive',
-        'title': 'Supported Tools',
-        'desc': 'Browse all supported AI tools and their models.',
-        'items': [
-            ('devices', 'Models & Tools', '/tools'),
-        ],
-    },
-    {
-        'icon': 'science',
-        'color': 'deep-purple',
-        'title': 'Research',
-        'desc': 'Do web research, view existing articles, or delete research data.',
-        'items': [
-            ('science', 'Research Hub', '/research'),
-        ],
-    },
-    {
-        'icon': 'settings',
-        'color': 'grey',
-        'title': 'Settings',
-        'desc': 'Light/dark mode, notification toggle, and app preferences.',
-        'items': [
-            ('settings', 'Preferences', '/settings'),
-        ],
-    },
-    {
-        'icon': 'smart_toy',
-        'color': 'accent',
-        'title': 'AI Extra',
-        'desc': 'Ask AI questions or get detailed implementation plans.',
-        'items': [
-            ('chat', 'Ask AI', '/ask'),
-            ('map', 'Plan with AI', '/plan'),
-        ],
-    },
-]
+
+def get_sections(lang: str) -> list[dict]:
+    """Return section definitions with translated titles, descriptions, and item labels."""
+    return [
+        {
+            'icon': 'inventory_2',
+            'color': 'primary',
+            'title': t('pages.home.sections.skill.title', lang),
+            'desc': t('pages.home.sections.skill.desc', lang),
+            'items': [
+                ('download', t('pages.home.sections.skill.items.install', lang), '/install'),
+                ('sync', t('pages.home.sections.skill.items.update', lang), '/update'),
+                ('fact_check', t('pages.home.sections.skill.items.check', lang), '/check-skill'),
+                ('delete', t('pages.home.sections.skill.items.delete', lang), '/delete-skill'),
+                (
+                    'psychology',
+                    t('pages.home.sections.skill.items.generate_skill', lang),
+                    '/generate-skill',
+                ),
+            ],
+        },
+        {
+            'icon': 'auto_stories',
+            'color': 'info',
+            'title': t('pages.home.sections.ai_context.title', lang),
+            'desc': t('pages.home.sections.ai_context.desc', lang),
+            'items': [
+                (
+                    'gavel',
+                    t('pages.home.sections.ai_context.items.generate_rule', lang),
+                    '/generate-rule',
+                ),
+                (
+                    'auto_stories',
+                    t('pages.home.sections.ai_context.items.generate_docs', lang),
+                    '/generate-docs',
+                ),
+                (
+                    'delete_sweep',
+                    t('pages.home.sections.ai_context.items.delete_docs', lang),
+                    '/delete-docs',
+                ),
+            ],
+        },
+        {
+            'icon': 'note_add',
+            'color': 'secondary',
+            'title': t('pages.home.sections.default_template.title', lang),
+            'desc': t('pages.home.sections.default_template.desc', lang),
+            'items': [
+                (
+                    'note_add',
+                    t('pages.home.sections.default_template.items.init_skill', lang),
+                    '/init-skill',
+                ),
+                (
+                    'description',
+                    t('pages.home.sections.default_template.items.init_docs', lang),
+                    '/init-docs',
+                ),
+            ],
+        },
+        {
+            'icon': 'terminal',
+            'color': 'amber',
+            'title': t('pages.home.sections.claude_tools.title', lang),
+            'desc': t('pages.home.sections.claude_tools.desc', lang),
+            'items': [],
+        },
+        {
+            'icon': 'analytics',
+            'color': 'teal',
+            'title': t('pages.home.sections.usage.title', lang),
+            'desc': t('pages.home.sections.usage.desc', lang),
+            'items': [
+                (
+                    'analytics',
+                    t('pages.home.sections.usage.items.token_stats', lang),
+                    '/usage',
+                ),
+            ],
+        },
+        {
+            'icon': 'devices',
+            'color': 'positive',
+            'title': t('pages.home.sections.supported_tools.title', lang),
+            'desc': t('pages.home.sections.supported_tools.desc', lang),
+            'items': [
+                (
+                    'devices',
+                    t('pages.home.sections.supported_tools.items.models_tools', lang),
+                    '/tools',
+                ),
+            ],
+        },
+        {
+            'icon': 'science',
+            'color': 'deep-purple',
+            'title': t('pages.home.sections.research.title', lang),
+            'desc': t('pages.home.sections.research.desc', lang),
+            'items': [
+                (
+                    'science',
+                    t('pages.home.sections.research.items.research_hub', lang),
+                    '/research',
+                ),
+            ],
+        },
+        {
+            'icon': 'event',
+            'color': 'orange',
+            'title': t('pages.home.sections.events.title', lang),
+            'desc': t('pages.home.sections.events.desc', lang),
+            'items': [
+                (
+                    'event',
+                    t('pages.home.sections.events.items.events_hub', lang),
+                    '/events',
+                ),
+            ],
+        },
+        {
+            'icon': 'settings',
+            'color': 'grey',
+            'title': t('pages.home.sections.settings.title', lang),
+            'desc': t('pages.home.sections.settings.desc', lang),
+            'items': [
+                (
+                    'settings',
+                    t('pages.home.sections.settings.items.preferences', lang),
+                    '/settings',
+                ),
+            ],
+        },
+        {
+            'icon': 'smart_toy',
+            'color': 'accent',
+            'title': t('pages.home.sections.ai_extra.title', lang),
+            'desc': t('pages.home.sections.ai_extra.desc', lang),
+            'items': [
+                ('chat', t('pages.home.sections.ai_extra.items.ask_ai', lang), '/ask'),
+                ('map', t('pages.home.sections.ai_extra.items.plan_with_ai', lang), '/plan'),
+            ],
+        },
+    ]
 
 
 def _build_claude_tools_content():
@@ -116,19 +173,26 @@ def _build_claude_tools_content():
         is_sound_enabled,
     )
 
+    lang = get_current_language()
     hook_enabled = is_sound_enabled()
 
     def on_hook_toggle(e):
         if e.value:
             enable_sound_hooks()
-            ui.notify('Claude sound notifications enabled', type='positive')
+            ui.notify(
+                t('messages.claude_sound_enabled', lang), type='positive'
+            )
         else:
             disable_sound_hooks()
-            ui.notify('Claude sound notifications disabled', type='warning')
+            ui.notify(
+                t('messages.claude_sound_disabled', lang), type='warning'
+            )
 
     with ui.row().classes('items-center gap-3'):
         ui.icon('notifications_active', color='amber').classes('text-lg')
-        ui.label('Sound Notifications').classes('text-sm flex-1')
+        ui.label(
+            t('pages.home.sections.claude_tools.sound_notifications', lang)
+        ).classes('text-sm flex-1')
         ui.switch('', value=hook_enabled, on_change=on_hook_toggle)
 
 
@@ -151,11 +215,13 @@ def page_home():
         save_config,
     )
 
+    lang = get_current_language()
     source_dir = get_source_skills_dir()
     skills = discover_skills(source_dir.parent.parent)
     tool_count = len(TOOLS)
     config = load_config()
     backend_info = BACKENDS[config.backend]
+    sections = get_sections(lang)
 
     with ui.column().classes('w-full max-w-6xl mx-auto px-8 py-8 gap-8'):
         # ── Hero ──
@@ -182,19 +248,19 @@ def page_home():
 
             # Action buttons
             ui.button(
-                'Switch Tool',
+                t('buttons.switch_tool', lang),
                 icon='swap_horiz',
                 on_click=lambda: backend_dialog(
                     config, BACKENDS, detect_available_backends, save_config
                 ),
             ).props('flat rounded dense')
             ui.button(
-                'Switch Model',
+                t('buttons.switch_model', lang),
                 icon='tune',
                 on_click=lambda: model_dialog(config, backend_info, save_config),
             ).props('flat rounded dense')
             ui.button(
-                'Prompts',
+                t('buttons.prompts', lang),
                 icon='description',
                 on_click=lambda: prompt_version_dialog(
                     config, PROMPT_VERSIONS, PROMPT_VERSION_LABELS, save_config
@@ -215,47 +281,50 @@ def page_home():
                             f'<pre style="white-space:pre-wrap;font-size:0.85rem;'
                             f'line-height:1.5;margin:0">{usage}</pre>'
                         )
-                        ui.button('Close', on_click=dlg.close).props('flat').classes(
-                            'mt-3'
-                        )
+                        ui.button(
+                            t('buttons.close', lang), on_click=dlg.close
+                        ).props('flat').classes('mt-3')
                     dlg.open()
                 elif backend_info.usage_url:
                     ui.navigate.to(backend_info.usage_url, new_tab=True)
                 else:
-                    ui.notify('No usage info available.', type='warning')
+                    ui.notify(
+                        t('messages.no_usage_info', lang), type='warning'
+                    )
 
-            ui.button('Usage', icon='analytics', on_click=_show_usage).props(
-                'flat rounded dense'
-            )
+            ui.button(
+                t('buttons.usage', lang), icon='analytics', on_click=_show_usage
+            ).props('flat rounded dense')
 
         # ── Quick actions ──
         with ui.row().classes('gap-3 flex-wrap'):
             ui.button(
-                'Install Skill',
+                t('pages.home.quick_actions.install_skill', lang),
                 icon='download',
                 on_click=lambda: ui.navigate.to('/install'),
             ).props('unelevated rounded')
             ui.button(
-                'Generate Docs',
+                t('pages.home.quick_actions.generate_docs', lang),
                 icon='auto_stories',
                 on_click=lambda: ui.navigate.to('/generate-docs'),
             ).props('outline rounded')
             ui.button(
-                'Generate Skill',
+                t('pages.home.quick_actions.generate_skill', lang),
                 icon='psychology',
                 on_click=lambda: ui.navigate.to('/generate-skill'),
             ).props('outline rounded')
             ui.button(
-                'Ask AI',
+                t('pages.home.quick_actions.ask_ai', lang),
                 icon='chat',
                 on_click=lambda: ui.navigate.to('/ask'),
             ).props('outline rounded')
 
         # ── Section cards grid ──
+        claude_tools_title = t('pages.home.sections.claude_tools.title', lang)
         with ui.element('div').classes('w-full grid grid-cols-1 lg:grid-cols-2 gap-6'):
-            for s in SECTIONS:
+            for s in sections:
                 special = None
-                if s['title'] == 'Claude Tools':
+                if s['title'] == claude_tools_title:
                     special = _build_claude_tools_content
                 section_card(
                     icon=s['icon'],
