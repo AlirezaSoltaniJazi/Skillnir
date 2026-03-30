@@ -13,6 +13,21 @@ Skillnir generates, manages, and injects domain-specific AI skills into the conf
 
 Skills are structured markdown files that teach AI assistants project-specific patterns, conventions, and workflows. Skillnir scans your project, generates skills with AI, and symlinks them into each tool's expected location.
 
+## Tech Stack
+
+| Component      | Technology                                                                    |
+| -------------- | ----------------------------------------------------------------------------- |
+| Language       | Python 3.14+                                                                  |
+| Build          | hatchling + uv (package manager)                                              |
+| CLI            | argparse + questionary (interactive)                                          |
+| Web UI         | NiceGUI 2.0+ (Quasar/Vue-based Python web framework)                         |
+| AI Generation  | claude-agent-sdk + subprocess (Claude, Cursor, Gemini, Copilot)               |
+| i18n           | Custom module, 9 languages (EN, DE, NL, PL, FA, UK, SQ, FR, AR), RTL support |
+| Config Parsing | PyYAML (SKILL.md frontmatter)                                                 |
+| Testing        | pytest + pytest-asyncio                                                       |
+| Linting        | Black (-S), Pylint, Autoflake, Bandit, Prettier                               |
+| Pre-commit     | 11 hooks (whitespace, EOF, YAML, AST, merge-conflict, safety, bandit, etc.)   |
+
 ## Features
 
 - **Multi-backend skill generation** -- generate skills using Claude Code, Cursor, Gemini, or GitHub Copilot

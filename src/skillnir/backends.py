@@ -27,6 +27,7 @@ class ModelInfo:
     alias: str
     display_name: str
     is_default: bool = False
+    tier: int = 2  # 1=powerful/expensive, 2=balanced, 3=cheap/fast
 
 
 @dataclass(frozen=True)
@@ -58,16 +59,26 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         cli_command="claude",
         supports_stream_json=True,
         models=(
-            ModelInfo("claude-opus-4-6", "opus", "Claude Opus 4.6", is_default=True),
-            ModelInfo("claude-sonnet-4-6", "sonnet", "Claude Sonnet 4.6"),
-            ModelInfo("claude-haiku-4-5-20251001", "haiku", "Claude Haiku 4.5"),
-            ModelInfo("claude-opus-4-0-20250514", "opus-4.0", "Claude Opus 4"),
-            ModelInfo("claude-sonnet-4-0-20250514", "sonnet-4.0", "Claude Sonnet 4"),
-            ModelInfo("claude-sonnet-4-5-20251001", "sonnet-4.5", "Claude Sonnet 4.5"),
-            ModelInfo("claude-3-5-sonnet-20241022", "3.5-sonnet", "Claude 3.5 Sonnet"),
-            ModelInfo("claude-3-5-haiku-20241022", "3.5-haiku", "Claude 3.5 Haiku"),
-            ModelInfo("claude-3-opus-20240229", "3-opus", "Claude 3 Opus"),
-            ModelInfo("claude-3-haiku-20240307", "3-haiku", "Claude 3 Haiku"),
+            ModelInfo(
+                "claude-opus-4-6", "opus", "Claude Opus 4.6", is_default=True, tier=1
+            ),
+            ModelInfo("claude-sonnet-4-6", "sonnet", "Claude Sonnet 4.6", tier=2),
+            ModelInfo("claude-haiku-4-5-20251001", "haiku", "Claude Haiku 4.5", tier=3),
+            ModelInfo("claude-opus-4-0-20250514", "opus-4.0", "Claude Opus 4", tier=1),
+            ModelInfo(
+                "claude-sonnet-4-0-20250514", "sonnet-4.0", "Claude Sonnet 4", tier=2
+            ),
+            ModelInfo(
+                "claude-sonnet-4-5-20251001", "sonnet-4.5", "Claude Sonnet 4.5", tier=2
+            ),
+            ModelInfo(
+                "claude-3-5-sonnet-20241022", "3.5-sonnet", "Claude 3.5 Sonnet", tier=2
+            ),
+            ModelInfo(
+                "claude-3-5-haiku-20241022", "3.5-haiku", "Claude 3.5 Haiku", tier=3
+            ),
+            ModelInfo("claude-3-opus-20240229", "3-opus", "Claude 3 Opus", tier=1),
+            ModelInfo("claude-3-haiku-20240307", "3-haiku", "Claude 3 Haiku", tier=3),
         ),
         default_model="sonnet",
         usage_command=None,
@@ -85,16 +96,16 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         cli_command="agent",
         supports_stream_json=True,
         models=(
-            ModelInfo("auto", "auto", "Auto (recommended)", is_default=True),
-            ModelInfo("gpt-5.4", "gpt-5.4", "GPT-5.4"),
-            ModelInfo("gpt-5.3-code", "gpt-5.3-code", "GPT-5.3 Code"),
-            ModelInfo("claude-opus-4-6", "opus", "Claude Opus 4.6"),
-            ModelInfo("claude-sonnet-4-6", "sonnet", "Claude Sonnet 4.6"),
-            ModelInfo("gemini-2.5-pro", "gemini-pro", "Gemini 2.5 Pro"),
-            ModelInfo("gpt-4o", "gpt-4o", "GPT-4o"),
-            ModelInfo("o3", "o3", "o3"),
-            ModelInfo("claude-haiku-4-5", "haiku", "Claude Haiku 4.5"),
-            ModelInfo("gpt-5.3", "gpt-5.3", "GPT-5.3"),
+            ModelInfo("auto", "auto", "Auto (recommended)", is_default=True, tier=2),
+            ModelInfo("gpt-5.4", "gpt-5.4", "GPT-5.4", tier=1),
+            ModelInfo("gpt-5.3-code", "gpt-5.3-code", "GPT-5.3 Code", tier=1),
+            ModelInfo("claude-opus-4-6", "opus", "Claude Opus 4.6", tier=1),
+            ModelInfo("claude-sonnet-4-6", "sonnet", "Claude Sonnet 4.6", tier=2),
+            ModelInfo("gemini-2.5-pro", "gemini-pro", "Gemini 2.5 Pro", tier=2),
+            ModelInfo("gpt-4o", "gpt-4o", "GPT-4o", tier=2),
+            ModelInfo("o3", "o3", "o3", tier=1),
+            ModelInfo("claude-haiku-4-5", "haiku", "Claude Haiku 4.5", tier=3),
+            ModelInfo("gpt-5.3", "gpt-5.3", "GPT-5.3", tier=2),
         ),
         default_model="auto",
         usage_command=None,
@@ -110,19 +121,29 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         cli_command="gemini",
         supports_stream_json=True,
         models=(
-            ModelInfo("auto", "auto", "Auto (recommended)", is_default=True),
-            ModelInfo("gemini-2.5-pro", "pro", "Gemini 2.5 Pro"),
-            ModelInfo("gemini-2.5-flash", "flash", "Gemini 2.5 Flash"),
-            ModelInfo("gemini-2.5-flash-lite", "flash-lite", "Gemini 2.5 Flash Lite"),
-            ModelInfo("gemini-3-pro-preview", "3-pro", "Gemini 3 Pro Preview"),
-            ModelInfo("gemini-3-flash-preview", "3-flash", "Gemini 3 Flash Preview"),
-            ModelInfo("gemini-2.0-pro", "2.0-pro", "Gemini 2.0 Pro"),
-            ModelInfo("gemini-2.0-flash", "2.0-flash", "Gemini 2.0 Flash"),
+            ModelInfo("auto", "auto", "Auto (recommended)", is_default=True, tier=2),
+            ModelInfo("gemini-2.5-pro", "pro", "Gemini 2.5 Pro", tier=1),
+            ModelInfo("gemini-2.5-flash", "flash", "Gemini 2.5 Flash", tier=2),
             ModelInfo(
-                "gemini-2.0-flash-lite", "2.0-flash-lite", "Gemini 2.0 Flash Lite"
+                "gemini-2.5-flash-lite", "flash-lite", "Gemini 2.5 Flash Lite", tier=3
+            ),
+            ModelInfo("gemini-3-pro-preview", "3-pro", "Gemini 3 Pro Preview", tier=1),
+            ModelInfo(
+                "gemini-3-flash-preview", "3-flash", "Gemini 3 Flash Preview", tier=2
+            ),
+            ModelInfo("gemini-2.0-pro", "2.0-pro", "Gemini 2.0 Pro", tier=1),
+            ModelInfo("gemini-2.0-flash", "2.0-flash", "Gemini 2.0 Flash", tier=3),
+            ModelInfo(
+                "gemini-2.0-flash-lite",
+                "2.0-flash-lite",
+                "Gemini 2.0 Flash Lite",
+                tier=3,
             ),
             ModelInfo(
-                "gemini-2.5-pro-preview", "pro-preview", "Gemini 2.5 Pro Preview"
+                "gemini-2.5-pro-preview",
+                "pro-preview",
+                "Gemini 2.5 Pro Preview",
+                tier=1,
             ),
         ),
         default_model="auto",
@@ -142,16 +163,16 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         cli_command="copilot",
         supports_stream_json=False,
         models=(
-            ModelInfo("gpt-4o", "gpt-4o", "GPT-4o", is_default=True),
-            ModelInfo("claude-sonnet-4", "claude-sonnet", "Claude Sonnet 4"),
-            ModelInfo("o3", "o3", "o3"),
-            ModelInfo("o4-mini", "o4-mini", "o4-mini"),
-            ModelInfo("gpt-5.4", "gpt-5.4", "GPT-5.4"),
-            ModelInfo("gpt-5.3", "gpt-5.3", "GPT-5.3"),
-            ModelInfo("claude-opus-4-6", "claude-opus", "Claude Opus 4.6"),
-            ModelInfo("gemini-2.5-pro", "gemini-pro", "Gemini 2.5 Pro"),
-            ModelInfo("o3-pro", "o3-pro", "o3 Pro"),
-            ModelInfo("gpt-4o-mini", "gpt-4o-mini", "GPT-4o Mini"),
+            ModelInfo("gpt-4o", "gpt-4o", "GPT-4o", is_default=True, tier=2),
+            ModelInfo("claude-sonnet-4", "claude-sonnet", "Claude Sonnet 4", tier=2),
+            ModelInfo("o3", "o3", "o3", tier=1),
+            ModelInfo("o4-mini", "o4-mini", "o4-mini", tier=3),
+            ModelInfo("gpt-5.4", "gpt-5.4", "GPT-5.4", tier=1),
+            ModelInfo("gpt-5.3", "gpt-5.3", "GPT-5.3", tier=2),
+            ModelInfo("claude-opus-4-6", "claude-opus", "Claude Opus 4.6", tier=1),
+            ModelInfo("gemini-2.5-pro", "gemini-pro", "Gemini 2.5 Pro", tier=1),
+            ModelInfo("o3-pro", "o3-pro", "o3 Pro", tier=1),
+            ModelInfo("gpt-4o-mini", "gpt-4o-mini", "GPT-4o Mini", tier=3),
         ),
         default_model="gpt-4o",
         usage_command=None,
@@ -456,13 +477,17 @@ def build_subprocess_command(
             "yolo",
         ]
     elif backend == AIBackend.COPILOT:
+        # Copilot uses --prompt <text> (not positional), so prompt goes inline.
         cmd = [
             info.cli_command,
-            "-p",
+            "--prompt",
+            prompt,
             "--model",
             model_id,
             "--allow-all-tools",
+            "--silent",
         ]
+        return cmd + extra_flags
     else:
         raise ValueError(f"Unknown backend: {backend}")
 
@@ -486,12 +511,13 @@ def parse_stream_line(
         _parse_text_line(line, on_progress)
     else:
         # Claude, Cursor, and Gemini use stream-json
-        _parse_stream_json_line(line, on_progress)
+        _parse_stream_json_line(line, on_progress, backend)
 
 
 def _parse_stream_json_line(
     line: str,
     on_progress: Callable | None,
+    backend: AIBackend | None = None,
 ) -> None:
     """Parse stream-json format (Claude / Gemini)."""
     from skillnir.generator import _emit
@@ -522,6 +548,14 @@ def _parse_stream_json_line(
         usage = event.get("usage")
         if usage:
             _emit(on_progress, "usage", json.dumps(usage))
+            # Record usage to session tracker for all backends
+            try:
+                from skillnir.usage import session_tracker
+
+                backend_name = backend.value if backend else "cli"
+                session_tracker.record(backend_name, usage)
+            except Exception:
+                pass
 
 
 def _parse_text_line(
