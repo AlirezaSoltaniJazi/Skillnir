@@ -35,7 +35,7 @@ async def page_generate_docs():
         )
 
         with ui.row().classes('items-center gap-2'):
-            ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
+            ui.icon(backend_info.icon, size='sm').classes('text-secondary')
             ui.label(
                 t(
                     'messages.using_backend',
@@ -43,7 +43,7 @@ async def page_generate_docs():
                     name=backend_info.name,
                     model=config.model,
                 )
-            ).classes('text-sm text-gray-400')
+            ).classes('text-sm text-secondary')
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
             target_input = (
@@ -168,7 +168,7 @@ async def page_generate_rule():
         )
 
         with ui.row().classes('items-center gap-2'):
-            ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
+            ui.icon(backend_info.icon, size='sm').classes('text-secondary')
             ui.label(
                 t(
                     'messages.using_backend',
@@ -176,7 +176,7 @@ async def page_generate_rule():
                     name=backend_info.name,
                     model=config.model,
                 )
-            ).classes('text-sm text-gray-400')
+            ).classes('text-sm text-secondary')
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
             target_input = (
@@ -342,7 +342,7 @@ def page_delete_docs():
             if not state['installations']:
                 with scan_container:
                     ui.label(t('pages.delete_docs.no_docs_found', lang)).classes(
-                        'text-gray-400'
+                        'text-secondary'
                     )
                 return
             with scan_container:
@@ -413,7 +413,7 @@ def page_delete_docs():
                                     lang,
                                     count=str(len(result.cleaned_dirs)),
                                 )
-                            ).classes('text-gray-400 mt-2')
+                            ).classes('text-secondary mt-2')
             scan_docs()
 
         ui.button(

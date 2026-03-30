@@ -215,8 +215,16 @@ class TestBuildSubprocessCommand:
     def test_prompt_position_all_backends(self):
         for backend in AIBackend:
             cmd = build_subprocess_command(backend, "hello world")
-            assert cmd[-1] == "hello world", f"{backend.value}: prompt not last"
-            assert cmd[-2] == "--", f"{backend.value}: missing -- separator"
+            if backend == AIBackend.COPILOT:
+                # Copilot uses --prompt <text> inline
+                assert "--prompt" in cmd, f"{backend.value}: missing --prompt"
+                idx = cmd.index("--prompt")
+                assert (
+                    cmd[idx + 1] == "hello world"
+                ), f"{backend.value}: prompt not after --prompt"
+            else:
+                assert cmd[-1] == "hello world", f"{backend.value}: prompt not last"
+                assert cmd[-2] == "--", f"{backend.value}: missing -- separator"
 
 
 # ── Stream parsers ───────────────────────────────────────────

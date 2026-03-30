@@ -13,7 +13,7 @@ def hero(skills_count: int, tools_count: int, dotdirs_count: int) -> None:
             'text-5xl font-bold gradient-text tracking-tight'
         )
         ui.label(t('components.hero.tagline', lang)).classes(
-            'text-lg text-gray-400 leading-relaxed'
+            'text-lg text-secondary leading-relaxed'
         )
         with ui.row().classes('gap-3 mt-1'):
             ui.badge(

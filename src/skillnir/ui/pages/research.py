@@ -40,7 +40,7 @@ async def page_research():
         )
 
         with ui.row().classes('items-center gap-2'):
-            ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
+            ui.icon(backend_info.icon, size='sm').classes('text-secondary')
             ui.label(
                 t(
                     'messages.using_backend',
@@ -48,14 +48,14 @@ async def page_research():
                     name=backend_info.name,
                     model=config.model,
                 )
-            ).classes('text-sm text-gray-400')
+            ).classes('text-sm text-secondary')
 
         # ── Topic chips ──
         selected_topics = list(TOPIC_LABELS.keys())
         selected_sources: list[str] = []
 
         ui.label(t('pages.research.topics_to_search', lang)).classes(
-            'text-sm font-medium text-gray-400'
+            'text-sm font-medium text-secondary'
         )
         topic_chips_container = ui.row().classes('gap-2 flex-wrap')
 
@@ -83,7 +83,7 @@ async def page_research():
 
         # ── Source chips ──
         ui.label(t('pages.research.filter_by_source', lang)).classes(
-            'text-sm font-medium text-gray-400'
+            'text-sm font-medium text-secondary'
         )
         source_chips_container = ui.row().classes('gap-2 flex-wrap')
 
@@ -235,7 +235,7 @@ async def page_research():
                 log_visible = {'value': True}
                 with ui.row().classes('items-center gap-3'):
                     ui.label(t('components.progress_panel.log_output', lang)).classes(
-                        'text-sm font-medium text-gray-400'
+                        'text-sm font-medium text-secondary'
                     )
 
                     def toggle_log():

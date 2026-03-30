@@ -251,12 +251,12 @@ def page_home():
 
             version = get_backend_version(config.backend)
             if version:
-                ui.badge(version, color='grey').props('rounded dense')
+                ui.badge(version, color='deep-purple').props('rounded dense')
 
             pv_label = PROMPT_VERSION_LABELS.get(
                 config.prompt_version, config.prompt_version
             )
-            ui.badge(f'Prompts: {pv_label}', color='grey').props('rounded dense')
+            ui.badge(f'Prompts: {pv_label}', color='deep-purple').props('rounded dense')
 
             # Action buttons
             ui.button(

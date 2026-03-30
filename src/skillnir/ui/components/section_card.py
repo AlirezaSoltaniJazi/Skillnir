@@ -26,7 +26,7 @@ _ICON_BG = {
     'teal': 'bg-teal-500/10 text-teal-400',
     'positive': 'bg-emerald-500/10 text-emerald-400',
     'deep-purple': 'bg-purple-500/10 text-purple-400',
-    'grey': 'bg-gray-500/10 text-gray-400',
+    'grey': 'bg-gray-500/10 text-secondary',
     'accent': 'bg-cyan-500/10 text-cyan-400',
 }
 
@@ -41,7 +41,7 @@ def section_card(
 ) -> None:
     """Render a section card with colored left border, icon, title, and nav items."""
     hex_color = _COLOR_HEX.get(color, '#6b7280')
-    icon_cls = _ICON_BG.get(color, 'bg-gray-500/10 text-gray-400')
+    icon_cls = _ICON_BG.get(color, 'bg-gray-500/10 text-secondary')
 
     with (
         ui.card()
@@ -51,7 +51,7 @@ def section_card(
         with ui.row().classes('items-center gap-3 mb-3'):
             ui.icon(icon).classes(f'text-2xl p-2 rounded-full {icon_cls}')
             ui.label(title).classes('text-lg font-semibold')
-        ui.label(desc).classes('text-sm text-gray-400 mb-3')
+        ui.label(desc).classes('text-sm text-secondary mb-3')
 
         if special_content:
             special_content()

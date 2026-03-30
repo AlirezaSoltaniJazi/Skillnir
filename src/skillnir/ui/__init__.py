@@ -35,6 +35,21 @@ _GLOBAL_CSS = """
     transform: translateY(-1px);
 }
 
+/* ── Model picker card hover ── */
+.model-card {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid transparent;
+}
+.model-card:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+.body--dark .model-card:hover {
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.25);
+    background: #1e1e3a !important;
+}
+
 /* ── Accent bar for cards ── */
 .accent-bar { height: 3px; border-radius: 3px; }
 
@@ -55,6 +70,10 @@ _GLOBAL_CSS = """
 
 /* ── Left border accent ── */
 .border-l-accent { border-left: 4px solid; border-radius: 12px !important; }
+
+/* ── Theme-adaptive secondary text ── */
+.text-secondary { color: #4f46e5; }  /* indigo-600 for light */
+.body--dark .text-secondary { color: #a5b4fc; }  /* indigo-300 for dark */
 </style>
 """
 

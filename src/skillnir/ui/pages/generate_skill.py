@@ -37,7 +37,7 @@ async def page_generate_skill():
 
         # ── Backend info ──
         with ui.row().classes('items-center gap-2'):
-            ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
+            ui.icon(backend_info.icon, size='sm').classes('text-secondary')
             ui.label(
                 t(
                     'messages.using_backend',
@@ -45,7 +45,7 @@ async def page_generate_skill():
                     name=backend_info.name,
                     model=config.model,
                 )
-            ).classes('text-sm text-gray-400')
+            ).classes('text-sm text-secondary')
 
         # ── Form ──
         with ui.card().classes('w-full p-6').props('flat bordered'):

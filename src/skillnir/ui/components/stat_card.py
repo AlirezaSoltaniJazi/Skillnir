@@ -43,4 +43,4 @@ def stat_card(
             if icon:
                 ui.icon(icon, color=color).classes('text-2xl')
             ui.label(value).classes('text-3xl font-bold').style(f'color: {hex_color}')
-        ui.label(label).classes('text-sm text-gray-400 mt-1')
+        ui.label(label).classes('text-sm text-secondary mt-1')

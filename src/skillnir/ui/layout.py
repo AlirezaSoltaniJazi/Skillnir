@@ -202,7 +202,7 @@ def header() -> tuple:
         # Nav groups
         for group_label, items in nav_groups:
             ui.label(group_label).classes(
-                'text-[10px] font-bold text-gray-500 tracking-widest px-5 mt-4 mb-1'
+                'text-[10px] font-bold text-secondary tracking-widest px-5 mt-4 mb-1'
             )
             for icon, label, route in items:
                 is_active = current_path == route
@@ -218,7 +218,7 @@ def header() -> tuple:
                     color = 'primary' if is_active else 'grey'
                     ui.icon(icon, color=color).classes('text-lg')
                     text_cls = (
-                        'text-sm font-medium' if is_active else 'text-sm text-gray-400'
+                        'text-sm font-medium' if is_active else 'text-sm text-secondary'
                     )
                     ui.label(label).classes(text_cls)
 
@@ -237,7 +237,9 @@ def header() -> tuple:
         ):
             color = 'primary' if is_settings else 'grey'
             ui.icon('settings', color=color).classes('text-lg')
-            text_cls = 'text-sm font-medium' if is_settings else 'text-sm text-gray-400'
+            text_cls = (
+                'text-sm font-medium' if is_settings else 'text-sm text-secondary'
+            )
             ui.label(t("nav.items.settings", lang)).classes(text_cls)
 
     # ── Top App Bar ──
@@ -300,18 +302,30 @@ def header() -> tuple:
                 .tooltip("Toggle notification sound")
             )
 
-            lang_options = {code: name for code, name in SUPPORTED_LANGUAGES.items()}
+            with ui.element('div').classes('relative'):
+                lang_menu = ui.menu().props('auto-close')
+                with lang_menu:
+                    for code, name in SUPPORTED_LANGUAGES.items():
+                        is_active = code == lang
 
-            def on_lang_change(e):
-                set_language(e.value)
-                ui.navigate.to(current_path)
+                        def _switch(c=code):
+                            set_language(c)
+                            ui.navigate.to(current_path)
 
-            (
-                ui.select(lang_options, value=lang, on_change=on_lang_change)
-                .props('dense outlined')
-                .classes('min-w-[100px]')
-                .tooltip("Language")
-            )
+                        with ui.menu_item(on_click=_switch).classes(
+                            'font-bold' if is_active else ''
+                        ):
+                            with ui.row().classes('items-center gap-2'):
+                                if is_active:
+                                    ui.icon('check', size='xs').classes('text-primary')
+                                ui.label(name)
+
+                (
+                    ui.button(icon='translate', on_click=lang_menu.open)
+                    .props(_hdr)
+                    .classes('hdr-btn')
+                    .tooltip(SUPPORTED_LANGUAGES.get(lang, 'Language'))
+                )
 
     audio_el = ui.audio("/static/notification.mp3").props("preload=auto")
     audio_el.set_visibility(False)
@@ -365,7 +379,7 @@ def build_skill_cards(container, state, stepper, tool_container) -> None:
                 "Deselect All", on_click=deselect_all_skills, icon="deselect"
             ).props("flat dense")
             ui.label(f"{len(state['selected_skills'])} selected").classes(
-                "text-gray-400 ml-4 self-center"
+                "text-secondary ml-4 self-center"
             )
 
         selected_names = {s.name for s in state["selected_skills"]}
@@ -402,7 +416,7 @@ def build_skill_cards(container, state, stepper, tool_container) -> None:
                             ui.badge(f"{file_count} files", color="grey")
                             if is_installed:
                                 ui.badge("Installed", color="positive")
-                        ui.label(skill.description).classes("text-gray-400 text-sm")
+                        ui.label(skill.description).classes("text-secondary text-sm")
 
         with ui.row().classes("mt-4 gap-2"):
 
@@ -463,7 +477,7 @@ def build_tool_table(container, state: dict) -> None:
                 "flat dense"
             )
             ui.label(f"{len(state['selected_tools'])} selected").classes(
-                "text-gray-400 ml-4 self-center"
+                "text-secondary ml-4 self-center"
             )
 
         selected_names = {t.name for t in state["selected_tools"]}
@@ -496,9 +510,9 @@ def build_tool_table(container, state: dict) -> None:
                         with ui.row().classes("items-center gap-2"):
                             ui.label(tool.name).classes("font-bold")
                             ui.label(f"({tool.dotdir}/)").classes(
-                                "text-gray-500 text-sm"
+                                "text-secondary text-sm"
                             )
-                        ui.label(tool.company).classes("text-gray-400 text-sm")
+                        ui.label(tool.company).classes("text-secondary text-sm")
 
                     with ui.row().classes("gap-2"):
                         with ui.column().classes("items-center gap-0"):
@@ -506,19 +520,19 @@ def build_tool_table(container, state: dict) -> None:
                                 str(tool.popularity),
                                 color=_score_color(tool.popularity),
                             ).props("dense")
-                            ui.label("pop").classes("text-[10px] text-gray-500")
+                            ui.label("pop").classes("text-[10px] text-secondary")
                         with ui.column().classes("items-center gap-0"):
                             ui.badge(
                                 str(tool.performance),
                                 color=_score_color(tool.performance),
                             ).props("dense")
-                            ui.label("perf").classes("text-[10px] text-gray-500")
+                            ui.label("perf").classes("text-[10px] text-secondary")
                         with ui.column().classes("items-center gap-0"):
                             ui.badge(
                                 str(tool.price),
                                 color=_score_color(tool.price),
                             ).props("dense")
-                            ui.label("price").classes("text-[10px] text-gray-500")
+                            ui.label("price").classes("text-[10px] text-secondary")
 
 
 def build_confirm(container, state: dict) -> None:
@@ -554,13 +568,13 @@ def build_confirm(container, state: dict) -> None:
                     ui.label(
                         f"{AUTO_INJECT_TOOL.name} → "
                         f"{AUTO_INJECT_TOOL.dotdir}/{AUTO_INJECT_TOOL.skills_subpath}/{skill.dir_name}"
-                    ).classes("text-sm text-gray-400")
+                    ).classes("text-sm text-secondary")
                 for t in tools:
                     with ui.row().classes("items-center gap-2"):
                         tool_icon(t)
                         ui.label(
                             f"{t.name} → {t.dotdir}/{t.skills_subpath}/{skill.dir_name}"
-                        ).classes("text-sm text-gray-400")
+                        ).classes("text-sm text-secondary")
 
 
 def build_results(container, all_results: list[tuple[Skill, list]]) -> None:
@@ -608,7 +622,7 @@ def build_results(container, all_results: list[tuple[Skill, list]]) -> None:
                     with ui.row().classes("items-center gap-2"):
                         tool_icon(r.tool)
                         ui.label(f"= {r.symlink_path}").classes(
-                            "text-sm text-gray-400 font-mono"
+                            "text-sm text-secondary font-mono"
                         )
             if errors:
                 ui.label("Errors:").classes("font-medium mt-1")
@@ -629,7 +643,7 @@ def build_sync_report(container, results: list[SyncResult]) -> None:
     container.clear()
     with container:
         if not results:
-            ui.label("No skills found in source.").classes("text-gray-400")
+            ui.label("No skills found in source.").classes("text-secondary")
             return
 
         ui.separator().classes("my-4")
@@ -649,8 +663,8 @@ def build_sync_report(container, results: list[SyncResult]) -> None:
             with ui.row().classes("items-center gap-2"):
                 ui.badge(r.action, color=color)
                 ui.label(r.skill_name).classes("font-medium")
-                ui.label(f"v{r.source_version}").classes("text-gray-400")
+                ui.label(f"v{r.source_version}").classes("text-secondary")
                 if r.action == "updated" and r.target_version:
                     ui.label(f"(was v{r.target_version})").classes(
-                        "text-gray-500 text-sm"
+                        "text-secondary text-sm"
                     )

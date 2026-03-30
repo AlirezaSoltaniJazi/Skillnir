@@ -36,13 +36,13 @@ def progress_panel(container, max_log_lines: int = 300) -> dict:
                         'text-lg font-bold'
                     )
                     refs['status'] = ui.label('Preparing...').classes(
-                        'text-gray-400 text-sm'
+                        'text-secondary text-sm'
                     )
                 with ui.column().classes('items-end gap-0'):
                     refs['elapsed'] = ui.label('0s').classes(
                         'text-2xl font-mono gradient-text'
                     )
-                    ui.label('elapsed').classes('text-gray-500 text-xs')
+                    ui.label('elapsed').classes('text-secondary text-xs')
 
         # ── Counter cards ──
         with ui.row().classes('gap-4 mt-3'):
@@ -51,18 +51,18 @@ def progress_panel(container, max_log_lines: int = 300) -> dict:
                     'background: #3b82f6'
                 )
                 refs['tools'] = ui.label('0').classes('text-xl font-bold text-info')
-                ui.label('Tools used').classes('text-xs text-gray-500')
+                ui.label('Tools used').classes('text-xs text-secondary')
             with ui.card().classes('flex-1 px-4 py-3'):
                 ui.element('div').classes('accent-bar w-8 mb-2').style(
                     'background: #10b981'
                 )
                 refs['lines'] = ui.label('0').classes('text-xl font-bold text-positive')
-                ui.label('Lines output').classes('text-xs text-gray-500')
+                ui.label('Lines output').classes('text-xs text-secondary')
 
         # ── Log viewer ──
         with ui.card().classes('w-full p-4 mt-3'):
             with ui.row().classes('items-center justify-between mb-2'):
-                ui.label('Live Output').classes('text-sm font-medium text-gray-400')
+                ui.label('Live Output').classes('text-sm font-medium text-secondary')
             refs['log'] = ui.log(max_lines=max_log_lines).classes(
                 'w-full h-72 font-mono text-xs'
             )

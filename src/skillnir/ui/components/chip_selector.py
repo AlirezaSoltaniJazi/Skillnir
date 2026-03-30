@@ -19,7 +19,7 @@ def chip_selector(
         on_change: Optional callback when selection changes.
         color: Quasar color name for selected chips.
     """
-    ui.label(label).classes('text-sm font-medium text-gray-400 mb-1')
+    ui.label(label).classes('text-sm font-medium text-secondary mb-1')
     with ui.row().classes('gap-2 flex-wrap'):
         for opt in options:
             is_selected = opt in selected

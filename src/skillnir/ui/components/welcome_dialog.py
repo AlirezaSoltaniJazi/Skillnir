@@ -47,20 +47,22 @@ def _cli_install_content() -> None:
     for info in _CLI_SETUP_INFO:
         with ui.expansion(info['name'], icon=info['icon']).classes('w-full'):
             with ui.column().classes('gap-2 w-full'):
-                ui.label('Install').classes('text-sm font-bold text-gray-500')
+                ui.label('Install').classes('text-sm font-bold text-secondary')
                 ui.code(info['install']).classes('text-sm w-full')
                 if info['install_alt']:
-                    ui.label('or').classes('text-xs text-gray-400')
+                    ui.label('or').classes('text-xs text-secondary')
                     ui.code(info['install_alt']).classes('text-sm w-full')
 
-                ui.label('Login').classes('text-sm font-bold text-gray-500 mt-2')
+                ui.label('Login').classes('text-sm font-bold text-secondary mt-2')
                 ui.code(info['login']).classes('text-sm w-full')
 
-                ui.label('Verify').classes('text-sm font-bold text-gray-500 mt-2')
+                ui.label('Verify').classes('text-sm font-bold text-secondary mt-2')
                 ui.code(info['verify']).classes('text-sm w-full')
 
                 if info['notes']:
-                    ui.label(info['notes']).classes('text-xs text-gray-400 italic mt-1')
+                    ui.label(info['notes']).classes(
+                        'text-xs text-secondary italic mt-1'
+                    )
 
 
 async def show_welcome_dialog() -> None:
@@ -90,7 +92,7 @@ async def show_welcome_dialog() -> None:
             'Skillnir orchestrates AI coding tools via their CLI runners. '
             'To get started, install the CLI for at least one backend below '
             'and sign in to your account.'
-        ).classes('text-sm text-gray-400 text-center mb-4')
+        ).classes('text-sm text-secondary text-center mb-4')
 
         _cli_install_content()
 
@@ -133,7 +135,7 @@ def show_cli_guide_dialog() -> None:
         ui.label(
             'Install and sign in to the CLI runner for each AI backend '
             'you want to use with Skillnir.'
-        ).classes('text-sm text-gray-400 mb-4')
+        ).classes('text-sm text-secondary mb-4')
 
         _cli_install_content()
 

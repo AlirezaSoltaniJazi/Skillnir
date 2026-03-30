@@ -11,5 +11,5 @@ def backend_chip(config, backend_info, on_click_switch=None) -> None:
             ui.icon(backend_info.icon, color='primary').classes('text-2xl')
             with ui.column().classes('gap-0'):
                 ui.label(backend_info.name).classes('text-sm font-bold')
-                ui.label(f'Model: {config.model}').classes('text-xs text-gray-400')
+                ui.label(f'Model: {config.model}').classes('text-xs text-secondary')
             ui.icon('expand_more', color='grey').classes('text-lg')

@@ -11,5 +11,5 @@ def page_header(title: str, subtitle: str = '', icon: str = '') -> None:
                 ui.icon(icon, color='primary').classes('text-3xl')
             ui.label(title).classes('text-3xl font-bold tracking-tight')
         if subtitle:
-            ui.label(subtitle).classes('text-base text-gray-400 leading-relaxed')
+            ui.label(subtitle).classes('text-base text-secondary leading-relaxed')
         ui.separator().classes('mt-3')
