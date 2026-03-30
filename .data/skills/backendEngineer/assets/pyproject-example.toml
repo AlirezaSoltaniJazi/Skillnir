@@ -1,0 +1,49 @@
+# pyproject.toml — Skillnir project template
+# Build system: hatchling | Package manager: uv
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "skillnir"
+version = "1.0.0"
+description = "AI skill injection system"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.14"
+authors = [{ name = "Author Name" }]
+dependencies = [
+    "questionary>=2.1.0",
+    "pyyaml>=6.0",
+    "nicegui>=2.0",
+    "claude-agent-sdk>=0.1.44",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0.2",
+    "pytest-asyncio>=0.24",
+    "pre-commit>=4.5.1",
+    "pylint>=4.0.5",
+    "black>=26.3.1",
+    "autoflake>=2.3.1",
+    "bandit>=1.9.2",
+]
+
+[project.scripts]
+skillnir = "skillnir.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/skillnir"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.black]
+line-length = 88
+# Run with -S flag for single quotes (configured in pre-commit)
+
+[tool.pylint.main]
+fail-under = 10
