@@ -1,0 +1,26 @@
+# Template: Pre-commit hook entry for Skillnir
+# Add to .pre-commit-config.yaml under repos:
+
+# External hook from a repository
+- repo: https://github.com/{org}/{repo}
+    rev: vX.Y.Z  # Always pin to specific version
+    hooks:
+      - id: {hook-id}
+        name: {Descriptive name}
+        exclude: ^\.data/  # Exclude generated/data directories
+        args:
+          - "--flag1"
+          - "--flag2"
+
+# Local hook (for project-specific tools)
+- repo: local
+    hooks:
+      - id: {hook-id}
+        name: {Descriptive name}
+        entry: {command}
+        language: system
+        types: [python]
+        require_serial: true
+        exclude: ^\.data/
+        args:
+          - "--flag1"
