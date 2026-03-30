@@ -12,8 +12,12 @@ from skillnir.usage import ClaudeApiUsage, fetch_claude_api_usage, session_track
 
 @ui.page('/usage')
 def page_usage():
+    from skillnir.backends import BACKENDS, load_config
+
     lang = get_current_language()
     header()
+    config = load_config()
+    backend_info = BACKENDS[config.backend]
 
     with ui.column().classes('w-full max-w-5xl mx-auto px-8 py-8 gap-6'):
         page_header(
@@ -21,6 +25,21 @@ def page_usage():
             t('pages.usage.subtitle', lang),
             icon='analytics',
         )
+
+        # ── Current Backend Info ──
+        with ui.row().classes('items-center gap-3'):
+            ui.icon(backend_info.icon, color='primary').classes('text-2xl')
+            ui.label(f'{backend_info.name} ({config.model})').classes(
+                'text-lg font-semibold'
+            )
+            if backend_info.usage_url:
+                ui.button(
+                    'Check Usage Online',
+                    on_click=lambda: ui.navigate.to(
+                        backend_info.usage_url, new_tab=True
+                    ),
+                    icon='open_in_new',
+                ).props('flat dense rounded')
 
         all_usage = session_tracker.get_all()
 
@@ -103,19 +122,30 @@ def page_usage():
                         color='warning',
                     )
 
-        # ── Claude API Usage ──
+        # ── Claude Subscription Usage (only when Claude is selected) ──
+        from skillnir.backends import AIBackend
+
+        is_claude = config.backend == AIBackend.CLAUDE
+
+        if is_claude:
+            ui.separator().classes('my-4')
+            with ui.row().classes('items-center gap-3'):
+                ui.icon('cloud', color='deep-purple').classes('text-xl')
+                ui.label('Claude Subscription Usage').classes('text-lg font-semibold')
+                ui.label('(live from Anthropic API)').classes('text-secondary text-xs')
+
         api_container = ui.column().classes('w-full')
 
         def _load_claude_api_usage():
+            if not is_claude:
+                return
             api_container.clear()
             with api_container:
-                ui.separator().classes('my-4')
-                ui.label('Claude API Usage (Live)').classes('text-lg font-semibold')
                 api_usage = fetch_claude_api_usage()
                 if api_usage is None:
                     ui.label(
-                        'Could not fetch Claude API usage. '
-                        'Ensure Claude Code is logged in.'
+                        'Could not fetch usage. '
+                        'Ensure Claude Code is logged in (run: claude login).'
                     ).classes('text-secondary text-sm')
                 else:
                     _render_api_usage(api_usage)
@@ -196,8 +226,9 @@ def page_usage():
                 on_click=lambda: ui.navigate.to('/usage'),
                 icon='refresh',
             ).props('flat rounded color=primary')
-            ui.button(
-                'Refresh Claude API',
-                on_click=_load_claude_api_usage,
-                icon='cloud_sync',
-            ).props('flat rounded color=info')
+            if is_claude:
+                ui.button(
+                    'Refresh Claude Usage',
+                    on_click=_load_claude_api_usage,
+                    icon='cloud_sync',
+                ).props('flat rounded color=deep-purple')
