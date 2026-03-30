@@ -39,7 +39,7 @@ async def page_events():
         )
 
         with ui.row().classes("items-center gap-2"):
-            ui.icon(backend_info.icon, size="sm").classes("text-gray-400")
+            ui.icon(backend_info.icon, size="sm").classes("text-secondary")
             ui.label(
                 t(
                     "messages.using_backend",
@@ -47,13 +47,13 @@ async def page_events():
                     name=backend_info.name,
                     model=config.model,
                 )
-            ).classes("text-sm text-gray-400")
+            ).classes("text-sm text-secondary")
 
         # ── Country chips ──
         selected_countries = list(EVENT_COUNTRIES.keys())
 
         ui.label(t("pages.events.countries_to_search", lang)).classes(
-            "text-sm font-medium text-gray-400"
+            "text-sm font-medium text-secondary"
         )
         country_chips_container = ui.row().classes("gap-2 flex-wrap")
 
@@ -73,7 +73,7 @@ async def page_events():
                     sel_cls = (
                         "bg-primary text-white"
                         if is_sel
-                        else "bg-transparent text-gray-400 border border-gray-600"
+                        else "bg-transparent text-secondary border border-gray-600"
                     )
                     with (
                         ui.element("div")
@@ -216,7 +216,7 @@ async def page_events():
                 log_visible = {"value": True}
                 with ui.row().classes("items-center gap-3"):
                     ui.label(t("components.progress_panel.log_output", lang)).classes(
-                        "text-sm font-medium text-gray-400"
+                        "text-sm font-medium text-secondary"
                     )
 
                     def toggle_log():

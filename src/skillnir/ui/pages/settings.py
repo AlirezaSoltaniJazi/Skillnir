@@ -23,7 +23,7 @@ def page_settings():
                         ui.label('Dark Mode').classes('text-lg font-semibold')
                         ui.label(
                             'Toggle between dark and light interface theme.'
-                        ).classes('text-sm text-gray-400')
+                        ).classes('text-sm text-secondary')
 
                 dark = ui.dark_mode()
                 is_dark = app.storage.user.get('dark_mode', True)
@@ -49,7 +49,7 @@ def page_settings():
                             'text-lg font-semibold'
                         )
                         ui.label('Play a sound when AI generation completes.').classes(
-                            'text-sm text-gray-400'
+                            'text-sm text-secondary'
                         )
 
                 sound_enabled = app.storage.user.get('sound_enabled', True)
@@ -92,7 +92,7 @@ def page_settings():
                     with ui.column().classes('gap-0'):
                         ui.label('AI Tool').classes('text-lg font-semibold')
                         ui.label(f'Currently using {backend_info.name}').classes(
-                            'text-sm text-gray-400'
+                            'text-sm text-secondary'
                         )
                 ui.button(
                     'Switch',
@@ -109,7 +109,7 @@ def page_settings():
                     with ui.column().classes('gap-0'):
                         ui.label('Model').classes('text-lg font-semibold')
                         ui.label(f'Currently using {config.model}').classes(
-                            'text-sm text-gray-400'
+                            'text-sm text-secondary'
                         )
                 ui.button(
                     'Switch',
@@ -127,7 +127,7 @@ def page_settings():
                             config.prompt_version, config.prompt_version
                         )
                         ui.label(f'Currently using {pv_label}').classes(
-                            'text-sm text-gray-400'
+                            'text-sm text-secondary'
                         )
                 ui.button(
                     'Switch',
@@ -150,7 +150,7 @@ def page_settings():
                             t('pages.settings.language_title', lang) or 'Language'
                         ).classes('text-lg font-semibold')
                         ui.label(f'Currently using {lang_name}').classes(
-                            'text-sm text-gray-400'
+                            'text-sm text-secondary'
                         )
 
                 lang_options = {

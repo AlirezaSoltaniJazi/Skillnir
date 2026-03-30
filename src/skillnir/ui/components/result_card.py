@@ -42,7 +42,7 @@ def result_card(
                                 'text-gray-300 font-mono text-sm'
                             )
                 if footer_text:
-                    ui.label(footer_text).classes('text-gray-400 text-sm mt-4')
+                    ui.label(footer_text).classes('text-secondary text-sm mt-4')
         else:
             border_color = '#ef4444'
             with (

@@ -51,7 +51,7 @@ def page_install():
             # Step 1: Target Project & Source
             with ui.step(t('pages.install.steps.target_source', lang)):
                 ui.label(t('pages.install.target_project_help', lang)).classes(
-                    'text-gray-400 mb-2'
+                    'text-secondary mb-2'
                 )
                 target_input = (
                     ui.input(
@@ -62,7 +62,7 @@ def page_install():
                     .props('outlined dense rounded')
                 )
                 ui.label(t('pages.install.source_skills_help', lang)).classes(
-                    'text-gray-400 mb-2 mt-4'
+                    'text-secondary mb-2 mt-4'
                 )
                 source_input = (
                     ui.input(
@@ -111,14 +111,14 @@ def page_install():
             # Step 2: Select Skills
             with ui.step(t('pages.install.steps.select_skills', lang)):
                 ui.label(t('pages.install.select_skills_help', lang)).classes(
-                    'text-gray-400 mb-2'
+                    'text-secondary mb-2'
                 )
                 skill_container = ui.column().classes('w-full gap-3')
 
             # Step 3: Select Tools
             with ui.step(t('pages.install.steps.select_tools', lang)):
                 ui.label(t('pages.install.select_tools_help', lang)).classes(
-                    'text-gray-400 mb-2'
+                    'text-secondary mb-2'
                 )
                 with ui.row().classes('items-center gap-2 mb-3'):
                     ui.label(t('pages.install.sort_by', lang)).classes('font-medium')
@@ -377,7 +377,7 @@ def page_skills():
                                 'rounded'
                             )
                         ui.label(skill.description).classes(
-                            'text-sm text-gray-400 mb-2'
+                            'text-sm text-secondary mb-2'
                         )
                         ui.label(str(skill.path)).classes(
                             'text-gray-600 text-xs font-mono'

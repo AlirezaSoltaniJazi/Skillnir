@@ -121,7 +121,7 @@ async def page_ask():
         )
 
         with ui.row().classes('items-center gap-2'):
-            ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
+            ui.icon(backend_info.icon, size='sm').classes('text-secondary')
             ui.label(
                 t(
                     'messages.using_backend',
@@ -129,7 +129,7 @@ async def page_ask():
                     name=backend_info.name,
                     model=config.model,
                 )
-            ).classes('text-sm text-gray-400')
+            ).classes('text-sm text-secondary')
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
             target_input = (
@@ -210,7 +210,7 @@ async def page_plan():
         )
 
         with ui.row().classes('items-center gap-2'):
-            ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
+            ui.icon(backend_info.icon, size='sm').classes('text-secondary')
             ui.label(
                 t(
                     'messages.using_backend',
@@ -218,7 +218,7 @@ async def page_plan():
                     name=backend_info.name,
                     model=config.model,
                 )
-            ).classes('text-sm text-gray-400')
+            ).classes('text-sm text-secondary')
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
             target_input = (
@@ -299,7 +299,7 @@ async def page_check_skill():
         )
 
         with ui.row().classes('items-center gap-2'):
-            ui.icon(backend_info.icon, size='sm').classes('text-gray-400')
+            ui.icon(backend_info.icon, size='sm').classes('text-secondary')
             ui.label(
                 t(
                     'messages.using_backend',
@@ -307,7 +307,7 @@ async def page_check_skill():
                     name=backend_info.name,
                     model=config.model,
                 )
-            ).classes('text-sm text-gray-400')
+            ).classes('text-sm text-secondary')
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
             target_input = (

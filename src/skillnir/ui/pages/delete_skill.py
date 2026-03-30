@@ -57,7 +57,7 @@ def page_delete_skill():
             if not state['skills']:
                 with skill_container:
                     ui.label(t('pages.delete_skill.no_skills_found', lang)).classes(
-                        'text-gray-400'
+                        'text-secondary'
                     )
                 return
             with skill_container:
@@ -96,7 +96,7 @@ def page_delete_skill():
                                         lang,
                                         count=str(len(installations)),
                                     )
-                                ).classes('text-gray-400 text-sm')
+                                ).classes('text-secondary text-sm')
 
         ui.button(t('buttons.scan', lang), on_click=scan_skills, icon='search').props(
             'unelevated rounded'
@@ -151,7 +151,7 @@ def page_delete_skill():
                                         symlinks=str(len(result.removed_symlinks)),
                                         dirs=str(len(result.cleaned_dirs)),
                                     )
-                                ).classes('text-gray-400 text-sm')
+                                ).classes('text-secondary text-sm')
             scan_skills()
 
         ui.button(
