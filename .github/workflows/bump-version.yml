@@ -1,0 +1,79 @@
+name: Bump Version & Tag
+
+on:
+    workflow_dispatch:
+        inputs:
+            bump:
+                description: "Version bump type"
+                required: true
+                type: choice
+                options:
+                    - patch
+                    - minor
+                    - major
+
+permissions:
+    contents: write
+
+jobs:
+    bump:
+        name: Bump ${{ inputs.bump }}
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main'
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Get current version
+              id: current
+              run: |
+                  VERSION=$(grep -m1 '^version' pyproject.toml | sed 's/.*"\(.*\)"/\1/')
+                  echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+                  echo "Current version: $VERSION"
+
+            - name: Calculate next version
+              id: next
+              run: |
+                  IFS='.' read -r MAJOR MINOR PATCH <<< "${{ steps.current.outputs.version }}"
+                  case "${{ inputs.bump }}" in
+                      major) MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0 ;;
+                      minor) MINOR=$((MINOR + 1)); PATCH=0 ;;
+                      patch) PATCH=$((PATCH + 1)) ;;
+                  esac
+                  NEXT="${MAJOR}.${MINOR}.${PATCH}"
+                  echo "version=$NEXT" >> "$GITHUB_OUTPUT"
+                  echo "Next version: $NEXT"
+
+            - name: Update pyproject.toml
+              run: |
+                  sed -i "s/^version = \".*\"/version = \"${{ steps.next.outputs.version }}\"/" pyproject.toml
+                  echo "Updated pyproject.toml:"
+                  grep '^version' pyproject.toml
+
+            - name: Commit version bump
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                  git add pyproject.toml
+                  git commit -m "chore: bump version to ${{ steps.next.outputs.version }}"
+                  git push
+
+            - name: Create and push tag
+              run: |
+                  git tag "v${{ steps.next.outputs.version }}"
+                  git push origin "v${{ steps.next.outputs.version }}"
+                  echo "Tagged: v${{ steps.next.outputs.version }}"
+
+            - name: Summary
+              run: |
+                  echo "### Version Bumped" >> "$GITHUB_STEP_SUMMARY"
+                  echo "" >> "$GITHUB_STEP_SUMMARY"
+                  echo "| | |" >> "$GITHUB_STEP_SUMMARY"
+                  echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+                  echo "| **Type** | ${{ inputs.bump }} |" >> "$GITHUB_STEP_SUMMARY"
+                  echo "| **Previous** | ${{ steps.current.outputs.version }} |" >> "$GITHUB_STEP_SUMMARY"
+                  echo "| **New** | ${{ steps.next.outputs.version }} |" >> "$GITHUB_STEP_SUMMARY"
+                  echo "| **Tag** | v${{ steps.next.outputs.version }} |" >> "$GITHUB_STEP_SUMMARY"
