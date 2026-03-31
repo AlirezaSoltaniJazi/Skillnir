@@ -15,7 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Validation script: `validate-backend.sh`
 - **frontendEngineer skill** -- AI-generated skill for frontend/UI development with NiceGUI, Quasar components, and Tailwind CSS patterns
   - SKILL.md (238 lines), INJECT.md, LEARNED.md
-- Symlinks injected for both new skills across all tool dotdirs (.claude/, .cursor/, .github/, .agents/, .codex/, .gemini/, .opencode/)
+- **devopsEngineer skill** -- updated with expanded documentation and process guides
+- Symlinks injected for new skills across all tool dotdirs (.claude/, .cursor/, .github/, .agents/, .codex/, .gemini/, .opencode/)
+- **CI: Bump Version & Tag** -- manual GitHub Actions workflow to bump version (patch/minor/major), update pyproject.toml, commit, and create git tag on main
+
+### Changed
+
+- Version management moved to CI -- pyproject.toml tracks latest released version, CI bumps it on demand
 
 ### Removed
 
