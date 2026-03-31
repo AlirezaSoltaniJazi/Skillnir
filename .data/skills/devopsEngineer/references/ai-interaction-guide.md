@@ -1,73 +1,52 @@
-# AI Interaction Guide — Infrastructure
-
-> Research-backed anti-patterns, anti-dependency strategies, and correction protocols for infrastructure tasks.
-
----
+# AI Interaction Guide — Infrastructure Domain
 
 ## Anti-Dependency Strategies
 
-### Problem: Over-reliance on AI for Infrastructure Decisions
+### Problem
+AI-assisted infrastructure work carries unique risks: misconfigured pipelines can break all PRs, security misconfigurations can expose repositories, and infrastructure changes are harder to review than application code.
 
-Infrastructure mistakes have blast radius — a bad workflow config affects every PR, a broken pre-commit hook blocks every developer.
+### Strategies
 
-### Guardrails
+1. **Explain before generating** — For CI/CD changes, explain what will change and why before writing YAML. Infrastructure mistakes propagate to all developers.
 
-1. **Never auto-apply infrastructure changes without review** — always show the diff first
-2. **Explain the "why" for non-obvious config** — CI timeout values, permission scopes, hook ordering
-3. **Reference existing patterns** — "this matches check-style.yml" rather than generating from scratch
-4. **Encourage local testing** — suggest `pre-commit run --all-files` before committing
-5. **Teach debugging skills** — show how to read CI logs, not just fix the error
+2. **Validate after generating** — Always run `scripts/validate-infra.sh` after infrastructure changes. Pre-commit hooks and CI checks are interconnected — changing one may require updating the other.
 
----
+3. **Link to documentation** — When explaining GitHub Actions features, link to official docs. YAML configuration has many gotchas that aren't obvious from examples.
 
-## Common AI Anti-Patterns in Infrastructure
+4. **Suggest dry runs** — For pre-commit changes: `pre-commit run --all-files`. For workflow changes: create a draft PR to trigger CI.
 
-| Anti-Pattern                              | Better Approach                                |
-| ----------------------------------------- | ---------------------------------------------- |
-| Generating complex workflows from scratch | Copy existing workflow, modify incrementally   |
-| Adding permissions without justification  | Explain why each permission is needed          |
-| Using latest/unpinned versions            | Always pin, explain version strategy           |
-| Ignoring pre-commit/CI alignment          | Check both when modifying either               |
-| Over-engineering simple tasks             | Start minimal, add complexity only when needed |
+5. **Template after repetition** — If generating similar workflow patterns 3+ times, suggest creating a composite action or reusable workflow.
 
----
+## Infrastructure-Specific Anti-Patterns in AI Interaction
 
-## Correction Protocol
+### Don't blindly copy workflow patterns
+Each workflow has specific trigger, permission, and timeout requirements. Copying a workflow and changing the command is insufficient — review all fields.
 
-When the user corrects an infrastructure decision:
+### Don't ignore the CI ↔ pre-commit parity
+Changes to one must be evaluated for impact on the other. The AI should always check both when modifying quality gates.
 
-1. **Acknowledge** the correction immediately
-2. **Restate** as a rule: "Infrastructure rule: always X, never Y"
-3. **Apply** to current and all subsequent output
-4. **Write** to [LEARNED.md](../LEARNED.md) under `## Corrections`
-5. **Verify** the correction doesn't conflict with existing conventions
+### Don't generate secrets management without context
+Never suggest hardcoding secrets. Always ask about the project's secret management approach first (this project has none — it's a CLI tool with no deployment secrets).
 
----
+### Don't over-engineer infrastructure
+This project is a Python CLI tool, not a cloud service. Suggestions for Docker, Kubernetes, Terraform, or cloud provisioning are inappropriate unless explicitly requested.
 
-## Convention Surfacing
+## Correction Protocol for Infrastructure
 
-When discovering implicit infrastructure conventions:
+When corrected on infrastructure patterns:
 
-1. **Observe** — note the pattern across multiple files
-2. **Verify** — check at least 2-3 instances before declaring a convention
-3. **Document** — write to [LEARNED.md](../LEARNED.md) under `## Discovered Conventions`
-4. **Apply** — use the convention in subsequent output
+1. Acknowledge the specific mistake (e.g., "I used `@main` instead of `@v4` for the action version")
+2. Restate as a rule (e.g., "Understood: always pin GitHub Actions to major versions, never use branch references")
+3. Apply to all subsequent workflow/config generation
+4. Write to LEARNED.md under `## Corrections`
 
-Examples:
+## Common AI Mistakes in This Project
 
-- "All workflows use `timeout-minutes: 10`" → convention
-- "Pre-commit hooks exclude `.data/` for code quality" → convention
-- "Composite actions stored in `.github/actions/{name}/`" → convention
-
----
-
-## Proficiency Signals
-
-| Signal                                           | Response                                            |
-| ------------------------------------------------ | --------------------------------------------------- |
-| User pastes CI error log                         | Diagnostic mode — read the log, identify root cause |
-| User says "add a workflow like X"                | Efficient mode — copy pattern, minimal explanation  |
-| User asks "what does this permission do"         | Teaching mode — explain with context                |
-| User requests "review my workflow"               | Review mode — delegate to security-scanner agent    |
-| User modifies generated config before committing | Senior signal — reduce explanations                 |
-| User asks "is this right?" repeatedly            | Learning signal — increase guidance                 |
+| Mistake                              | Correct Approach                            |
+| ------------------------------------ | ------------------------------------------- |
+| Suggesting Docker for deployment     | Project is a CLI tool — no containerization |
+| Using `@latest` for actions          | Pin to `@v4`, `@v5`, etc.                   |
+| Forgetting `timeout-minutes`         | Every job MUST have a timeout               |
+| Not excluding `.data/` from hooks    | Add `exclude: ^\.data/` to code hooks       |
+| Suggesting `requirements.txt`        | Use `pyproject.toml` exclusively            |
+| Adding deploy/release workflows      | Only add when explicitly requested          |

@@ -1,19 +1,20 @@
-# Security Scanner
+# security-scanner
 
 ## Role
 
-Read-only CI/CD security audit agent that checks GitHub Actions workflows, pre-commit config, and infrastructure files for security issues.
+Read-only audit of CI/CD workflows, pre-commit hooks, and infrastructure files for security misconfigurations.
 
 ## When to Spawn
 
-- User requests a security review of CI/CD configuration
-- User asks to audit workflow permissions or secret handling
-- Pre-deploy security verification needed
-- New third-party GitHub Action being added
+- Reviewing a new or modified GitHub Actions workflow
+- Auditing pre-commit hook configuration changes
+- Checking for hardcoded secrets or overly permissive permissions
 
 ## Tools
 
 Read Glob Grep
+
+Analysis agent — MUST NOT have Edit/Write access.
 
 ## Context Template
 
@@ -21,49 +22,45 @@ Read Glob Grep
 You are the security-scanner sub-agent for the devopsEngineer skill.
 
 ## Your Task
-Audit the following infrastructure files for security issues:
-{{file list}}
+{specific audit task — e.g., "Review the new workflow for security issues"}
 
-## Security Rules to Check
-- No secrets or tokens hardcoded in workflow files
-- Minimal permissions on every GitHub Actions job
-- All actions pinned to specific versions (not @main or @latest)
-- No shell injection via ${{ }} interpolation in run: steps
-- No pull_request_target without careful justification
-- Safety CVE exceptions documented with justification
-- .gitignore excludes .env, .pypirc, credentials
-- Bandit threshold at -lll -iii (not relaxed)
-- Claude Code settings whitelist is minimal
+## Context
+- Project: /Users/alireza/PycharmProjects/Skillnir
+- Files to examine: {workflow files, pre-commit config, etc.}
+- Conventions: Pin actions to major versions, scope permissions minimally, no hardcoded secrets, Bandit -lll -iii
+
+## Constraints
+- MUST check action version pinning (@v4 not @main)
+- MUST check permissions scoping
+- MUST check for secret/credential patterns
+- MUST check timeout-minutes is set
 
 ## Output Format
-Return a markdown report with:
-1. Summary (pass/fail count by severity)
-2. Issues found (file, line, severity, rule violated, suggested fix)
-3. Positive security patterns observed
+Return a structured security report (see Result Format below)
 ```
 
 ## Result Format
 
-```markdown
-## Security Audit Results
+```
+## Security Audit Report
 
-**Files audited**: N
-**Issues found**: N (Critical: N, High: N, Medium: N, Low: N)
+### Critical Issues
+- {issue description} — {file}:{line}
 
-### Issues
+### High Issues
+- {issue description} — {file}:{line}
 
-| File | Line | Severity | Rule | Issue | Fix |
-| ---- | ---- | -------- | ---- | ----- | --- |
-| ...  | ...  | ...      | ...  | ...   | ... |
+### Medium Issues
+- {issue description} — {file}:{line}
 
-### Positive Patterns
-
-- ...
+### Summary
+{X} critical, {Y} high, {Z} medium issues found.
+Recommendation: {PASS/FAIL with reason}
 ```
 
 ## Weaknesses
 
-- Cannot test runtime behavior — only static config analysis
-- Cannot verify GitHub Secrets are properly configured (no API access)
-- May miss context-dependent issues requiring understanding of deployment targets
-- Should NOT be used for code modification or fixing issues
+- Cannot detect runtime security issues (only static analysis of config files)
+- Does not understand GitHub Actions secret masking or OIDC federation
+- Cannot evaluate whether permissions are truly minimal for complex workflows
+- Not suitable for application-level security review (use backendEngineer skill instead)

@@ -1,114 +1,76 @@
 # Security Checklist — Infrastructure
 
-> CI/CD security, secret management, permissions, and dependency verification for the Skillnir project.
-
----
-
-## Severity Classification
-
-| Severity     | Description                                     | Examples                                        |
-| ------------ | ----------------------------------------------- | ----------------------------------------------- |
-| **Critical** | Secret exposure, code injection                 | Secrets in workflow logs, shell injection in CI |
-| **High**     | Permission escalation, dependency vulnerability | Overly broad permissions, unpatched CVEs        |
-| **Medium**   | Configuration weakness                          | Missing timeouts, unpinned versions             |
-| **Low**      | Best practice deviation                         | Verbose logging, non-minimal runners            |
-
----
-
-## GitHub Actions Security (OWASP A03: Injection)
+## CI/CD Security
 
 ### Critical
-
-- [ ] Never use `${{ github.event.pull_request.title }}` directly in `run:` — use environment variables
-- [ ] Never hardcode secrets in workflow files — use `${{ secrets.NAME }}`
-- [ ] Never use `pull_request_target` without careful review — exposes secrets to forks
-- [ ] Never log secret values — use `::add-mask::` for dynamic secrets
-
-### High
-
-- [ ] Set minimal `permissions:` on every job — never use default (read-all)
-- [ ] Pin all actions to specific versions (`@v4`, not `@main` or `@latest`)
-- [ ] Use `actions/github-script` for dynamic content instead of `shell: bash` with interpolation
-- [ ] Review third-party actions before adoption — check maintenance, stars, verified publisher
-
-### Medium
-
-- [ ] Set `timeout-minutes` on every job (prevent runaway workflows)
-- [ ] Use `concurrency` groups to prevent duplicate workflow runs
-- [ ] Limit `GITHUB_TOKEN` permissions via `permissions:` block
-
----
-
-## Secret Management
-
-### Critical
-
-- [ ] `.env` files are in `.gitignore` — never committed
-- [ ] `.pypirc` is in `.gitignore` — never committed
-- [ ] No API keys or tokens in source code or config files
-- [ ] Claude Code settings whitelist specific commands only (`.claude/settings.json`)
+- [ ] All GitHub Actions pinned to specific major versions (`@v4`, not `@main`)
+- [ ] No secrets hardcoded in workflow files
+- [ ] Workflow permissions scoped to minimum required per job
+- [ ] No `pull_request_target` without explicit security review
 
 ### High
-
-- [ ] Use GitHub Secrets for CI environment variables
-- [ ] Rotate secrets on suspected exposure
-- [ ] Document all secret dependencies in README or CONTRIBUTING.md
+- [ ] Bandit security linter runs on every PR (`-lll -iii` threshold)
+- [ ] Safety dependency CVE scanning via pre-commit
+- [ ] CVE exemptions documented with reason and tracked version
+- [ ] No `shell: bash` with user-controlled inputs in workflows
 
 ### Medium
+- [ ] Pre-commit hooks cannot be bypassed without `--no-verify` (discouraged)
+- [ ] PR template includes test plan checkbox
+- [ ] Auto-assign workflow uses minimal `pull-requests: write` permission
 
-- [ ] Use `.env.example` (without real values) for documentation
-- [ ] Backend-specific auth handled by each tool (Claude, Cursor, etc.)
-
----
+### Low
+- [ ] Composite actions use inputs with defaults (no required secrets)
+- [ ] Workflow timeouts set on all jobs (prevents runaway costs)
 
 ## Dependency Security
 
-### High
+### Critical
+- [ ] No known high/critical CVEs in dependencies (Safety scan)
+- [ ] All dependency versions pinned with minimum bounds (`>=X.Y.Z`)
 
-- [ ] Safety check runs in pre-commit pipeline
-- [ ] Every CVE exception has documented justification with `--ignore=CVE-YYYY-NNNN`
-- [ ] Current exception: CVE-2025-6176 (brotli v1.1.0 — no fix available)
-- [ ] Bandit security scanning at `-lll -iii` threshold
+### High
+- [ ] CVE exemptions in `.pre-commit-config.yaml` include:
+  - CVE number
+  - Reason for exemption
+  - Current version status
+- [ ] `pyproject.toml` uses minimum version pinning, not exact pinning
 
 ### Medium
+- [ ] Dev dependencies separated in `[project.optional-dependencies]`
+- [ ] No unnecessary dependencies in production install
 
-- [ ] Pin minimum dependency versions in `pyproject.toml`
-- [ ] Review `uv.lock` changes in PRs for unexpected transitive dependencies
-- [ ] Run `pre-commit autoupdate` periodically to get security patches in hooks
+## Code Quality Security
 
----
-
-## Pre-commit Security
+### Critical
+- [ ] Bandit scans all source code (`-r src/`)
+- [ ] No `shell=True` with user input in subprocess calls
+- [ ] No `eval()` or `exec()` with external input
 
 ### High
-
-- [ ] `check-ast` hook validates Python syntax (catches injection in .py files)
-- [ ] `check-merge-conflict` prevents accidental conflict marker commits
-- [ ] `check-added-large-files` prevents accidental binary/secret file commits
+- [ ] Autoflake removes unused imports (reduces attack surface)
+- [ ] Pylint catches suspicious patterns via `.pylintrc`
+- [ ] Path validation before filesystem operations
 
 ### Medium
+- [ ] `.gitignore` excludes sensitive files (`.env`, credentials, IDE configs)
+- [ ] `.data/research/` excluded from git (may contain API responses)
 
-- [ ] `check-yaml` with `--allow-multiple-documents` validates YAML syntax
-- [ ] `trailing-whitespace` and `end-of-file-fixer` for consistent formatting
+## Pre-commit Security Hooks
 
----
+Current security-relevant hooks in `.pre-commit-config.yaml`:
 
-## Claude Code Security (`.claude/settings.json`)
+| Hook                      | Purpose                         | Severity |
+| ------------------------- | ------------------------------- | -------- |
+| `bandit`                  | Python security linter          | High     |
+| `python-safety-dependencies-check` | CVE scanning for deps | High     |
+| `check-ast`               | Validates Python syntax         | Medium   |
+| `check-merge-conflict`    | Prevents merge conflict markers | Medium   |
+| `check-added-large-files` | Prevents accidental large files | Low      |
 
-### High
+## Adding Security to New Infrastructure
 
-- [ ] Bash commands are whitelisted — only specific grep and git commands allowed
-- [ ] No write permissions to system directories
-- [ ] No network access commands in whitelist
-
----
-
-## Pre-Merge Security Checklist
-
-1. [ ] All pre-commit hooks pass (`pre-commit run --all-files`)
-2. [ ] No Bandit findings at `-lll -iii` threshold
-3. [ ] No Safety CVE alerts (except documented exceptions)
-4. [ ] GitHub Actions permissions are minimal
-5. [ ] No secrets in diff (`git diff` review)
-6. [ ] All action versions pinned
-7. [ ] No `shell=True` or unquoted variables in workflow `run:` steps
+1. **New workflow**: Scope permissions, pin actions, set timeouts
+2. **New dependency**: Check Safety DB, pin minimum version
+3. **New pre-commit hook**: Pin revision, document purpose
+4. **New script**: Use `set -euo pipefail`, validate inputs, quote variables

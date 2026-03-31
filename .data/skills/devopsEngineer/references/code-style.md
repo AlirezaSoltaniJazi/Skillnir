@@ -1,152 +1,116 @@
-# Code Style — Infrastructure Conventions
+# Code Style — Infrastructure Files
 
-> Naming, configuration, and file organization conventions for Skillnir infrastructure files.
+## GitHub Actions Workflow Conventions
 
----
+### Naming
+- Workflow files: `kebab-case.yml` (e.g., `run-tests.yml`, `check-style.yml`)
+- Workflow names: `PR - {Description}` for PR-triggered workflows
+- Job names: descriptive, title case (e.g., `Run Tests`, `Lint & Format Check`)
+- Step names: imperative, title case (e.g., `Checkout repository`, `Setup Python`)
 
-## Workflow Naming
-
-| Convention        | Example                                                              |
-| ----------------- | -------------------------------------------------------------------- |
-| Workflow files    | `kebab-case.yml` (`check-style.yml`, `run-tests.yml`)                |
-| Job names         | `snake_case` or short lowercase (`test`, `style`, `assign-author`)   |
-| Step names        | Sentence case with action verb (`Install dependencies`, `Run tests`) |
-| Composite actions | Nested under `.github/actions/{name}/action.yml`                     |
-
----
-
-## Workflow Structure Template
-
+### Structure
 ```yaml
-name: Descriptive Name
-on: pull_request
+name: PR - {Description}
+
+on: [pull_request]  # or expanded form for specific types
 
 jobs:
-  job-name:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      # Only what's needed
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-python # Local composite
-      - name: Step description
-        run: command here
+    job-name:
+        name: Descriptive Job Name
+        runs-on: ubuntu-latest
+        timeout-minutes: 10  # ALWAYS set
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Python
+              uses: ./.github/actions/setup-python
+
+            - name: {Action description}
+              run: {command}
 ```
 
-**Key rules:**
+### Action Pinning
+- Always pin to major version: `actions/checkout@v4`, `actions/setup-python@v5`
+- Never use `@main`, `@latest`, or `@master`
+- Composite actions use relative paths: `uses: ./.github/actions/setup-python`
 
-- Always set `timeout-minutes: 10`
-- Always pin action versions (`@v4`, not `@latest`)
-- Always `checkout` before local composite actions
-- Minimal `permissions` block
+### Permissions
+- Scope to minimum required per job
+- Default: no explicit permissions (read-only)
+- Document why permissions are needed
 
----
+## Pre-commit Configuration
 
-## Pre-commit Hook Entry
-
+### Hook Entry Structure
 ```yaml
-- repo: https://github.com/org/repo
-  rev: vX.Y.Z # Always pinned
-  hooks:
-    - id: hook-name
-      args: [--flag1, --flag2]
-      exclude: '\.data/' # For code quality hooks
+- repo: https://github.com/{org}/{repo}
+    rev: vX.Y.Z  # Always pinned
+    hooks:
+      - id: {hook-id}
+        args: ["{flag1}", "{flag2}"]
+        exclude: ^\.data/  # Exclude generated/data dirs
 ```
 
-**Key rules:**
-
-- Pin `rev:` to exact version tag
-- Add `exclude: '\.data/'` for Black, Pylint, Autoflake
-- Use `additional_dependencies:` for local hooks that need packages
-- Safety exceptions: `--ignore=CVE-YYYY-NNNN` with inline comment
-
----
-
-## pyproject.toml Conventions
-
-```toml
-[project]
-requires-python = ">=3.14"
-
-[project.scripts]
-skillnir = "skillnir.cli:main"
-
-[project.optional-dependencies]
-dev = ["pytest>=8.0", "pytest-asyncio>=0.24"]
-
-[dependency-groups]
-dev = ["pre-commit>=4.5.1", "pylint>=4.0.5"]
-
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-asyncio_mode = "auto"
+### Exemption Documentation
+```yaml
+args:
+  # Ignore {CVE-ID} ({reason}, {current version} is latest)
+  - --ignore={CVE-number}
 ```
 
-**Key rules:**
+## Bash Script Conventions
 
-- Use `>=` version bounds (not `==` pinning) in `pyproject.toml`
-- Exact pinning lives in `uv.lock` (auto-generated)
-- Entry points under `[project.scripts]`
-- Dev tools in `[dependency-groups]`, test tools in `[project.optional-dependencies]`
+### Validation Scripts
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
 
----
+# --- Configuration ---
+PROJECT_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+PASS=0; FAIL=0; WARN=0
 
-## .gitignore Organization
+# --- Helper Functions ---
+pass_check() { ((PASS++)); echo "  ✅ $1"; }
+fail_check() { ((FAIL++)); echo "  ❌ $1"; }
+warn_check() { ((WARN++)); echo "  ⚠️  $1"; }
 
-Group exclusions by category with comments:
+# --- Checks ---
+echo "🔍 Checking {category}..."
+# ... checks ...
 
-```
-# Python
-__pycache__/
-*.pyc
-
-# Environment
-.env
-.envrc
-
-# Credentials
-.pypirc
-
-# IDE
-.idea/
-
-# Build
-build/
-dist/
-
-# Project-specific
-/.data/research/
+# --- Summary ---
+echo ""
+echo "Results: $PASS passed, $FAIL failed, $WARN warnings"
+[ "$FAIL" -eq 0 ] && exit 0 || exit 1
 ```
 
----
+### Key Rules
+- Always use `set -euo pipefail`
+- Use `PROJECT_ROOT` calculated from script location
+- Use emoji prefixes for output: ✅ pass, ❌ fail, ⚠️ warning
+- Exit 0 on all pass, exit 1 on any failure
+- Group related checks under section headers
 
-## GitHub PR Template
+## Environment Separation
 
-```markdown
-## Summary
+| Environment | Purpose                  | Configuration Source    |
+| ----------- | ------------------------ | ---------------------- |
+| Local       | Developer machine        | `.pre-commit-config.yaml`, `.pylintrc` |
+| CI          | PR validation            | `.github/workflows/*.yml` |
+| Production  | Not applicable (CLI tool)| N/A                    |
 
-<!-- What and why -->
+## File Organization
 
-## Changes
-
-- Change 1
-- Change 2
-
-## Test plan
-
-- [ ] Tests pass (`uv run pytest`)
-- [ ] Manual verification
 ```
-
----
-
-## Version Pinning Strategy
-
-| Location                  | Strategy          | Example                     |
-| ------------------------- | ----------------- | --------------------------- |
-| `pyproject.toml`          | Minimum bound     | `pyyaml>=6.0`               |
-| `uv.lock`                 | Exact lock (auto) | `pyyaml==6.0.2`             |
-| `.pre-commit-config.yaml` | Exact tag         | `rev: 26.3.1`               |
-| GitHub Actions            | Major version     | `uses: actions/checkout@v4` |
-| Composite action inputs   | Default value     | `default: '3.14'`           |
+.github/
+├── actions/
+│   └── setup-python/
+│       └── action.yml          # Composite action
+├── workflows/
+│   ├── run-tests.yml           # Test runner
+│   ├── check-style.yml         # Linting + formatting
+│   └── auto-assign-author.yml  # PR automation
+└── pull_request_template.md    # PR template
+```

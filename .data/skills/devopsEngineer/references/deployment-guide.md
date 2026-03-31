@@ -1,113 +1,82 @@
-# Deployment Guide
+# Deployment Guide — Skillnir
 
-> CI/CD flow, environment topology, and quality gate pipeline for the Skillnir project.
+## Project Type
 
----
+Skillnir is a **Python CLI tool** — not a web service, not a cloud application. There is no deployment pipeline, no server infrastructure, and no container orchestration.
+
+## Distribution Model
+
+- **Package format**: Python package built with hatchling
+- **Package manager**: uv (local), pip (CI)
+- **Entry point**: `skillnir = "skillnir.cli:main"` in `pyproject.toml`
+- **Installation**: `pip install -e ".[dev]"` for development
 
 ## Environment Topology
 
-Skillnir is a local-first CLI/UI tool with no cloud deployment. The "deployment" is package distribution:
+```
+┌─────────────────────────────────────────────┐
+│                  Developer                   │
+│                                              │
+│  ┌──────────┐    ┌───────────┐    ┌───────┐ │
+│  │ Pre-     │───▶│ Local     │───▶│ Git   │ │
+│  │ commit   │    │ Testing   │    │ Push  │ │
+│  │ Hooks    │    │ (pytest)  │    │       │ │
+│  └──────────┘    └───────────┘    └───┬───┘ │
+└───────────────────────────────────────┼─────┘
+                                        │
+                                        ▼
+┌─────────────────────────────────────────────┐
+│              GitHub Actions CI               │
+│                                              │
+│  ┌──────────┐    ┌───────────┐    ┌───────┐ │
+│  │ Style    │    │ Tests     │    │ Auto  │ │
+│  │ Check    │    │ Runner    │    │ Assign│ │
+│  │          │    │           │    │       │ │
+│  └──────────┘    └───────────┘    └───────┘ │
+│       │               │                      │
+│       ▼               ▼                      │
+│  ┌──────────────────────────┐                │
+│  │    PR Merge Decision     │                │
+│  └──────────────────────────┘                │
+└─────────────────────────────────────────────┘
+```
+
+## Quality Gate Flow
 
 ```
-Developer Machine (local)
-├── uv sync              → Install from pyproject.toml
-├── pre-commit install   → Hook into git workflow
-├── uv run skillnir      → CLI entry point
-└── uv run skillnir ui   → NiceGUI web interface (localhost)
-```
-
----
-
-## CI/CD Pipeline Flow
-
-```
-PR Opened
-    ├── check-style.yml (parallel)
-    │   ├── Black --check -S src/ tests/
-    │   ├── Autoflake --check -r src/ tests/
-    │   ├── Pylint --rcfile=.pylintrc src/skillnir/
-    │   └── Bandit -lll -iii -r src/
+Code Change
     │
-    ├── run-tests.yml (parallel)
-    │   ├── actions/checkout@v4
-    │   ├── .github/actions/setup-python (composite)
-    │   ├── pip install -e ".[dev]"
-    │   └── pytest --tb=short -q
+    ├──▶ Pre-commit (local, automatic)
+    │     ├── trailing-whitespace
+    │     ├── end-of-file-fixer
+    │     ├── check-yaml
+    │     ├── check-added-large-files
+    │     ├── check-ast
+    │     ├── check-merge-conflict
+    │     ├── safety (CVE scan)
+    │     ├── bandit (security)
+    │     ├── autoflake (dead code)
+    │     ├── pylint (linting)
+    │     ├── black (formatting)
+    │     └── prettier (markdown)
     │
-    └── auto-assign-author.yml (parallel)
-        └── Assign PR author as assignee
-
-All Pass → Review → Merge to main
+    ├──▶ Git Push
+    │
+    └──▶ GitHub Actions CI (remote, on PR)
+          ├── check-style (Black → Autoflake → Pylint → Bandit)
+          ├── run-tests (pytest --tb=short -q)
+          └── auto-assign-author (on PR open)
 ```
 
----
+## Local Development Setup
 
-## Quality Gate Order
+1. Clone repository
+2. Install Python 3.14+
+3. Install uv package manager
+4. Run `uv pip install -e ".[dev]"`
+5. Install pre-commit: `pre-commit install`
+6. Verify: `pre-commit run --all-files`
 
-The quality gates run in this specific order within `check-style.yml`:
+## Release Process
 
-1. **Black** (formatting) — fastest, catches style issues first
-2. **Autoflake** (unused code) — removes dead imports/variables
-3. **Pylint** (linting) — comprehensive code analysis with `.pylintrc`
-4. **Bandit** (security) — catches security anti-patterns
-
-This order is optimized for fast feedback — formatting issues are cheapest to fix.
-
----
-
-## Composite Action: setup-python
-
-Location: `.github/actions/setup-python/action.yml`
-
-```yaml
-name: Setup Python
-inputs:
-  python-version:
-    description: Python version
-    default: "3.14"
-runs:
-  using: composite
-  steps:
-    - uses: actions/setup-python@v5
-      with:
-        python-version: ${{ inputs.python-version }}
-        cache: pip
-```
-
-**Key rules:**
-
-- Always `actions/checkout@v4` BEFORE using this composite action
-- Default Python version is 3.14 — override via input if needed
-- pip caching enabled for faster CI runs
-
----
-
-## Pre-commit Local Flow
-
-```
-git commit
-    └── pre-commit hooks (7 hooks in order)
-        ├── trailing-whitespace
-        ├── end-of-file-fixer
-        ├── check-yaml (--allow-multiple-documents)
-        ├── check-added-large-files
-        ├── check-ast
-        ├── check-merge-conflict
-        ├── python-safety-dependencies-check (--ignore=CVE-2025-6176)
-        ├── bandit (-lll -iii)
-        ├── autoflake (--in-place, exclude .data/)
-        ├── pylint (-rn, exclude .data/)
-        ├── black (-S, exclude .data/)
-        └── prettier (markdown only)
-```
-
----
-
-## Adding a New Quality Check
-
-1. Add to `.pre-commit-config.yaml` (for local pre-commit)
-2. Add to `.github/workflows/check-style.yml` (for CI)
-3. Ensure both run the SAME command with SAME flags — avoid drift
-4. Pin the version in both locations
-5. Test locally: `pre-commit run --all-files`
-6. Test CI: push to a feature branch and verify the workflow
+Currently manual — no automated release pipeline. The project uses semver in `pyproject.toml` (`version = "1.0.1"`).

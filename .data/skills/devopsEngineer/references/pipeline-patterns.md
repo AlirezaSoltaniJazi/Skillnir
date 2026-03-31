@@ -1,180 +1,151 @@
-# Pipeline Patterns
+# Pipeline Patterns — Skillnir CI/CD
 
-> GitHub Actions workflow patterns with full examples for the Skillnir project.
+## GitHub Actions Workflow Structure
 
----
+All workflows live in `.github/workflows/` and trigger on `pull_request`.
 
-## Pattern 1: Code Quality Check Workflow
+### Composite Action: setup-python
 
-The `check-style.yml` workflow runs formatting and linting checks:
-
-```yaml
-name: Check Style
-on: pull_request
-
-jobs:
-  style:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-python
-      - name: Install dependencies
-        run: pip install -e ".[dev]"
-      - name: Check formatting
-        run: black --check -S src/ tests/
-      - name: Check unused imports
-        run: autoflake --check --remove-all-unused-imports --remove-unused-variables --expand-star-imports --ignore-init-module-imports -r src/ tests/
-      - name: Lint
-        run: pylint -rn --rcfile=.pylintrc src/skillnir/
-      - name: Security scan
-        run: bandit -lll -iii -r src/
-```
-
-**Key rules:**
-
-- Steps run sequentially — fail fast on formatting before expensive linting
-- Same flags as pre-commit hooks — no drift between local and CI
-- `--check` mode only — CI should never modify code
-
----
-
-## Pattern 2: Test Runner Workflow
-
-The `run-tests.yml` workflow runs the pytest suite:
+Reusable setup shared across workflows:
 
 ```yaml
-name: Run Tests
-on: pull_request
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-python
-      - name: Install dependencies
-        run: pip install -e ".[dev]"
-      - name: Run tests
-        run: pytest --tb=short -q
-```
-
-**Key rules:**
-
-- `--tb=short` for readable CI output
-- `-q` for quiet mode (less noise in logs)
-- Editable install (`-e`) ensures imports work correctly
-
----
-
-## Pattern 3: Auto-Assignment Workflow
-
-The `auto-assign-author.yml` workflow assigns the PR author:
-
-```yaml
-name: Auto Assign Author
-on:
-  pull_request:
-    types: [opened]
-
-jobs:
-  assign-author:
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-    steps:
-      - uses: actions/github-script@v7
-        with:
-          script: |
-            await github.rest.issues.addAssignees({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              assignees: [context.payload.pull_request.user.login]
-            })
-```
-
-**Key rules:**
-
-- Only triggers on `opened` (not every PR update)
-- Minimal permission: `pull-requests: write`
-- Uses `actions/github-script` for safe GitHub API interaction (no shell injection)
-
----
-
-## Pattern 4: Composite Action
-
-The `setup-python` composite action:
-
-```yaml
+# .github/actions/setup-python/action.yml
 name: Setup Python
-description: Setup Python with caching
+description: Set up Python with pip cache (requires checkout first)
+
 inputs:
-  python-version:
-    description: Python version to install
-    required: false
-    default: "3.14"
+    python-version:
+        description: Python version to use
+        required: false
+        default: "3.14"
+
 runs:
-  using: composite
-  steps:
-    - uses: actions/setup-python@v5
-      with:
-        python-version: ${{ inputs.python-version }}
-        cache: pip
+    using: composite
+    steps:
+        - name: Set up Python ${{ inputs.python-version }}
+          uses: actions/setup-python@v5
+          with:
+              python-version: ${{ inputs.python-version }}
+              cache: pip
 ```
 
-**Key rules:**
-
-- Inputs have sensible defaults (Python 3.14)
-- `cache: pip` for faster subsequent runs
-- `using: composite` (not Docker or Node.js)
-- Stored at `.github/actions/setup-python/action.yml`
-
----
-
-## Pattern 5: Adding a New Workflow
-
-Template for any new workflow:
+### Workflow: run-tests.yml
 
 ```yaml
-name: <Descriptive Name>
-on: pull_request
-
+name: PR - Run Tests
+on: [pull_request]
 jobs:
-  <job-name>:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    # permissions:
-    #   Only if needed, add minimal permissions
-    steps:
-      - uses: actions/checkout@v4
-      - uses: ./.github/actions/setup-python
-      - name: Install dependencies
-        run: pip install -e ".[dev]"
-      - name: <Step description>
-        run: <command>
+    test:
+        name: Run Tests
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+            - name: Setup Python
+              uses: ./.github/actions/setup-python
+            - name: Install dependencies
+              run: pip install -e ".[dev]"
+            - name: Run tests
+              run: pytest --tb=short -q
 ```
 
-**Checklist for new workflows:**
+### Workflow: check-style.yml
 
-1. Set `timeout-minutes: 10`
-2. Pin all action versions
-3. Use composite action for Python setup
-4. Add minimal permissions (only if needed)
-5. Match local pre-commit flags exactly
+Sequential quality gates — each step must pass before the next:
 
----
+```yaml
+name: PR - Check Style
+on: [pull_request]
+jobs:
+    style:
+        name: Lint & Format Check
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+            - name: Setup Python
+              uses: ./.github/actions/setup-python
+            - name: Install dependencies
+              run: pip install black autoflake pylint bandit pyyaml questionary nicegui
+            - name: Check formatting with Black
+              run: black --check -S src/ tests/
+            - name: Check unused imports with Autoflake
+              run: |
+                  autoflake --check --remove-all-unused-imports \
+                    --remove-unused-variables --expand-star-imports \
+                    --ignore-init-module-imports -r src/ tests/
+            - name: Lint with Pylint
+              run: pylint -rn --rcfile=.pylintrc src/skillnir/
+            - name: Security check with Bandit
+              run: bandit -lll -iii -r src/
+```
 
-## Pre-commit to CI Alignment
+### Workflow: auto-assign-author.yml
 
-Ensure pre-commit hooks and CI workflows run identical commands:
+```yaml
+name: PR - Auto Assign Author
+on:
+    pull_request:
+        types: [opened]
+jobs:
+    assign-author:
+        name: Assign PR Author
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        permissions:
+            pull-requests: write
+        steps:
+            - name: Assign author to PR
+              uses: actions/github-script@v7
+              with:
+                  script: |
+                      await github.rest.issues.addAssignees({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: context.payload.pull_request.number,
+                        assignees: [context.payload.pull_request.user.login]
+                      });
+```
 
-| Tool      | Pre-commit Args                                                                                                       | CI Args                                                                                                            |
-| --------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Black     | `-S` (in-place)                                                                                                       | `--check -S` (check mode)                                                                                          |
-| Autoflake | `--in-place --remove-all-unused-imports --remove-unused-variables --expand-star-imports --ignore-init-module-imports` | `--check --remove-all-unused-imports --remove-unused-variables --expand-star-imports --ignore-init-module-imports` |
-| Pylint    | `-rn --rcfile=.pylintrc`                                                                                              | `-rn --rcfile=.pylintrc`                                                                                           |
-| Bandit    | `-lll -iii`                                                                                                           | `-lll -iii -r src/`                                                                                                |
+## CI Quality Gate Order
 
-**Key difference:** Pre-commit runs `--in-place` (fixes), CI runs `--check` (validates).
+The style check enforces this sequential pipeline:
+
+1. **Black** — formatting (fast, catches style issues)
+2. **Autoflake** — unused imports/variables (fast, catches dead code)
+3. **Pylint** — deep linting with `.pylintrc` (slower, catches logic issues)
+4. **Bandit** — security scanning (catches vulnerabilities)
+
+This order is intentional: cheapest/fastest checks first, most expensive last.
+
+## Pre-commit ↔ CI Parity
+
+Pre-commit hooks mirror CI checks to catch issues before push:
+
+| Pre-commit Hook                   | CI Equivalent                      |
+| --------------------------------- | ---------------------------------- |
+| `black` with `-S`                 | `black --check -S src/ tests/`     |
+| `autoflake` with in-place         | `autoflake --check ... src/ tests/`|
+| `pylint` with `--rcfile=.pylintrc`| `pylint -rn --rcfile=.pylintrc`    |
+| `bandit` with `-lll -iii`         | `bandit -lll -iii -r src/`         |
+| `safety` (dependencies)           | Not in CI (pre-commit only)        |
+| `prettier` (markdown)             | Not in CI (pre-commit only)        |
+
+## Adding a New Workflow
+
+1. Create `.github/workflows/{trigger}-{action}.yml`
+2. Use naming convention: `PR - {Description}` for PR-triggered workflows
+3. Always set `timeout-minutes` on every job
+4. Use composite action `uses: ./.github/actions/setup-python` for Python setup
+5. Pin all action versions to specific major versions (`@v4`, `@v5`, `@v7`)
+6. Scope `permissions` to minimum required
+
+## Adding a New Pre-commit Hook
+
+1. Add repo entry to `.pre-commit-config.yaml`
+2. Pin to specific revision (`rev: vX.Y.Z`)
+3. Add corresponding CI step if the check should block PRs
+4. Exclude `.data/` directory if the hook processes Python/code files
+5. Document any CVE exemptions with `--ignore` args and comments

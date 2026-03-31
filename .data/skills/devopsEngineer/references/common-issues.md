@@ -1,113 +1,74 @@
-# Common Issues — Infrastructure
+# Common Issues — Infrastructure Troubleshooting
 
-> Troubleshooting common CI/CD, pre-commit, and build system pitfalls in the Skillnir project.
+## CI Pipeline Issues
 
----
+### Black check fails but pre-commit passes
+**Cause**: Pre-commit runs Black with `--in-place` but CI runs `--check`. Local files were auto-formatted but not committed.
+**Fix**: Run `git add -u && git commit --amend` after pre-commit auto-fixes, or stage and create new commit.
+
+### Pylint fails in CI but passes locally
+**Cause**: CI installs different dependencies than local. CI uses `pip install` while local may use `uv`.
+**Fix**: Ensure CI installs all dependencies needed for pylint (pyyaml, questionary, nicegui). Check that `.pylintrc` is the same.
+
+### Autoflake reports unused imports in `__init__.py`
+**Cause**: `__init__.py` re-exports are detected as unused.
+**Fix**: Use `--ignore-init-module-imports` flag (already configured in both pre-commit and CI).
+
+### Safety check fails on new dependency
+**Cause**: Dependency has known CVE in Safety DB.
+**Fix**:
+1. Check if a patched version exists → upgrade
+2. If no fix available, add `--ignore={CVE}` with documented comment in `.pre-commit-config.yaml`
+3. Track the CVE for future resolution
+
+### GitHub Actions timeout
+**Cause**: Job exceeds `timeout-minutes` (10 min for test/style, 5 min for auto-assign).
+**Fix**: Investigate slow step. Common causes: pip cache miss, large test suite, network issues.
 
 ## Pre-commit Issues
 
-### Hook fails with "command not found"
+### Pre-commit hook fails on `.data/` files
+**Cause**: Hook not configured to exclude `.data/` directory.
+**Fix**: Add `exclude: ^\.data/` to the hook configuration.
 
-**Cause**: Local hook expects system-installed tool (e.g., pylint) but it's not in PATH.
+### Pre-commit runs but CI still fails
+**Cause**: Not all CI checks are mirrored in pre-commit (or vice versa). Safety and Prettier are pre-commit only.
+**Fix**: This is by design. Some checks are local-only. Ensure the failing CI check has a pre-commit equivalent if needed.
 
-**Fix**: Ensure dev dependencies are installed: `uv sync` then `uv run pre-commit run --all-files`
+### Pre-commit cache corruption
+**Cause**: Python version change or hook version update.
+**Fix**: `pre-commit clean && pre-commit install`
 
-### Black reformats files but CI still fails
+## Workflow Issues
 
-**Cause**: Pre-commit runs Black in `--in-place` mode, CI runs `--check` mode. Files were auto-fixed locally but not committed.
+### Composite action not found
+**Cause**: `uses: ./.github/actions/setup-python` requires the action to exist in the checked-out repo.
+**Fix**: Ensure `actions/checkout@v4` runs before the composite action step.
 
-**Fix**: After pre-commit fixes files, stage and commit the changes: `git add -u && git commit`
+### Auto-assign fails with permission error
+**Cause**: Workflow needs `pull-requests: write` permission.
+**Fix**: Ensure `permissions: pull-requests: write` is set on the job.
 
-### Safety check fails with unknown CVE
+### New workflow not triggering
+**Cause**: Workflow file not on the default branch, or trigger event doesn't match.
+**Fix**: For `pull_request` triggers, the workflow file must exist on the target branch. Push workflow to main first.
 
-**Cause**: New vulnerability discovered in a dependency.
+## Python Packaging Issues
 
-**Fix**: Either update the dependency (`uv add package>=fixed_version`) or add exception (`--ignore=CVE-YYYY-NNNN`) with documented justification in `.pre-commit-config.yaml`
+### `pip install -e ".[dev]"` fails in CI
+**Cause**: Missing build dependencies or Python version mismatch.
+**Fix**: Ensure composite action sets correct Python version (3.14). Check `pyproject.toml` `requires-python`.
 
-### Pre-commit hooks not running
+### uv vs pip discrepancy
+**Cause**: Local uses `uv` but CI uses `pip`. Dependency resolution may differ.
+**Fix**: This is current project design. CI uses pip for simplicity. Ensure `pyproject.toml` dependencies are compatible with both.
 
-**Cause**: Hooks not installed in local git repo.
+## Script Issues
 
-**Fix**: `uv run pre-commit install`
+### Validation script fails with "command not found"
+**Cause**: Script uses tools not available in the environment (grep flags, etc.).
+**Fix**: Use POSIX-compatible commands or check for tool availability.
 
-### "Hook id X not found" after update
-
-**Cause**: Hook ID changed in upstream repo after version update.
-
-**Fix**: Check the hook repo's changelog, update the `id:` field in `.pre-commit-config.yaml`
-
----
-
-## GitHub Actions Issues
-
-### Workflow fails with "not found" for composite action
-
-**Cause**: Missing `actions/checkout@v4` before referencing local composite action.
-
-**Fix**: Always add checkout step before `uses: ./.github/actions/setup-python`
-
-### Tests pass locally but fail in CI
-
-**Cause**: Python version mismatch between local (3.14) and CI.
-
-**Fix**: Check the `setup-python` composite action default version matches local Python.
-
-### CI is slow
-
-**Cause**: No caching configured.
-
-**Fix**: The composite action uses `cache: pip`. Verify it's being used correctly.
-
-### Workflow doesn't trigger
-
-**Cause**: Incorrect trigger event or branch filter.
-
-**Fix**: Check `on:` block — use `pull_request` (not `pull_request_target` unless needed).
-
----
-
-## Build System Issues
-
-### `uv sync` fails with resolution error
-
-**Cause**: Conflicting version bounds in `pyproject.toml`.
-
-**Fix**: Check `requires-python` and dependency versions. Use `uv pip compile` to debug resolution.
-
-### Import errors after dependency change
-
-**Cause**: Not using editable install.
-
-**Fix**: `pip install -e ".[dev]"` for development, or `uv sync` for uv-managed installs.
-
-### `uv.lock` conflicts in PR
-
-**Cause**: Multiple PRs modifying dependencies simultaneously.
-
-**Fix**: Rebase on main, run `uv sync` to regenerate lock, commit the updated `uv.lock`.
-
----
-
-## Pylint Issues
-
-### Pylint score drops below 10
-
-**Cause**: New code introduced without following conventions.
-
-**Fix**: Run `pylint -rn --rcfile=.pylintrc src/skillnir/` locally, fix all issues before pushing.
-
-### Pylint false positive
-
-**Cause**: Pylint doesn't understand a pattern.
-
-**Fix**: Add specific `# pylint: disable=rule-name` inline (not in `.pylintrc` globally) with comment explaining why.
-
----
-
-## Version Drift Issues
-
-### Pre-commit and CI run different tool versions
-
-**Cause**: Version pinned differently in `.pre-commit-config.yaml` vs CI `pip install`.
-
-**Fix**: Audit both locations — ensure same tool versions. Consider using pre-commit in CI: `pre-commit run --all-files`.
+### Script produces wrong PROJECT_ROOT
+**Cause**: Symlinks or unexpected directory structure.
+**Fix**: Use `$(cd "$(dirname "$0")/../../.." && pwd)` pattern with appropriate depth.

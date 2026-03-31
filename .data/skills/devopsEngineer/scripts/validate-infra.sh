@@ -1,147 +1,133 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Validate infrastructure conventions for the Skillnir project
-# Usage: ./validate-infra.sh [project-root]
+# Validate Skillnir infrastructure conventions
+# Usage: bash .data/skills/devopsEngineer/scripts/validate-infra.sh
 
-PROJECT_ROOT="${1:-$(git rev-parse --show-toplevel 2>/dev/null || pwd)}"
-WORKFLOWS_DIR="$PROJECT_ROOT/.github/workflows"
-ACTIONS_DIR="$PROJECT_ROOT/.github/actions"
-PRECOMMIT="$PROJECT_ROOT/.pre-commit-config.yaml"
+PROJECT_ROOT="$(cd "$(dirname "$0")/../../../.." && pwd)"
+PASS=0; FAIL=0; WARN=0
 
-PASS=0
-FAIL=0
-WARN=0
+pass_check() { ((PASS++)); echo "  ✅ $1"; }
+fail_check() { ((FAIL++)); echo "  ❌ $1"; }
+warn_check() { ((WARN++)); echo "  ⚠️  $1"; }
 
-check() {
-    local description="$1"
-    local result="$2"
-    if [[ "$result" == "pass" ]]; then
-        echo "  PASS  $description"
-        ((PASS++))
-    elif [[ "$result" == "warn" ]]; then
-        echo "  WARN  $description"
-        ((WARN++))
-    else
-        echo "  FAIL  $description"
-        ((FAIL++))
-    fi
-}
+# --- GitHub Actions Workflows ---
+echo "🔍 Checking GitHub Actions workflows..."
 
-echo "=== Skillnir Infrastructure Convention Validator ==="
-echo "Project root: $PROJECT_ROOT"
-echo ""
+WORKFLOW_DIR="$PROJECT_ROOT/.github/workflows"
+if [ -d "$WORKFLOW_DIR" ]; then
+    for wf in "$WORKFLOW_DIR"/*.yml; do
+        [ -f "$wf" ] || continue
+        name=$(basename "$wf")
 
-# --- File Structure ---
-echo "--- File Structure ---"
-
-check ".github/workflows/ directory exists" \
-    "$([[ -d "$WORKFLOWS_DIR" ]] && echo pass || echo fail)"
-
-check ".github/actions/ directory exists" \
-    "$([[ -d "$ACTIONS_DIR" ]] && echo pass || echo fail)"
-
-check ".pre-commit-config.yaml exists" \
-    "$([[ -f "$PRECOMMIT" ]] && echo pass || echo fail)"
-
-check "pyproject.toml exists" \
-    "$([[ -f "$PROJECT_ROOT/pyproject.toml" ]] && echo pass || echo fail)"
-
-check ".gitignore exists" \
-    "$([[ -f "$PROJECT_ROOT/.gitignore" ]] && echo pass || echo fail)"
-
-check "PR template exists" \
-    "$([[ -f "$PROJECT_ROOT/.github/pull_request_template.md" ]] && echo pass || echo fail)"
-
-# --- Workflow Conventions ---
-echo ""
-echo "--- Workflow Conventions ---"
-
-for workflow in "$WORKFLOWS_DIR"/*.yml; do
-    if [[ -f "$workflow" ]]; then
-        basename=$(basename "$workflow")
-
-        # Check for timeout-minutes
-        HAS_TIMEOUT=$(grep -c "timeout-minutes" "$workflow" || true)
-        check "$basename has timeout-minutes" \
-            "$([[ "$HAS_TIMEOUT" -gt 0 ]] && echo pass || echo fail)"
-
-        # Check for pinned action versions (uses: with @)
-        UNPINNED=$(grep "uses:" "$workflow" | grep -v "@" | grep -v "\./" || true)
-        check "$basename has pinned action versions" \
-            "$([[ -z "$UNPINNED" ]] && echo pass || echo fail)"
-
-        # Check for checkout before local actions
-        HAS_LOCAL=$(grep -c "uses: \./" "$workflow" || true)
-        if [[ "$HAS_LOCAL" -gt 0 ]]; then
-            HAS_CHECKOUT=$(grep -c "actions/checkout" "$workflow" || true)
-            check "$basename has checkout before local actions" \
-                "$([[ "$HAS_CHECKOUT" -gt 0 ]] && echo pass || echo fail)"
+        # Check timeout-minutes is set
+        if grep -q "timeout-minutes:" "$wf"; then
+            pass_check "$name has timeout-minutes"
+        else
+            fail_check "$name missing timeout-minutes on jobs"
         fi
-    fi
-done
 
-# --- Pre-commit Conventions ---
-echo ""
-echo "--- Pre-commit Conventions ---"
+        # Check actions are pinned to versions (not @main/@latest/@master)
+        if grep -E "uses:.*@(main|latest|master)" "$wf" > /dev/null 2>&1; then
+            fail_check "$name has unpinned action versions (@main/@latest/@master)"
+        else
+            pass_check "$name actions are version-pinned"
+        fi
 
-if [[ -f "$PRECOMMIT" ]]; then
-    # Check that code quality hooks exclude .data/
-    for hook in black pylint autoflake; do
-        HOOK_SECTION=$(grep -A5 "id: $hook" "$PRECOMMIT" 2>/dev/null || true)
-        if [[ -n "$HOOK_SECTION" ]]; then
-            HAS_EXCLUDE=$(echo "$HOOK_SECTION" | grep -c "exclude.*data" || true)
-            check "$hook hook excludes .data/" \
-                "$([[ "$HAS_EXCLUDE" -gt 0 ]] && echo pass || echo warn)"
+        # Check for hardcoded secrets
+        if grep -iE "(password|secret|token|api_key)\s*[:=]" "$wf" > /dev/null 2>&1; then
+            fail_check "$name may contain hardcoded secrets"
+        else
+            pass_check "$name has no hardcoded secrets"
         fi
     done
-
-    # Check that all repos have pinned rev
-    UNPINNED_HOOKS=$(grep -B2 "hooks:" "$PRECOMMIT" | grep "repo:" | grep -v "local" || true)
-    MISSING_REV=$(grep -c "rev:" "$PRECOMMIT" || true)
-    REPO_COUNT=$(grep -c "repo:" "$PRECOMMIT" | grep -v "local" || true)
-    check "All hook repos have pinned rev" \
-        "$([[ "$MISSING_REV" -ge "$REPO_COUNT" ]] && echo pass || echo fail)"
+else
+    warn_check "No .github/workflows/ directory found"
 fi
 
-# --- Security Conventions ---
+# --- Composite Actions ---
 echo ""
-echo "--- Security Conventions ---"
+echo "🔍 Checking composite actions..."
 
-# Check .gitignore has critical exclusions
-if [[ -f "$PROJECT_ROOT/.gitignore" ]]; then
-    check ".gitignore excludes .env" \
-        "$(grep -qc '\.env' "$PROJECT_ROOT/.gitignore" && echo pass || echo fail)"
+ACTION_DIR="$PROJECT_ROOT/.github/actions"
+if [ -d "$ACTION_DIR" ]; then
+    for action_dir in "$ACTION_DIR"/*/; do
+        [ -d "$action_dir" ] || continue
+        name=$(basename "$action_dir")
 
-    check ".gitignore excludes .pypirc" \
-        "$(grep -qc '\.pypirc' "$PROJECT_ROOT/.gitignore" && echo pass || echo fail)"
+        if [ -f "$action_dir/action.yml" ]; then
+            pass_check "Composite action '$name' has action.yml"
+        else
+            fail_check "Composite action '$name' missing action.yml"
+        fi
+    done
+else
+    warn_check "No .github/actions/ directory found"
 fi
 
-# Check for hardcoded secrets in workflows
-SECRETS_IN_WORKFLOWS=$(grep -rn "password\|token\|secret\|api_key" "$WORKFLOWS_DIR" --include="*.yml" 2>/dev/null | grep -v "secrets\." | grep -v "GITHUB_TOKEN" | grep -v "storage_secret" || true)
-check "No hardcoded secrets in workflows" \
-    "$([[ -z "$SECRETS_IN_WORKFLOWS" ]] && echo pass || echo fail)"
-
-# --- Build System ---
+# --- Pre-commit Configuration ---
 echo ""
-echo "--- Build System ---"
+echo "🔍 Checking pre-commit configuration..."
 
-if [[ -f "$PROJECT_ROOT/pyproject.toml" ]]; then
-    check "pyproject.toml has requires-python" \
-        "$(grep -qc 'requires-python' "$PROJECT_ROOT/pyproject.toml" && echo pass || echo fail)"
+PRECOMMIT="$PROJECT_ROOT/.pre-commit-config.yaml"
+if [ -f "$PRECOMMIT" ]; then
+    pass_check ".pre-commit-config.yaml exists"
 
-    check "pyproject.toml has project.scripts entry" \
-        "$(grep -qc '\[project.scripts\]' "$PROJECT_ROOT/pyproject.toml" && echo pass || echo fail)"
+    # Check for pinned revisions
+    if grep -E "rev:\s*(main|latest|master)" "$PRECOMMIT" > /dev/null 2>&1; then
+        fail_check "Pre-commit hooks have unpinned revisions"
+    else
+        pass_check "Pre-commit hook revisions are pinned"
+    fi
 
-    check "pyproject.toml uses hatchling build" \
-        "$(grep -qc 'hatchling' "$PROJECT_ROOT/pyproject.toml" && echo pass || echo fail)"
+    # Check for bandit hook
+    if grep -q "bandit" "$PRECOMMIT"; then
+        pass_check "Bandit security hook is configured"
+    else
+        fail_check "Bandit security hook missing"
+    fi
+
+    # Check for safety hook
+    if grep -q "safety" "$PRECOMMIT"; then
+        pass_check "Safety CVE scanning hook is configured"
+    else
+        warn_check "Safety CVE scanning hook missing"
+    fi
+else
+    fail_check ".pre-commit-config.yaml not found"
 fi
 
-# Check for pip/poetry usage (should be uv only)
-PIP_USAGE=$(grep -rn "pip install" "$PROJECT_ROOT" --include="*.md" 2>/dev/null | grep -v "pip install -e" | grep -v node_modules || true)
-check "No raw pip install in docs (use uv)" \
-    "$([[ -z "$PIP_USAGE" ]] && echo pass || echo warn)"
-
+# --- Pylint Configuration ---
 echo ""
+echo "🔍 Checking linter configuration..."
+
+if [ -f "$PROJECT_ROOT/.pylintrc" ]; then
+    pass_check ".pylintrc exists"
+else
+    fail_check ".pylintrc not found"
+fi
+
+# --- CI/Pre-commit Parity ---
+echo ""
+echo "🔍 Checking CI ↔ pre-commit parity..."
+
+if [ -f "$WORKFLOW_DIR/check-style.yml" ] && [ -f "$PRECOMMIT" ]; then
+    for tool in black autoflake pylint bandit; do
+        ci_has=$(grep -c "$tool" "$WORKFLOW_DIR/check-style.yml" 2>/dev/null || echo 0)
+        pc_has=$(grep -c "$tool" "$PRECOMMIT" 2>/dev/null || echo 0)
+
+        if [ "$ci_has" -gt 0 ] && [ "$pc_has" -gt 0 ]; then
+            pass_check "$tool present in both CI and pre-commit"
+        elif [ "$ci_has" -gt 0 ] && [ "$pc_has" -eq 0 ]; then
+            warn_check "$tool in CI but not in pre-commit"
+        elif [ "$ci_has" -eq 0 ] && [ "$pc_has" -gt 0 ]; then
+            warn_check "$tool in pre-commit but not in CI"
+        fi
+    done
+fi
+
+# --- Summary ---
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "Results: $PASS passed, $FAIL failed, $WARN warnings"
-exit $FAIL
+[ "$FAIL" -eq 0 ] && exit 0 || exit 1

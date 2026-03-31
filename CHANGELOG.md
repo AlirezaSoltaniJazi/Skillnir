@@ -5,7 +5,50 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.1] - 2026-03-29
+## [1.1.2] - 2026-03-31
+
+### Added
+
+- **backendEngineer skill** -- AI-generated skill for Python backend development covering CLI patterns, dataclass conventions, multi-backend abstraction, async streaming, and testing with pytest
+  - SKILL.md (236 lines), INJECT.md, references/ (7 files: code-style, patterns, test-patterns, security-checklist, common-issues, ai-interaction-guide, template.py)
+  - Sub-agents: code-reviewer, test-writer, dependency-auditor
+  - Validation script: `validate-backend.sh`
+- **frontendEngineer skill** -- AI-generated skill for frontend/UI development with NiceGUI, Quasar components, and Tailwind CSS patterns
+  - SKILL.md (238 lines), INJECT.md, LEARNED.md
+- **devopsEngineer skill** -- updated with expanded documentation and process guides
+- Symlinks injected for new skills across all tool dotdirs (.claude/, .cursor/, .github/, .agents/, .codex/, .gemini/, .opencode/)
+- **CI: Bump Version & Tag** -- manual GitHub Actions workflow to bump version (patch/minor/major), update pyproject.toml, commit, and create git tag on main
+
+### Changed
+
+- Version management moved to CI -- pyproject.toml tracks latest released version, CI bumps it on demand
+
+### Removed
+
+- **pythonDeveloper skill** -- replaced by the more specific backendEngineer skill
+
+## [1.1.1] - 2026-03-30
+
+### Fixed
+
+- **Copilot CLI** -- changed `--quiet` to `--silent` (the correct flag for Copilot CLI 1.0.12+)
+- **Copilot CLI** -- prompt now passed via `--prompt <text>` instead of positional `-- <text>` which caused "too many arguments" error
+- **Model info tier** -- added `tier` field to `ModelInfo` dataclass (1=powerful, 2=balanced, 3=fast) for model picker categorization
+- **Secondary text color** -- replaced `text-gray-400`/`text-gray-500` with theme-adaptive `.text-secondary` CSS class (indigo-600 light / indigo-300 dark)
+- **Usage page** -- Claude Subscription Usage section now only shows when Claude is the selected backend
+- **Usage tracking** -- subprocess flows (Claude CLI, Cursor, Gemini) now record token usage to session tracker via `_parse_stream_json_line`
+- **Model picker redesign** -- clickable cards in 3-tier grid (Powerful/Balanced/Fast) with hover animations, replacing the old flat list with "Select" buttons
+- **Version badge** -- now shows backend name alongside version (e.g., "2.1.87 (Claude Code)")
+- **Language picker** -- redesigned from dropdown to icon button with menu, matching other header icons
+- **Home badges** -- version and prompts badges changed from grey to deep-purple
+
+### Added
+
+- **Claude API usage** -- live subscription usage data from Anthropic OAuth API on the Usage page (5-hour window, 7-day window, Sonnet/Opus breakdown, extra credits)
+- **Model card hover animation** -- new `.model-card` CSS class with scale, glow shadow, and tinted background on hover
+- **Tech stack** -- added to README.md
+
+## [1.1.0] - 2026-03-29
 
 ### Added
 
@@ -189,5 +232,7 @@ NiceGUI-based dashboard with pages for skill generation, installation, deletion,
 - Rollback strategy and cloud cost awareness in backend generator
 - Severity classification in security sections across backend, frontend, and infra generators
 
-[1.0.1]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.0.1
+[1.1.2]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.1.2
+[1.1.1]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.1.1
+[1.1.0]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.1.0
 [1.0.0]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.0.0

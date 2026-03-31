@@ -1,0 +1,31 @@
+# Template: GitHub Actions workflow for Skillnir
+# Copy and modify for new PR-triggered workflows
+
+name: PR - {Description}
+
+on: [pull_request]
+
+jobs:
+    job-name:
+        name: Descriptive Job Name
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+
+        # Only add permissions when needed — default is read-only
+        # permissions:
+        #     pull-requests: write
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Python
+              uses: ./.github/actions/setup-python
+
+            - name: Install dependencies
+              run: |
+                  pip install -e ".[dev]"
+
+            - name: Run task
+              run: |
+                  echo "Replace with actual command"
