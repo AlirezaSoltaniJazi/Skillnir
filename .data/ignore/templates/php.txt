@@ -1,0 +1,6 @@
+# ── PHP ───────────────────────────────────────────────────
+# Composer dependencies
+vendor/
+
+# Lock files
+composer.lock

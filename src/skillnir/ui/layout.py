@@ -51,6 +51,7 @@ NAV_GROUPS = [
         [
             ('note_add', 'Init Skill', '/init-skill'),
             ('description', 'Init Docs', '/init-docs'),
+            ('visibility_off', 'Install Ignore', '/install-ignore'),
         ],
     ),
     (
@@ -99,6 +100,11 @@ def get_nav_groups(lang: str | None = None) -> list:
             [
                 ("note_add", t("nav.items.init_skill", lang), "/init-skill"),
                 ("description", t("nav.items.init_docs", lang), "/init-docs"),
+                (
+                    "visibility_off",
+                    t("nav.items.install_ignore", lang),
+                    "/install-ignore",
+                ),
             ],
         ),
         (

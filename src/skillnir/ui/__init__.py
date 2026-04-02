@@ -108,6 +108,7 @@ def run_ui(port: int = 8080) -> None:
         events,
         generate_skill,
         home,
+        ignore,
         research,
         settings,
         skill,

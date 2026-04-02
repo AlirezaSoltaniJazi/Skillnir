@@ -18,6 +18,7 @@
       "delete_docs": "Supprimer les Docs",
       "init_skill": "Initialiser un Skill",
       "init_docs": "Initialiser les Docs",
+      "install_ignore": "Installer Ignore",
       "ask_ai": "Interroger l'AI",
       "plan": "Planifier",
       "skills_library": "Bibliotheque de Skills",

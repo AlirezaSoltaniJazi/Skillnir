@@ -18,6 +18,7 @@
       "delete_docs": "Docs verwijderen",
       "init_skill": "Skill initialiseren",
       "init_docs": "Docs initialiseren",
+      "install_ignore": "Ignore installeren",
       "ask_ai": "AI vragen",
       "plan": "Plannen",
       "skills_library": "Skillbibliotheek",

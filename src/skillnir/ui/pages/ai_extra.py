@@ -72,6 +72,16 @@ async def _run_subprocess_page(
         _emit(on_progress, 'error', str(e))
 
     timer_ctl['active'] = False
+
+    # Capture log lines before clearing the progress panel
+    log_lines: list[str] = []
+    try:
+        log_el = refs.get('log')
+        if log_el is not None:
+            log_lines = list(log_el.lines)
+    except Exception:
+        pass
+
     progress_container.clear()
 
     if exit_code == 0:
@@ -86,6 +96,22 @@ async def _run_subprocess_page(
 
     lang = get_current_language()
     with results_container:
+        # Show the AI response content
+        if log_lines:
+            # Filter out internal markers, keep only text output
+            output_lines = [
+                ln
+                for ln in log_lines
+                if not ln.startswith('[tool]')
+                and not ln.startswith('[info]')
+                and not ln.startswith('---')
+                and not ln.startswith('[ERROR]')
+            ]
+            if output_lines:
+                with ui.card().classes('w-full p-5 mt-3').props('flat bordered'):
+                    ui.label('Response').classes('text-lg font-semibold mb-2')
+                    ui.markdown('\n'.join(output_lines)).classes('w-full')
+
         with ui.row().classes('gap-3 mt-4'):
             ui.button(
                 t('buttons.try_again', lang),

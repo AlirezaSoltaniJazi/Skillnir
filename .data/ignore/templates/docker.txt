@@ -1,0 +1,8 @@
+# ── Docker ────────────────────────────────────────────────
+# Docker metadata
+.docker/
+.dockerignore
+
+# Volumes and caches
+docker/volumes/
+docker/layers/

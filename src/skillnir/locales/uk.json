@@ -18,6 +18,7 @@
       "delete_docs": "Видалити документацію",
       "init_skill": "Ініціювати навичку",
       "init_docs": "Ініціювати документацію",
+      "install_ignore": "Встановити Ignore",
       "ask_ai": "Запитати AI",
       "plan": "План",
       "skills_library": "Бібліотека навичок",

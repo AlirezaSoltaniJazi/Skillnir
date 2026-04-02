@@ -1,0 +1,27 @@
+# ── JavaScript / TypeScript ───────────────────────────────
+# Dependencies
+node_modules/
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# Build outputs
+dist/
+build/
+.next/
+.nuxt/
+out/
+.cache/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Testing and coverage
+coverage/
+.nyc_output/
+
+# Linting cache
+.eslintcache

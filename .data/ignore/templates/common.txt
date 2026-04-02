@@ -1,0 +1,15 @@
+# ── Common (always included) ──────────────────────────────
+# Skillnir data directories
+.data/research/
+.data/events/
+.data/promptsv*/
+
+# NiceGUI storage
+.nicegui/
+
+# Version control
+.git/
+
+# OS files
+.DS_Store
+Thumbs.db

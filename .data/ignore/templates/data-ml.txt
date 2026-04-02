@@ -1,0 +1,27 @@
+# ── Data / Machine Learning ───────────────────────────────
+# Datasets
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.parquet
+*.arrow
+
+# Model weights and checkpoints
+*.h5
+*.pkl
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.onnx
+*.pb
+*.tflite
+*.keras
+*.mlmodel
+
+# Experiment tracking
+wandb/
+mlruns/
+outputs/
+results/

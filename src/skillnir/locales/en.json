@@ -18,6 +18,7 @@
       "delete_docs": "Delete Docs",
       "init_skill": "Init Skill",
       "init_docs": "Init Docs",
+      "install_ignore": "Install Ignore",
       "ask_ai": "Ask AI",
       "plan": "Plan",
       "skills_library": "Skills Library",

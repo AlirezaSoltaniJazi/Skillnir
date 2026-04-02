@@ -1,0 +1,28 @@
+# ── Documentation and Assets ─────────────────────────────
+# Generated docs
+docs/_build/
+site/
+javadoc/
+
+# Images
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.webp
+
+# Media
+*.mp4
+*.mov
+*.mp3
+
+# Documents
+*.pdf
+
+# Fonts
+*.ttf
+*.otf
+*.woff
+*.woff2
