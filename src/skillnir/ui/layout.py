@@ -166,6 +166,9 @@ def header() -> tuple:
 
     is_dark = app.storage.user.get('dark_mode', True)
     dark = ui.dark_mode(is_dark)
+    ui.run_javascript(
+        f"localStorage.setItem('skillnir-theme', '{('dark' if is_dark else 'light')}')"
+    )
     ui.colors(
         primary='#6366f1',
         secondary='#8b5cf6',
@@ -274,6 +277,8 @@ def header() -> tuple:
                 dark.value = is_dark_now
                 app.storage.user['dark_mode'] = is_dark_now
                 dark_btn.props(f'icon={"dark_mode" if is_dark_now else "light_mode"}')
+                theme = 'dark' if is_dark_now else 'light'
+                ui.run_javascript(f"localStorage.setItem('skillnir-theme', '{theme}')")
 
             dark_btn = (
                 ui.button(

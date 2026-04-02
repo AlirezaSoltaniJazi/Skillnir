@@ -32,6 +32,10 @@ def page_settings():
                 def on_dark_toggle(e):
                     dark.value = e.value
                     app.storage.user['dark_mode'] = e.value
+                    theme = 'dark' if e.value else 'light'
+                    ui.run_javascript(
+                        f"localStorage.setItem('skillnir-theme', '{theme}')"
+                    )
                     ui.notify(
                         'Dark mode enabled' if e.value else 'Light mode enabled',
                         type='info',
