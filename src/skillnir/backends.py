@@ -544,7 +544,7 @@ def _parse_stream_json_line(
     elif event_type == "result":
         result_text = event.get("result", "")
         if result_text:
-            _emit(on_progress, "text", result_text)
+            _emit(on_progress, "result_text", result_text)
         usage = event.get("usage")
         if usage:
             _emit(on_progress, "usage", json.dumps(usage))

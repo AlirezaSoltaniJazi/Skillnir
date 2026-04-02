@@ -19,7 +19,9 @@ def _make_templates(tmp_path: Path) -> Path:
     return tdir
 
 
-def _tool_with_ignore(name: str = "TestTool", ignore_file: str = ".testignore") -> AITool:
+def _tool_with_ignore(
+    name: str = "TestTool", ignore_file: str = ".testignore"
+) -> AITool:
     return AITool(name=name, dotdir=".testtool", company="Co", ignore_file=ignore_file)
 
 
@@ -146,11 +148,15 @@ class TestInjectIgnore:
         (ignore_dir / ".geminiignore").write_text("# test\n")
 
         tool_a = AITool(
-            name="Gemini CLI", dotdir=".gemini", company="Google",
+            name="Gemini CLI",
+            dotdir=".gemini",
+            company="Google",
             ignore_file=".geminiignore",
         )
         tool_b = AITool(
-            name="Antigravity", dotdir=".agent", company="Google",
+            name="Antigravity",
+            dotdir=".agent",
+            company="Google",
             ignore_file=".geminiignore",
         )
         results = inject_ignore(tmp_path, [tool_a, tool_b])
@@ -166,10 +172,18 @@ class TestInjectIgnore:
         (ignore_dir / ".cursorignore").write_text("# test\n")
 
         tools = [
-            AITool(name="Claude", dotdir=".claude", company="Anthropic",
-                   ignore_file=".claudeignore"),
-            AITool(name="Cursor", dotdir=".cursor", company="Anysphere",
-                   ignore_file=".cursorignore"),
+            AITool(
+                name="Claude",
+                dotdir=".claude",
+                company="Anthropic",
+                ignore_file=".claudeignore",
+            ),
+            AITool(
+                name="Cursor",
+                dotdir=".cursor",
+                company="Anysphere",
+                ignore_file=".cursorignore",
+            ),
         ]
         results = inject_ignore(tmp_path, tools)
 
@@ -233,6 +247,6 @@ class TestAIToolIgnoreFile:
 
         for tool in TOOLS:
             if tool.ignore_file:
-                assert tool.ignore_file.startswith("."), (
-                    f"{tool.name}'s ignore_file should start with '.'"
-                )
+                assert tool.ignore_file.startswith(
+                    "."
+                ), f"{tool.name}'s ignore_file should start with '.'"

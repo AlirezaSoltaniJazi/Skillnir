@@ -68,9 +68,9 @@ def page_install_ignore():
                         cb.value = False
                     update_preview()
 
-                ui.button(
-                    "Select All", on_click=select_all, icon="check_box"
-                ).props("flat dense size=sm")
+                ui.button("Select All", on_click=select_all, icon="check_box").props(
+                    "flat dense size=sm"
+                )
                 ui.button(
                     "Deselect All",
                     on_click=deselect_all,
@@ -159,9 +159,9 @@ def page_install_ignore():
             ui.label("Preview").classes("text-lg font-semibold mb-2")
             preview_container = ui.column().classes("w-full")
             with preview_container:
-                preview_code = ui.code("# Select templates above to preview", language="bash").classes(
-                    "w-full"
-                )
+                preview_code = ui.code(
+                    "# Select templates above to preview", language="bash"
+                ).classes("w-full")
 
         def update_preview():
             from skillnir.scaffold import assemble_ignore
@@ -189,9 +189,7 @@ def page_install_ignore():
                 ui.notify("No templates selected.", type="warning")
                 return
 
-            chosen_tools = [
-                t for t in tools_with_ignore if selected_tools.get(t.name)
-            ]
+            chosen_tools = [t for t in tools_with_ignore if selected_tools.get(t.name)]
             if not chosen_tools:
                 ui.notify("No tools selected.", type="warning")
                 return
@@ -199,9 +197,7 @@ def page_install_ignore():
             ignore_files = [t.ignore_file for t in chosen_tools]
 
             # Step 1: Create .data/ignore/ with assembled content
-            scaffold_result = init_ignore(
-                target, chosen_templates, ignore_files
-            )
+            scaffold_result = init_ignore(target, chosen_templates, ignore_files)
             if not scaffold_result.success:
                 ui.notify(
                     f"Error creating ignore files: {scaffold_result.error}",
@@ -218,11 +214,7 @@ def page_install_ignore():
                 skipped = [r for r in inject_results if not r.created and not r.error]
                 errors = [r for r in inject_results if r.error]
 
-                with (
-                    ui.card()
-                    .classes("w-full p-5 fade-in")
-                    .props("flat bordered")
-                ):
+                with ui.card().classes("w-full p-5 fade-in").props("flat bordered"):
                     ui.label("Injection Report").classes("text-lg font-semibold mb-3")
 
                     if created:
@@ -248,9 +240,9 @@ def page_install_ignore():
                             "font-medium text-negative mt-2"
                         )
                         for r in errors:
-                            ui.label(
-                                f"  ! {r.tool.name}: {r.error}"
-                            ).classes("text-sm text-red-400 font-mono")
+                            ui.label(f"  ! {r.tool.name}: {r.error}").classes(
+                                "text-sm text-red-400 font-mono"
+                            )
 
                     ui.label(
                         f"\n{len(created)} created, {len(skipped)} skipped, {len(errors)} errors."

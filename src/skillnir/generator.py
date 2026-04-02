@@ -20,7 +20,7 @@ from skillnir.backends import (
 class GenerationProgress:
     """A single progress event streamed during generation."""
 
-    kind: str  # "text" | "tool_use" | "status" | "error" | "phase"
+    kind: str  # "text" | "result_text" | "tool_use" | "status" | "error" | "phase"
     content: str
     tool_name: str = ""
 
