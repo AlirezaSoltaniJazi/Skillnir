@@ -6,14 +6,14 @@
 
 ## What to Test
 
-| Category              | Test Strategy                              | Example                                   |
-| --------------------- | ------------------------------------------ | ----------------------------------------- |
-| Color maps            | Unit test `_COLOR_HEX` dict completeness   | All semantic colors have hex values        |
-| Component logic       | Test conditional rendering paths           | `stat_card(clickable=True)` adds classes   |
-| State transitions     | Test handler side effects                  | `on_dark_toggle` updates storage           |
-| Validation            | Test path/input validation logic           | Invalid path shows error notification      |
-| i18n                  | Test `t()` returns correct translations    | Missing keys fallback to English           |
-| Navigation            | Test `NAV_GROUPS` structure completeness   | All routes have icons and labels           |
+| Category          | Test Strategy                            | Example                                  |
+| ----------------- | ---------------------------------------- | ---------------------------------------- |
+| Color maps        | Unit test `_COLOR_HEX` dict completeness | All semantic colors have hex values      |
+| Component logic   | Test conditional rendering paths         | `stat_card(clickable=True)` adds classes |
+| State transitions | Test handler side effects                | `on_dark_toggle` updates storage         |
+| Validation        | Test path/input validation logic         | Invalid path shows error notification    |
+| i18n              | Test `t()` returns correct translations  | Missing keys fallback to English         |
+| Navigation        | Test `NAV_GROUPS` structure completeness | All routes have icons and labels         |
 
 ## What NOT to Test
 

@@ -37,8 +37,9 @@ Report: inconsistencies, non-standard colors, spacing deviations, missing theme 
 ## Result Format
 
 Return a structured report:
+
 1. **Summary**: Overall design system compliance
-2. **Color Issues**: Non-standard hex values, missing _COLOR_HEX entries
+2. **Color Issues**: Non-standard hex values, missing \_COLOR_HEX entries
 3. **Spacing Issues**: Inconsistent padding/margin/gap values
 4. **Theme Issues**: Components that don't support dark/light mode
 

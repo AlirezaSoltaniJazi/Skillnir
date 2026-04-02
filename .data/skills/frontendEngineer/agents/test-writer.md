@@ -50,6 +50,7 @@ Write tests for: {{target}}
 ## Result Format
 
 Return complete test file(s) with:
+
 1. Module docstring
 2. Necessary imports
 3. Class-based test groups

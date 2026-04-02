@@ -26,6 +26,7 @@ from skillnir.tools import AITool, TOOLS, detect_tools
 ```
 
 **Rules**:
+
 - stdlib imports first
 - Third-party imports second
 - Local (`skillnir.*`) imports third
@@ -85,17 +86,17 @@ class Config:
 
 ## Naming Conventions
 
-| Category         | Style                  | Examples                                          |
-| ---------------- | ---------------------- | ------------------------------------------------- |
-| Modules          | `snake_case`           | `skill_generator.py`, `rule_generator.py`         |
-| Classes          | `PascalCase`           | `AITool`, `GenerationProgress`, `BackendInfo`     |
-| Functions        | `snake_case`           | `inject_skill`, `sync_skills`, `detect_tools`     |
-| Private funcs    | `_snake_case`          | `_ask_target_project`, `_print_sync_report`       |
-| Constants        | `SCREAMING_SNAKE_CASE` | `SKILL_SCOPES`, `BACKENDS`, `RTL_LANGUAGES`       |
-| CLI commands     | `kebab-case`           | `generate-docs`, `delete-skill`, `check-skill`    |
-| Variables        | `snake_case`           | `skill_name`, `project_root`, `backend_info`      |
-| Dataclass fields | `snake_case`           | `symlink_path`, `is_default`, `display_name`      |
-| Enum values      | `SCREAMING_SNAKE_CASE` | `AIBackend.CLAUDE`, `AIBackend.CURSOR`            |
+| Category         | Style                  | Examples                                       |
+| ---------------- | ---------------------- | ---------------------------------------------- |
+| Modules          | `snake_case`           | `skill_generator.py`, `rule_generator.py`      |
+| Classes          | `PascalCase`           | `AITool`, `GenerationProgress`, `BackendInfo`  |
+| Functions        | `snake_case`           | `inject_skill`, `sync_skills`, `detect_tools`  |
+| Private funcs    | `_snake_case`          | `_ask_target_project`, `_print_sync_report`    |
+| Constants        | `SCREAMING_SNAKE_CASE` | `SKILL_SCOPES`, `BACKENDS`, `RTL_LANGUAGES`    |
+| CLI commands     | `kebab-case`           | `generate-docs`, `delete-skill`, `check-skill` |
+| Variables        | `snake_case`           | `skill_name`, `project_root`, `backend_info`   |
+| Dataclass fields | `snake_case`           | `symlink_path`, `is_default`, `display_name`   |
+| Enum values      | `SCREAMING_SNAKE_CASE` | `AIBackend.CLAUDE`, `AIBackend.CURSOR`         |
 
 ---
 
@@ -120,6 +121,7 @@ def inject_skill(skill_path: Path, tool_dir: Path) -> InjectionResult:
 ```
 
 **Rules**:
+
 - Every module gets a one-line docstring
 - Public functions get at minimum a one-line description
 - Private functions (`_func`) may omit docstrings if self-explanatory

@@ -27,6 +27,7 @@ def page_header(title: str, subtitle: str = '', icon: str = '') -> None:
 ```
 
 **Rules**:
+
 - One component per file, function name matches filename
 - Module docstring describes purpose
 - Type hints on all parameters
@@ -145,6 +146,7 @@ def page_settings():
 ```
 
 **Rules**:
+
 - Always call `header()` first (provides nav drawer, theme toggle)
 - Wrap content in `ui.column().classes('w-full max-w-5xl mx-auto px-8 py-8 gap-6')`
 - Use `page_header()` for consistent title sections
