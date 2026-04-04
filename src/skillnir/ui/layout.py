@@ -67,6 +67,7 @@ NAV_GROUPS = [
             ('analytics', 'Usage', '/usage'),
             ('science', 'Research', '/research'),
             ('event', 'Events', '/events'),
+            ('assessment', 'Benchmarks', '/benchmarks'),
         ],
     ),
 ]
@@ -120,6 +121,7 @@ def get_nav_groups(lang: str | None = None) -> list:
                 ("analytics", t("nav.items.usage", lang), "/usage"),
                 ("science", t("nav.items.research", lang), "/research"),
                 ("event", t("nav.items.events", lang), "/events"),
+                ("assessment", t("nav.items.benchmarks", lang), "/benchmarks"),
             ],
         ),
     ]
