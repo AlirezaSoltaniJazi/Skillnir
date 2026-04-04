@@ -18,7 +18,7 @@
 The following dev-only dependencies use copyleft licenses. They are **not** bundled
 with the distributed package and do **not** affect the project's MIT license:
 
-| Package  | License       | Usage       |
-| -------- | ------------- | ----------- |
-| pylint   | GPL-2.0       | Dev linting |
-| astroid  | LGPL-2.1      | pylint dep  |
+| Package | License  | Usage       |
+| ------- | -------- | ----------- |
+| pylint  | GPL-2.0  | Dev linting |
+| astroid | LGPL-2.1 | pylint dep  |

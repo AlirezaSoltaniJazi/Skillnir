@@ -13,7 +13,6 @@ from skillnir.ui.components.progress_panel import (
     progress_panel,
     start_elapsed_timer,
 )
-from skillnir.ui.components.result_card import result_card
 from skillnir.ui.layout import header, play_notification
 
 
@@ -85,7 +84,7 @@ async def _run_subprocess_page(
     progress_container.clear()
     results_container.clear()
 
-    lang = get_current_language()
+    get_current_language()
     with results_container:
         # Show the AI response content from the final "result" event
         if captured_result:

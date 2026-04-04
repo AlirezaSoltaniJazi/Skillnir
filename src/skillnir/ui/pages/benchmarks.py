@@ -248,9 +248,7 @@ async def page_benchmarks():
                     t("pages.benchmarks.grid_models_found", lang): str(
                         result.models_found
                     ),
-                    t("pages.benchmarks.grid_new_models", lang): str(
-                        result.models_new
-                    ),
+                    t("pages.benchmarks.grid_new_models", lang): str(result.models_new),
                     t("pages.benchmarks.grid_updated", lang): str(
                         result.models_skipped
                     ),

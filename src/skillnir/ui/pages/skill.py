@@ -384,7 +384,9 @@ def page_skills():
                         ).style(
                             'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;'
                             'max-width:100%;display:block;'
-                        ).tooltip(str(skill.path))
+                        ).tooltip(
+                            str(skill.path)
+                        )
 
                         skill_md_path = skill.path / 'SKILL.md'
                         if skill_md_path.exists():

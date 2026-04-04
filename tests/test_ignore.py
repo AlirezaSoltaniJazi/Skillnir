@@ -4,7 +4,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from skillnir.injector import inject_ignore
-from skillnir.remover import delete_ignore, find_ignore_installations
+from skillnir.remover import delete_ignore
 from skillnir.scaffold import assemble_ignore, get_ignore_templates, init_ignore
 from skillnir.tools import AITool
 

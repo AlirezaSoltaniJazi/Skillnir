@@ -4,19 +4,18 @@ from pathlib import Path
 
 from nicegui import ui
 
-from skillnir.i18n import get_current_language, t
+from skillnir.i18n import get_current_language
 from skillnir.ui.components.page_header import page_header
 from skillnir.ui.layout import header
 
 
 @ui.page("/install-ignore")
 def page_install_ignore():
-    lang = get_current_language()
+    get_current_language()
     header()
 
     from skillnir.injector import inject_ignore
     from skillnir.scaffold import (
-        IGNORE_TEMPLATES,
         get_ignore_templates,
         init_ignore,
     )

@@ -135,7 +135,6 @@ def _sort_tools(tools: tuple[AITool, ...] | list[AITool], mode: str) -> list[AIT
     return list(tools)
 
 
-
 def _action_badge_color(action: str) -> str:
     if action == "copied":
         return "positive"
