@@ -54,8 +54,11 @@
     thead th {
       text-align: left; padding: 10px 12px; background: var(--surface-alt); color: var(--text-muted);
       font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
-      white-space: nowrap; position: sticky; top: 0;
+      white-space: nowrap; position: sticky; top: 0; cursor: pointer; user-select: none;
     }
+    thead th:hover { color: var(--text); }
+    .sort-arrow { margin-left: 3px; font-size: 10px; opacity: 0.4; }
+    thead th.sorted .sort-arrow { opacity: 1; }
     .row { border-bottom: 1px solid var(--border); transition: background 0.15s; }
     .row:hover { background: var(--hover); }
     .row td { padding: 10px 12px; font-size: 14px; }
@@ -100,12 +103,12 @@
       <table>
         <thead>
           <tr>
-            <th>Model</th>
-            <th>Provider</th>
+            <th onclick="sortTable(this,'text')">Model <span class="sort-arrow"></span></th>
+            <th onclick="sortTable(this,'text')">Provider <span class="sort-arrow"></span></th>
             <!-- CATEGORY_HEADERS -->
-            <th style="text-align:center;">Input $/1M</th>
-            <th style="text-align:center;">Output $/1M</th>
-            <th style="text-align:center;">Context</th>
+            <th onclick="sortTable(this,'num')" style="text-align:center;">Input $/1M <span class="sort-arrow"></span></th>
+            <th onclick="sortTable(this,'num')" style="text-align:center;">Output $/1M <span class="sort-arrow"></span></th>
+            <th onclick="sortTable(this,'num')" style="text-align:center;">Context <span class="sort-arrow"></span></th>
           </tr>
         </thead>
         <tbody>
@@ -117,6 +120,49 @@
   <script>
     const activeProviders = new Set();
     const TOTAL_MODELS = <!-- TOTAL_MODELS -->;
+    let currentSortCol = -1;
+    let sortAsc = true;
+
+    function sortTable(th, type) {
+      const thead = th.closest('thead');
+      const ths = Array.from(thead.querySelectorAll('th'));
+      const colIdx = ths.indexOf(th);
+
+      // Toggle direction
+      if (currentSortCol === colIdx) {
+        sortAsc = !sortAsc;
+      } else {
+        currentSortCol = colIdx;
+        sortAsc = type === 'num' ? false : true; // numbers default desc, text default asc
+      }
+
+      // Update arrows
+      ths.forEach(h => {
+        h.classList.remove('sorted');
+        const arrow = h.querySelector('.sort-arrow');
+        if (arrow) arrow.textContent = '';
+      });
+      th.classList.add('sorted');
+      const arrow = th.querySelector('.sort-arrow');
+      if (arrow) arrow.textContent = sortAsc ? '\u25b2' : '\u25bc';
+
+      // Sort rows
+      const tbody = document.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr.row'));
+      rows.sort((a, b) => {
+        const cellA = a.children[colIdx];
+        const cellB = b.children[colIdx];
+        const valA = cellA ? (cellA.dataset.sort || cellA.textContent.trim()) : '';
+        const valB = cellB ? (cellB.dataset.sort || cellB.textContent.trim()) : '';
+        if (type === 'num') {
+          const nA = parseFloat(valA) || 0;
+          const nB = parseFloat(valB) || 0;
+          return sortAsc ? nA - nB : nB - nA;
+        }
+        return sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      });
+      rows.forEach(row => tbody.appendChild(row));
+    }
 
     function toggleTheme() {
       var current = document.documentElement.getAttribute('data-theme');
