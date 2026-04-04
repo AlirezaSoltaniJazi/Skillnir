@@ -130,10 +130,8 @@ def _load_index(benchmarks_dir: Path) -> dict[str, AIModel]:
         return {}
     try:
         data = json.loads(idx_path.read_text(encoding="utf-8"))
-        return {
-            item["id"]: AIModel(**item) for item in data if isinstance(item, dict)
-        }
-    except (json.JSONDecodeError, KeyError, TypeError):
+        return {item["id"]: AIModel(**item) for item in data if isinstance(item, dict)}
+    except json.JSONDecodeError, KeyError, TypeError:
         return {}
 
 
@@ -146,7 +144,9 @@ def _save_index(benchmarks_dir: Path, models: dict[str, AIModel]) -> None:
     )
     data = [asdict(m) for m in sorted_models]
     idx_path = benchmarks_dir / _INDEX_FILE
-    idx_path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    idx_path.write_text(
+        json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -194,7 +194,7 @@ def _generate_landing_html(
         score_cells = ""
         for cat_key in BENCHMARK_CATEGORIES:
             score = m.category_scores.get(cat_key)
-            if score is not None:
+            if score is not None and score > 0:
                 # Color based on score
                 if score >= 85:
                     sc = "#22c55e"
@@ -205,32 +205,42 @@ def _generate_landing_html(
                 else:
                     sc = "#ef4444"
                 score_cells += (
-                    f'<td style="padding:10px 12px;text-align:center;">'
+                    f'<td data-sort="{score}" style="padding:10px 12px;text-align:center;">'
                     f'<span style="color:{sc};font-weight:600;font-size:13px;">'
                     f'{score:.1f}</span></td>'
                 )
             else:
                 score_cells += (
-                    '<td style="padding:10px 12px;text-align:center;color:#4b5563;">—</td>'
+                    '<td data-sort="0" style="padding:10px 12px;text-align:center;'
+                    'color:#4b5563;">—</td>'
                 )
 
         # Price formatting
         input_price = f"${m.input_price:.2f}" if m.input_price else "—"
         output_price = f"${m.output_price:.2f}" if m.output_price else "—"
-        ctx = f"{m.context_window // 1000}K" if m.context_window >= 1000 else str(m.context_window)
+        if m.context_window >= 1_000_000:
+            ctx = (
+                f"{m.context_window / 1_000_000:.0f}M"
+                if m.context_window % 1_000_000 == 0
+                else f"{m.context_window / 1_000_000:.1f}M"
+            )
+        elif m.context_window >= 1000:
+            ctx = f"{m.context_window // 1000}K"
+        else:
+            ctx = str(m.context_window)
 
         rows.append(f"""\
         <tr class="row" data-provider="{m.provider}" style="cursor:default;">
-          <td style="padding:10px 12px;">
+          <td data-sort="{name_escaped.lower()}" style="padding:10px 12px;">
             <div style="font-weight:600;color:#e2e8f0;">{name_escaped}{badge}</div>
           </td>
-          <td style="padding:10px 12px;white-space:nowrap;">
+          <td data-sort="{m.provider}" style="padding:10px 12px;white-space:nowrap;">
             <span style="background:{provider_color};color:#fff;padding:2px 10px;border-radius:12px;font-size:12px;">{provider_name}</span>
           </td>
           {score_cells}
-          <td style="padding:10px 12px;text-align:center;font-family:monospace;font-size:12px;color:#94a3b8;">{input_price}</td>
-          <td style="padding:10px 12px;text-align:center;font-family:monospace;font-size:12px;color:#94a3b8;">{output_price}</td>
-          <td style="padding:10px 12px;text-align:center;font-family:monospace;font-size:12px;color:#94a3b8;">{ctx}</td>
+          <td data-sort="{m.input_price}" style="padding:10px 12px;text-align:center;font-family:monospace;font-size:12px;color:#94a3b8;">{input_price}</td>
+          <td data-sort="{m.output_price}" style="padding:10px 12px;text-align:center;font-family:monospace;font-size:12px;color:#94a3b8;">{output_price}</td>
+          <td data-sort="{m.context_window}" style="padding:10px 12px;text-align:center;font-family:monospace;font-size:12px;color:#94a3b8;">{ctx}</td>
         </tr>""")
 
     rows_html = "\n".join(rows)
@@ -257,7 +267,8 @@ def _generate_landing_html(
 
     # Category header cells
     cat_headers = "".join(
-        f'<th style="text-align:center;min-width:80px;">{label}</th>'
+        f'<th onclick="sortTable(this,\'num\')" style="text-align:center;min-width:80px;">'
+        f'{label} <span class="sort-arrow"></span></th>'
         for label in BENCHMARK_CATEGORIES.values()
     )
 
@@ -309,11 +320,15 @@ for the top {model_count} AI language models from multiple authoritative sources
 
 ## Instructions
 
-Use WebSearch and WebFetch to search these benchmark sources:
+1. First, WebFetch the **Chatbot Arena Code leaderboard** at https://arena.ai/leaderboard/code \
+and extract the top {model_count} models listed there. Use the **EXACT model names** as shown \
+on the leaderboard (e.g., "GPT-5.3-Codex", "Claude Opus 4.6", "Gemini 3.1 Pro"). \
+Do NOT rename, abbreviate, or modify model names in any way.
 
-1. **SWE-bench** (https://www.swebench.com/) — coding / software engineering benchmarks
-2. **Artificial Analysis** (https://artificialanalysis.ai/) — performance, pricing, speed data
-3. **Chatbot Arena** (https://lmarena.ai/) — ELO ratings and head-to-head comparisons
+2. Then WebFetch **Artificial Analysis** at https://artificialanalysis.ai/leaderboards/models \
+to get pricing (input/output per 1M tokens), context window, and intelligence index for each model.
+
+3. Then WebFetch **SWE-bench** at https://www.swebench.com/ to get coding/agentic scores.
 
 For each model, gather:
 - Benchmark scores across categories (coding, reasoning, math, general, instruction, multimodal, agentic)
@@ -321,12 +336,11 @@ For each model, gather:
 - Context window size
 - Release date
 
-## Models to Include
-
-Focus on the top {model_count} most capable models. Must include models from:
-Anthropic (Claude family), OpenAI (GPT/o-series), Google (Gemini family), \
-Meta (Llama family), Mistral AI, DeepSeek, xAI (Grok), Alibaba (Qwen), \
-Cohere (Command), Amazon (Nova).
+## CRITICAL: Model Naming
+- Use the EXACT model name as it appears on arena.ai/leaderboard/code
+- Do NOT invent names, merge models, or use generic names
+- If arena.ai says "GPT-5.3-Codex", use exactly "GPT-5.3-Codex" — not "GPT-5" or "GPT-5.3"
+- The `name` field must match the leaderboard exactly
 
 ## Output Format
 
@@ -356,7 +370,8 @@ Your final message must be ONLY this JSON array (no other text, no markdown, no 
 ]
 
 ## Rules
-- `id`: lowercase, hyphens only, e.g., `anthropic-claude-opus-4`
+- `name`: EXACT name from arena.ai leaderboard — do NOT modify
+- `id`: lowercase version of the name with hyphens, e.g., "GPT-5.3-Codex" becomes `openai-gpt-5-3-codex`
 - `provider`: must be one of: {provider_list}
 - `category_scores`: 0-100 scale. Use 0 if the model doesn't support that category. Normalize scores to 0-100 if needed.
 - `input_price` / `output_price`: USD per 1 million tokens. Use 0 for free/open-source models.
@@ -495,33 +510,44 @@ def _search_benchmarks_subprocess(
 
     # Fallback: search raw stdout lines for JSON if collected_text failed
     if not models and raw_lines:
-        raw_text = "".join(raw_lines)
-        # Extract text content from stream JSON messages
-        for line in raw_lines:
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                obj = json.loads(line)
-                # Look for result messages with text content
-                msg = obj.get("message", obj.get("result", {}))
-                if isinstance(msg, dict):
-                    for block in msg.get("content", []):
-                        if isinstance(block, dict) and block.get("type") == "text":
-                            txt = block.get("text", "")
-                            if "[" in txt and "]" in txt:
-                                fallback = _parse_models_json(txt, on_progress)
-                                if fallback:
-                                    _emit(
-                                        on_progress,
-                                        "status",
-                                        f"    [FALLBACK] Found {len(fallback)} models in raw stream",
-                                    )
-                                    return fallback
-            except (json.JSONDecodeError, KeyError, TypeError):
-                continue
+        fallback = _extract_models_from_stream(raw_lines, on_progress)
+        if fallback:
+            return fallback
 
     return models
+
+
+def _extract_models_from_stream(
+    raw_lines: list[str],
+    on_progress: Callable[[GenerationProgress], None] | None = None,
+) -> list[AIModel]:
+    """Extract model JSON from raw stream lines when normal collection fails."""
+    for line in raw_lines:
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            obj = json.loads(line)
+        except json.JSONDecodeError, ValueError:
+            continue
+        msg = obj.get("message", obj.get("result", {}))
+        if not isinstance(msg, dict):
+            continue
+        for block in msg.get("content", []):
+            if not isinstance(block, dict) or block.get("type") != "text":
+                continue
+            txt = block.get("text", "")
+            if "[" not in txt or "]" not in txt:
+                continue
+            models = _parse_models_json(txt, on_progress)
+            if models:
+                _emit(
+                    on_progress,
+                    "status",
+                    f"    [FALLBACK] Found {len(models)} models in raw stream",
+                )
+                return models
+    return []
 
 
 # ---------------------------------------------------------------------------
@@ -583,7 +609,7 @@ def _dict_to_model(item: dict) -> AIModel | None:
             if val is not None:
                 try:
                     category_scores[cat] = round(float(val), 1)
-                except (ValueError, TypeError):
+                except ValueError, TypeError:
                     category_scores[cat] = 0.0
             else:
                 category_scores[cat] = 0.0
