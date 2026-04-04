@@ -293,7 +293,8 @@
         "dotdir": "Dotdir",
         "popularity": "Beliebtheit",
         "performance": "Leistung",
-        "price": "Preis"
+        "price": "Preis",
+        "website": "Webseite"
       }
     },
 

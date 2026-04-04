@@ -293,7 +293,8 @@
         "dotdir": "Dotdir",
         "popularity": "Popularity",
         "performance": "Performance",
-        "price": "Price"
+        "price": "Price",
+        "website": "Website"
       }
     },
 
