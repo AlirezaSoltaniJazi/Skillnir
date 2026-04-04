@@ -26,6 +26,7 @@
       "usage": "Usage",
       "research": "Research",
       "events": "Events",
+      "benchmarks": "Benchmarks",
       "settings": "Settings"
     },
     "sort_modes": {
@@ -346,6 +347,22 @@
       "all_events_have_html": "All events already have HTML pages"
     },
 
+    "benchmarks": {
+      "title": "AI Model Benchmarks",
+      "subtitle": "Compare top AI models across coding, reasoning, math, and more",
+      "categories_label": "Benchmark categories:",
+      "filter_by_provider": "Filter by provider (optional):",
+      "model_count_label": "Number of models:",
+      "models_in_kb": "Models in knowledge base",
+      "regenerated_landing": "Regenerated landing page with {count} models",
+      "result_success_title": "Benchmarks updated successfully",
+      "result_fail_title": "Benchmarks search failed",
+      "grid_models_found": "Models Found",
+      "grid_new_models": "New Models",
+      "grid_updated": "Updated",
+      "grid_duration": "Duration"
+    },
+
     "settings": {
       "title": "Settings",
       "subtitle": "Configure application preferences.",
@@ -409,6 +426,7 @@
     "update_all_skills": "Update All Skills",
     "search_latest_news": "Search Latest News",
     "search_latest_articles": "Search Latest Articles",
+    "search_benchmarks": "Search Benchmarks",
     "search_events": "Search Events",
     "view_landing_page": "View Landing Page",
     "generate_html_files": "Generate HTML Files",

@@ -26,6 +26,7 @@
       "usage": "مصرف",
       "research": "پژوهش",
       "events": "رویدادها",
+      "benchmarks": "معیارها",
       "settings": "تنظیمات"
     },
     "sort_modes": {
@@ -346,6 +347,22 @@
       "all_events_have_html": "تمام رویدادها از قبل صفحه HTML دارند"
     },
 
+    "benchmarks": {
+      "title": "معیارهای مدل هوش مصنوعی",
+      "subtitle": "مقایسه مدل‌های برتر هوش مصنوعی در کدنویسی، استدلال، ریاضیات و موارد دیگر",
+      "categories_label": "دسته‌بندی معیارها:",
+      "filter_by_provider": "فیلتر بر اساس ارائه‌دهنده (اختیاری):",
+      "model_count_label": "تعداد مدل‌ها:",
+      "models_in_kb": "مدل‌ها در پایگاه دانش",
+      "regenerated_landing": "صفحه اصلی با {count} مدل بازسازی شد",
+      "result_success_title": "معیارها با موفقیت به‌روزرسانی شدند",
+      "result_fail_title": "جستجوی معیارها ناموفق بود",
+      "grid_models_found": "مدل‌های یافت شده",
+      "grid_new_models": "مدل‌های جدید",
+      "grid_updated": "به‌روزرسانی شده",
+      "grid_duration": "مدت زمان"
+    },
+
     "settings": {
       "title": "تنظیمات",
       "subtitle": "پیکربندی ترجیحات برنامه.",
@@ -409,6 +426,7 @@
     "update_all_skills": "به‌روزرسانی تمام مهارت‌ها",
     "search_latest_news": "جستجوی آخرین اخبار",
     "search_latest_articles": "جستجوی آخرین مقالات",
+    "search_benchmarks": "جستجوی معیارها",
     "search_events": "جستجوی رویدادها",
     "view_landing_page": "مشاهده صفحه اصلی",
     "generate_html_files": "تولید فایل‌های HTML",

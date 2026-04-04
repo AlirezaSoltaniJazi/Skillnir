@@ -26,6 +26,7 @@
       "usage": "Użycie",
       "research": "Badania",
       "events": "Wydarzenia",
+      "benchmarks": "Benchmarki",
       "settings": "Ustawienia"
     },
     "sort_modes": {
@@ -346,6 +347,22 @@
       "all_events_have_html": "Wszystkie wydarzenia mają już strony HTML"
     },
 
+    "benchmarks": {
+      "title": "Benchmarki modeli AI",
+      "subtitle": "Porownaj najlepsze modele AI w kodowaniu, rozumowaniu, matematyce i nie tylko",
+      "categories_label": "Kategorie benchmarkow:",
+      "filter_by_provider": "Filtruj po dostawcy (opcjonalnie):",
+      "model_count_label": "Liczba modeli:",
+      "models_in_kb": "Modele w bazie wiedzy",
+      "regenerated_landing": "Zregenerowano strone z {count} modelami",
+      "result_success_title": "Benchmarki zaktualizowane pomyslnie",
+      "result_fail_title": "Wyszukiwanie benchmarkow nie powiodlo sie",
+      "grid_models_found": "Znalezione modele",
+      "grid_new_models": "Nowe modele",
+      "grid_updated": "Zaktualizowane",
+      "grid_duration": "Czas trwania"
+    },
+
     "settings": {
       "title": "Ustawienia",
       "subtitle": "Konfiguruj preferencje aplikacji.",
@@ -409,6 +426,7 @@
     "update_all_skills": "Aktualizuj wszystkie umiejętności",
     "search_latest_news": "Szukaj najnowszych wiadomości",
     "search_latest_articles": "Szukaj najnowszych artykułów",
+    "search_benchmarks": "Szukaj benchmarkow",
     "search_events": "Szukaj wydarzeń",
     "view_landing_page": "Wyświetl stronę główną",
     "generate_html_files": "Generuj pliki HTML",

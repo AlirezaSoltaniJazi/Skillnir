@@ -26,6 +26,7 @@
       "usage": "Gebruik",
       "research": "Onderzoek",
       "events": "Evenementen",
+      "benchmarks": "Benchmarks",
       "settings": "Instellingen"
     },
     "sort_modes": {
@@ -346,6 +347,22 @@
       "all_events_have_html": "Alle evenementen hebben al HTML-pagina's"
     },
 
+    "benchmarks": {
+      "title": "AI Model Benchmarks",
+      "subtitle": "Vergelijk top AI-modellen op codering, redenering, wiskunde en meer",
+      "categories_label": "Benchmark categorieen:",
+      "filter_by_provider": "Filteren op aanbieder (optioneel):",
+      "model_count_label": "Aantal modellen:",
+      "models_in_kb": "Modellen in kennisbank",
+      "regenerated_landing": "Landingspagina geregenereerd met {count} modellen",
+      "result_success_title": "Benchmarks succesvol bijgewerkt",
+      "result_fail_title": "Benchmark zoeken mislukt",
+      "grid_models_found": "Modellen gevonden",
+      "grid_new_models": "Nieuwe modellen",
+      "grid_updated": "Bijgewerkt",
+      "grid_duration": "Duur"
+    },
+
     "settings": {
       "title": "Instellingen",
       "subtitle": "Applicatievoorkeuren configureren.",
@@ -409,6 +426,7 @@
     "update_all_skills": "Alle skills bijwerken",
     "search_latest_news": "Laatste nieuws zoeken",
     "search_latest_articles": "Laatste artikelen zoeken",
+    "search_benchmarks": "Benchmarks zoeken",
     "search_events": "Evenementen zoeken",
     "view_landing_page": "Landingspagina bekijken",
     "generate_html_files": "HTML-bestanden genereren",

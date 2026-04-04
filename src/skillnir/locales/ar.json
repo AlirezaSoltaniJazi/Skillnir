@@ -26,6 +26,7 @@
       "usage": "الاستهلاك",
       "research": "البحث",
       "events": "الفعاليات",
+      "benchmarks": "المعايير",
       "settings": "الإعدادات"
     },
     "sort_modes": {
@@ -346,6 +347,22 @@
       "all_events_have_html": "جميع الفعاليات لديها صفحات HTML بالفعل"
     },
 
+    "benchmarks": {
+      "title": "معايير نماذج الذكاء الاصطناعي",
+      "subtitle": "قارن أفضل نماذج الذكاء الاصطناعي في البرمجة والاستدلال والرياضيات والمزيد",
+      "categories_label": "فئات المعايير:",
+      "filter_by_provider": "تصفية حسب المزود (اختياري):",
+      "model_count_label": "عدد النماذج:",
+      "models_in_kb": "نماذج في قاعدة المعرفة",
+      "regenerated_landing": "تم إعادة إنشاء الصفحة مع {count} نموذج",
+      "result_success_title": "تم تحديث المعايير بنجاح",
+      "result_fail_title": "فشل البحث عن المعايير",
+      "grid_models_found": "النماذج المكتشفة",
+      "grid_new_models": "نماذج جديدة",
+      "grid_updated": "محدّثة",
+      "grid_duration": "المدة"
+    },
+
     "settings": {
       "title": "الإعدادات",
       "subtitle": "تكوين تفضيلات التطبيق.",
@@ -409,6 +426,7 @@
     "update_all_skills": "تحديث جميع المهارات",
     "search_latest_news": "البحث عن أحدث الأخبار",
     "search_latest_articles": "البحث عن أحدث المقالات",
+    "search_benchmarks": "البحث عن المعايير",
     "search_events": "البحث عن فعاليات",
     "view_landing_page": "عرض الصفحة الرئيسية",
     "generate_html_files": "توليد ملفات HTML",
