@@ -28,6 +28,7 @@ ui.switch('', value=is_dark, on_change=on_dark_toggle)
 ```
 
 **Rules**:
+
 - Use `app.storage.user` for UI preferences only (dark mode, sound, etc.)
 - Always provide defaults with `.get(key, default)`
 - Show `ui.notify()` confirmation after state changes
@@ -47,6 +48,7 @@ save_config(config)             # Persist to disk
 ```
 
 **Rules**:
+
 - Use `load_config()` / `save_config()` — never read/write JSON directly
 - Config includes: backend, model, language, prompt_version
 - Language via `get_current_language()` / `set_language(code)`
@@ -121,6 +123,7 @@ async def run_generation(container):
 ```
 
 **Rules**:
+
 - Always stop the timer in a `finally` block
 - Use `format_duration()` for human-readable time
 - Show result via `ui.notify()` + `result_card()`

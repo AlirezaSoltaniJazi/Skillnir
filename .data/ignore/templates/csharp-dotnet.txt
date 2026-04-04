@@ -1,0 +1,15 @@
+# ── C# / .NET ────────────────────────────────────────────
+# Build output
+bin/
+obj/
+.artifacts/
+
+# Visual Studio
+.vs/
+
+# NuGet
+packages/
+*.nupkg
+
+# User settings
+*.csproj.user

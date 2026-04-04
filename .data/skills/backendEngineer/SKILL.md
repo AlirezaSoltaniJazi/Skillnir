@@ -72,39 +72,39 @@ src/skillnir/
 
 ## Key Patterns
 
-| Pattern             | Approach                                         | Key Rule                                            |
-| ------------------- | ------------------------------------------------ | --------------------------------------------------- |
-| Result objects      | `@dataclass` with `success`/`error` fields       | Return results from operations, never raise          |
-| Registry pattern    | Module-level `dict`/`tuple` constants             | `BACKENDS`, `TOOLS`, `SKILL_SCOPES` as registries   |
-| Callback progress   | `on_progress: Callable[[T], None] \| None`       | Stream updates to CLI/UI via callbacks               |
-| Frozen dataclasses  | `@dataclass(frozen=True)` for immutable data     | `AITool`, `ModelInfo`, `BackendInfo` are frozen      |
-| Async streaming     | `async for message in query(...)` with SDK       | Use `asyncio.run()` at CLI entry, async internals    |
-| Subprocess backends | `subprocess.Popen` with threading for stderr     | Parse streaming output line-by-line                  |
-| Filesystem storage  | `Path` objects, symlinks, structured directories  | No ORM — `.data/` is the database                   |
-| Multi-backend       | `AIBackend` enum + `BACKENDS` registry dict      | Backend-agnostic via enum dispatch                   |
+| Pattern             | Approach                                         | Key Rule                                          |
+| ------------------- | ------------------------------------------------ | ------------------------------------------------- |
+| Result objects      | `@dataclass` with `success`/`error` fields       | Return results from operations, never raise       |
+| Registry pattern    | Module-level `dict`/`tuple` constants            | `BACKENDS`, `TOOLS`, `SKILL_SCOPES` as registries |
+| Callback progress   | `on_progress: Callable[[T], None] \| None`       | Stream updates to CLI/UI via callbacks            |
+| Frozen dataclasses  | `@dataclass(frozen=True)` for immutable data     | `AITool`, `ModelInfo`, `BackendInfo` are frozen   |
+| Async streaming     | `async for message in query(...)` with SDK       | Use `asyncio.run()` at CLI entry, async internals |
+| Subprocess backends | `subprocess.Popen` with threading for stderr     | Parse streaming output line-by-line               |
+| Filesystem storage  | `Path` objects, symlinks, structured directories | No ORM — `.data/` is the database                 |
+| Multi-backend       | `AIBackend` enum + `BACKENDS` registry dict      | Backend-agnostic via enum dispatch                |
 
 See [references/patterns.md](references/patterns.md) for full code examples.
 
 ## Code Style
 
-| Rule                  | Convention                                                        |
-| --------------------- | ----------------------------------------------------------------- |
-| Python version        | 3.14+ — use latest syntax features                                |
-| Formatter             | Black with `-S` flag (single quotes, no string normalization)     |
-| Linter                | pylint with custom `.pylintrc`, autoflake for unused imports      |
-| Import style          | Absolute only — never relative imports                            |
-| Import order          | stdlib → third-party → local (groups separated by blank line)     |
-| Type hints            | Modern syntax: `str \| None`, `dict[str, X]`, `list[X]`          |
-| Naming — modules      | `snake_case.py`                                                   |
-| Naming — classes      | `PascalCase` (e.g., `AITool`, `GenerationProgress`)              |
-| Naming — functions    | `snake_case` with `_private` prefix for internal                  |
-| Naming — constants    | `SCREAMING_SNAKE_CASE` (e.g., `SKILL_SCOPES`, `RTL_LANGUAGES`)   |
-| Naming — CLI commands | `kebab-case` (e.g., `generate-docs`, `delete-skill`)             |
-| Paths                 | Always `pathlib.Path` — never `os.path`                           |
-| Data models           | `@dataclass` (frozen for immutable, regular for mutable)          |
-| Strings               | Single quotes preferred (enforced by Black `-S`)                  |
+| Rule                  | Convention                                                         |
+| --------------------- | ------------------------------------------------------------------ |
+| Python version        | 3.14+ — use latest syntax features                                 |
+| Formatter             | Black with `-S` flag (single quotes, no string normalization)      |
+| Linter                | pylint with custom `.pylintrc`, autoflake for unused imports       |
+| Import style          | Absolute only — never relative imports                             |
+| Import order          | stdlib → third-party → local (groups separated by blank line)      |
+| Type hints            | Modern syntax: `str \| None`, `dict[str, X]`, `list[X]`            |
+| Naming — modules      | `snake_case.py`                                                    |
+| Naming — classes      | `PascalCase` (e.g., `AITool`, `GenerationProgress`)                |
+| Naming — functions    | `snake_case` with `_private` prefix for internal                   |
+| Naming — constants    | `SCREAMING_SNAKE_CASE` (e.g., `SKILL_SCOPES`, `RTL_LANGUAGES`)     |
+| Naming — CLI commands | `kebab-case` (e.g., `generate-docs`, `delete-skill`)               |
+| Paths                 | Always `pathlib.Path` — never `os.path`                            |
+| Data models           | `@dataclass` (frozen for immutable, regular for mutable)           |
+| Strings               | Single quotes preferred (enforced by Black `-S`)                   |
 | Docstrings            | Google-style, selective — module one-liners, function descriptions |
-| Line length           | Black default (88 characters)                                     |
+| Line length           | Black default (88 characters)                                      |
 
 See [references/code-style.md](references/code-style.md) for full formatting examples.
 
@@ -119,18 +119,18 @@ See [references/code-style.md](references/code-style.md) for full formatting exa
 
 ## Testing Standards
 
-| Rule                     | Convention                                                   |
-| ------------------------ | ------------------------------------------------------------ |
-| Framework                | pytest 9.0.2+ with `asyncio_mode = "auto"`                  |
-| Test file naming         | `test_{{module}}.py` in `tests/`                             |
-| Fixture location         | `conftest.py` for shared, test file for local                |
-| Key fixtures             | `tmp_project`, `sample_skill`, `sample_tool`, `mock_config`  |
-| Temp filesystem          | `tmp_path` + structured directories for integration tests    |
-| Mocking                  | `unittest.mock.patch` for subprocess, file operations        |
-| Test organization        | Class-based: `class TestFeatureName`                         |
-| Async tests              | `async def test_*` — auto mode handles event loop            |
-| What to mock             | Subprocess calls, external APIs, filesystem when expensive   |
-| What NOT to mock         | Dataclass construction, path operations, pure functions       |
+| Rule              | Convention                                                  |
+| ----------------- | ----------------------------------------------------------- |
+| Framework         | pytest 9.0.2+ with `asyncio_mode = "auto"`                  |
+| Test file naming  | `test_{{module}}.py` in `tests/`                            |
+| Fixture location  | `conftest.py` for shared, test file for local               |
+| Key fixtures      | `tmp_project`, `sample_skill`, `sample_tool`, `mock_config` |
+| Temp filesystem   | `tmp_path` + structured directories for integration tests   |
+| Mocking           | `unittest.mock.patch` for subprocess, file operations       |
+| Test organization | Class-based: `class TestFeatureName`                        |
+| Async tests       | `async def test_*` — auto mode handles event loop           |
+| What to mock      | Subprocess calls, external APIs, filesystem when expensive  |
+| What NOT to mock  | Dataclass construction, path operations, pure functions     |
 
 See [references/test-patterns.md](references/test-patterns.md) for full test examples.
 
@@ -160,11 +160,11 @@ See [references/security-checklist.md](references/security-checklist.md) for det
 | Anti-Pattern                             | Why It's Wrong                                                    |
 | ---------------------------------------- | ----------------------------------------------------------------- |
 | Using `os.path` instead of `pathlib`     | Project standardized on `Path` — consistency and readability      |
-| Raising exceptions for expected failures | Use result dataclasses — callers should handle expected errors     |
-| Using `Optional[X]` from typing          | Use `X \| None` — modern Python 3.10+ union syntax               |
+| Raising exceptions for expected failures | Use result dataclasses — callers should handle expected errors    |
+| Using `Optional[X]` from typing          | Use `X \| None` — modern Python 3.10+ union syntax                |
 | Using `Dict`, `List` from typing         | Use lowercase `dict`, `list` — deprecated uppercase generics      |
 | Using relative imports                   | Project uses absolute imports exclusively                         |
-| Using `pip install`                      | Use `uv add` — project standardized on uv package manager        |
+| Using `pip install`                      | Use `uv add` — project standardized on uv package manager         |
 | Using `setup.py` or `requirements.txt`   | Use `pyproject.toml` — single source of truth                     |
 | Using double quotes for strings          | Black `-S` enforces single quotes — follow formatter              |
 | Putting business logic in `cli.py`       | CLI is orchestration only — logic belongs in dedicated modules    |
@@ -184,12 +184,12 @@ See [references/security-checklist.md](references/security-checklist.md) for det
 
 Corrections and preferences persist via [LEARNED.md](LEARNED.md).
 
-| Mode       | Detection Signal                                                  | Behavior                                                                 |
-| ---------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Diagnostic | "ImportError", "TypeError", "test fails", "broken", stack trace   | Read error context, trace to root cause, fix with minimal changes        |
-| Efficient  | "another endpoint like X", "add field to Y", "same pattern as Z" | Minimal explanation, replicate existing patterns, apply conventions       |
-| Teaching   | "what does this do", "explain decorator", "how does async work"  | Explain with references to project examples, link to references/          |
-| Review     | "review this", "check my code", "audit module"                   | Read-only analysis, check against conventions, report without changes    |
+| Mode       | Detection Signal                                                 | Behavior                                                              |
+| ---------- | ---------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Diagnostic | "ImportError", "TypeError", "test fails", "broken", stack trace  | Read error context, trace to root cause, fix with minimal changes     |
+| Efficient  | "another endpoint like X", "add field to Y", "same pattern as Z" | Minimal explanation, replicate existing patterns, apply conventions   |
+| Teaching   | "what does this do", "explain decorator", "how does async work"  | Explain with references to project examples, link to references/      |
+| Review     | "review this", "check my code", "audit module"                   | Read-only analysis, check against conventions, report without changes |
 
 **Self-Learning**: All learnings are **written** to LEARNED.md — not suggested, written:
 
@@ -202,7 +202,7 @@ Corrections and preferences persist via [LEARNED.md](LEARNED.md).
 
 | Agent              | Role                                           | Spawn When                                       | Tools                          |
 | ------------------ | ---------------------------------------------- | ------------------------------------------------ | ------------------------------ |
-| code-reviewer      | Read-only Python code analysis, type audit     | PR review, refactoring assessment, type audit     | Read Glob Grep                 |
+| code-reviewer      | Read-only Python code analysis, type audit     | PR review, refactoring assessment, type audit    | Read Glob Grep                 |
 | test-writer        | Pytest test generation following project style | "write tests for X", new module, coverage gaps   | Read Edit Write Glob Grep Bash |
 | dependency-auditor | Dependency analysis and security audit         | Dependency update, security audit, compatibility | Read Glob Grep Bash            |
 
@@ -210,27 +210,27 @@ Corrections and preferences persist via [LEARNED.md](LEARNED.md).
 
 ## Freedom Levels
 
-| Level             | Scope                                                                          | Examples                                                        |
-| ----------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------- |
-| **MUST** follow   | Result objects, absolute imports, pathlib, type hints, Black -S, uv            | "MUST return result dataclass", "MUST use absolute imports"     |
-| **SHOULD** follow | Google docstrings, frozen dataclasses for immutable, class-based test grouping | "SHOULD add module docstring", "SHOULD freeze immutable data"   |
+| Level             | Scope                                                                          | Examples                                                       |
+| ----------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| **MUST** follow   | Result objects, absolute imports, pathlib, type hints, Black -S, uv            | "MUST return result dataclass", "MUST use absolute imports"    |
+| **SHOULD** follow | Google docstrings, frozen dataclasses for immutable, class-based test grouping | "SHOULD add module docstring", "SHOULD freeze immutable data"  |
 | **CAN** customize | Fixture organization, docstring detail level, test helper placement            | "CAN group fixtures by feature", "CAN use inline test helpers" |
 
 ## References
 
-| File                                                                     | Description                                                          |
-| ------------------------------------------------------------------------ | -------------------------------------------------------------------- |
-| [LEARNED.md](LEARNED.md)                                                 | **Auto-updated.** Corrections, preferences, conventions              |
-| [INJECT.md](INJECT.md)                                                   | Always-loaded quick reference (hallucination firewall)               |
-| [references/patterns.md](references/patterns.md)                         | Result objects, registry, async, subprocess patterns with examples   |
-| [references/code-style.md](references/code-style.md)                     | Import order, type hints, naming, formatting with full examples      |
-| [references/test-patterns.md](references/test-patterns.md)               | Pytest fixtures, async tests, mocking patterns with examples         |
-| [references/security-checklist.md](references/security-checklist.md)     | Input validation, subprocess safety, secret management checklists    |
-| [references/common-issues.md](references/common-issues.md)               | Troubleshooting Python pitfalls, import errors, async gotchas        |
-| [references/ai-interaction-guide.md](references/ai-interaction-guide.md) | Anti-dependency strategies, correction protocols                     |
-| [references/template.py](references/template.py)                         | Copy-paste module/class boilerplate                                  |
-| [assets/pyproject-example.toml](assets/pyproject-example.toml)           | pyproject.toml template with uv + hatchling                          |
-| [scripts/validate-backend.sh](scripts/validate-backend.sh)               | Python naming + structure convention checker                         |
-| [agents/code-reviewer.md](agents/code-reviewer.md)                       | Read-only Python code analysis agent                                 |
-| [agents/test-writer.md](agents/test-writer.md)                           | Pytest test generation agent                                         |
-| [agents/dependency-auditor.md](agents/dependency-auditor.md)             | Dependency analysis and security agent                               |
+| File                                                                     | Description                                                        |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| [LEARNED.md](LEARNED.md)                                                 | **Auto-updated.** Corrections, preferences, conventions            |
+| [INJECT.md](INJECT.md)                                                   | Always-loaded quick reference (hallucination firewall)             |
+| [references/patterns.md](references/patterns.md)                         | Result objects, registry, async, subprocess patterns with examples |
+| [references/code-style.md](references/code-style.md)                     | Import order, type hints, naming, formatting with full examples    |
+| [references/test-patterns.md](references/test-patterns.md)               | Pytest fixtures, async tests, mocking patterns with examples       |
+| [references/security-checklist.md](references/security-checklist.md)     | Input validation, subprocess safety, secret management checklists  |
+| [references/common-issues.md](references/common-issues.md)               | Troubleshooting Python pitfalls, import errors, async gotchas      |
+| [references/ai-interaction-guide.md](references/ai-interaction-guide.md) | Anti-dependency strategies, correction protocols                   |
+| [references/template.py](references/template.py)                         | Copy-paste module/class boilerplate                                |
+| [assets/pyproject-example.toml](assets/pyproject-example.toml)           | pyproject.toml template with uv + hatchling                        |
+| [scripts/validate-backend.sh](scripts/validate-backend.sh)               | Python naming + structure convention checker                       |
+| [agents/code-reviewer.md](agents/code-reviewer.md)                       | Read-only Python code analysis agent                               |
+| [agents/test-writer.md](agents/test-writer.md)                           | Pytest test generation agent                                       |
+| [agents/dependency-auditor.md](agents/dependency-auditor.md)             | Dependency analysis and security agent                             |

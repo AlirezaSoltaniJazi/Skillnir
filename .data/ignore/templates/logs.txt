@@ -1,0 +1,11 @@
+# ── Logs and Crash Reports ───────────────────────────────
+# Log files
+*.log
+logs/
+*.log.*
+
+# Crash dumps
+*.dmp
+hs_err_pid*.log
+crash_reports/
+dumps/

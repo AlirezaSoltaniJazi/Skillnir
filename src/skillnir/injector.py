@@ -15,6 +15,14 @@ class InjectionResult:
     error: str | None = None
 
 
+@dataclass
+class IgnoreInjectionResult:
+    tool: AITool
+    symlink_path: Path
+    created: bool
+    error: str | None = None
+
+
 def inject_skill(
     project_root: Path,
     skill: Skill,
@@ -50,6 +58,70 @@ def inject_skill(
         except OSError as e:
             results.append(
                 InjectionResult(
+                    tool=tool,
+                    symlink_path=symlink_path,
+                    created=False,
+                    error=str(e),
+                )
+            )
+
+    return results
+
+
+def inject_ignore(
+    project_root: Path,
+    tools: list[AITool],
+) -> list[IgnoreInjectionResult]:
+    """Create symlinks from project root to .data/ignore/ for each tool's ignore file.
+
+    Symlink: {project_root}/{ignore_file} -> .data/ignore/{ignore_file}
+    Skips tools with empty ignore_file.
+    """
+    results: list[IgnoreInjectionResult] = []
+    seen: set[str] = set()
+
+    for tool in tools:
+        if not tool.ignore_file or tool.ignore_file in seen:
+            continue
+        seen.add(tool.ignore_file)
+
+        source = project_root / SOURCE_DOTDIR / "ignore" / tool.ignore_file
+        symlink_path = project_root / tool.ignore_file
+
+        if symlink_path.exists() or symlink_path.is_symlink():
+            results.append(
+                IgnoreInjectionResult(
+                    tool=tool,
+                    symlink_path=symlink_path,
+                    created=False,
+                )
+            )
+            continue
+
+        if not source.is_file():
+            results.append(
+                IgnoreInjectionResult(
+                    tool=tool,
+                    symlink_path=symlink_path,
+                    created=False,
+                    error=f"Source not found: {source}",
+                )
+            )
+            continue
+
+        try:
+            target = Path(SOURCE_DOTDIR) / "ignore" / tool.ignore_file
+            symlink_path.symlink_to(target)
+            results.append(
+                IgnoreInjectionResult(
+                    tool=tool,
+                    symlink_path=symlink_path,
+                    created=True,
+                )
+            )
+        except OSError as e:
+            results.append(
+                IgnoreInjectionResult(
                     tool=tool,
                     symlink_path=symlink_path,
                     created=False,

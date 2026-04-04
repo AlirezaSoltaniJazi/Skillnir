@@ -18,6 +18,7 @@
       "delete_docs": "Fshi dokumentacionin",
       "init_skill": "Inicializo aftësi",
       "init_docs": "Inicializo dokumentacion",
+      "install_ignore": "Instalo Ignore",
       "ask_ai": "Pyet AI",
       "plan": "Plan",
       "skills_library": "Biblioteka e aftësive",
@@ -25,6 +26,7 @@
       "usage": "Përdorimi",
       "research": "Kërkim",
       "events": "Ngjarje",
+      "benchmarks": "Benchmarke",
       "settings": "Cilësimet"
     },
     "sort_modes": {
@@ -292,7 +294,8 @@
         "dotdir": "Dotdir",
         "popularity": "Popullariteti",
         "performance": "Performanca",
-        "price": "Çmimi"
+        "price": "Çmimi",
+        "website": "Faqja"
       }
     },
 
@@ -342,6 +345,22 @@
       "select_at_least_one_country": "Zgjidh të paktën një shtet",
       "generated_html_pages": "U gjeneruan {count} faqe HTML ngjarjesh",
       "all_events_have_html": "Të gjitha ngjarjet kanë tashmë faqe HTML"
+    },
+
+    "benchmarks": {
+      "title": "Benchmarke te modeleve AI",
+      "subtitle": "Krahasoni modelet kryesore te AI ne kodim, arsyetim, matematike dhe me shume",
+      "categories_label": "Kategorite e benchmarkeve:",
+      "filter_by_provider": "Filtro sipas ofruesit (opsionale):",
+      "model_count_label": "Numri i modeleve:",
+      "models_in_kb": "Modele ne bazen e njohurive",
+      "regenerated_landing": "Faqja u rigjenerua me {count} modele",
+      "result_success_title": "Benchmarket u perditesuan me sukses",
+      "result_fail_title": "Kerkimi i benchmarkeve deshtoi",
+      "grid_models_found": "Modele te gjetura",
+      "grid_new_models": "Modele te reja",
+      "grid_updated": "Te perditesuar",
+      "grid_duration": "Kohezgjatja"
     },
 
     "settings": {
@@ -406,6 +425,8 @@
     "generate_skill": "Gjenero aftësi",
     "update_all_skills": "Përditëso të gjitha aftësitë",
     "search_latest_news": "Kërko lajmet e fundit",
+    "search_latest_articles": "Kërko artikujt e fundit",
+    "search_benchmarks": "Kerko benchmarke",
     "search_events": "Kërko ngjarje",
     "view_landing_page": "Shiko faqen kryesore",
     "generate_html_files": "Gjenero skedarë HTML",

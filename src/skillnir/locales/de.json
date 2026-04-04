@@ -18,6 +18,7 @@
       "delete_docs": "Docs loeschen",
       "init_skill": "Skill initialisieren",
       "init_docs": "Docs initialisieren",
+      "install_ignore": "Ignore installieren",
       "ask_ai": "AI fragen",
       "plan": "Planen",
       "skills_library": "Skill-Bibliothek",
@@ -25,6 +26,7 @@
       "usage": "Nutzung",
       "research": "Forschung",
       "events": "Veranstaltungen",
+      "benchmarks": "Benchmarks",
       "settings": "Einstellungen"
     },
     "sort_modes": {
@@ -292,7 +294,8 @@
         "dotdir": "Dotdir",
         "popularity": "Beliebtheit",
         "performance": "Leistung",
-        "price": "Preis"
+        "price": "Preis",
+        "website": "Webseite"
       }
     },
 
@@ -342,6 +345,22 @@
       "select_at_least_one_country": "Waehlen Sie mindestens ein Land aus",
       "generated_html_pages": "{count} HTML-Veranstaltungsseite(n) generiert",
       "all_events_have_html": "Alle Veranstaltungen haben bereits HTML-Seiten"
+    },
+
+    "benchmarks": {
+      "title": "KI-Modell Benchmarks",
+      "subtitle": "Vergleichen Sie Top-KI-Modelle in Coding, Reasoning, Mathematik und mehr",
+      "categories_label": "Benchmark-Kategorien:",
+      "filter_by_provider": "Nach Anbieter filtern (optional):",
+      "model_count_label": "Anzahl der Modelle:",
+      "models_in_kb": "Modelle in der Wissensbasis",
+      "regenerated_landing": "Landingpage mit {count} Modellen regeneriert",
+      "result_success_title": "Benchmarks erfolgreich aktualisiert",
+      "result_fail_title": "Benchmark-Suche fehlgeschlagen",
+      "grid_models_found": "Modelle gefunden",
+      "grid_new_models": "Neue Modelle",
+      "grid_updated": "Aktualisiert",
+      "grid_duration": "Dauer"
     },
 
     "settings": {
@@ -406,6 +425,8 @@
     "generate_skill": "Skill generieren",
     "update_all_skills": "Alle Skills aktualisieren",
     "search_latest_news": "Neueste Nachrichten suchen",
+    "search_latest_articles": "Neueste Artikel suchen",
+    "search_benchmarks": "Benchmarks suchen",
     "search_events": "Veranstaltungen suchen",
     "view_landing_page": "Landingpage anzeigen",
     "generate_html_files": "HTML-Dateien generieren",

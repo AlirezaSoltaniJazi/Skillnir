@@ -1,0 +1,15 @@
+# ── Go ────────────────────────────────────────────────────
+# Binaries
+/bin/
+/dist/
+*.exe
+*.dll
+
+# Vendor dependencies
+vendor/
+
+# Build cache
+go.sum
+
+# Test binaries
+*.test

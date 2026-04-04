@@ -13,9 +13,9 @@ class AITool:
     popularity: int = 0  # 1-10 (GitHub stars, user base, market share)
     performance: int = 0  # 1-10 (SWE-bench, coding quality, capabilities)
     price: int = 0  # 1-10 (10 = cheapest / most free)
-    icon_url: str = (
-        ""  # GitHub org avatar URL (e.g. https://github.com/org.png?size=32)
-    )
+    icon_url: str = ""  # Local icon path (e.g. /static/icons/tool.png)
+    ignore_file: str = ""  # Ignore file name (e.g. .claudeignore), empty if unsupported
+    website_url: str = ""  # Official product website
 
 
 # .data/ is our central skill storage (source of truth)
@@ -25,7 +25,7 @@ SOURCE_DOTDIR = ".data"
 AUTO_INJECT_TOOL = AITool("Codex CLI (agents)", ".agents", "OpenAI")
 
 # All tools that the user can select (popular tools first)
-_GH = "https://github.com/{}.png?size=32"
+_IC = "/static/icons/{}"
 
 TOOLS: tuple[AITool, ...] = (
     # ── Top tier ──────────────────────────────────────────────
@@ -36,7 +36,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=9,
         performance=10,
         price=5,
-        icon_url="https://claude.ai/images/claude_app_icon.png",
+        icon_url=_IC.format("claude-code.png"),
+        ignore_file=".claudeignore",
+        website_url="https://claude.ai/download",
     ),
     AITool(
         "Cursor",
@@ -45,7 +47,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=9,
         performance=9,
         price=6,
-        icon_url="https://static.cdnlogo.com/logos/c/23/cursor.svg",
+        icon_url=_IC.format("cursor.svg"),
+        ignore_file=".cursorignore",
+        website_url="https://www.cursor.com",
     ),
     AITool(
         "Windsurf",
@@ -54,7 +58,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=7,
         performance=7,
         price=7,
-        icon_url=_GH.format("Exafunction"),
+        icon_url=_IC.format("windsurf.png"),
+        ignore_file=".codeiumignore",
+        website_url="https://windsurf.com",
     ),
     AITool(
         "GitHub Copilot",
@@ -63,7 +69,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=10,
         performance=8,
         price=7,
-        icon_url=_GH.format("github"),
+        icon_url=_IC.format("github-copilot.png"),
+        ignore_file=".copilotignore",
+        website_url="https://github.com/features/copilot",
     ),
     AITool(
         "Cline",
@@ -72,7 +80,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=8,
         performance=7,
         price=9,
-        icon_url=_GH.format("cline"),
+        icon_url=_IC.format("cline.png"),
+        ignore_file=".clineignore",
+        website_url="https://cline.bot",
     ),
     AITool(
         "Roo Code",
@@ -81,7 +91,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=6,
         performance=7,
         price=9,
-        icon_url=_GH.format("RooVetGit"),
+        icon_url=_IC.format("roo-code.png"),
+        ignore_file=".rooignore",
+        website_url="https://roocode.com",
     ),
     AITool(
         "Codex CLI",
@@ -90,7 +102,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=8,
         performance=8,
         price=6,
-        icon_url=_GH.format("openai"),
+        icon_url=_IC.format("codex-cli.png"),
+        ignore_file=".codexignore",
+        website_url="https://github.com/openai/codex",
     ),
     AITool(
         "Gemini CLI",
@@ -99,7 +113,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=8,
         performance=8,
         price=10,
-        icon_url=_GH.format("google-gemini"),
+        icon_url=_IC.format("gemini-cli.png"),
+        ignore_file=".geminiignore",
+        website_url="https://github.com/google-gemini/gemini-cli",
     ),
     AITool(
         "Continue.dev",
@@ -108,7 +124,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=5,
         performance=6,
         price=9,
-        icon_url=_GH.format("continuedev"),
+        icon_url=_IC.format("continue.png"),
+        ignore_file=".continueignore",
+        website_url="https://continue.dev",
     ),
     AITool(
         "Amp",
@@ -117,7 +135,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=4,
         performance=7,
         price=4,
-        icon_url=_GH.format("sourcegraph"),
+        icon_url=_IC.format("amp.png"),
+        ignore_file=".ampignore",
+        website_url="https://ampcode.com",
     ),
     AITool(
         "Kiro",
@@ -126,7 +146,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=5,
         performance=7,
         price=5,
-        icon_url=_GH.format("aws"),
+        icon_url=_IC.format("kiro.png"),
+        ignore_file=".kiroignore",
+        website_url="https://kiro.dev",
     ),
     AITool(
         "Trae",
@@ -135,7 +157,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=6,
         performance=7,
         price=8,
-        icon_url=_GH.format("bytedance"),
+        icon_url=_IC.format("trae.png"),
+        ignore_file=".traeignore",
+        website_url="https://trae.ai",
     ),
     AITool(
         "Junie AI Agent",
@@ -144,7 +168,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=4,
         performance=7,
         price=5,
-        icon_url=_GH.format("JetBrains"),
+        icon_url=_IC.format("junie.png"),
+        ignore_file=".aiignore",
+        website_url="https://www.jetbrains.com/junie/",
     ),
     AITool(
         "Augment Code",
@@ -153,10 +179,20 @@ TOOLS: tuple[AITool, ...] = (
         popularity=3,
         performance=7,
         price=4,
-        icon_url=_GH.format("augmentcode"),
+        icon_url=_IC.format("augment.png"),
+        ignore_file=".augmentignore",
+        website_url="https://www.augmentcode.com",
     ),
     # ── Others (alphabetical) ────────────────────────────────
-    AITool("AdaL CLI", ".adal", "SylphAI", popularity=2, performance=5, price=7),
+    AITool(
+        "AdaL CLI",
+        ".adal",
+        "SylphAI",
+        popularity=2,
+        performance=5,
+        price=7,
+        website_url="https://github.com/SylphAI-Inc/AdalFlow",
+    ),
     AITool(
         "Google Antigravity IDE",
         ".agent",
@@ -164,7 +200,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=3,
         performance=6,
         price=6,
-        icon_url=_GH.format("google"),
+        icon_url=_IC.format("antigravity.png"),
+        ignore_file=".geminiignore",
+        website_url="https://idx.dev",
     ),
     AITool(
         "CodeBuddy",
@@ -173,7 +211,8 @@ TOOLS: tuple[AITool, ...] = (
         popularity=3,
         performance=6,
         price=6,
-        icon_url=_GH.format("Tencent"),
+        icon_url=_IC.format("codebuddy.png"),
+        website_url="https://codebuddy.ai",
     ),
     AITool(
         "Command Code",
@@ -182,6 +221,7 @@ TOOLS: tuple[AITool, ...] = (
         popularity=2,
         performance=5,
         price=7,
+        website_url="https://github.com/command-code/cli",
     ),
     AITool(
         "Cortex Code CLI",
@@ -190,7 +230,8 @@ TOOLS: tuple[AITool, ...] = (
         popularity=3,
         performance=6,
         price=6,
-        icon_url=_GH.format("Snowflake-Labs"),
+        icon_url=_IC.format("cortex.png"),
+        website_url="https://cortex.snowflake.com",
     ),
     AITool(
         "Crush",
@@ -199,7 +240,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=5,
         performance=6,
         price=8,
-        icon_url=_GH.format("charmbracelet"),
+        icon_url=_IC.format("crush.png"),
+        ignore_file=".crushignore",
+        website_url="https://github.com/charmbracelet/crush",
     ),
     AITool(
         "Factory (Droids)",
@@ -208,7 +251,8 @@ TOOLS: tuple[AITool, ...] = (
         popularity=3,
         performance=6,
         price=5,
-        icon_url=_GH.format("Factory-AI"),
+        icon_url=_IC.format("factory.png"),
+        website_url="https://www.factory.ai",
     ),
     AITool(
         "Goose",
@@ -217,9 +261,19 @@ TOOLS: tuple[AITool, ...] = (
         popularity=6,
         performance=6,
         price=10,
-        icon_url=_GH.format("block"),
+        icon_url=_IC.format("goose.png"),
+        ignore_file=".gooseignore",
+        website_url="https://github.com/block/goose",
     ),
-    AITool("iFlow CLI", ".iflow", "iFlow AI", popularity=2, performance=5, price=7),
+    AITool(
+        "iFlow CLI",
+        ".iflow",
+        "iFlow AI",
+        popularity=2,
+        performance=5,
+        price=7,
+        website_url="https://github.com/iflow-ai/iflow",
+    ),
     AITool(
         "Kilo Code",
         ".kilocode",
@@ -227,7 +281,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=4,
         performance=6,
         price=9,
-        icon_url=_GH.format("Kilo-Org"),
+        icon_url=_IC.format("kilo-code.png"),
+        ignore_file=".kilocodeignore",
+        website_url="https://kilocode.ai",
     ),
     AITool(
         "Kimi Code CLI",
@@ -236,10 +292,27 @@ TOOLS: tuple[AITool, ...] = (
         popularity=3,
         performance=6,
         price=7,
-        icon_url=_GH.format("MoonshotAI"),
+        icon_url=_IC.format("kimi.png"),
+        website_url="https://kimi.ai",
     ),
-    AITool("Kode CLI", ".kode", "shareAI-lab", popularity=2, performance=5, price=8),
-    AITool("MCPJam", ".mcpjam", "MCPJam", popularity=2, performance=5, price=7),
+    AITool(
+        "Kode CLI",
+        ".kode",
+        "shareAI-lab",
+        popularity=2,
+        performance=5,
+        price=8,
+        website_url="https://github.com/shareAI-lab/kode",
+    ),
+    AITool(
+        "MCPJam",
+        ".mcpjam",
+        "MCPJam",
+        popularity=2,
+        performance=5,
+        price=7,
+        website_url="https://mcpjam.com",
+    ),
     AITool(
         "Mux",
         ".mux",
@@ -247,10 +320,17 @@ TOOLS: tuple[AITool, ...] = (
         popularity=3,
         performance=6,
         price=7,
-        icon_url=_GH.format("coder"),
+        icon_url=_IC.format("mux.png"),
+        website_url="https://github.com/coder/mux",
     ),
     AITool(
-        "Neovate Code", ".neovate", "NeovateAI", popularity=2, performance=5, price=7
+        "Neovate Code",
+        ".neovate",
+        "NeovateAI",
+        popularity=2,
+        performance=5,
+        price=7,
+        website_url="https://neovate.ai",
     ),
     AITool(
         "OpenCode",
@@ -259,7 +339,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=3,
         performance=6,
         price=8,
-        icon_url=_GH.format("sst-inc"),
+        icon_url=_IC.format("opencode.png"),
+        ignore_file=".opencodeignore",
+        website_url="https://github.com/sst/opencode",
     ),
     AITool(
         "OpenHands",
@@ -268,7 +350,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=7,
         performance=8,
         price=9,
-        icon_url=_GH.format("All-Hands-AI"),
+        icon_url=_IC.format("openhands.png"),
+        ignore_file=".openhandsignore",
+        website_url="https://www.all-hands.dev",
     ),
     AITool(
         "Pi Coding Agent",
@@ -277,7 +361,8 @@ TOOLS: tuple[AITool, ...] = (
         popularity=2,
         performance=5,
         price=8,
-        icon_url=_GH.format("badlogic"),
+        icon_url=_IC.format("pi.png"),
+        website_url="https://github.com/badlogic/pi-coding-agent",
     ),
     AITool(
         "Pochi",
@@ -286,7 +371,8 @@ TOOLS: tuple[AITool, ...] = (
         popularity=2,
         performance=5,
         price=7,
-        icon_url=_GH.format("TabbyML"),
+        icon_url=_IC.format("pochi.png"),
+        website_url="https://tabby.tabbyml.com",
     ),
     AITool(
         "Qoder IDE",
@@ -295,7 +381,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=3,
         performance=6,
         price=6,
-        icon_url=_GH.format("alibaba"),
+        icon_url=_IC.format("qoder.png"),
+        ignore_file=".qoderignore",
+        website_url="https://qoder.ai",
     ),
     AITool(
         "Qwen Coding",
@@ -304,7 +392,9 @@ TOOLS: tuple[AITool, ...] = (
         popularity=4,
         performance=7,
         price=8,
-        icon_url=_GH.format("QwenLM"),
+        icon_url=_IC.format("qwen.png"),
+        ignore_file=".qwenignore",
+        website_url="https://github.com/QwenLM/Qwen-Agent",
     ),
     AITool(
         "Vibe",
@@ -313,10 +403,17 @@ TOOLS: tuple[AITool, ...] = (
         popularity=3,
         performance=7,
         price=7,
-        icon_url=_GH.format("mistralai"),
+        icon_url=_IC.format("vibe.png"),
+        website_url="https://github.com/mistralai/vibe",
     ),
     AITool(
-        "Zencoder", ".zencoder", "Zencoder AI", popularity=2, performance=5, price=6
+        "Zencoder",
+        ".zencoder",
+        "Zencoder AI",
+        popularity=2,
+        performance=5,
+        price=6,
+        website_url="https://zencoder.ai",
     ),
 )
 

@@ -1,0 +1,22 @@
+# ── Java ──────────────────────────────────────────────────
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+
+# Gradle
+build/
+.gradle/
+gradle-wrapper.jar
+
+# Compiled output
+out/
+bin/
+*.class
+
+# JVM crash logs
+hs_err_pid*.log
+
+# Package cache
+.m2/

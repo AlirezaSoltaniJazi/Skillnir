@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Model Benchmarks</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-alt: #f1f5f9;
+      --text: #1e293b;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border: #e2e8f0;
+      --hover: #f1f5f9;
+      --chip-active-border: #1e293b;
+      --chip-active-shadow: rgba(0,0,0,0.1);
+    }
+    [data-theme="dark"] {
+      --bg: #0f0f17;
+      --surface: #1a1a2e;
+      --surface-alt: #12121e;
+      --text: #e2e8f0;
+      --text-secondary: #cbd5e1;
+      --text-muted: #6b7280;
+      --border: #1e1e36;
+      --hover: #22223a;
+      --chip-active-border: #fff;
+      --chip-active-shadow: rgba(255,255,255,0.2);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+    .top-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    h1 {
+      font-size: 2.5rem; font-weight: 700;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .theme-toggle {
+      background: var(--surface); border: 1px solid var(--border); color: var(--text);
+      width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+      flex-shrink: 0; margin-top: 8px;
+    }
+    .theme-toggle:hover { background: var(--hover); }
+    .subtitle { color: var(--text-muted); margin-bottom: 24px; font-size: 15px; }
+    .filter-section { margin-bottom: 16px; }
+    .filter-label { color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 8px; }
+    .stats { display: flex; flex-wrap: wrap; gap: 8px; }
+    .table-wrap { overflow-x: auto; margin-top: 16px; }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 12px; overflow: hidden; }
+    thead th {
+      text-align: left; padding: 10px 12px; background: var(--surface-alt); color: var(--text-muted);
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
+      white-space: nowrap; position: sticky; top: 0; cursor: pointer; user-select: none;
+    }
+    thead th:hover { color: var(--text); }
+    .sort-arrow { margin-left: 3px; font-size: 10px; opacity: 0.4; }
+    thead th.sorted .sort-arrow { opacity: 1; }
+    .row { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    .row:hover { background: var(--hover); }
+    .row td { padding: 10px 12px; font-size: 14px; }
+    .chip {
+      display: inline-block; padding: 5px 14px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+    .chip:hover { opacity: 1 !important; transform: translateY(-1px); }
+    .chip.active { opacity: 1 !important; border-color: var(--chip-active-border); box-shadow: 0 0 0 1px var(--chip-active-shadow); }
+    .legend { display: flex; gap: 16px; margin: 12px 0; font-size: 12px; color: var(--text-muted); }
+    .legend span { display: inline-flex; align-items: center; gap: 4px; }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  </style>
+  <script>
+    (function() {
+      var t = localStorage.getItem('skillnir-theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <h1>AI Model Benchmarks</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"></button>
+    </div>
+    <p class="subtitle"><!-- SUBTITLE --></p>
+    <div class="filter-section">
+      <div class="filter-label">Providers</div>
+      <div class="stats"><!-- PROVIDER_CHIPS --></div>
+    </div>
+    <div class="legend">
+      <span><span class="legend-dot" style="background:#22c55e;"></span> 85+</span>
+      <span><span class="legend-dot" style="background:#f59e0b;"></span> 70-84</span>
+      <span><span class="legend-dot" style="background:#f97316;"></span> 50-69</span>
+      <span><span class="legend-dot" style="background:#ef4444;"></span> &lt;50</span>
+      <span style="margin-left:8px;color:var(--text-muted);">Scores normalized to 0-100 scale</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th onclick="sortTable(this,'text')">Model <span class="sort-arrow"></span></th>
+            <th onclick="sortTable(this,'text')">Provider <span class="sort-arrow"></span></th>
+            <!-- CATEGORY_HEADERS -->
+            <th onclick="sortTable(this,'num')" style="text-align:center;">Input $/1M <span class="sort-arrow"></span></th>
+            <th onclick="sortTable(this,'num')" style="text-align:center;">Output $/1M <span class="sort-arrow"></span></th>
+            <th onclick="sortTable(this,'num')" style="text-align:center;">Context <span class="sort-arrow"></span></th>
+          </tr>
+        </thead>
+        <tbody>
+<!-- TABLE_ROWS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    const activeProviders = new Set();
+    const TOTAL_MODELS = <!-- TOTAL_MODELS -->;
+    let currentSortCol = -1;
+    let sortAsc = true;
+
+    function sortTable(th, type) {
+      const thead = th.closest('thead');
+      const ths = Array.from(thead.querySelectorAll('th'));
+      const colIdx = ths.indexOf(th);
+
+      // Toggle direction
+      if (currentSortCol === colIdx) {
+        sortAsc = !sortAsc;
+      } else {
+        currentSortCol = colIdx;
+        sortAsc = type === 'num' ? false : true; // numbers default desc, text default asc
+      }
+
+      // Update arrows
+      ths.forEach(h => {
+        h.classList.remove('sorted');
+        const arrow = h.querySelector('.sort-arrow');
+        if (arrow) arrow.textContent = '';
+      });
+      th.classList.add('sorted');
+      const arrow = th.querySelector('.sort-arrow');
+      if (arrow) arrow.textContent = sortAsc ? '\u25b2' : '\u25bc';
+
+      // Sort rows
+      const tbody = document.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr.row'));
+      rows.sort((a, b) => {
+        const cellA = a.children[colIdx];
+        const cellB = b.children[colIdx];
+        const valA = cellA ? (cellA.dataset.sort || cellA.textContent.trim()) : '';
+        const valB = cellB ? (cellB.dataset.sort || cellB.textContent.trim()) : '';
+        if (type === 'num') {
+          const nA = parseFloat(valA) || 0;
+          const nB = parseFloat(valB) || 0;
+          return sortAsc ? nA - nB : nB - nA;
+        }
+        return sortAsc ? valA.localeCompare(valB) : valB.localeCompare(valA);
+      });
+      rows.forEach(row => tbody.appendChild(row));
+    }
+
+    function toggleTheme() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('skillnir-theme', next);
+      updateToggleIcon();
+    }
+    function updateToggleIcon() {
+      var btn = document.querySelector('.theme-toggle');
+      btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    }
+    updateToggleIcon();
+
+    function toggleProvider(provider) {
+      const allChip = document.querySelector('.provider-chip[data-filter="all"]');
+      if (provider === 'all') {
+        activeProviders.clear();
+        document.querySelectorAll('.provider-chip').forEach(c => c.classList.remove('active'));
+        allChip.classList.add('active');
+      } else {
+        allChip.classList.remove('active');
+        if (activeProviders.has(provider)) {
+          activeProviders.delete(provider);
+        } else {
+          activeProviders.add(provider);
+        }
+        const chip = document.querySelector('.provider-chip[data-filter="' + CSS.escape(provider) + '"]');
+        if (chip) chip.classList.toggle('active');
+        if (activeProviders.size === 0) {
+          allChip.classList.add('active');
+        }
+      }
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const rows = document.querySelectorAll('tr.row');
+      const subtitle = document.querySelector('.subtitle');
+      let visible = 0;
+      rows.forEach(row => {
+        const providerMatch = activeProviders.size === 0 || activeProviders.has(row.dataset.provider);
+        if (providerMatch) {
+          row.style.display = '';
+          visible++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+      subtitle.textContent = visible + ' of ' + TOTAL_MODELS + ' models';
+    }
+  </script>
+</body>
+</html>

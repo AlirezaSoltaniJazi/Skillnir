@@ -13,7 +13,6 @@ from skillnir.ui.components.progress_panel import (
     progress_panel,
     start_elapsed_timer,
 )
-from skillnir.ui.components.result_card import result_card
 from skillnir.ui.layout import header, play_notification
 
 
@@ -44,9 +43,19 @@ async def _run_subprocess_page(
     counters = {'tools': 0, 'lines': 0}
     refs = progress_panel(progress_container, max_log_lines=max_log_lines)
     timer_ctl = start_elapsed_timer(refs, start_time)
-    on_progress = make_on_progress(refs, counters)
+    base_on_progress = make_on_progress(refs, counters)
 
-    from skillnir.generator import _emit
+    # Wrap callback to capture the final result text for post-completion display.
+    # The "result_text" kind is emitted once by the backend's "result" event
+    # and contains the complete response (vs streaming "text" fragments).
+    captured_result: list[str] = []
+
+    from skillnir.generator import GenerationProgress, _emit
+
+    def on_progress(p: GenerationProgress) -> None:
+        base_on_progress(p)
+        if p.kind == 'result_text':
+            captured_result.append(p.content)
 
     exit_code = None
     try:
@@ -73,30 +82,24 @@ async def _run_subprocess_page(
 
     timer_ctl['active'] = False
     progress_container.clear()
+    results_container.clear()
 
-    if exit_code == 0:
-        result_card(results_container, True, success_title)
-    else:
-        result_card(
-            results_container,
-            False,
-            fail_title,
-            error=t('messages.exit_code', code=str(exit_code)),
-        )
-
-    lang = get_current_language()
+    get_current_language()
     with results_container:
-        with ui.row().classes('gap-3 mt-4'):
-            ui.button(
-                t('buttons.try_again', lang),
-                on_click=lambda: ui.navigate.to(retry_route),
-                icon='refresh',
-            ).props('unelevated rounded')
-            ui.button(
-                t('buttons.home', lang),
-                on_click=lambda: ui.navigate.to('/'),
-                icon='home',
-            ).props('flat rounded')
+        # Show the AI response content from the final "result" event
+        if captured_result:
+            response_text = '\n'.join(captured_result)
+            with ui.card().classes('w-full p-5').props('flat bordered'):
+                ui.label('Response').classes('text-lg font-semibold mb-2')
+                ui.markdown(response_text).classes('w-full')
+
+        if exit_code != 0:
+            with ui.card().classes('w-full p-4 mt-3').props('flat bordered'):
+                with ui.row().classes('items-center gap-2'):
+                    ui.icon('error', color='negative').classes('text-xl')
+                    ui.label(
+                        f'{fail_title} ({t("messages.exit_code", code=str(exit_code))})'
+                    ).classes('text-negative')
 
     play_notification(audio_el, sound_state)
     for c in controls:

@@ -1,0 +1,22 @@
+# ── C / C++ ───────────────────────────────────────────────
+# CMake
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+
+# Object files and archives
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+*.lib
+
+# Executables
+*.exe
+*.elf
+
+# Generated makefiles
+Makefile

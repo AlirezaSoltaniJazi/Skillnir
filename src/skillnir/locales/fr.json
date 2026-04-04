@@ -18,6 +18,7 @@
       "delete_docs": "Supprimer les Docs",
       "init_skill": "Initialiser un Skill",
       "init_docs": "Initialiser les Docs",
+      "install_ignore": "Installer Ignore",
       "ask_ai": "Interroger l'AI",
       "plan": "Planifier",
       "skills_library": "Bibliotheque de Skills",
@@ -25,6 +26,7 @@
       "usage": "Utilisation",
       "research": "Recherche",
       "events": "Evenements",
+      "benchmarks": "Benchmarks",
       "settings": "Parametres"
     },
     "sort_modes": {
@@ -292,7 +294,8 @@
         "dotdir": "Dotdir",
         "popularity": "Popularite",
         "performance": "Performance",
-        "price": "Prix"
+        "price": "Prix",
+        "website": "Site web"
       }
     },
 
@@ -342,6 +345,22 @@
       "select_at_least_one_country": "Selectionnez au moins un pays",
       "generated_html_pages": "{count} page(s) HTML d'evenement generee(s)",
       "all_events_have_html": "Tous les evenements ont deja des pages HTML"
+    },
+
+    "benchmarks": {
+      "title": "Benchmarks des modeles IA",
+      "subtitle": "Comparez les meilleurs modeles IA en programmation, raisonnement, mathematiques et plus",
+      "categories_label": "Categories de benchmarks :",
+      "filter_by_provider": "Filtrer par fournisseur (optionnel) :",
+      "model_count_label": "Nombre de modeles :",
+      "models_in_kb": "Modeles dans la base de connaissances",
+      "regenerated_landing": "Page regeneree avec {count} modeles",
+      "result_success_title": "Benchmarks mis a jour avec succes",
+      "result_fail_title": "La recherche de benchmarks a echoue",
+      "grid_models_found": "Modeles trouves",
+      "grid_new_models": "Nouveaux modeles",
+      "grid_updated": "Mis a jour",
+      "grid_duration": "Duree"
     },
 
     "settings": {
@@ -406,6 +425,8 @@
     "generate_skill": "Generer un Skill",
     "update_all_skills": "Mettre a jour tous les Skills",
     "search_latest_news": "Rechercher les dernieres actualites",
+    "search_latest_articles": "Rechercher les derniers articles",
+    "search_benchmarks": "Rechercher des benchmarks",
     "search_events": "Rechercher des evenements",
     "view_landing_page": "Voir la page d'accueil",
     "generate_html_files": "Generer les fichiers HTML",

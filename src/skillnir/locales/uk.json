@@ -18,6 +18,7 @@
       "delete_docs": "Видалити документацію",
       "init_skill": "Ініціювати навичку",
       "init_docs": "Ініціювати документацію",
+      "install_ignore": "Встановити Ignore",
       "ask_ai": "Запитати AI",
       "plan": "План",
       "skills_library": "Бібліотека навичок",
@@ -25,6 +26,7 @@
       "usage": "Використання",
       "research": "Дослідження",
       "events": "Події",
+      "benchmarks": "Бенчмарки",
       "settings": "Налаштування"
     },
     "sort_modes": {
@@ -292,7 +294,8 @@
         "dotdir": "Dotdir",
         "popularity": "Популярність",
         "performance": "Продуктивність",
-        "price": "Ціна"
+        "price": "Ціна",
+        "website": "Сайт"
       }
     },
 
@@ -342,6 +345,22 @@
       "select_at_least_one_country": "Оберіть принаймні одну країну",
       "generated_html_pages": "Згенеровано {count} HTML-сторінку(ок) подій",
       "all_events_have_html": "Усі події вже мають HTML-сторінки"
+    },
+
+    "benchmarks": {
+      "title": "Бенчмарки моделей ШІ",
+      "subtitle": "Порівняйте найкращі моделі ШІ у кодуванні, логіці, математиці та інших категоріях",
+      "categories_label": "Категорії бенчмарків:",
+      "filter_by_provider": "Фільтрувати за постачальником (необов'язково):",
+      "model_count_label": "Кількість моделей:",
+      "models_in_kb": "Моделі в базі знань",
+      "regenerated_landing": "Сторінку оновлено з {count} моделями",
+      "result_success_title": "Бенчмарки успішно оновлені",
+      "result_fail_title": "Пошук бенчмарків невдалий",
+      "grid_models_found": "Знайдено моделей",
+      "grid_new_models": "Нові моделі",
+      "grid_updated": "Оновлено",
+      "grid_duration": "Тривалість"
     },
 
     "settings": {
@@ -406,6 +425,8 @@
     "generate_skill": "Генерувати навичку",
     "update_all_skills": "Оновити всі навички",
     "search_latest_news": "Шукати останні новини",
+    "search_latest_articles": "Шукати останні статті",
+    "search_benchmarks": "Шукати бенчмарки",
     "search_events": "Шукати події",
     "view_landing_page": "Переглянути головну сторінку",
     "generate_html_files": "Генерувати HTML-файли",

@@ -26,10 +26,8 @@ from skillnir.tools import AITool, AUTO_INJECT_TOOL, TOOLS, detect_tools
 # Sort mode menu options
 SORT_MODES = {
     "Default (recommended)": "default",
-    "Sort by popularity": "popularity",
-    "Sort by performance": "performance",
-    "Sort by price (cheapest first)": "price",
-    "Sort alphabetically": "alpha",
+    "Alphabetical (A-Z)": "alpha",
+    "Alphabetical (Z-A)": "alpha-desc",
 }
 
 
@@ -1084,6 +1082,111 @@ def _update() -> None:
     _print_sync_report(sync_results)
 
 
+def _install_ignore() -> None:
+    """Install ignore files: select templates + tools, create symlinks."""
+    from skillnir.injector import inject_ignore
+    from skillnir.scaffold import get_ignore_templates, init_ignore
+
+    # Step 0: Target project
+    target_root = _ask_target_project()
+
+    # Step 1: Template selection
+    templates = get_ignore_templates()
+    if not templates:
+        print("No ignore templates found.")
+        sys.exit(1)
+
+    template_choices = [
+        questionary.Choice(title=desc, value=name) for name, desc in templates.items()
+    ]
+    answers = questionary.checkbox(
+        "Select ignore templates (space=toggle, enter=confirm):",
+        choices=template_choices,
+    ).ask()
+    if not answers:
+        print("No templates selected. Aborting.")
+        sys.exit(0)
+    selected_templates = answers
+
+    # Step 2: Tool selection
+    tools_with_ignore = [t for t in TOOLS if t.ignore_file]
+    detected = detect_tools(target_root)
+    detected_names = {t.name for t in detected}
+
+    if detected:
+        print(f"\n  Auto-detected {len(detected)} tools in {target_root.name}/")
+
+    tool_choices = [
+        questionary.Choice(
+            title=f"{t.name} ({t.ignore_file})",
+            value=t,
+            checked=t.name in detected_names,
+        )
+        for t in tools_with_ignore
+    ]
+    tool_answers = questionary.checkbox(
+        "Select AI tools to create ignore files for (space=toggle, enter=confirm):",
+        choices=tool_choices,
+    ).ask()
+    if not tool_answers:
+        print("No tools selected. Aborting.")
+        sys.exit(0)
+    selected_tools = tool_answers
+
+    # Step 3: Confirmation
+    tpl_names = ", ".join(selected_templates)
+    print(f"\n  Target:    {target_root}")
+    print(f"  Templates: {tpl_names}")
+    print(f"  Tools:     {len(selected_tools)} selected\n")
+    for t in selected_tools:
+        print(f"    - {t.name} -> {t.ignore_file}")
+    print()
+
+    if not questionary.confirm(
+        "Proceed with ignore file injection?", default=True
+    ).ask():
+        print("Aborted.")
+        sys.exit(0)
+
+    # Step 4: Create .data/ignore/ with assembled content
+    ignore_files = [t.ignore_file for t in selected_tools]
+    scaffold_result = init_ignore(target_root, selected_templates, ignore_files)
+    if not scaffold_result.success:
+        print(f"Error: {scaffold_result.error}")
+        sys.exit(1)
+
+    print(
+        f"\n  Created {len(scaffold_result.created_files)} ignore files in .data/ignore/"
+    )
+
+    # Step 5: Create symlinks
+    results = inject_ignore(target_root, selected_tools)
+    created = [r for r in results if r.created]
+    skipped = [r for r in results if not r.created and not r.error]
+    errors = [r for r in results if r.error]
+
+    print(f"\n{'=' * 50}")
+    print("  Ignore Injection Report")
+    print(f"{'=' * 50}\n")
+
+    if created:
+        print(f"  Created ({len(created)}):")
+        for r in created:
+            print(f"    + {r.symlink_path}")
+
+    if skipped:
+        print(f"\n  Already existed ({len(skipped)}):")
+        for r in skipped:
+            print(f"    = {r.symlink_path}")
+
+    if errors:
+        print(f"\n  Errors ({len(errors)}):")
+        for r in errors:
+            print(f"    ! {r.tool.name}: {r.error}")
+
+    print(f"\nDone. {len(created)} new, {len(skipped)} skipped, {len(errors)} errors.")
+
+
 def _delete_skill_cmd() -> None:
     """Delete skill(s) from a target project."""
     target_root = _ask_target_project()
@@ -1228,6 +1331,7 @@ def main() -> None:
         default="install",
         choices=[
             "install",
+            "install-ignore",
             "update",
             "delete-skill",
             "delete-docs",
@@ -1251,6 +1355,8 @@ def main() -> None:
 
     if args.command == "install":
         _install()
+    elif args.command == "install-ignore":
+        _install_ignore()
     elif args.command == "update":
         _update()
     elif args.command == "generate-docs":
