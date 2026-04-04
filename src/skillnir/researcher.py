@@ -65,6 +65,11 @@ RESEARCH_TOPICS: tuple[str, ...] = (
     "AI developer productivity research METR study",
     "AI agent memory systems cross-session learning",
     "AI generated code security vulnerabilities OWASP",
+    "LLM fine-tuning LoRA QLoRA instruction tuning 2025 2026",
+    "AI agent frameworks tool-use function calling 2025 2026",
+    "open source LLM models Llama Mistral Qwen 2025 2026",
+    "multimodal AI vision language models GPT-4o Gemini 2025 2026",
+    "AI infrastructure MLOps model serving deployment 2025 2026",
 )
 
 TOPIC_LABELS: dict[str, str] = {
@@ -78,6 +83,11 @@ TOPIC_LABELS: dict[str, str] = {
     "ai-productivity": "AI Developer Productivity",
     "ai-memory": "AI Agent Memory",
     "ai-security": "AI Code Security",
+    "fine-tuning": "Fine-Tuning & LoRA",
+    "ai-agents-tools": "AI Agent Frameworks & Tools",
+    "open-source-models": "Open Source Models",
+    "multimodal-ai": "Multimodal AI (Vision, Audio)",
+    "ai-infrastructure": "AI Infrastructure & MLOps",
 }
 
 
@@ -92,6 +102,7 @@ PREFERRED_SOURCES: tuple[str, ...] = (
     "news.ycombinator.com",
     "substack.com",
     "dev.to",
+    "hashnode.com",
     "anthropic.com",
     "openai.com",
     "ai.googleblog.com",
@@ -113,6 +124,12 @@ PREFERRED_SOURCES: tuple[str, ...] = (
     "wandb.ai",
     "deepmind.google",
     "paperswithcode.com",
+    "techcrunch.com",
+    "theverge.com",
+    "venturebeat.com",
+    "thenewstack.io",
+    "newsletter.theaiedge.io",
+    "read.deeplearning.ai",
 )
 
 
@@ -128,6 +145,9 @@ SOURCE_FILTERS: dict[str, str] = {
     "vendor-blogs": "Vendor Blogs (Anthropic, OpenAI, Google, Meta, Microsoft)",
     "research-labs": "Research Labs (DeepMind, Hugging Face, Papers with Code)",
     "ai-frameworks": "AI Frameworks (LangChain, LlamaIndex, Weights & Biases)",
+    "dev-community": "Dev Community (dev.to, hashnode.com)",
+    "tech-news": "Tech News (TechCrunch, The Verge, VentureBeat)",
+    "newsletters": "AI Newsletters (The Batch, TLDR AI, The AI Edge)",
 }
 
 SOURCE_DOMAINS: dict[str, tuple[str, ...]] = {
@@ -152,6 +172,20 @@ SOURCE_DOMAINS: dict[str, tuple[str, ...]] = {
         "blog.langchain.dev",
         "www.llamaindex.ai",
         "wandb.ai",
+    ),
+    "dev-community": (
+        "dev.to",
+        "hashnode.com",
+    ),
+    "tech-news": (
+        "techcrunch.com",
+        "theverge.com",
+        "venturebeat.com",
+        "thenewstack.io",
+    ),
+    "newsletters": (
+        "newsletter.theaiedge.io",
+        "read.deeplearning.ai",
     ),
 }
 
@@ -448,6 +482,11 @@ def _generate_landing_html(
         "ai-productivity": "#6366f1",
         "ai-memory": "#14b8a6",
         "ai-security": "#f97316",
+        "fine-tuning": "#a855f7",
+        "ai-agents-tools": "#0ea5e9",
+        "open-source-models": "#84cc16",
+        "multimodal-ai": "#e11d48",
+        "ai-infrastructure": "#64748b",
     }
 
     rows = []

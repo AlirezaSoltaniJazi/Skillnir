@@ -26,10 +26,8 @@ from skillnir.tools import AITool, AUTO_INJECT_TOOL, TOOLS, detect_tools
 # Sort mode menu options
 SORT_MODES = {
     "Default (recommended)": "default",
-    "Sort by popularity": "popularity",
-    "Sort by performance": "performance",
-    "Sort by price (cheapest first)": "price",
-    "Sort alphabetically": "alpha",
+    "Alphabetical (A-Z)": "alpha",
+    "Alphabetical (Z-A)": "alpha-desc",
 }
 
 
