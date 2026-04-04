@@ -19,10 +19,8 @@ from skillnir.tools import AITool, AUTO_INJECT_TOOL, TOOLS, detect_tools
 
 SORT_MODES = {
     "default": "Default",
-    "popularity": "Popularity",
-    "performance": "Performance",
-    "price": "Price (cheapest)",
-    "alpha": "Alphabetical",
+    "alpha": "Alphabetical (A-Z)",
+    "alpha-desc": "Alphabetical (Z-A)",
 }
 
 # ── Navigation structure ──
@@ -128,23 +126,12 @@ def get_nav_groups(lang: str | None = None) -> list:
 
 
 def _sort_tools(tools: tuple[AITool, ...] | list[AITool], mode: str) -> list[AITool]:
-    if mode == "popularity":
-        return sorted(tools, key=lambda t: (-t.popularity, t.name))
-    if mode == "performance":
-        return sorted(tools, key=lambda t: (-t.performance, t.name))
-    if mode == "price":
-        return sorted(tools, key=lambda t: (-t.price, t.name))
     if mode == "alpha":
         return sorted(tools, key=lambda t: t.name.lower())
+    if mode == "alpha-desc":
+        return sorted(tools, key=lambda t: t.name.lower(), reverse=True)
     return list(tools)
 
-
-def _score_color(score: int) -> str:
-    if score >= 8:
-        return "positive"
-    if score >= 5:
-        return "warning"
-    return "negative"
 
 
 def _action_badge_color(action: str) -> str:
@@ -525,25 +512,9 @@ def build_tool_table(container, state: dict) -> None:
                             )
                         ui.label(tool.company).classes("text-secondary text-sm")
 
-                    with ui.row().classes("gap-2"):
-                        with ui.column().classes("items-center gap-0"):
-                            ui.badge(
-                                str(tool.popularity),
-                                color=_score_color(tool.popularity),
-                            ).props("dense")
-                            ui.label("pop").classes("text-[10px] text-secondary")
-                        with ui.column().classes("items-center gap-0"):
-                            ui.badge(
-                                str(tool.performance),
-                                color=_score_color(tool.performance),
-                            ).props("dense")
-                            ui.label("perf").classes("text-[10px] text-secondary")
-                        with ui.column().classes("items-center gap-0"):
-                            ui.badge(
-                                str(tool.price),
-                                color=_score_color(tool.price),
-                            ).props("dense")
-                            ui.label("price").classes("text-[10px] text-secondary")
+                    ui.label(tool.dotdir + "/").classes(
+                        "text-xs text-secondary font-mono"
+                    )
 
 
 def build_confirm(container, state: dict) -> None:
