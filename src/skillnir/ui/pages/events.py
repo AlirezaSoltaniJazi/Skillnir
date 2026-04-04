@@ -52,9 +52,30 @@ async def page_events():
         # ── Country chips ──
         selected_countries = list(EVENT_COUNTRIES.keys())
 
-        ui.label(t("pages.events.countries_to_search", lang)).classes(
-            "text-sm font-medium text-secondary"
-        )
+        with ui.row().classes("items-center gap-3"):
+            ui.label(t("pages.events.countries_to_search", lang)).classes(
+                "text-sm font-medium text-secondary"
+            )
+
+            def _select_all_countries():
+                selected_countries.clear()
+                selected_countries.extend(EVENT_COUNTRIES.keys())
+                _rebuild_country_chips()
+
+            def _deselect_all_countries():
+                selected_countries.clear()
+                _rebuild_country_chips()
+
+            ui.button(
+                t("buttons.select_all", lang),
+                on_click=_select_all_countries,
+                icon="check_box",
+            ).props("flat rounded dense size=sm")
+            ui.button(
+                t("buttons.deselect_all", lang),
+                on_click=_deselect_all_countries,
+                icon="check_box_outline_blank",
+            ).props("flat rounded dense size=sm")
         country_chips_container = ui.row().classes("gap-2 flex-wrap")
 
         def _rebuild_country_chips():
@@ -94,6 +115,10 @@ async def page_events():
 
         # ── Existing events ──
         events_dir = _get_events_dir()
+
+        def _cache_bust_url() -> str:
+            return f"/events-files/index.html?t={int(time.time())}"
+
         existing = _load_index(events_dir)
         if existing:
             with ui.row().classes("gap-4 flex-wrap"):
@@ -103,9 +128,6 @@ async def page_events():
                     icon="event",
                     color="info",
                 )
-
-            def _cache_bust_url() -> str:
-                return f"/events-files/index.html?t={int(time.time())}"
 
             index_path = events_dir / "index.html"
             if index_path.exists():
