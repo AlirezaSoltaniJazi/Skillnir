@@ -1,4 +1,4 @@
-"""Supported AI tools registry page."""
+"""Supported AI tools registry and skills library pages."""
 
 from nicegui import ui
 
@@ -53,22 +53,11 @@ def page_tools():
                 'align': 'left',
             },
             {
-                'name': 'popularity',
-                'label': t('pages.tools_registry.columns.popularity', lang),
-                'field': 'popularity',
-                'sortable': True,
-            },
-            {
-                'name': 'performance',
-                'label': t('pages.tools_registry.columns.performance', lang),
-                'field': 'performance',
-                'sortable': True,
-            },
-            {
-                'name': 'price',
-                'label': t('pages.tools_registry.columns.price', lang),
-                'field': 'price',
-                'sortable': True,
+                'name': 'website',
+                'label': t('pages.tools_registry.columns.website', lang),
+                'field': 'website',
+                'sortable': False,
+                'align': 'left',
             },
         ]
 
@@ -77,10 +66,8 @@ def page_tools():
                 'name': tool.name,
                 'company': tool.company,
                 'dotdir': tool.dotdir + '/',
-                'popularity': tool.popularity,
-                'performance': tool.performance,
-                'price': tool.price,
                 'icon_url': tool.icon_url,
+                'website': tool.website_url,
             }
             for tool in TOOLS
         ]
@@ -113,20 +100,20 @@ def page_tools():
         """,
         )
 
-        # Score coloring slots
-        for col in ('popularity', 'performance', 'price'):
-            table.add_slot(
-                f'body-cell-{col}',
-                """
-                <q-td :props="props">
-                    <q-badge
-                        :color="props.value >= 8 ? 'positive' : props.value >= 5 ? 'warning' : 'negative'"
-                        :label="props.value"
-                        dense
-                    />
-                </q-td>
-            """,
-            )
+        table.add_slot(
+            'body-cell-website',
+            """
+            <q-td :props="props">
+                <a v-if="props.value" :href="props.value" target="_blank"
+                   class="text-primary"
+                   style="text-decoration:none;font-size:13px;"
+                   @click.stop>
+                    {{ props.value.replace('https://', '').replace('http://', '').replace(/\\/$/, '') }}
+                </a>
+                <span v-else style="color:#6b7280;">—</span>
+            </q-td>
+        """,
+        )
 
         def _filter_table(query: str) -> None:
             q = (query or '').lower()
