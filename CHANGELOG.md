@@ -5,6 +5,51 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-04-05
+
+### Added
+
+- **AI Benchmarks page** (`/benchmarks`) -- search and compare top 30 AI models across 7 categories (Coding, Reasoning, Math, General Knowledge, Instruction Following, Multimodal, Agentic Tasks) with data from SWE-bench, Artificial Analysis, and Chatbot Arena
+  - Sortable columns for all benchmark scores, pricing (input/output per 1M tokens), and context window
+  - Provider filter chips (Anthropic, OpenAI, Google, Meta, Mistral, DeepSeek, xAI, Alibaba, Cohere, Amazon)
+  - Color-coded scores: green (85+), amber (70-84), orange (50-69), red (<50)
+  - Model count selector (Top 20/30/50)
+  - Context window display: 1M/10M format instead of 1000K/10000K
+- **Security Vulnerabilities page** (`/security`) -- search for critical CVEs, zero-day exploits, and security advisories across 10 categories
+  - Categories: Critical CVEs, Zero-Day Exploits, Supply Chain Attacks, Web Security (OWASP), Cloud & Infrastructure, Malware & Ransomware, AI & LLM Security, Data Breaches, Authentication & Identity, Open Source Vulnerabilities
+  - Sources: NIST NVD, CISA, GitHub Advisories, Bleeping Computer, Krebs on Security, Hacker News, The Record, Dark Reading
+  - Severity color-coding (Critical/High/Medium/Low) with CVSS scores
+  - Sortable and filterable table with category and severity chips
+- **Prompt Compression** (`compress_prompts` setting) -- rule-based caveman compression that reduces pipeline prompt token usage by 30-50%
+  - Pure Python module (`compressor.py`), no external dependencies, <100ms
+  - Protected zones: code blocks, inline code, JSON templates, URLs, file paths, markdown headers never modified
+  - Removes articles, auxiliaries, intensifiers, filler phrases while preserving negations, numbers, technical terms
+  - Toggle in Settings page, integrated into `build_subprocess_command()` for all 6 pipelines
+  - 38 unit tests covering compression rules and safety
+- **promptCompressor skill** -- installable skill at `.data/skills/promptCompressor/` teaching AI assistants the compression rules and architecture
+- **5 new research topics** -- Fine-Tuning & LoRA, AI Agent Frameworks & Tools, Open Source Models, Multimodal AI, AI Infrastructure & MLOps
+- **3 new article sources** -- Dev Community (dev.to, hashnode.com), Tech News (TechCrunch, The Verge, VentureBeat), AI Newsletters (The Batch, TLDR AI, The AI Edge)
+- **Website URLs** for all 40 AI tools in the registry (`website_url` field on `AITool` dataclass)
+- **Local tool icons** -- all 30 tool logos downloaded to `src/skillnir/assets/icons/` and served locally instead of fetching from remote URLs
+- **Select All / Deselect All buttons** on Research (topics + sources), Events (countries), Benchmarks (providers), and Security (categories + sources) pages
+- **Communication Style section** added to base skill generator prompt -- all future generated skills enforce concise, caveman-style AI responses (no preamble, no filler, lead with answers)
+
+### Changed
+
+- **Tools Registry page** (`/tools`) -- removed Popularity, Performance, and Price columns; added Website column with clickable links
+- **Install skill sorting** -- simplified to Default, Alphabetical (A-Z), and Alphabetical (Z-A); removed popularity/performance/price sort modes
+- **Tool cards** -- replaced score badges (pop/perf/price) with dotdir path display
+- **Research button** -- renamed "Search Latest News" to "Search Latest Articles" across all 9 locales
+- **Events landing page** -- date column now color-coded (red=passed, amber=today, default=future) with new "Remaining" column (Passed/Today/Tomorrow/N days)
+- **Events subtitle** -- "Next event" now skips past events
+- **Claude Code icon** -- changed from remote `claude.ai` URL to local icon file
+
+### Fixed
+
+- **Open Landing Page button** on Research and Events pages -- `_cache_bust_url()` moved to broader scope so it works even on first search when no `index.html` existed at page load
+- **Skill library overflow** -- long source paths now truncate with ellipsis and show full path on hover
+- **Benchmarks fallback parser** -- extracts model JSON from raw stdout stream when normal text collection fails
+
 ## [1.1.2] - 2026-03-31
 
 ### Added
