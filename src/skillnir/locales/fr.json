@@ -378,6 +378,8 @@
         "enabled": "Notifications sonores activees",
         "disabled": "Notifications sonores desactivees"
       },
+      "compression_title": "Compression des prompts",
+      "compression_subtitle": "Compresser les prompts avant l'envoi aux backends IA (economise des tokens)",
       "ai_tool": {
         "title": "Outil AI",
         "description": "Utilisation actuelle : {name}"

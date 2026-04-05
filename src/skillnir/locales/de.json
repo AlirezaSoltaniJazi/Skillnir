@@ -378,6 +378,8 @@
         "enabled": "Tonbenachrichtigungen aktiviert",
         "disabled": "Tonbenachrichtigungen deaktiviert"
       },
+      "compression_title": "Prompt-Komprimierung",
+      "compression_subtitle": "Prompts vor dem Senden an KI-Backends komprimieren (spart Token)",
       "ai_tool": {
         "title": "AI-Tool",
         "description": "Aktuell verwendet: {name}"

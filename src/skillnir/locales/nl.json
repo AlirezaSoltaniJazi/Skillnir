@@ -378,6 +378,8 @@
         "enabled": "Geluidsmeldingen ingeschakeld",
         "disabled": "Geluidsmeldingen uitgeschakeld"
       },
+      "compression_title": "Prompt compressie",
+      "compression_subtitle": "Comprimeer prompts voor verzending naar AI-backends (bespaart tokens)",
       "ai_tool": {
         "title": "AI-Tool",
         "description": "Momenteel in gebruik: {name}"

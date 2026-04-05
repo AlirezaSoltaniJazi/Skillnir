@@ -378,6 +378,8 @@
         "enabled": "Powiadomienia dźwiękowe włączone",
         "disabled": "Powiadomienia dźwiękowe wyłączone"
       },
+      "compression_title": "Kompresja promptow",
+      "compression_subtitle": "Kompresuj prompty przed wyslaniem do backendu AI (oszczedza tokeny)",
       "ai_tool": {
         "title": "Narzędzie AI",
         "description": "Aktualnie używane: {name}"

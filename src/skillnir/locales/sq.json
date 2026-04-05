@@ -378,6 +378,8 @@
         "enabled": "Njoftimet zanore u aktivizuan",
         "disabled": "Njoftimet zanore u çaktivizuan"
       },
+      "compression_title": "Kompresimi i prompteve",
+      "compression_subtitle": "Kompreson promptet para dergimit ne AI backend (kursen tokenat)",
       "ai_tool": {
         "title": "Mjeti AI",
         "description": "Aktualisht po përdoret: {name}"

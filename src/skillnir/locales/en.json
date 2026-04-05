@@ -378,6 +378,8 @@
         "enabled": "Sound notifications enabled",
         "disabled": "Sound notifications disabled"
       },
+      "compression_title": "Prompt Compression",
+      "compression_subtitle": "Compress prompts before sending to AI backends (saves tokens)",
       "ai_tool": {
         "title": "AI Tool",
         "description": "Currently using {name}"
