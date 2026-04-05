@@ -244,12 +244,14 @@ class AppConfig:
     backend: AIBackend = AIBackend.CLAUDE
     model: str = "sonnet"
     prompt_version: str = field(default_factory=_default_prompt_version)
+    compress_prompts: bool = False
 
     def to_dict(self) -> dict:
         return {
             "backend": self.backend.value,
             "model": self.model,
             "prompt_version": self.prompt_version,
+            "compress_prompts": self.compress_prompts,
         }
 
     @classmethod
@@ -262,7 +264,10 @@ class AppConfig:
         pv = d.get("prompt_version", _default_prompt_version())
         if pv not in get_prompt_versions():
             pv = _default_prompt_version()
-        return cls(backend=backend, model=model, prompt_version=pv)
+        compress = bool(d.get("compress_prompts", False))
+        return cls(
+            backend=backend, model=model, prompt_version=pv, compress_prompts=compress
+        )
 
 
 def load_config() -> AppConfig:
@@ -431,8 +436,16 @@ def build_subprocess_command(
     model: str | None = None,
     max_turns: int = 15,
     mode: str | None = None,
+    compress: bool | None = None,
 ) -> list[str]:
     """Build CLI command for the given backend."""
+    if compress is None:
+        compress = load_config().compress_prompts
+    if compress:
+        from skillnir.compressor import compress_prompt
+
+        prompt = compress_prompt(prompt).compressed
+
     info = BACKENDS[backend]
     model_id = (
         resolve_model_id(backend, model)

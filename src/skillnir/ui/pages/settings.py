@@ -141,6 +141,38 @@ def page_settings():
                     ),
                 ).props('flat rounded')
 
+        # ── Prompt Compression ──
+        with ui.card().classes('w-full p-5 card-hover'):
+            with ui.row().classes('items-center justify-between w-full'):
+                with ui.row().classes('items-center gap-4'):
+                    ui.icon('compress', color='teal').classes('text-3xl')
+                    with ui.column().classes('gap-0'):
+                        _lang = get_current_language()
+                        ui.label(
+                            t('pages.settings.compression_title', _lang)
+                            or 'Prompt Compression'
+                        ).classes('text-lg font-semibold')
+                        ui.label(
+                            t('pages.settings.compression_subtitle', _lang)
+                            or 'Compress prompts before sending to AI backends (saves tokens)'
+                        ).classes('text-sm text-secondary')
+
+                def on_compress_toggle(e):
+                    config.compress_prompts = e.value
+                    save_config(config)
+                    ui.notify(
+                        (
+                            'Prompt compression enabled'
+                            if e.value
+                            else 'Prompt compression disabled'
+                        ),
+                        type='info',
+                    )
+
+                ui.switch(
+                    '', value=config.compress_prompts, on_change=on_compress_toggle
+                )
+
         # ── Language ──
         lang = get_current_language()
         lang_name = SUPPORTED_LANGUAGES.get(lang, lang)
