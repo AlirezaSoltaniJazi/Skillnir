@@ -138,19 +138,15 @@ def _load_index(security_dir: Path) -> dict[str, Vulnerability]:
     try:
         data = json.loads(idx_path.read_text(encoding="utf-8"))
         return {
-            item["id"]: Vulnerability(**item)
-            for item in data
-            if isinstance(item, dict)
+            item["id"]: Vulnerability(**item) for item in data if isinstance(item, dict)
         }
-    except (json.JSONDecodeError, KeyError, TypeError):
+    except json.JSONDecodeError, KeyError, TypeError:
         return {}
 
 
 def _save_index(security_dir: Path, vulns: dict[str, Vulnerability]) -> None:
     """Write vulnerability index sorted by date descending."""
-    sorted_vulns = sorted(
-        vulns.values(), key=lambda v: v.published_date, reverse=True
-    )
+    sorted_vulns = sorted(vulns.values(), key=lambda v: v.published_date, reverse=True)
     data = [asdict(v) for v in sorted_vulns]
     idx_path = security_dir / _INDEX_FILE
     idx_path.write_text(
@@ -175,9 +171,7 @@ def _generate_landing_html(
     new_ids: set[str] | None = None,
 ) -> Path:
     """Generate index.html landing page with vulnerability table."""
-    sorted_vulns = sorted(
-        vulns.values(), key=lambda v: v.published_date, reverse=True
-    )
+    sorted_vulns = sorted(vulns.values(), key=lambda v: v.published_date, reverse=True)
     new_ids = new_ids or set()
 
     rows = []
@@ -197,13 +191,15 @@ def _generate_landing_html(
         cvss_color = (
             SEVERITY_COLORS.get("critical")
             if v.cvss_score >= 9.0
-            else SEVERITY_COLORS.get("high")
-            if v.cvss_score >= 7.0
-            else SEVERITY_COLORS.get("medium")
-            if v.cvss_score >= 4.0
-            else SEVERITY_COLORS.get("low")
-            if v.cvss_score > 0
-            else "#6b7280"
+            else (
+                SEVERITY_COLORS.get("high")
+                if v.cvss_score >= 7.0
+                else (
+                    SEVERITY_COLORS.get("medium")
+                    if v.cvss_score >= 4.0
+                    else SEVERITY_COLORS.get("low") if v.cvss_score > 0 else "#6b7280"
+                )
+            )
         )
 
         rows.append(f"""\
@@ -398,16 +394,12 @@ def _search_security_subprocess(
     """Search security vulnerabilities using subprocess."""
     info = BACKENDS[backend]
 
-    existing_ids_str = (
-        ", ".join(sorted(existing_ids)) if existing_ids else "(none)"
-    )
+    existing_ids_str = ", ".join(sorted(existing_ids)) if existing_ids else "(none)"
     category_list = ", ".join(SECURITY_CATEGORIES.keys())
 
     if categories and len(categories) < len(SECURITY_CATEGORIES):
         cat_names = [SECURITY_CATEGORIES.get(c, c) for c in categories]
-        category_instruction = (
-            f"Focus ONLY on these categories: {', '.join(cat_names)}"
-        )
+        category_instruction = f"Focus ONLY on these categories: {', '.join(cat_names)}"
     else:
         category_instruction = "Cover all security categories broadly."
 
@@ -418,9 +410,7 @@ def _search_security_subprocess(
         existing_ids=existing_ids_str,
     )
 
-    cmd = build_subprocess_command(
-        backend, prompt, model=model, max_turns=20
-    )
+    cmd = build_subprocess_command(backend, prompt, model=model, max_turns=20)
 
     if backend == AIBackend.CLAUDE:
         try:
@@ -443,9 +433,7 @@ def _search_security_subprocess(
             stderr=subprocess.PIPE,
             text=True,
         )
-        _emit(
-            on_progress, "status", f"    [PID] subprocess started: pid={proc.pid}"
-        )
+        _emit(on_progress, "status", f"    [PID] subprocess started: pid={proc.pid}")
 
         import threading
 
@@ -503,14 +491,10 @@ def _search_security_subprocess(
         _emit(on_progress, "error", f"{info.name} timed out")
         return []
     except FileNotFoundError:
-        _emit(
-            on_progress, "error", f"{info.cli_command} CLI not found in PATH"
-        )
+        _emit(on_progress, "error", f"{info.cli_command} CLI not found in PATH")
         return []
     except Exception as e:
-        _emit(
-            on_progress, "error", f"    [EXCEPTION] {type(e).__name__}: {e}"
-        )
+        _emit(on_progress, "error", f"    [EXCEPTION] {type(e).__name__}: {e}")
         return []
 
     full_text = "".join(collected_text)
@@ -545,7 +529,7 @@ def _extract_vulns_from_stream(
             continue
         try:
             obj = json.loads(line)
-        except (json.JSONDecodeError, ValueError):
+        except json.JSONDecodeError, ValueError:
             continue
         msg = obj.get("message", obj.get("result", {}))
         if not isinstance(msg, dict):
@@ -622,7 +606,7 @@ def _dict_to_vuln(item: dict) -> Vulnerability | None:
 
         try:
             cvss = round(float(item.get("cvss_score", 0) or 0), 1)
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             cvss = 0.0
 
         return Vulnerability(

@@ -252,9 +252,9 @@ async def page_security():
             with progress_container:
                 log_visible = {"value": True}
                 with ui.row().classes("items-center gap-3"):
-                    ui.label(
-                        t("components.progress_panel.log_output", lang)
-                    ).classes("text-sm font-medium text-secondary")
+                    ui.label(t("components.progress_panel.log_output", lang)).classes(
+                        "text-sm font-medium text-secondary"
+                    )
 
                     def toggle_log():
                         log_visible["value"] = not log_visible["value"]
@@ -280,13 +280,9 @@ async def page_security():
 
             if result.success:
                 grid = {
-                    t("pages.security.grid_vulns_found", lang): str(
-                        result.vulns_found
-                    ),
+                    t("pages.security.grid_vulns_found", lang): str(result.vulns_found),
                     t("pages.security.grid_new_vulns", lang): str(result.vulns_new),
-                    t("pages.security.grid_updated", lang): str(
-                        result.vulns_skipped
-                    ),
+                    t("pages.security.grid_updated", lang): str(result.vulns_skipped),
                     t("pages.security.grid_duration", lang): format_duration(secs),
                 }
                 result_card(
