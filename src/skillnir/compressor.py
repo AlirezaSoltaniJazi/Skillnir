@@ -165,9 +165,7 @@ def _find_protected_zones(text: str) -> list[tuple[int, int]]:
     return merged
 
 
-def _split_by_zones(
-    text: str, zones: list[tuple[int, int]]
-) -> list[tuple[str, bool]]:
+def _split_by_zones(text: str, zones: list[tuple[int, int]]) -> list[tuple[str, bool]]:
     """Split text into (segment, is_protected) pairs."""
     parts: list[tuple[str, bool]] = []
     pos = 0
