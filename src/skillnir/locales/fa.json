@@ -27,6 +27,7 @@
       "research": "پژوهش",
       "events": "رویدادها",
       "benchmarks": "معیارها",
+      "security": "امنیت",
       "settings": "تنظیمات"
     },
     "sort_modes": {
@@ -363,6 +364,22 @@
       "grid_duration": "مدت زمان"
     },
 
+    "security": {
+      "title": "آسیب‌پذیری‌های امنیتی",
+      "subtitle": "جستجوی CVEهای بحرانی، حملات روز صفر و توصیه‌نامه‌های امنیتی",
+      "categories_label": "دسته‌بندی‌ها:",
+      "filter_by_source": "فیلتر بر اساس منبع (اختیاری):",
+      "vulns_in_kb": "آسیب‌پذیری‌ها در پایگاه دانش",
+      "regenerated_landing": "صفحه با {count} آسیب‌پذیری بازسازی شد",
+      "result_success_title": "جستجوی امنیتی موفق بود",
+      "result_fail_title": "جستجوی امنیتی ناموفق بود",
+      "grid_vulns_found": "آسیب‌پذیری‌های یافت شده",
+      "grid_new_vulns": "جدید",
+      "grid_updated": "به‌روزرسانی شده",
+      "grid_duration": "مدت زمان",
+      "select_at_least_one_category": "حداقل یک دسته‌بندی انتخاب کنید"
+    },
+
     "settings": {
       "title": "تنظیمات",
       "subtitle": "پیکربندی ترجیحات برنامه.",
@@ -429,6 +446,7 @@
     "search_latest_news": "جستجوی آخرین اخبار",
     "search_latest_articles": "جستجوی آخرین مقالات",
     "search_benchmarks": "جستجوی معیارها",
+    "search_security": "جستجوی آسیب‌پذیری‌ها",
     "search_events": "جستجوی رویدادها",
     "view_landing_page": "مشاهده صفحه اصلی",
     "generate_html_files": "تولید فایل‌های HTML",

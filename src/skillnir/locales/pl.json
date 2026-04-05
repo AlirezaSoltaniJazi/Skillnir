@@ -27,6 +27,7 @@
       "research": "Badania",
       "events": "Wydarzenia",
       "benchmarks": "Benchmarki",
+      "security": "Bezpieczeństwo",
       "settings": "Ustawienia"
     },
     "sort_modes": {
@@ -363,6 +364,22 @@
       "grid_duration": "Czas trwania"
     },
 
+    "security": {
+      "title": "Luki bezpieczeństwa",
+      "subtitle": "Szukaj krytycznych CVE, zero-day i porad bezpieczeństwa",
+      "categories_label": "Kategorie:",
+      "filter_by_source": "Filtruj po źródle (opcjonalnie):",
+      "vulns_in_kb": "Luki w bazie wiedzy",
+      "regenerated_landing": "Zregenerowano stronę z {count} lukami",
+      "result_success_title": "Wyszukiwanie bezpieczeństwa zakończone",
+      "result_fail_title": "Wyszukiwanie bezpieczeństwa nie powiodło się",
+      "grid_vulns_found": "Znalezione luki",
+      "grid_new_vulns": "Nowe",
+      "grid_updated": "Zaktualizowane",
+      "grid_duration": "Czas trwania",
+      "select_at_least_one_category": "Wybierz co najmniej jedną kategorię"
+    },
+
     "settings": {
       "title": "Ustawienia",
       "subtitle": "Konfiguruj preferencje aplikacji.",
@@ -429,6 +446,7 @@
     "search_latest_news": "Szukaj najnowszych wiadomości",
     "search_latest_articles": "Szukaj najnowszych artykułów",
     "search_benchmarks": "Szukaj benchmarkow",
+    "search_security": "Szukaj luk",
     "search_events": "Szukaj wydarzeń",
     "view_landing_page": "Wyświetl stronę główną",
     "generate_html_files": "Generuj pliki HTML",

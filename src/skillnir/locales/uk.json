@@ -27,6 +27,7 @@
       "research": "Дослідження",
       "events": "Події",
       "benchmarks": "Бенчмарки",
+      "security": "Безпека",
       "settings": "Налаштування"
     },
     "sort_modes": {
@@ -363,6 +364,22 @@
       "grid_duration": "Тривалість"
     },
 
+    "security": {
+      "title": "Вразливості безпеки",
+      "subtitle": "Пошук критичних CVE, zero-day та рекомендацій з безпеки",
+      "categories_label": "Категорії:",
+      "filter_by_source": "Фільтрувати за джерелом (необов'язково):",
+      "vulns_in_kb": "Вразливості в базі знань",
+      "regenerated_landing": "Сторінку оновлено з {count} вразливостями",
+      "result_success_title": "Пошук безпеки успішний",
+      "result_fail_title": "Пошук безпеки невдалий",
+      "grid_vulns_found": "Знайдено вразливостей",
+      "grid_new_vulns": "Нові",
+      "grid_updated": "Оновлено",
+      "grid_duration": "Тривалість",
+      "select_at_least_one_category": "Виберіть принаймні одну категорію"
+    },
+
     "settings": {
       "title": "Налаштування",
       "subtitle": "Налаштуйте параметри додатку.",
@@ -429,6 +446,7 @@
     "search_latest_news": "Шукати останні новини",
     "search_latest_articles": "Шукати останні статті",
     "search_benchmarks": "Шукати бенчмарки",
+    "search_security": "Шукати вразливості",
     "search_events": "Шукати події",
     "view_landing_page": "Переглянути головну сторінку",
     "generate_html_files": "Генерувати HTML-файли",

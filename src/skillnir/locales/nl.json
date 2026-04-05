@@ -27,6 +27,7 @@
       "research": "Onderzoek",
       "events": "Evenementen",
       "benchmarks": "Benchmarks",
+      "security": "Beveiliging",
       "settings": "Instellingen"
     },
     "sort_modes": {
@@ -363,6 +364,22 @@
       "grid_duration": "Duur"
     },
 
+    "security": {
+      "title": "Beveiligingskwetsbaarheden",
+      "subtitle": "Zoek naar kritieke CVEs, zero-days en beveiligingsadviezen",
+      "categories_label": "Categorieën:",
+      "filter_by_source": "Filteren op bron (optioneel):",
+      "vulns_in_kb": "Kwetsbaarheden in kennisbank",
+      "regenerated_landing": "Landingspagina geregenereerd met {count} kwetsbaarheden",
+      "result_success_title": "Beveiligingszoekactie succesvol",
+      "result_fail_title": "Beveiligingszoekactie mislukt",
+      "grid_vulns_found": "Kwetsbaarheden gevonden",
+      "grid_new_vulns": "Nieuw",
+      "grid_updated": "Bijgewerkt",
+      "grid_duration": "Duur",
+      "select_at_least_one_category": "Selecteer ten minste een categorie"
+    },
+
     "settings": {
       "title": "Instellingen",
       "subtitle": "Applicatievoorkeuren configureren.",
@@ -429,6 +446,7 @@
     "search_latest_news": "Laatste nieuws zoeken",
     "search_latest_articles": "Laatste artikelen zoeken",
     "search_benchmarks": "Benchmarks zoeken",
+    "search_security": "Kwetsbaarheden zoeken",
     "search_events": "Evenementen zoeken",
     "view_landing_page": "Landingspagina bekijken",
     "generate_html_files": "HTML-bestanden genereren",

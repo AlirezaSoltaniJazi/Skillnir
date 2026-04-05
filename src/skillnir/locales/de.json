@@ -27,6 +27,7 @@
       "research": "Forschung",
       "events": "Veranstaltungen",
       "benchmarks": "Benchmarks",
+      "security": "Sicherheit",
       "settings": "Einstellungen"
     },
     "sort_modes": {
@@ -363,6 +364,22 @@
       "grid_duration": "Dauer"
     },
 
+    "security": {
+      "title": "Sicherheitslücken",
+      "subtitle": "Suche nach kritischen CVEs, Zero-Days und Sicherheitshinweisen",
+      "categories_label": "Kategorien:",
+      "filter_by_source": "Nach Quelle filtern (optional):",
+      "vulns_in_kb": "Schwachstellen in der Wissensbasis",
+      "regenerated_landing": "Landingpage mit {count} Schwachstellen regeneriert",
+      "result_success_title": "Sicherheitssuche erfolgreich",
+      "result_fail_title": "Sicherheitssuche fehlgeschlagen",
+      "grid_vulns_found": "Schwachstellen gefunden",
+      "grid_new_vulns": "Neu",
+      "grid_updated": "Aktualisiert",
+      "grid_duration": "Dauer",
+      "select_at_least_one_category": "Mindestens eine Kategorie auswählen"
+    },
+
     "settings": {
       "title": "Einstellungen",
       "subtitle": "Anwendungseinstellungen konfigurieren.",
@@ -429,6 +446,7 @@
     "search_latest_news": "Neueste Nachrichten suchen",
     "search_latest_articles": "Neueste Artikel suchen",
     "search_benchmarks": "Benchmarks suchen",
+    "search_security": "Schwachstellen suchen",
     "search_events": "Veranstaltungen suchen",
     "view_landing_page": "Landingpage anzeigen",
     "generate_html_files": "HTML-Dateien generieren",

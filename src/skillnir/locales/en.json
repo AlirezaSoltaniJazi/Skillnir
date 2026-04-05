@@ -27,6 +27,7 @@
       "research": "Research",
       "events": "Events",
       "benchmarks": "Benchmarks",
+      "security": "Security",
       "settings": "Settings"
     },
     "sort_modes": {
@@ -363,6 +364,22 @@
       "grid_duration": "Duration"
     },
 
+    "security": {
+      "title": "Security Vulnerabilities",
+      "subtitle": "Search for critical CVEs, zero-days, and security advisories",
+      "categories_label": "Categories to search:",
+      "filter_by_source": "Filter by source (optional):",
+      "vulns_in_kb": "Vulnerabilities in knowledge base",
+      "regenerated_landing": "Regenerated landing page with {count} vulnerabilities",
+      "result_success_title": "Security search completed successfully",
+      "result_fail_title": "Security search failed",
+      "grid_vulns_found": "Vulnerabilities Found",
+      "grid_new_vulns": "New",
+      "grid_updated": "Updated",
+      "grid_duration": "Duration",
+      "select_at_least_one_category": "Select at least one category"
+    },
+
     "settings": {
       "title": "Settings",
       "subtitle": "Configure application preferences.",
@@ -429,6 +446,7 @@
     "search_latest_news": "Search Latest News",
     "search_latest_articles": "Search Latest Articles",
     "search_benchmarks": "Search Benchmarks",
+    "search_security": "Search Vulnerabilities",
     "search_events": "Search Events",
     "view_landing_page": "View Landing Page",
     "generate_html_files": "Generate HTML Files",

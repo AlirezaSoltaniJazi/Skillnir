@@ -27,6 +27,7 @@
       "research": "Recherche",
       "events": "Evenements",
       "benchmarks": "Benchmarks",
+      "security": "Sécurité",
       "settings": "Parametres"
     },
     "sort_modes": {
@@ -363,6 +364,22 @@
       "grid_duration": "Duree"
     },
 
+    "security": {
+      "title": "Vulnérabilités de sécurité",
+      "subtitle": "Rechercher des CVE critiques, des zero-days et des avis de sécurité",
+      "categories_label": "Catégories :",
+      "filter_by_source": "Filtrer par source (optionnel) :",
+      "vulns_in_kb": "Vulnérabilités dans la base de connaissances",
+      "regenerated_landing": "Page régénérée avec {count} vulnérabilités",
+      "result_success_title": "Recherche de sécurité réussie",
+      "result_fail_title": "Recherche de sécurité échouée",
+      "grid_vulns_found": "Vulnérabilités trouvées",
+      "grid_new_vulns": "Nouvelles",
+      "grid_updated": "Mises à jour",
+      "grid_duration": "Durée",
+      "select_at_least_one_category": "Sélectionnez au moins une catégorie"
+    },
+
     "settings": {
       "title": "Parametres",
       "subtitle": "Configurer les preferences de l'application.",
@@ -429,6 +446,7 @@
     "search_latest_news": "Rechercher les dernieres actualites",
     "search_latest_articles": "Rechercher les derniers articles",
     "search_benchmarks": "Rechercher des benchmarks",
+    "search_security": "Rechercher des vulnérabilités",
     "search_events": "Rechercher des evenements",
     "view_landing_page": "Voir la page d'accueil",
     "generate_html_files": "Generer les fichiers HTML",

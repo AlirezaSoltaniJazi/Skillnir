@@ -27,6 +27,7 @@
       "research": "Kërkim",
       "events": "Ngjarje",
       "benchmarks": "Benchmarke",
+      "security": "Siguria",
       "settings": "Cilësimet"
     },
     "sort_modes": {
@@ -363,6 +364,22 @@
       "grid_duration": "Kohezgjatja"
     },
 
+    "security": {
+      "title": "Dobësi sigurie",
+      "subtitle": "Kërko CVE kritike, zero-day dhe këshilla sigurie",
+      "categories_label": "Kategoritë:",
+      "filter_by_source": "Filtro sipas burimit (opsionale):",
+      "vulns_in_kb": "Dobësi në bazën e njohurive",
+      "regenerated_landing": "Faqja u rigjenerua me {count} dobësi",
+      "result_success_title": "Kërkimi i sigurisë përfundoi me sukses",
+      "result_fail_title": "Kërkimi i sigurisë dështoi",
+      "grid_vulns_found": "Dobësi të gjetura",
+      "grid_new_vulns": "Të reja",
+      "grid_updated": "Të përditësuara",
+      "grid_duration": "Kohëzgjatja",
+      "select_at_least_one_category": "Zgjidhni të paktën një kategori"
+    },
+
     "settings": {
       "title": "Cilësimet",
       "subtitle": "Konfiguro preferencat e aplikacionit.",
@@ -429,6 +446,7 @@
     "search_latest_news": "Kërko lajmet e fundit",
     "search_latest_articles": "Kërko artikujt e fundit",
     "search_benchmarks": "Kerko benchmarke",
+    "search_security": "Kërko dobësi",
     "search_events": "Kërko ngjarje",
     "view_landing_page": "Shiko faqen kryesore",
     "generate_html_files": "Gjenero skedarë HTML",

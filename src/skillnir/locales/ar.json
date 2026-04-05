@@ -27,6 +27,7 @@
       "research": "البحث",
       "events": "الفعاليات",
       "benchmarks": "المعايير",
+      "security": "الأمان",
       "settings": "الإعدادات"
     },
     "sort_modes": {
@@ -363,6 +364,22 @@
       "grid_duration": "المدة"
     },
 
+    "security": {
+      "title": "ثغرات أمنية",
+      "subtitle": "البحث عن ثغرات CVE الحرجة وهجمات اليوم الصفري والتنبيهات الأمنية",
+      "categories_label": "الفئات:",
+      "filter_by_source": "تصفية حسب المصدر (اختياري):",
+      "vulns_in_kb": "ثغرات في قاعدة المعرفة",
+      "regenerated_landing": "تم إعادة إنشاء الصفحة مع {count} ثغرة",
+      "result_success_title": "تم البحث الأمني بنجاح",
+      "result_fail_title": "فشل البحث الأمني",
+      "grid_vulns_found": "الثغرات المكتشفة",
+      "grid_new_vulns": "جديدة",
+      "grid_updated": "محدّثة",
+      "grid_duration": "المدة",
+      "select_at_least_one_category": "حدد فئة واحدة على الأقل"
+    },
+
     "settings": {
       "title": "الإعدادات",
       "subtitle": "تكوين تفضيلات التطبيق.",
@@ -429,6 +446,7 @@
     "search_latest_news": "البحث عن أحدث الأخبار",
     "search_latest_articles": "البحث عن أحدث المقالات",
     "search_benchmarks": "البحث عن المعايير",
+    "search_security": "البحث عن الثغرات",
     "search_events": "البحث عن فعاليات",
     "view_landing_page": "عرض الصفحة الرئيسية",
     "generate_html_files": "توليد ملفات HTML",
