@@ -51,6 +51,7 @@ tests/test_compressor.py            # 38+ unit tests
 ## Compression Algorithm
 
 Applied in order:
+
 1. **Detect protected zones** — code blocks, inline code, JSON templates, URLs, file paths, markdown headers
 2. **Replace verbose phrases** — "in order to" -> "to", "due to the fact that" -> "because" (~30 pairs)
 3. **Remove stop words** — articles, auxiliaries, intensifiers, fillers (outside protected zones)
@@ -60,69 +61,69 @@ Applied in order:
 
 ### ALWAYS REMOVE
 
-| Category | Words |
-|----------|-------|
-| Articles | a, an, the |
-| Auxiliaries | is, are, was, were, am, be, been, being, have, has, had, do, does, did |
-| Intensifiers | very, quite, rather, somewhat, really, extremely, essentially, particularly, especially |
-| Fillers | currently, basically, actually, simply, just, certainly, definitely, obviously, clearly, literally |
+| Category     | Words                                                                                              |
+| ------------ | -------------------------------------------------------------------------------------------------- |
+| Articles     | a, an, the                                                                                         |
+| Auxiliaries  | is, are, was, were, am, be, been, being, have, has, had, do, does, did                             |
+| Intensifiers | very, quite, rather, somewhat, really, extremely, essentially, particularly, especially            |
+| Fillers      | currently, basically, actually, simply, just, certainly, definitely, obviously, clearly, literally |
 
 ### ALWAYS KEEP
 
-| Category | Words |
-|----------|-------|
-| Negations | not, no, never, without, nor, neither |
-| Uncertainty | may, might, could, seems, appears |
-| Critical prepositions | from, with, must |
-| All numbers | 42, 3.14, 200K, 1M |
-| Technical terms | any domain-specific vocabulary |
-| URLs | https://... |
-| Code blocks | ``` ... ``` |
-| JSON templates | {{ ... }} |
+| Category              | Words                                 |
+| --------------------- | ------------------------------------- |
+| Negations             | not, no, never, without, nor, neither |
+| Uncertainty           | may, might, could, seems, appears     |
+| Critical prepositions | from, with, must                      |
+| All numbers           | 42, 3.14, 200K, 1M                    |
+| Technical terms       | any domain-specific vocabulary        |
+| URLs                  | https://...                           |
+| Code blocks           | `...`                                 |
+| JSON templates        | {{ ... }}                             |
 
 ### PROTECTED ZONES (never modified)
 
-| Zone | Pattern |
-|------|---------|
-| Code blocks | `` ``` ... ``` `` |
-| Inline code | `` `...` `` |
-| JSON templates | `{{ ... }}` and `{{{{ ... }}}}` |
-| URLs | `https://...` |
-| File paths | `/path/to/file` |
-| Markdown headers | `## Header` |
+| Zone             | Pattern                         |
+| ---------------- | ------------------------------- |
+| Code blocks      | ` ``` ... ``` `                 |
+| Inline code      | `` `...` ``                     |
+| JSON templates   | `{{ ... }}` and `{{{{ ... }}}}` |
+| URLs             | `https://...`                   |
+| File paths       | `/path/to/file`                 |
+| Markdown headers | `## Header`                     |
 
 ## Key Patterns
 
-| Pattern | Approach | Key Rule |
-|---------|----------|----------|
-| Protected zones | Regex detection -> `list[tuple[int, int]]` | Detect before any transforms |
-| Phrase replacement | `re.sub` with `re.IGNORECASE` | Apply before word removal |
-| Word removal | `\b` word-boundary regex | Never match partial words |
-| Word sets | `frozenset` constants | O(1) lookup, module-level |
-| Result type | `CompressionResult` dataclass | Includes metrics |
-| Config toggle | `AppConfig.compress_prompts` | `~/.skillnir/config.json` |
+| Pattern            | Approach                                   | Key Rule                     |
+| ------------------ | ------------------------------------------ | ---------------------------- |
+| Protected zones    | Regex detection -> `list[tuple[int, int]]` | Detect before any transforms |
+| Phrase replacement | `re.sub` with `re.IGNORECASE`              | Apply before word removal    |
+| Word removal       | `\b` word-boundary regex                   | Never match partial words    |
+| Word sets          | `frozenset` constants                      | O(1) lookup, module-level    |
+| Result type        | `CompressionResult` dataclass              | Includes metrics             |
+| Config toggle      | `AppConfig.compress_prompts`               | `~/.skillnir/config.json`    |
 
 ## Code Style
 
-| Rule | Convention |
-|------|-----------|
-| Formatter | Black -S (double quotes) |
-| Type hints | `str`, `list[tuple[int, int]]`, `frozenset[str]` |
-| Imports | Absolute only — `from skillnir.compressor import compress_prompt` |
-| Constants | `_ARTICLES`, `_AUXILIARIES` — module-level frozensets |
-| Result pattern | `CompressionResult` dataclass with metrics |
-| Testing | `pytest`, class-based, `TestProtectedZones`, `TestWordCompression`, etc. |
+| Rule           | Convention                                                               |
+| -------------- | ------------------------------------------------------------------------ |
+| Formatter      | Black -S (double quotes)                                                 |
+| Type hints     | `str`, `list[tuple[int, int]]`, `frozenset[str]`                         |
+| Imports        | Absolute only — `from skillnir.compressor import compress_prompt`        |
+| Constants      | `_ARTICLES`, `_AUXILIARIES` — module-level frozensets                    |
+| Result pattern | `CompressionResult` dataclass with metrics                               |
+| Testing        | `pytest`, class-based, `TestProtectedZones`, `TestWordCompression`, etc. |
 
 ## Anti-Patterns
 
-| Anti-Pattern | Why It's Wrong |
-|-------------|----------------|
-| Removing words inside code blocks | Corrupts code — always check protected zones first |
-| Partial word matches | "a" in "data" — must use `\b` word boundaries |
-| Removing negations | "not working" becomes "working" — opposite meaning |
-| Phrase replacement after word removal | "in order to" breaks if "in" removed first |
-| Compressing user input (ask/plan) | Users chose their exact words — only compress system prompts |
-| External dependencies (spaCy/nltk) | Must be pure Python, <100ms, no installs |
+| Anti-Pattern                          | Why It's Wrong                                               |
+| ------------------------------------- | ------------------------------------------------------------ |
+| Removing words inside code blocks     | Corrupts code — always check protected zones first           |
+| Partial word matches                  | "a" in "data" — must use `\b` word boundaries                |
+| Removing negations                    | "not working" becomes "working" — opposite meaning           |
+| Phrase replacement after word removal | "in order to" breaks if "in" removed first                   |
+| Compressing user input (ask/plan)     | Users chose their exact words — only compress system prompts |
+| External dependencies (spaCy/nltk)    | Must be pure Python, <100ms, no installs                     |
 
 ## Code Generation Rules
 
@@ -134,9 +135,9 @@ Applied in order:
 
 ## References
 
-| File | Description |
-|------|-------------|
-| [LEARNED.md](LEARNED.md) | Auto-updated corrections and preferences |
-| [INJECT.md](INJECT.md) | Always-loaded quick reference |
-| [references/compression-rules.md](references/compression-rules.md) | Full rule catalog with before/after examples |
-| [references/protected-zones-guide.md](references/protected-zones-guide.md) | Protected zone detection details |
+| File                                                                       | Description                                  |
+| -------------------------------------------------------------------------- | -------------------------------------------- |
+| [LEARNED.md](LEARNED.md)                                                   | Auto-updated corrections and preferences     |
+| [INJECT.md](INJECT.md)                                                     | Always-loaded quick reference                |
+| [references/compression-rules.md](references/compression-rules.md)         | Full rule catalog with before/after examples |
+| [references/protected-zones-guide.md](references/protected-zones-guide.md) | Protected zone detection details             |

@@ -5,31 +5,37 @@ Protected zones are regions of text that must never be modified by compression. 
 ## Zone Types
 
 ### Code Blocks
-**Pattern**: `` ```...``` `` (fenced code blocks)
-**Regex**: `` ```[\s\S]*?``` ``
+
+**Pattern**: ` ```...``` ` (fenced code blocks)
+**Regex**: ` ```[\s\S]*?``` `
 **Why**: Code syntax would break if words are removed.
 
 ### Inline Code
+
 **Pattern**: `` `...` `` (single backtick)
 **Regex**: `` `[^`\n]+` ``
 **Why**: Function names, CLI commands, variable names must be exact.
 
 ### JSON Templates
+
 **Pattern**: `{{ ... }}` and `{{{{ ... }}}}`
 **Regex**: `\{{2,}[\s\S]*?\}{2,}`
 **Why**: Pipeline prompts use double-braced templates for AI output format instructions. Removing words from JSON keys/values would corrupt the expected output.
 
 ### URLs
+
 **Pattern**: `https://...` or `http://...`
 **Regex**: `https?://\S+`
 **Why**: URLs are exact addresses — any character change breaks them.
 
 ### File Paths
+
 **Pattern**: `/path/to/file` or `~/config`
 **Regex**: `(?<!\w)[/~][\w./-]+(?:\.\w+)`
 **Why**: File paths reference exact filesystem locations.
 
 ### Markdown Headers
+
 **Pattern**: `## Header Text`
 **Regex**: `^#+\s.*$` (multiline)
 **Why**: Headers provide document structure used by AI to navigate sections.
