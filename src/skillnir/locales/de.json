@@ -18,6 +18,7 @@
       "delete_docs": "Docs loeschen",
       "init_skill": "Skill initialisieren",
       "init_docs": "Docs initialisieren",
+      "install_ignore": "Ignore installieren",
       "ask_ai": "AI fragen",
       "plan": "Planen",
       "skills_library": "Skill-Bibliothek",
@@ -25,6 +26,8 @@
       "usage": "Nutzung",
       "research": "Forschung",
       "events": "Veranstaltungen",
+      "benchmarks": "Benchmarks",
+      "security": "Sicherheit",
       "settings": "Einstellungen"
     },
     "sort_modes": {
@@ -292,7 +295,8 @@
         "dotdir": "Dotdir",
         "popularity": "Beliebtheit",
         "performance": "Leistung",
-        "price": "Preis"
+        "price": "Preis",
+        "website": "Webseite"
       }
     },
 
@@ -344,6 +348,38 @@
       "all_events_have_html": "Alle Veranstaltungen haben bereits HTML-Seiten"
     },
 
+    "benchmarks": {
+      "title": "KI-Modell Benchmarks",
+      "subtitle": "Vergleichen Sie Top-KI-Modelle in Coding, Reasoning, Mathematik und mehr",
+      "categories_label": "Benchmark-Kategorien:",
+      "filter_by_provider": "Nach Anbieter filtern (optional):",
+      "model_count_label": "Anzahl der Modelle:",
+      "models_in_kb": "Modelle in der Wissensbasis",
+      "regenerated_landing": "Landingpage mit {count} Modellen regeneriert",
+      "result_success_title": "Benchmarks erfolgreich aktualisiert",
+      "result_fail_title": "Benchmark-Suche fehlgeschlagen",
+      "grid_models_found": "Modelle gefunden",
+      "grid_new_models": "Neue Modelle",
+      "grid_updated": "Aktualisiert",
+      "grid_duration": "Dauer"
+    },
+
+    "security": {
+      "title": "Sicherheitslücken",
+      "subtitle": "Suche nach kritischen CVEs, Zero-Days und Sicherheitshinweisen",
+      "categories_label": "Kategorien:",
+      "filter_by_source": "Nach Quelle filtern (optional):",
+      "vulns_in_kb": "Schwachstellen in der Wissensbasis",
+      "regenerated_landing": "Landingpage mit {count} Schwachstellen regeneriert",
+      "result_success_title": "Sicherheitssuche erfolgreich",
+      "result_fail_title": "Sicherheitssuche fehlgeschlagen",
+      "grid_vulns_found": "Schwachstellen gefunden",
+      "grid_new_vulns": "Neu",
+      "grid_updated": "Aktualisiert",
+      "grid_duration": "Dauer",
+      "select_at_least_one_category": "Mindestens eine Kategorie auswählen"
+    },
+
     "settings": {
       "title": "Einstellungen",
       "subtitle": "Anwendungseinstellungen konfigurieren.",
@@ -359,6 +395,8 @@
         "enabled": "Tonbenachrichtigungen aktiviert",
         "disabled": "Tonbenachrichtigungen deaktiviert"
       },
+      "compression_title": "Prompt-Komprimierung",
+      "compression_subtitle": "Prompts vor dem Senden an KI-Backends komprimieren (spart Token)",
       "ai_tool": {
         "title": "AI-Tool",
         "description": "Aktuell verwendet: {name}"
@@ -406,6 +444,9 @@
     "generate_skill": "Skill generieren",
     "update_all_skills": "Alle Skills aktualisieren",
     "search_latest_news": "Neueste Nachrichten suchen",
+    "search_latest_articles": "Neueste Artikel suchen",
+    "search_benchmarks": "Benchmarks suchen",
+    "search_security": "Schwachstellen suchen",
     "search_events": "Veranstaltungen suchen",
     "view_landing_page": "Landingpage anzeigen",
     "generate_html_files": "HTML-Dateien generieren",

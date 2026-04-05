@@ -1,0 +1,18 @@
+# ── CI/CD Pipelines ───────────────────────────────────────
+# GitHub Actions
+.github/workflows/
+
+# GitLab CI
+.gitlab-ci.yml
+
+# Jenkins
+Jenkinsfile
+
+# CircleCI
+.circleci/
+
+# Travis CI
+.travis.yml
+
+# Azure Pipelines
+azure-pipelines.yml

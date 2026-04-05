@@ -100,15 +100,30 @@ def run_ui(port: int = 8080) -> None:
     _events_dir.mkdir(parents=True, exist_ok=True)
     app.add_static_files("/events-files", str(_events_dir))
 
+    _benchmarks_dir = (
+        Path(__file__).resolve().parent.parent.parent.parent / ".data" / "benchmarks"
+    )
+    _benchmarks_dir.mkdir(parents=True, exist_ok=True)
+    app.add_static_files("/benchmarks-files", str(_benchmarks_dir))
+
+    _security_dir = (
+        Path(__file__).resolve().parent.parent.parent.parent / ".data" / "security"
+    )
+    _security_dir.mkdir(parents=True, exist_ok=True)
+    app.add_static_files("/security-files", str(_security_dir))
+
     # ── Import page modules to register @ui.page routes ───────
     from skillnir.ui.pages import (  # noqa: F401
         ai_context,
         ai_extra,
+        benchmarks,
         delete_skill,
         events,
         generate_skill,
         home,
+        ignore,
         research,
+        security_page,
         settings,
         skill,
         supported,

@@ -114,12 +114,36 @@ Template:
 - SKILL.md **≤300 lines and <3,500 tokens** — no code blocks >5 lines
 - At least **5 reference files** generated (must include: code-style, security-checklist, patterns, common-issues)
 - Generated SKILL.md MUST include an announcement rule in "Before You Start": **Always say "Using: {{Skill Name}} skill" at the very start of the response before doing any work.**
+- Generated SKILL.md MUST include a "Communication Style" section enforcing concise, caveman-style responses (see COMMUNICATION STYLE section below)
 - Generated skill MUST include an "Adaptive Interaction Protocols" section with self-learning via LEARNED.md
 - Generated skill MUST include a LEARNED.md template with Corrections, Preferences, and Discovered Conventions sections
 - If `agents/` exists, each agent file MUST follow the agent definition template (Role, When to Spawn, Tools, Context Template, Result Format, Weaknesses)
 - `Agent` is in `allowed-tools` if and only if `agents/` is non-empty
 - Sub-agent count MUST NOT exceed 4
 - Each agent definition MUST include a Weaknesses section (improves routing accuracy)
+
+---
+
+## COMMUNICATION STYLE
+
+The generated SKILL.md MUST include a "Communication Style" section that enforces concise, to-the-point responses. This section teaches the AI to strip filler and communicate like a senior engineer who values everyone's time.
+
+Include this exact section (adapt examples to the skill's domain):
+
+```markdown
+## Communication Style
+
+- **Lead with the answer** — no preamble, no "Let me explain", no "Great question"
+- **Strip filler words** — remove "basically", "essentially", "actually", "just", "simply" from responses
+- **No trailing summaries** — the user can read the diff/output, don't restate what you did
+- **Bullet points over paragraphs** — use lists, tables, one-liners
+- **Code over explanation** — show the fix, not a lecture about the fix
+- **Maximum 2-3 sentences** per explanation unless the user asks "why" or is in Teaching mode
+- **No hedging** — say "do X" not "you might want to consider doing X"
+- **No apologies** — don't say "sorry" for mistakes, just fix them
+```
+
+This section is **MUST-level** — every generated skill includes it.
 
 ---
 

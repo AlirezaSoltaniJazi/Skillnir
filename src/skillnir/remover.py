@@ -23,6 +23,13 @@ class DocsRemovalResult:
     error: str | None = None
 
 
+@dataclass
+class IgnoreRemovalResult:
+    removed_symlinks: list[Path] = field(default_factory=list)
+    removed_data: bool = False
+    error: str | None = None
+
+
 def find_skill_installations(project_root: Path, skill_name: str) -> list[Path]:
     """Return paths where a skill is installed across all tool dotdirs."""
     found: list[Path] = []
@@ -146,6 +153,52 @@ def delete_docs(project_root: Path) -> DocsRemovalResult:
         ]:
             if _try_clean_empty_dir(parent_dir):
                 result.cleaned_dirs.append(parent_dir)
+
+    except OSError as e:
+        result.error = str(e)
+
+    return result
+
+
+def find_ignore_installations(project_root: Path) -> list[Path]:
+    """Return ignore symlinks in the project root that point to .data/ignore/."""
+    found: list[Path] = []
+    ignore_dir = project_root / ".data" / "ignore"
+    seen: set[str] = set()
+    for tool in TOOLS:
+        if not tool.ignore_file or tool.ignore_file in seen:
+            continue
+        seen.add(tool.ignore_file)
+        path = project_root / tool.ignore_file
+        if path.is_symlink():
+            try:
+                target = path.resolve()
+                if ignore_dir in target.parents or target.parent == ignore_dir:
+                    found.append(path)
+            except OSError:
+                found.append(path)
+    return found
+
+
+def delete_ignore(project_root: Path, delete_data: bool = False) -> IgnoreRemovalResult:
+    """Delete ignore symlinks from project root.
+
+    1. Remove symlinks that point to .data/ignore/
+    2. Optionally remove .data/ignore/ directory
+    """
+    result = IgnoreRemovalResult()
+
+    try:
+        installations = find_ignore_installations(project_root)
+        for path in installations:
+            path.unlink()
+            result.removed_symlinks.append(path)
+
+        if delete_data:
+            ignore_dir = project_root / ".data" / "ignore"
+            if ignore_dir.exists():
+                shutil.rmtree(ignore_dir)
+                result.removed_data = True
 
     except OSError as e:
         result.error = str(e)

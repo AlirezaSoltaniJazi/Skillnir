@@ -101,6 +101,9 @@ def _load_flag_img(country_code: str) -> str:
 
     if country_code in _flag_cache:
         return _flag_cache[country_code]
+    if country_code not in EVENT_COUNTRIES:
+        _flag_cache[country_code] = ""
+        return ""
     flag_path = _FLAGS_DIR / f"{country_code}.png"
     if not flag_path.exists():
         _flag_cache[country_code] = ""
@@ -402,6 +405,10 @@ def _generate_landing_html(
         "ai-security": "#f97316",
     }
 
+    from datetime import date as date_cls
+
+    today = date_cls.today()
+
     rows = []
     for e in sorted_events:
         color = topic_colors.get(e.topic, "#6b7280")
@@ -418,13 +425,44 @@ def _generate_landing_html(
         free_label = "Free" if e.is_free else "Paid"
         free_color = "#22c55e" if e.is_free else "#ef4444"
         free_val = "free" if e.is_free else "paid"
+
+        # Date color-coding and remaining time
+        try:
+            evt_date = date_cls.fromisoformat(e.event_date)
+            days_remaining = (evt_date - today).days
+        except ValueError:
+            evt_date = None
+            days_remaining = None
+
+        if days_remaining is not None and days_remaining < 0:
+            date_color = "#ef4444"
+            remaining_label = "Passed"
+            remaining_color = "#ef4444"
+        elif days_remaining == 0:
+            date_color = "#f59e0b"
+            remaining_label = "Today"
+            remaining_color = "#f59e0b"
+        elif days_remaining == 1:
+            date_color = "#94a3b8"
+            remaining_label = "Tomorrow"
+            remaining_color = "#94a3b8"
+        elif days_remaining is not None:
+            date_color = "#94a3b8"
+            remaining_label = f"{days_remaining} days"
+            remaining_color = "#94a3b8"
+        else:
+            date_color = "#94a3b8"
+            remaining_label = "—"
+            remaining_color = "#94a3b8"
+
         rows.append(f"""\
         <tr onclick="window.open('events/{e.topic}/{e.id}.html','_blank')" style="cursor:pointer;" class="row" data-topic="{e.topic}" data-country="{e.country}" data-free="{free_val}" data-date="{e.event_date}">
           <td style="padding:12px 16px;">
             <div style="font-weight:600;color:#e2e8f0;">{title_escaped}{badge}</div>
             <div style="font-size:13px;color:#94a3b8;margin-top:4px;">{html.escape(e.organizer)}</div>
           </td>
-          <td style="padding:12px 16px;color:#94a3b8;font-family:monospace;font-size:13px;white-space:nowrap;">{e.event_date}</td>
+          <td style="padding:12px 16px;color:{date_color};font-family:monospace;font-size:13px;white-space:nowrap;">{e.event_date}</td>
+          <td style="padding:12px 16px;color:{remaining_color};font-size:13px;white-space:nowrap;font-weight:600;">{remaining_label}</td>
           <td style="padding:12px 16px;color:#94a3b8;">{location_escaped}</td>
           <td style="padding:12px 16px;white-space:nowrap;">
             <span style="background:{country_color};color:#fff;padding:2px 10px;border-radius:12px;font-size:12px;display:inline-flex;align-items:center;">{_load_flag_img(e.country)}{country_name}</span>
@@ -506,7 +544,9 @@ def _generate_landing_html(
     from datetime import datetime
 
     total = len(sorted_events)
-    next_event = sorted_events[0].event_date if sorted_events else "N/A"
+    today_iso = today.isoformat()
+    upcoming = [e for e in sorted_events if e.event_date >= today_iso]
+    next_event = upcoming[0].event_date if upcoming else "N/A"
     generated_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     subtitle = (
         f"{total} events | Next event: {next_event}" f" | Generated: {generated_at}"

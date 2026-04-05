@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Vulnerabilities</title>
+  <style>
+    :root {
+      --bg: #f8fafc; --surface: #ffffff; --surface-alt: #f1f5f9;
+      --text: #1e293b; --text-secondary: #475569; --text-muted: #94a3b8;
+      --border: #e2e8f0; --hover: #f1f5f9;
+      --chip-active-border: #1e293b; --chip-active-shadow: rgba(0,0,0,0.1);
+    }
+    [data-theme="dark"] {
+      --bg: #0f0f17; --surface: #1a1a2e; --surface-alt: #12121e;
+      --text: #e2e8f0; --text-secondary: #cbd5e1; --text-muted: #6b7280;
+      --border: #1e1e36; --hover: #22223a;
+      --chip-active-border: #fff; --chip-active-shadow: rgba(255,255,255,0.2);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 32px 24px; }
+    .top-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+    h1 {
+      font-size: 2.5rem; font-weight: 700;
+      background: linear-gradient(135deg, #ef4444 0%, #f97316 50%, #f59e0b 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .theme-toggle {
+      background: var(--surface); border: 1px solid var(--border); color: var(--text);
+      width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+      flex-shrink: 0; margin-top: 8px;
+    }
+    .theme-toggle:hover { background: var(--hover); }
+    .subtitle { color: var(--text-muted); margin-bottom: 24px; font-size: 15px; }
+    .filter-section { margin-bottom: 16px; }
+    .filter-label { color: var(--text-muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 8px; }
+    .stats { display: flex; flex-wrap: wrap; gap: 8px; }
+    .table-wrap { overflow-x: auto; margin-top: 16px; }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); border-radius: 12px; overflow: hidden; }
+    thead th {
+      text-align: left; padding: 10px 12px; background: var(--surface-alt); color: var(--text-muted);
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;
+      white-space: nowrap; position: sticky; top: 0; cursor: pointer; user-select: none;
+    }
+    thead th:hover { color: var(--text); }
+    .sort-arrow { margin-left: 3px; font-size: 10px; opacity: 0.4; }
+    thead th.sorted .sort-arrow { opacity: 1; }
+    .row { border-bottom: 1px solid var(--border); transition: background 0.15s; cursor: pointer; }
+    .row:hover { background: var(--hover); }
+    .row td { padding: 10px 12px; font-size: 14px; }
+    .chip {
+      display: inline-block; padding: 5px 14px; border-radius: 20px;
+      font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+    .chip:hover { opacity: 1 !important; transform: translateY(-1px); }
+    .chip.active { opacity: 1 !important; border-color: var(--chip-active-border); box-shadow: 0 0 0 1px var(--chip-active-shadow); }
+  </style>
+  <script>
+    (function() {
+      var t = localStorage.getItem('skillnir-theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <h1>Security Vulnerabilities</h1>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"></button>
+    </div>
+    <p class="subtitle"><!-- SUBTITLE --></p>
+    <div class="filter-section">
+      <div class="filter-label">Categories</div>
+      <div class="stats"><!-- CATEGORY_CHIPS --></div>
+    </div>
+    <div class="filter-section">
+      <div class="filter-label">Severity</div>
+      <div class="stats"><!-- SEVERITY_CHIPS --></div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th onclick="sortTable(this,'text')">Vulnerability <span class="sort-arrow"></span></th>
+            <th onclick="sortTable(this,'text')">Source <span class="sort-arrow"></span></th>
+            <th onclick="sortTable(this,'text')">Date <span class="sort-arrow"></span></th>
+            <th onclick="sortTable(this,'text')">Category <span class="sort-arrow"></span></th>
+            <th onclick="sortTable(this,'text')">Severity <span class="sort-arrow"></span></th>
+            <th onclick="sortTable(this,'num')" style="text-align:center;">CVSS <span class="sort-arrow"></span></th>
+          </tr>
+        </thead>
+        <tbody>
+<!-- TABLE_ROWS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    const activeCategories = new Set();
+    const activeSeverities = new Set();
+    const TOTAL_VULNS = <!-- TOTAL_VULNS -->;
+    let currentSortCol = -1;
+    let sortAsc = true;
+
+    function toggleTheme() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('skillnir-theme', next);
+      updateToggleIcon();
+    }
+    function updateToggleIcon() {
+      var btn = document.querySelector('.theme-toggle');
+      btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    }
+    updateToggleIcon();
+
+    function toggleCategory(cat) {
+      const allChip = document.querySelector('.cat-chip[data-filter="all"]');
+      if (cat === 'all') {
+        activeCategories.clear();
+        document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+        allChip.classList.add('active');
+      } else {
+        allChip.classList.remove('active');
+        if (activeCategories.has(cat)) activeCategories.delete(cat); else activeCategories.add(cat);
+        const chip = document.querySelector('.cat-chip[data-filter="' + CSS.escape(cat) + '"]');
+        if (chip) chip.classList.toggle('active');
+        if (activeCategories.size === 0) allChip.classList.add('active');
+      }
+      applyFilters();
+    }
+
+    function toggleSeverity(sev) {
+      const allChip = document.querySelector('.sev-chip[data-filter="all"]');
+      if (sev === 'all') {
+        activeSeverities.clear();
+        document.querySelectorAll('.sev-chip').forEach(c => c.classList.remove('active'));
+        allChip.classList.add('active');
+      } else {
+        allChip.classList.remove('active');
+        if (activeSeverities.has(sev)) activeSeverities.delete(sev); else activeSeverities.add(sev);
+        const chip = document.querySelector('.sev-chip[data-filter="' + CSS.escape(sev) + '"]');
+        if (chip) chip.classList.toggle('active');
+        if (activeSeverities.size === 0) allChip.classList.add('active');
+      }
+      applyFilters();
+    }
+
+    function applyFilters() {
+      const rows = document.querySelectorAll('tr.row');
+      const subtitle = document.querySelector('.subtitle');
+      let visible = 0;
+      rows.forEach(row => {
+        const catMatch = activeCategories.size === 0 || activeCategories.has(row.dataset.category);
+        const sevMatch = activeSeverities.size === 0 || activeSeverities.has(row.dataset.severity);
+        if (catMatch && sevMatch) { row.style.display = ''; visible++; }
+        else { row.style.display = 'none'; }
+      });
+      subtitle.textContent = visible + ' of ' + TOTAL_VULNS + ' vulnerabilities';
+    }
+
+    function sortTable(th, type) {
+      const thead = th.closest('thead');
+      const ths = Array.from(thead.querySelectorAll('th'));
+      const colIdx = ths.indexOf(th);
+      if (currentSortCol === colIdx) { sortAsc = !sortAsc; }
+      else { currentSortCol = colIdx; sortAsc = type === 'num' ? false : true; }
+      ths.forEach(h => { h.classList.remove('sorted'); const a = h.querySelector('.sort-arrow'); if (a) a.textContent = ''; });
+      th.classList.add('sorted');
+      const arrow = th.querySelector('.sort-arrow');
+      if (arrow) arrow.textContent = sortAsc ? '\u25b2' : '\u25bc';
+      const tbody = document.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr.row'));
+      rows.sort((a, b) => {
+        const cA = a.children[colIdx]; const cB = b.children[colIdx];
+        const vA = cA ? (cA.dataset.sort || cA.textContent.trim()) : '';
+        const vB = cB ? (cB.dataset.sort || cB.textContent.trim()) : '';
+        if (type === 'num') { return sortAsc ? (parseFloat(vA)||0)-(parseFloat(vB)||0) : (parseFloat(vB)||0)-(parseFloat(vA)||0); }
+        return sortAsc ? vA.localeCompare(vB) : vB.localeCompare(vA);
+      });
+      rows.forEach(row => tbody.appendChild(row));
+    }
+  </script>
+</body>
+</html>

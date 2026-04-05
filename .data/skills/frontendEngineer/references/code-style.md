@@ -22,6 +22,7 @@ from skillnir.ui.layout import header
 ```
 
 **Rules**:
+
 - stdlib imports first
 - Third-party imports second (`nicegui`)
 - Local (`skillnir.*`) imports third
@@ -62,14 +63,14 @@ Defined in `_GLOBAL_CSS` within `src/skillnir/ui/__init__.py`:
 
 | Class             | Purpose                                    |
 | ----------------- | ------------------------------------------ |
-| `fade-in`         | Entry animation (translateY + opacity)      |
-| `card-hover`      | Hover lift + shadow effect on cards         |
-| `gradient-text`   | Indigo→Violet→Cyan gradient text            |
-| `accent-bar`      | Thin colored bar (3px height, rounded)      |
-| `border-l-accent` | Left border with 4px solid + 12px radius    |
-| `nav-active`      | Active navigation item highlight            |
-| `model-card`      | Hover scale + border animation for pickers  |
-| `text-secondary`  | Theme-adaptive secondary text color         |
+| `fade-in`         | Entry animation (translateY + opacity)     |
+| `card-hover`      | Hover lift + shadow effect on cards        |
+| `gradient-text`   | Indigo→Violet→Cyan gradient text           |
+| `accent-bar`      | Thin colored bar (3px height, rounded)     |
+| `border-l-accent` | Left border with 4px solid + 12px radius   |
+| `nav-active`      | Active navigation item highlight           |
+| `model-card`      | Hover scale + border animation for pickers |
+| `text-secondary`  | Theme-adaptive secondary text color        |
 
 ---
 
@@ -161,14 +162,14 @@ def page_route_name():
 
 ## Naming Conventions
 
-| Entity          | Convention                           | Example                          |
-| --------------- | ------------------------------------ | -------------------------------- |
-| Component file  | `snake_case.py`                      | `stat_card.py`                   |
-| Component func  | `snake_case` (matches filename)      | `def stat_card(...)`             |
-| Page file       | `snake_case.py`                      | `generate_skill.py`              |
-| Page func       | `page_feature_name`                  | `def page_generate_skill()`      |
-| Constants       | `SCREAMING_SNAKE`                    | `NAV_GROUPS`, `SORT_MODES`       |
-| Private consts  | `_SCREAMING_SNAKE`                   | `_COLOR_HEX`, `_ICON_BG`        |
-| CSS classes     | `kebab-case`                         | `card-hover`, `fade-in`          |
-| Route paths     | `kebab-case`                         | `/generate-skill`, `/check-skill`|
-| i18n keys       | `dot.notation`                       | `pages.home.sections.skill.title`|
+| Entity         | Convention                      | Example                           |
+| -------------- | ------------------------------- | --------------------------------- |
+| Component file | `snake_case.py`                 | `stat_card.py`                    |
+| Component func | `snake_case` (matches filename) | `def stat_card(...)`              |
+| Page file      | `snake_case.py`                 | `generate_skill.py`               |
+| Page func      | `page_feature_name`             | `def page_generate_skill()`       |
+| Constants      | `SCREAMING_SNAKE`               | `NAV_GROUPS`, `SORT_MODES`        |
+| Private consts | `_SCREAMING_SNAKE`              | `_COLOR_HEX`, `_ICON_BG`          |
+| CSS classes    | `kebab-case`                    | `card-hover`, `fade-in`           |
+| Route paths    | `kebab-case`                    | `/generate-skill`, `/check-skill` |
+| i18n keys      | `dot.notation`                  | `pages.home.sections.skill.title` |

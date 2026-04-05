@@ -77,8 +77,8 @@ src/skillnir/ui/
 
 ## Key Patterns
 
-| Pattern              | Approach                                         | Key Rule                                              |
-| -------------------- | ------------------------------------------------ | ----------------------------------------------------- |
+| Pattern              | Approach                                         | Key Rule                                               |
+| -------------------- | ------------------------------------------------ | ------------------------------------------------------ |
 | Component functions  | `def name(params) -> None` with context managers | One component per file, type-hinted params             |
 | Context manager wrap | `@contextmanager` + `yield` for wrapper cards    | Use for container components (e.g., `form_card`)       |
 | Color maps           | Module-level `_COLOR_HEX` dict constants         | Map semantic names to hex — never hardcode colors      |
@@ -92,23 +92,23 @@ See [references/component-patterns.md](references/component-patterns.md) for ful
 
 ## Code Style
 
-| Rule                  | Convention                                                        |
-| --------------------- | ----------------------------------------------------------------- |
-| Python version        | 3.14+ — use latest syntax features                                |
-| Formatter             | Black with `-S` flag (single quotes, no string normalization)     |
-| Import style          | Absolute only — `from skillnir.ui.components.X import X`         |
-| Import order          | stdlib → third-party (nicegui) → local (skillnir.*)              |
-| NiceGUI imports       | `from nicegui import ui` — at function level when needed          |
-| Naming — files        | `snake_case.py` (one component/page per file)                    |
-| Naming — functions    | `snake_case` — component name matches filename                   |
-| Naming — constants    | `SCREAMING_SNAKE_CASE` (e.g., `NAV_GROUPS`, `_COLOR_HEX`)        |
-| Naming — pages        | `page_feature_name()` with `@ui.page('/route')` decorator        |
-| Styling — classes     | `.classes('tailwind-utilities custom-classes')`                   |
-| Styling — props       | `.props('outlined dense rounded')` for Quasar props               |
-| Styling — inline      | `.style(f'color: {hex_color}')` only for dynamic values           |
-| Type hints            | `str \| None`, `list[X]`, `Callable \| None` — modern syntax     |
-| Strings               | Single quotes (Black -S enforced)                                 |
-| Docstrings            | Google-style, module one-liners, function descriptions             |
+| Rule               | Convention                                                    |
+| ------------------ | ------------------------------------------------------------- |
+| Python version     | 3.14+ — use latest syntax features                            |
+| Formatter          | Black with `-S` flag (single quotes, no string normalization) |
+| Import style       | Absolute only — `from skillnir.ui.components.X import X`      |
+| Import order       | stdlib → third-party (nicegui) → local (skillnir.\*)          |
+| NiceGUI imports    | `from nicegui import ui` — at function level when needed      |
+| Naming — files     | `snake_case.py` (one component/page per file)                 |
+| Naming — functions | `snake_case` — component name matches filename                |
+| Naming — constants | `SCREAMING_SNAKE_CASE` (e.g., `NAV_GROUPS`, `_COLOR_HEX`)     |
+| Naming — pages     | `page_feature_name()` with `@ui.page('/route')` decorator     |
+| Styling — classes  | `.classes('tailwind-utilities custom-classes')`               |
+| Styling — props    | `.props('outlined dense rounded')` for Quasar props           |
+| Styling — inline   | `.style(f'color: {hex_color}')` only for dynamic values       |
+| Type hints         | `str \| None`, `list[X]`, `Callable \| None` — modern syntax  |
+| Strings            | Single quotes (Black -S enforced)                             |
+| Docstrings         | Google-style, module one-liners, function descriptions        |
 
 See [references/code-style.md](references/code-style.md) for full formatting examples.
 
@@ -123,15 +123,15 @@ See [references/code-style.md](references/code-style.md) for full formatting exa
 
 ## Testing Standards
 
-| Rule                     | Convention                                                   |
-| ------------------------ | ------------------------------------------------------------ |
-| Framework                | pytest 9.0.2+ with `asyncio_mode = "auto"`                  |
-| Test file naming         | `test_{{module}}.py` in `tests/`                             |
-| UI component tests       | Test function output indirectly via integration tests        |
-| Key fixtures             | `tmp_path` for filesystem, `mock_config` for app config      |
-| Mocking                  | `unittest.mock.patch` for NiceGUI elements, storage          |
-| What to test             | Component logic, color maps, state transitions, validation   |
-| What NOT to test         | NiceGUI rendering internals, Quasar behavior, CSS output     |
+| Rule               | Convention                                                 |
+| ------------------ | ---------------------------------------------------------- |
+| Framework          | pytest 9.0.2+ with `asyncio_mode = "auto"`                 |
+| Test file naming   | `test_{{module}}.py` in `tests/`                           |
+| UI component tests | Test function output indirectly via integration tests      |
+| Key fixtures       | `tmp_path` for filesystem, `mock_config` for app config    |
+| Mocking            | `unittest.mock.patch` for NiceGUI elements, storage        |
+| What to test       | Component logic, color maps, state transitions, validation |
+| What NOT to test   | NiceGUI rendering internals, Quasar behavior, CSS output   |
 
 See [references/test-patterns.md](references/test-patterns.md) for full test examples.
 
@@ -158,18 +158,18 @@ See [references/security-checklist.md](references/security-checklist.md) for det
 
 ## Anti-Patterns
 
-| Anti-Pattern                                | Why It's Wrong                                                      |
-| ------------------------------------------- | ------------------------------------------------------------------- |
-| Using raw HTML instead of NiceGUI elements  | Breaks reactivity and loses Quasar theming                          |
-| Hardcoding hex colors in components         | Use `_COLOR_HEX` maps — keeps palette consistent and maintainable   |
-| Skipping `header()` on page functions       | Pages lose navigation drawer, dark mode toggle, language switcher   |
-| Module-level `from nicegui import ui`       | Causes import-time side effects — import inside functions            |
-| Using `os.path` instead of `pathlib`        | Project standardized on `Path` — consistency and readability        |
-| Using relative imports                      | Project uses absolute imports exclusively                           |
-| Using JavaScript frameworks (React/Vue)     | This is a NiceGUI project — all UI is Python-defined                |
-| Putting page logic directly in `layout.py`  | Pages belong in `pages/` — layout is for shared navigation only     |
-| Inline CSS for theme-level styles           | Add to `_GLOBAL_CSS` in `__init__.py` — keeps theme centralized     |
-| Skipping i18n `t()` for user-facing strings | Breaks internationalization for 9 supported languages               |
+| Anti-Pattern                                | Why It's Wrong                                                    |
+| ------------------------------------------- | ----------------------------------------------------------------- |
+| Using raw HTML instead of NiceGUI elements  | Breaks reactivity and loses Quasar theming                        |
+| Hardcoding hex colors in components         | Use `_COLOR_HEX` maps — keeps palette consistent and maintainable |
+| Skipping `header()` on page functions       | Pages lose navigation drawer, dark mode toggle, language switcher |
+| Module-level `from nicegui import ui`       | Causes import-time side effects — import inside functions         |
+| Using `os.path` instead of `pathlib`        | Project standardized on `Path` — consistency and readability      |
+| Using relative imports                      | Project uses absolute imports exclusively                         |
+| Using JavaScript frameworks (React/Vue)     | This is a NiceGUI project — all UI is Python-defined              |
+| Putting page logic directly in `layout.py`  | Pages belong in `pages/` — layout is for shared navigation only   |
+| Inline CSS for theme-level styles           | Add to `_GLOBAL_CSS` in `__init__.py` — keeps theme centralized   |
+| Skipping i18n `t()` for user-facing strings | Breaks internationalization for 9 supported languages             |
 
 ## Code Generation Rules
 
@@ -185,12 +185,12 @@ See [references/security-checklist.md](references/security-checklist.md) for det
 
 Corrections and preferences persist via [LEARNED.md](LEARNED.md).
 
-| Mode       | Detection Signal                                                    | Behavior                                                              |
-| ---------- | ------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| Diagnostic | "not rendering", "layout broken", "style missing", UI screenshot    | Read component + CSS, trace styling chain, fix with minimal changes   |
-| Efficient  | "another component like X", "add page for Y", "same card as Z"     | Minimal explanation, replicate existing patterns, apply conventions    |
-| Teaching   | "what is this class", "how does NiceGUI X work", "explain layout"  | Explain with project examples, link to references/                    |
-| Review     | "review this component", "check my page", "audit styling"          | Read-only analysis, check against conventions, report without changes |
+| Mode       | Detection Signal                                                  | Behavior                                                              |
+| ---------- | ----------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Diagnostic | "not rendering", "layout broken", "style missing", UI screenshot  | Read component + CSS, trace styling chain, fix with minimal changes   |
+| Efficient  | "another component like X", "add page for Y", "same card as Z"    | Minimal explanation, replicate existing patterns, apply conventions   |
+| Teaching   | "what is this class", "how does NiceGUI X work", "explain layout" | Explain with project examples, link to references/                    |
+| Review     | "review this component", "check my page", "audit styling"         | Read-only analysis, check against conventions, report without changes |
 
 **Self-Learning**: All learnings are **written** to LEARNED.md — not suggested, written:
 
@@ -201,38 +201,38 @@ Corrections and preferences persist via [LEARNED.md](LEARNED.md).
 
 ## Sub-Agent Delegation
 
-| Agent              | Role                                              | Spawn When                                            | Tools                          |
-| ------------------ | ------------------------------------------------- | ----------------------------------------------------- | ------------------------------ |
-| component-auditor  | Read-only component analysis for consistency      | UI consistency review, component pattern audit         | Read Glob Grep                 |
-| style-enforcer     | Design system and Tailwind/Quasar compliance      | Style audit, theme consistency check, color palette    | Read Glob Grep                 |
-| test-writer        | UI component and integration test generation      | "write tests for X", new component, coverage gaps     | Read Edit Write Glob Grep Bash |
+| Agent             | Role                                         | Spawn When                                          | Tools                          |
+| ----------------- | -------------------------------------------- | --------------------------------------------------- | ------------------------------ |
+| component-auditor | Read-only component analysis for consistency | UI consistency review, component pattern audit      | Read Glob Grep                 |
+| style-enforcer    | Design system and Tailwind/Quasar compliance | Style audit, theme consistency check, color palette | Read Glob Grep                 |
+| test-writer       | UI component and integration test generation | "write tests for X", new component, coverage gaps   | Read Edit Write Glob Grep Bash |
 
 **Delegation rules**: Spawn when task is self-contained and won't need follow-up context. Never delegate tasks requiring architectural decisions. See [agents/](agents/) for full definitions.
 
 ## Freedom Levels
 
-| Level             | Scope                                                                          | Examples                                                          |
-| ----------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
-| **MUST** follow   | `header()` on pages, absolute imports, `_COLOR_HEX` maps, `t()` for strings  | "MUST call header()", "MUST use color maps"                       |
-| **SHOULD** follow | `fade-in` animation, `card-hover` class, max-width content column              | "SHOULD add fade-in", "SHOULD wrap in max-w-5xl"                  |
-| **CAN** customize | Component internal layout, icon choice, spacing values, animation timing       | "CAN use different gap", "CAN choose icon color"                  |
+| Level             | Scope                                                                       | Examples                                         |
+| ----------------- | --------------------------------------------------------------------------- | ------------------------------------------------ |
+| **MUST** follow   | `header()` on pages, absolute imports, `_COLOR_HEX` maps, `t()` for strings | "MUST call header()", "MUST use color maps"      |
+| **SHOULD** follow | `fade-in` animation, `card-hover` class, max-width content column           | "SHOULD add fade-in", "SHOULD wrap in max-w-5xl" |
+| **CAN** customize | Component internal layout, icon choice, spacing values, animation timing    | "CAN use different gap", "CAN choose icon color" |
 
 ## References
 
-| File                                                                     | Description                                                        |
-| ------------------------------------------------------------------------ | ------------------------------------------------------------------ |
-| [LEARNED.md](LEARNED.md)                                                 | **Auto-updated.** Corrections, preferences, conventions            |
-| [INJECT.md](INJECT.md)                                                   | Always-loaded quick reference (hallucination firewall)             |
-| [references/component-patterns.md](references/component-patterns.md)     | Component structure, context managers, lifecycle with examples      |
-| [references/code-style.md](references/code-style.md)                     | Import order, Tailwind/Quasar conventions, formatting examples     |
-| [references/state-patterns.md](references/state-patterns.md)             | Storage, async progress, callback patterns with examples           |
-| [references/test-patterns.md](references/test-patterns.md)               | UI component testing strategies and mock patterns                  |
-| [references/security-checklist.md](references/security-checklist.md)     | XSS prevention, storage safety, path validation checklists         |
-| [references/common-issues.md](references/common-issues.md)               | NiceGUI gotchas, async pitfalls, styling troubleshooting           |
-| [references/ai-interaction-guide.md](references/ai-interaction-guide.md) | Anti-dependency strategies, correction protocols                   |
-| [references/component-template.py](references/component-template.py)     | Copy-paste component boilerplate                                   |
-| [assets/global-css-example.py](assets/global-css-example.py)             | _GLOBAL_CSS template with theme variables                          |
-| [scripts/validate-frontend.sh](scripts/validate-frontend.sh)             | UI naming + structure convention checker                            |
-| [agents/component-auditor.md](agents/component-auditor.md)               | Read-only UI component analysis agent                              |
-| [agents/style-enforcer.md](agents/style-enforcer.md)                     | Design system compliance agent                                     |
-| [agents/test-writer.md](agents/test-writer.md)                           | UI component test generation agent                                 |
+| File                                                                     | Description                                                    |
+| ------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| [LEARNED.md](LEARNED.md)                                                 | **Auto-updated.** Corrections, preferences, conventions        |
+| [INJECT.md](INJECT.md)                                                   | Always-loaded quick reference (hallucination firewall)         |
+| [references/component-patterns.md](references/component-patterns.md)     | Component structure, context managers, lifecycle with examples |
+| [references/code-style.md](references/code-style.md)                     | Import order, Tailwind/Quasar conventions, formatting examples |
+| [references/state-patterns.md](references/state-patterns.md)             | Storage, async progress, callback patterns with examples       |
+| [references/test-patterns.md](references/test-patterns.md)               | UI component testing strategies and mock patterns              |
+| [references/security-checklist.md](references/security-checklist.md)     | XSS prevention, storage safety, path validation checklists     |
+| [references/common-issues.md](references/common-issues.md)               | NiceGUI gotchas, async pitfalls, styling troubleshooting       |
+| [references/ai-interaction-guide.md](references/ai-interaction-guide.md) | Anti-dependency strategies, correction protocols               |
+| [references/component-template.py](references/component-template.py)     | Copy-paste component boilerplate                               |
+| [assets/global-css-example.py](assets/global-css-example.py)             | \_GLOBAL_CSS template with theme variables                     |
+| [scripts/validate-frontend.sh](scripts/validate-frontend.sh)             | UI naming + structure convention checker                       |
+| [agents/component-auditor.md](agents/component-auditor.md)               | Read-only UI component analysis agent                          |
+| [agents/style-enforcer.md](agents/style-enforcer.md)                     | Design system compliance agent                                 |
+| [agents/test-writer.md](agents/test-writer.md)                           | UI component test generation agent                             |

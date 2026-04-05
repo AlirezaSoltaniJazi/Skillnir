@@ -18,6 +18,7 @@
       "delete_docs": "Usuń dokumentację",
       "init_skill": "Inicjuj umiejętność",
       "init_docs": "Inicjuj dokumentację",
+      "install_ignore": "Zainstaluj Ignore",
       "ask_ai": "Zapytaj AI",
       "plan": "Plan",
       "skills_library": "Biblioteka umiejętności",
@@ -25,6 +26,8 @@
       "usage": "Użycie",
       "research": "Badania",
       "events": "Wydarzenia",
+      "benchmarks": "Benchmarki",
+      "security": "Bezpieczeństwo",
       "settings": "Ustawienia"
     },
     "sort_modes": {
@@ -292,7 +295,8 @@
         "dotdir": "Dotdir",
         "popularity": "Popularność",
         "performance": "Wydajność",
-        "price": "Cena"
+        "price": "Cena",
+        "website": "Strona"
       }
     },
 
@@ -344,6 +348,38 @@
       "all_events_have_html": "Wszystkie wydarzenia mają już strony HTML"
     },
 
+    "benchmarks": {
+      "title": "Benchmarki modeli AI",
+      "subtitle": "Porownaj najlepsze modele AI w kodowaniu, rozumowaniu, matematyce i nie tylko",
+      "categories_label": "Kategorie benchmarkow:",
+      "filter_by_provider": "Filtruj po dostawcy (opcjonalnie):",
+      "model_count_label": "Liczba modeli:",
+      "models_in_kb": "Modele w bazie wiedzy",
+      "regenerated_landing": "Zregenerowano strone z {count} modelami",
+      "result_success_title": "Benchmarki zaktualizowane pomyslnie",
+      "result_fail_title": "Wyszukiwanie benchmarkow nie powiodlo sie",
+      "grid_models_found": "Znalezione modele",
+      "grid_new_models": "Nowe modele",
+      "grid_updated": "Zaktualizowane",
+      "grid_duration": "Czas trwania"
+    },
+
+    "security": {
+      "title": "Luki bezpieczeństwa",
+      "subtitle": "Szukaj krytycznych CVE, zero-day i porad bezpieczeństwa",
+      "categories_label": "Kategorie:",
+      "filter_by_source": "Filtruj po źródle (opcjonalnie):",
+      "vulns_in_kb": "Luki w bazie wiedzy",
+      "regenerated_landing": "Zregenerowano stronę z {count} lukami",
+      "result_success_title": "Wyszukiwanie bezpieczeństwa zakończone",
+      "result_fail_title": "Wyszukiwanie bezpieczeństwa nie powiodło się",
+      "grid_vulns_found": "Znalezione luki",
+      "grid_new_vulns": "Nowe",
+      "grid_updated": "Zaktualizowane",
+      "grid_duration": "Czas trwania",
+      "select_at_least_one_category": "Wybierz co najmniej jedną kategorię"
+    },
+
     "settings": {
       "title": "Ustawienia",
       "subtitle": "Konfiguruj preferencje aplikacji.",
@@ -359,6 +395,8 @@
         "enabled": "Powiadomienia dźwiękowe włączone",
         "disabled": "Powiadomienia dźwiękowe wyłączone"
       },
+      "compression_title": "Kompresja promptow",
+      "compression_subtitle": "Kompresuj prompty przed wyslaniem do backendu AI (oszczedza tokeny)",
       "ai_tool": {
         "title": "Narzędzie AI",
         "description": "Aktualnie używane: {name}"
@@ -406,6 +444,9 @@
     "generate_skill": "Generuj umiejętność",
     "update_all_skills": "Aktualizuj wszystkie umiejętności",
     "search_latest_news": "Szukaj najnowszych wiadomości",
+    "search_latest_articles": "Szukaj najnowszych artykułów",
+    "search_benchmarks": "Szukaj benchmarkow",
+    "search_security": "Szukaj luk",
     "search_events": "Szukaj wydarzeń",
     "view_landing_page": "Wyświetl stronę główną",
     "generate_html_files": "Generuj pliki HTML",

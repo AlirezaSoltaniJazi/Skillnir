@@ -18,6 +18,7 @@
       "delete_docs": "Delete Docs",
       "init_skill": "Init Skill",
       "init_docs": "Init Docs",
+      "install_ignore": "Install Ignore",
       "ask_ai": "Ask AI",
       "plan": "Plan",
       "skills_library": "Skills Library",
@@ -25,6 +26,8 @@
       "usage": "Usage",
       "research": "Research",
       "events": "Events",
+      "benchmarks": "Benchmarks",
+      "security": "Security",
       "settings": "Settings"
     },
     "sort_modes": {
@@ -292,7 +295,8 @@
         "dotdir": "Dotdir",
         "popularity": "Popularity",
         "performance": "Performance",
-        "price": "Price"
+        "price": "Price",
+        "website": "Website"
       }
     },
 
@@ -344,6 +348,38 @@
       "all_events_have_html": "All events already have HTML pages"
     },
 
+    "benchmarks": {
+      "title": "AI Model Benchmarks",
+      "subtitle": "Compare top AI models across coding, reasoning, math, and more",
+      "categories_label": "Benchmark categories:",
+      "filter_by_provider": "Filter by provider (optional):",
+      "model_count_label": "Number of models:",
+      "models_in_kb": "Models in knowledge base",
+      "regenerated_landing": "Regenerated landing page with {count} models",
+      "result_success_title": "Benchmarks updated successfully",
+      "result_fail_title": "Benchmarks search failed",
+      "grid_models_found": "Models Found",
+      "grid_new_models": "New Models",
+      "grid_updated": "Updated",
+      "grid_duration": "Duration"
+    },
+
+    "security": {
+      "title": "Security Vulnerabilities",
+      "subtitle": "Search for critical CVEs, zero-days, and security advisories",
+      "categories_label": "Categories to search:",
+      "filter_by_source": "Filter by source (optional):",
+      "vulns_in_kb": "Vulnerabilities in knowledge base",
+      "regenerated_landing": "Regenerated landing page with {count} vulnerabilities",
+      "result_success_title": "Security search completed successfully",
+      "result_fail_title": "Security search failed",
+      "grid_vulns_found": "Vulnerabilities Found",
+      "grid_new_vulns": "New",
+      "grid_updated": "Updated",
+      "grid_duration": "Duration",
+      "select_at_least_one_category": "Select at least one category"
+    },
+
     "settings": {
       "title": "Settings",
       "subtitle": "Configure application preferences.",
@@ -359,6 +395,8 @@
         "enabled": "Sound notifications enabled",
         "disabled": "Sound notifications disabled"
       },
+      "compression_title": "Prompt Compression",
+      "compression_subtitle": "Compress prompts before sending to AI backends (saves tokens)",
       "ai_tool": {
         "title": "AI Tool",
         "description": "Currently using {name}"
@@ -406,6 +444,9 @@
     "generate_skill": "Generate Skill",
     "update_all_skills": "Update All Skills",
     "search_latest_news": "Search Latest News",
+    "search_latest_articles": "Search Latest Articles",
+    "search_benchmarks": "Search Benchmarks",
+    "search_security": "Search Vulnerabilities",
     "search_events": "Search Events",
     "view_landing_page": "View Landing Page",
     "generate_html_files": "Generate HTML Files",

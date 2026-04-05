@@ -36,7 +36,12 @@ class TestAppConfig:
     def test_to_dict(self):
         cfg = AppConfig(backend=AIBackend.GEMINI, model="pro", prompt_version="v1")
         d = cfg.to_dict()
-        assert d == {"backend": "gemini", "model": "pro", "prompt_version": "v1"}
+        assert d == {
+            "backend": "gemini",
+            "model": "pro",
+            "prompt_version": "v1",
+            "compress_prompts": False,
+        }
 
     def test_from_dict_round_trip(self):
         original = AppConfig(

@@ -18,6 +18,7 @@
       "delete_docs": "حذف مستندات",
       "init_skill": "ایجاد مهارت",
       "init_docs": "ایجاد مستندات",
+      "install_ignore": "نصب Ignore",
       "ask_ai": "پرسش از AI",
       "plan": "برنامه‌ریزی",
       "skills_library": "کتابخانه مهارت‌ها",
@@ -25,6 +26,8 @@
       "usage": "مصرف",
       "research": "پژوهش",
       "events": "رویدادها",
+      "benchmarks": "معیارها",
+      "security": "امنیت",
       "settings": "تنظیمات"
     },
     "sort_modes": {
@@ -292,7 +295,8 @@
         "dotdir": "پوشه تنظیمات",
         "popularity": "محبوبیت",
         "performance": "عملکرد",
-        "price": "قیمت"
+        "price": "قیمت",
+        "website": "وب‌سایت"
       }
     },
 
@@ -344,6 +348,38 @@
       "all_events_have_html": "تمام رویدادها از قبل صفحه HTML دارند"
     },
 
+    "benchmarks": {
+      "title": "معیارهای مدل هوش مصنوعی",
+      "subtitle": "مقایسه مدل‌های برتر هوش مصنوعی در کدنویسی، استدلال، ریاضیات و موارد دیگر",
+      "categories_label": "دسته‌بندی معیارها:",
+      "filter_by_provider": "فیلتر بر اساس ارائه‌دهنده (اختیاری):",
+      "model_count_label": "تعداد مدل‌ها:",
+      "models_in_kb": "مدل‌ها در پایگاه دانش",
+      "regenerated_landing": "صفحه اصلی با {count} مدل بازسازی شد",
+      "result_success_title": "معیارها با موفقیت به‌روزرسانی شدند",
+      "result_fail_title": "جستجوی معیارها ناموفق بود",
+      "grid_models_found": "مدل‌های یافت شده",
+      "grid_new_models": "مدل‌های جدید",
+      "grid_updated": "به‌روزرسانی شده",
+      "grid_duration": "مدت زمان"
+    },
+
+    "security": {
+      "title": "آسیب‌پذیری‌های امنیتی",
+      "subtitle": "جستجوی CVEهای بحرانی، حملات روز صفر و توصیه‌نامه‌های امنیتی",
+      "categories_label": "دسته‌بندی‌ها:",
+      "filter_by_source": "فیلتر بر اساس منبع (اختیاری):",
+      "vulns_in_kb": "آسیب‌پذیری‌ها در پایگاه دانش",
+      "regenerated_landing": "صفحه با {count} آسیب‌پذیری بازسازی شد",
+      "result_success_title": "جستجوی امنیتی موفق بود",
+      "result_fail_title": "جستجوی امنیتی ناموفق بود",
+      "grid_vulns_found": "آسیب‌پذیری‌های یافت شده",
+      "grid_new_vulns": "جدید",
+      "grid_updated": "به‌روزرسانی شده",
+      "grid_duration": "مدت زمان",
+      "select_at_least_one_category": "حداقل یک دسته‌بندی انتخاب کنید"
+    },
+
     "settings": {
       "title": "تنظیمات",
       "subtitle": "پیکربندی ترجیحات برنامه.",
@@ -359,6 +395,8 @@
         "enabled": "اعلان‌های صوتی فعال شد",
         "disabled": "اعلان‌های صوتی غیرفعال شد"
       },
+      "compression_title": "فشرده‌سازی پرامپت",
+      "compression_subtitle": "فشرده‌سازی پرامپت‌ها قبل از ارسال به بک‌اند هوش مصنوعی (صرفه‌جویی در توکن)",
       "ai_tool": {
         "title": "ابزار AI",
         "description": "در حال استفاده از {name}"
@@ -406,6 +444,9 @@
     "generate_skill": "تولید مهارت",
     "update_all_skills": "به‌روزرسانی تمام مهارت‌ها",
     "search_latest_news": "جستجوی آخرین اخبار",
+    "search_latest_articles": "جستجوی آخرین مقالات",
+    "search_benchmarks": "جستجوی معیارها",
+    "search_security": "جستجوی آسیب‌پذیری‌ها",
     "search_events": "جستجوی رویدادها",
     "view_landing_page": "مشاهده صفحه اصلی",
     "generate_html_files": "تولید فایل‌های HTML",

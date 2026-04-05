@@ -4,6 +4,32 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
+# Default ignore templates directory (ships with the package)
+_TEMPLATES_DIR = (
+    Path(__file__).resolve().parent.parent.parent / ".data" / "ignore" / "templates"
+)
+
+# Template descriptions for UI and CLI display
+IGNORE_TEMPLATES: dict[str, str] = {
+    "python": "Python — __pycache__, .venv, dist, *.pyc, uv.lock",
+    "java": "Java — target/, build/, .gradle/, .m2/, *.class",
+    "javascript": "JavaScript/TypeScript — node_modules/, dist/, lock files",
+    "go": "Go — vendor/, bin/, go.sum",
+    "rust": "Rust — target/, Cargo.lock, .cargo/",
+    "c-cpp": "C/C++ — build/, cmake-build-*/, *.o, *.so",
+    "ruby": "Ruby — vendor/bundle/, .bundle/, Gemfile.lock",
+    "php": "PHP — vendor/, composer.lock",
+    "swift-ios": "Swift/iOS — DerivedData/, Pods/, .build/",
+    "csharp-dotnet": "C#/.NET — bin/, obj/, packages/, .artifacts/",
+    "ci-cd": "CI/CD — .github/workflows/, .gitlab-ci.yml, Jenkinsfile",
+    "docker": "Docker — .docker/, docker/volumes/",
+    "data-ml": "Data/ML — *.csv, *.h5, *.pkl, model weights, wandb/",
+    "secrets": "Secrets — .env, *.key, *.pem, credentials.json",
+    "ide": "IDE — .idea/, .vscode/, *.iml, .eclipse/",
+    "docs-assets": "Docs/Assets — *.png, *.jpg, *.pdf, *.svg, fonts",
+    "logs": "Logs — *.log, logs/, crash_reports/, *.dmp",
+}
+
 SKILL_MD_TEMPLATE = """\
 ---
 name: {skill_name}
@@ -355,4 +381,84 @@ def init_docs(project_root: Path) -> ScaffoldResult:
 
     return ScaffoldResult(
         success=True, created_path=agents_md, created_files=created_files
+    )
+
+
+def get_ignore_templates(
+    templates_dir: Path | None = None,
+) -> dict[str, str]:
+    """Return available template names mapped to their descriptions.
+
+    Only returns templates whose .txt files exist on disk.
+    """
+    tdir = templates_dir or _TEMPLATES_DIR
+    available: dict[str, str] = {}
+    for name, desc in IGNORE_TEMPLATES.items():
+        if (tdir / f"{name}.txt").is_file():
+            available[name] = desc
+    return available
+
+
+def assemble_ignore(
+    selected_templates: list[str],
+    templates_dir: Path | None = None,
+) -> str:
+    """Assemble ignore content from common.txt + selected templates."""
+    tdir = templates_dir or _TEMPLATES_DIR
+    parts: list[str] = []
+
+    # Always include common
+    common_path = tdir / "common.txt"
+    if common_path.is_file():
+        parts.append(common_path.read_text(encoding="utf-8").strip())
+
+    for name in selected_templates:
+        tpl_path = tdir / f"{name}.txt"
+        if tpl_path.is_file():
+            parts.append(tpl_path.read_text(encoding="utf-8").strip())
+
+    return "\n\n".join(parts) + "\n"
+
+
+def init_ignore(
+    project_root: Path,
+    selected_templates: list[str],
+    ignore_files: list[str],
+    templates_dir: Path | None = None,
+) -> ScaffoldResult:
+    """Create .data/ignore/ with assembled ignore files for each tool.
+
+    Args:
+        project_root: Target project root directory.
+        selected_templates: Template names to include (e.g. ["python", "secrets"]).
+        ignore_files: Ignore file names to create (e.g. [".claudeignore", ".cursorignore"]).
+        templates_dir: Override templates directory (for testing).
+
+    Returns:
+        ScaffoldResult with created file paths.
+    """
+    ignore_dir = project_root / ".data" / "ignore"
+    created_files: list[Path] = []
+
+    try:
+        ignore_dir.mkdir(parents=True, exist_ok=True)
+
+        content = assemble_ignore(selected_templates, templates_dir)
+
+        # Deduplicate ignore file names (e.g. Gemini CLI and Antigravity share .geminiignore)
+        seen: set[str] = set()
+        for ignore_file in ignore_files:
+            if not ignore_file or ignore_file in seen:
+                continue
+            seen.add(ignore_file)
+
+            dest = ignore_dir / ignore_file
+            dest.write_text(content, encoding="utf-8")
+            created_files.append(dest)
+
+    except OSError as e:
+        return ScaffoldResult(success=False, error=str(e))
+
+    return ScaffoldResult(
+        success=True, created_path=ignore_dir, created_files=created_files
     )

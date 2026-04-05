@@ -37,6 +37,7 @@ Report: violations found, severity, suggested fixes (but do NOT apply them).
 ## Result Format
 
 Return a structured report:
+
 1. **Summary**: Overall assessment (compliant / minor issues / major issues)
 2. **Violations**: Table of file, line, rule violated, severity
 3. **Suggestions**: Improvements that aren't violations but would improve code quality

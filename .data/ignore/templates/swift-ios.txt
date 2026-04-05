@@ -1,0 +1,17 @@
+# ── Swift / iOS ───────────────────────────────────────────
+# Xcode build artifacts
+build/
+DerivedData/
+*.ipa
+*.app/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Swift Package Manager
+.build/
+.swiftpm/
+
+# Xcode user data
+xcuserdata/

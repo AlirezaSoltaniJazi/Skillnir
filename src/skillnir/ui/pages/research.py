@@ -54,9 +54,30 @@ async def page_research():
         selected_topics = list(TOPIC_LABELS.keys())
         selected_sources: list[str] = []
 
-        ui.label(t('pages.research.topics_to_search', lang)).classes(
-            'text-sm font-medium text-secondary'
-        )
+        with ui.row().classes('items-center gap-3'):
+            ui.label(t('pages.research.topics_to_search', lang)).classes(
+                'text-sm font-medium text-secondary'
+            )
+
+            def _select_all_topics():
+                selected_topics.clear()
+                selected_topics.extend(TOPIC_LABELS.keys())
+                _rebuild_topic_chips()
+
+            def _deselect_all_topics():
+                selected_topics.clear()
+                _rebuild_topic_chips()
+
+            ui.button(
+                t('buttons.select_all', lang),
+                on_click=_select_all_topics,
+                icon='check_box',
+            ).props('flat rounded dense size=sm')
+            ui.button(
+                t('buttons.deselect_all', lang),
+                on_click=_deselect_all_topics,
+                icon='check_box_outline_blank',
+            ).props('flat rounded dense size=sm')
         topic_chips_container = ui.row().classes('gap-2 flex-wrap')
 
         def _rebuild_topic_chips():
@@ -82,9 +103,30 @@ async def page_research():
         _rebuild_topic_chips()
 
         # ── Source chips ──
-        ui.label(t('pages.research.filter_by_source', lang)).classes(
-            'text-sm font-medium text-secondary'
-        )
+        with ui.row().classes('items-center gap-3'):
+            ui.label(t('pages.research.filter_by_source', lang)).classes(
+                'text-sm font-medium text-secondary'
+            )
+
+            def _select_all_sources():
+                selected_sources.clear()
+                selected_sources.extend(SOURCE_FILTERS.keys())
+                _rebuild_source_chips()
+
+            def _deselect_all_sources():
+                selected_sources.clear()
+                _rebuild_source_chips()
+
+            ui.button(
+                t('buttons.select_all', lang),
+                on_click=_select_all_sources,
+                icon='check_box',
+            ).props('flat rounded dense size=sm')
+            ui.button(
+                t('buttons.deselect_all', lang),
+                on_click=_deselect_all_sources,
+                icon='check_box_outline_blank',
+            ).props('flat rounded dense size=sm')
         source_chips_container = ui.row().classes('gap-2 flex-wrap')
 
         def _rebuild_source_chips():
@@ -111,6 +153,10 @@ async def page_research():
 
         # ── Existing articles ──
         research_dir = _get_research_dir()
+
+        def _cache_bust_url() -> str:
+            return f'/research-files/index.html?t={int(time.time())}'
+
         existing = _load_index(research_dir)
         if existing:
             with ui.row().classes('gap-4 flex-wrap'):
@@ -123,9 +169,6 @@ async def page_research():
 
             index_path = research_dir / 'index.html'
             if index_path.exists():
-
-                def _cache_bust_url() -> str:
-                    return f'/research-files/index.html?t={int(time.time())}'
 
                 with ui.row().classes('gap-3'):
 
@@ -313,7 +356,7 @@ async def page_research():
             play_notification(audio_el, sound_state)
 
         research_btn = ui.button(
-            t('buttons.search_latest_news', lang),
+            t('buttons.search_latest_articles', lang),
             on_click=do_research,
             icon='travel_explore',
         ).props('unelevated rounded color=positive')

@@ -6,7 +6,7 @@
 
 - **FIRST**: Read [LEARNED.md](LEARNED.md) — corrections and preferences from previous sessions
 - **Stack**: NiceGUI 2.0+, Quasar, Tailwind CSS, Material Design Icons, Python 3.14+
-- **Source**: `src/skillnir/ui/` — components/ (13), pages/ (12), layout.py, __init__.py
+- **Source**: `src/skillnir/ui/` — components/ (13), pages/ (12), layout.py, **init**.py
 - **Key rules**: `header()` on every page; `_COLOR_HEX` maps for colors; `.classes()` for Tailwind; `.props()` for Quasar; `t()` for i18n; absolute imports only; single quotes (Black -S)
 - **Never**: Raw HTML over NiceGUI elements; hardcoded hex colors; skip `header()`; module-level nicegui imports in layout; relative imports; JavaScript frameworks; skip `t()` for user strings
 - **Sub-agents**: component-auditor (read-only audit), style-enforcer (design system), test-writer (UI tests)

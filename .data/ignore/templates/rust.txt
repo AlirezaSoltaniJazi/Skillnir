@@ -1,0 +1,9 @@
+# ── Rust ──────────────────────────────────────────────────
+# Build artifacts
+/target/
+
+# Cargo lock (for libraries)
+Cargo.lock
+
+# Cargo cache
+.cargo/

@@ -18,6 +18,7 @@
       "delete_docs": "Docs verwijderen",
       "init_skill": "Skill initialiseren",
       "init_docs": "Docs initialiseren",
+      "install_ignore": "Ignore installeren",
       "ask_ai": "AI vragen",
       "plan": "Plannen",
       "skills_library": "Skillbibliotheek",
@@ -25,6 +26,8 @@
       "usage": "Gebruik",
       "research": "Onderzoek",
       "events": "Evenementen",
+      "benchmarks": "Benchmarks",
+      "security": "Beveiliging",
       "settings": "Instellingen"
     },
     "sort_modes": {
@@ -292,7 +295,8 @@
         "dotdir": "Dotdir",
         "popularity": "Populariteit",
         "performance": "Prestatie",
-        "price": "Prijs"
+        "price": "Prijs",
+        "website": "Website"
       }
     },
 
@@ -344,6 +348,38 @@
       "all_events_have_html": "Alle evenementen hebben al HTML-pagina's"
     },
 
+    "benchmarks": {
+      "title": "AI Model Benchmarks",
+      "subtitle": "Vergelijk top AI-modellen op codering, redenering, wiskunde en meer",
+      "categories_label": "Benchmark categorieen:",
+      "filter_by_provider": "Filteren op aanbieder (optioneel):",
+      "model_count_label": "Aantal modellen:",
+      "models_in_kb": "Modellen in kennisbank",
+      "regenerated_landing": "Landingspagina geregenereerd met {count} modellen",
+      "result_success_title": "Benchmarks succesvol bijgewerkt",
+      "result_fail_title": "Benchmark zoeken mislukt",
+      "grid_models_found": "Modellen gevonden",
+      "grid_new_models": "Nieuwe modellen",
+      "grid_updated": "Bijgewerkt",
+      "grid_duration": "Duur"
+    },
+
+    "security": {
+      "title": "Beveiligingskwetsbaarheden",
+      "subtitle": "Zoek naar kritieke CVEs, zero-days en beveiligingsadviezen",
+      "categories_label": "Categorieën:",
+      "filter_by_source": "Filteren op bron (optioneel):",
+      "vulns_in_kb": "Kwetsbaarheden in kennisbank",
+      "regenerated_landing": "Landingspagina geregenereerd met {count} kwetsbaarheden",
+      "result_success_title": "Beveiligingszoekactie succesvol",
+      "result_fail_title": "Beveiligingszoekactie mislukt",
+      "grid_vulns_found": "Kwetsbaarheden gevonden",
+      "grid_new_vulns": "Nieuw",
+      "grid_updated": "Bijgewerkt",
+      "grid_duration": "Duur",
+      "select_at_least_one_category": "Selecteer ten minste een categorie"
+    },
+
     "settings": {
       "title": "Instellingen",
       "subtitle": "Applicatievoorkeuren configureren.",
@@ -359,6 +395,8 @@
         "enabled": "Geluidsmeldingen ingeschakeld",
         "disabled": "Geluidsmeldingen uitgeschakeld"
       },
+      "compression_title": "Prompt compressie",
+      "compression_subtitle": "Comprimeer prompts voor verzending naar AI-backends (bespaart tokens)",
       "ai_tool": {
         "title": "AI-Tool",
         "description": "Momenteel in gebruik: {name}"
@@ -406,6 +444,9 @@
     "generate_skill": "Skill genereren",
     "update_all_skills": "Alle skills bijwerken",
     "search_latest_news": "Laatste nieuws zoeken",
+    "search_latest_articles": "Laatste artikelen zoeken",
+    "search_benchmarks": "Benchmarks zoeken",
+    "search_security": "Kwetsbaarheden zoeken",
     "search_events": "Evenementen zoeken",
     "view_landing_page": "Landingspagina bekijken",
     "generate_html_files": "HTML-bestanden genereren",

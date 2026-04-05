@@ -5,11 +5,41 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title><!-- TITLE --></title>
   <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-alt: #f1f5f9;
+      --text: #1e293b;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --border: #e2e8f0;
+      --hover: #f1f5f9;
+      --link: #6366f1;
+      --link-hover: #4f46e5;
+      --badge-bg: #f1f5f9;
+      --badge-border: #e2e8f0;
+      --badge-text: #1e293b;
+    }
+    [data-theme="dark"] {
+      --bg: #0f0f17;
+      --surface: #1a1a2e;
+      --surface-alt: #12121e;
+      --text: #e2e8f0;
+      --text-secondary: #cbd5e1;
+      --text-muted: #6b7280;
+      --border: #1e1e36;
+      --hover: #22223a;
+      --link: #818cf8;
+      --link-hover: #a5b4fc;
+      --badge-bg: #1a1a2e;
+      --badge-border: #2e2e4a;
+      --badge-text: #e2e8f0;
+    }
     body {
       margin: 0;
       padding: 0;
-      background: #0f0f17;
-      color: #e2e8f0;
+      background: var(--bg);
+      color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       line-height: 1.7;
     }
@@ -18,20 +48,40 @@
       margin: 0 auto;
       padding: 40px 24px;
     }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
     .back-link {
-      color: #818cf8;
+      color: var(--link);
       text-decoration: none;
       font-size: 14px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      margin-bottom: 24px;
       padding: 6px 14px;
       border-radius: 8px;
-      background: #1a1a2e;
+      background: var(--surface);
       transition: all 0.15s;
     }
-    .back-link:hover { background: #22223a; color: #a5b4fc; }
+    .back-link:hover { background: var(--hover); color: var(--link-hover); }
+    .theme-toggle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+    .theme-toggle:hover { background: var(--hover); }
     h1 {
       font-size: 2rem;
       font-weight: 700;
@@ -47,35 +97,35 @@
       align-items: center;
       margin-bottom: 32px;
       padding-bottom: 24px;
-      border-bottom: 1px solid #1e1e36;
+      border-bottom: 1px solid var(--border);
     }
     .meta a {
-      color: #818cf8;
+      color: var(--link);
       text-decoration: none;
       font-weight: 600;
     }
-    .meta a:hover { text-decoration: underline; color: #a5b4fc; }
+    .meta a:hover { text-decoration: underline; color: var(--link-hover); }
     .meta span {
-      color: #6b7280;
+      color: var(--text-muted);
       font-size: 14px;
     }
     .topic-badge {
-      background: #1a1a2e;
-      color: #e2e8f0;
+      background: var(--badge-bg);
+      color: var(--badge-text);
       padding: 4px 14px;
       border-radius: 20px;
       font-size: 12px;
       font-weight: 600;
-      border: 1px solid #2e2e4a;
+      border: 1px solid var(--badge-border);
     }
     .country-badge {
-      background: #1a1a2e;
-      color: #e2e8f0;
+      background: var(--badge-bg);
+      color: var(--badge-text);
       padding: 4px 14px;
       border-radius: 20px;
       font-size: 12px;
       font-weight: 600;
-      border: 1px solid #2e2e4a;
+      border: 1px solid var(--badge-border);
     }
     .free-paid-badge {
       color: #fff;
@@ -104,7 +154,7 @@
       font-size: 1.4rem;
       font-weight: 600;
       margin: 32px 0 16px 0;
-      color: #f1f5f9;
+      color: var(--text);
     }
     ol {
       padding-left: 24px;
@@ -112,17 +162,27 @@
     }
     ol li {
       margin-bottom: 12px;
-      color: #cbd5e1;
+      color: var(--text-secondary);
     }
     .description p {
-      color: #cbd5e1;
+      color: var(--text-secondary);
       margin: 0 0 16px 0;
     }
   </style>
+  <script>
+    (function() {
+      var t = localStorage.getItem('skillnir-theme');
+      if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
 </head>
 <body>
   <div class="container">
-    <a href="../../index.html" class="back-link">&larr; Back to Events</a>
+    <div class="top-bar">
+      <a href="../../index.html" class="back-link">&larr; Back to Events</a>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"></button>
+    </div>
     <h1><!-- TITLE --></h1>
     <div class="meta">
       <a href="<!-- EVENT_URL -->" target="_blank" rel="noopener">Event Page &nearr;</a>
@@ -143,5 +203,19 @@
 <!-- DESCRIPTION_HTML -->
     </div>
   </div>
+  <script>
+    function toggleTheme() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('skillnir-theme', next);
+      updateToggleIcon();
+    }
+    function updateToggleIcon() {
+      var btn = document.querySelector('.theme-toggle');
+      btn.textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '\u2600\uFE0F' : '\uD83C\uDF19';
+    }
+    updateToggleIcon();
+  </script>
 </body>
 </html>

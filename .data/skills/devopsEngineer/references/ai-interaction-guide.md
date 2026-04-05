@@ -3,6 +3,7 @@
 ## Anti-Dependency Strategies
 
 ### Problem
+
 AI-assisted infrastructure work carries unique risks: misconfigured pipelines can break all PRs, security misconfigurations can expose repositories, and infrastructure changes are harder to review than application code.
 
 ### Strategies
@@ -20,15 +21,19 @@ AI-assisted infrastructure work carries unique risks: misconfigured pipelines ca
 ## Infrastructure-Specific Anti-Patterns in AI Interaction
 
 ### Don't blindly copy workflow patterns
+
 Each workflow has specific trigger, permission, and timeout requirements. Copying a workflow and changing the command is insufficient — review all fields.
 
 ### Don't ignore the CI ↔ pre-commit parity
+
 Changes to one must be evaluated for impact on the other. The AI should always check both when modifying quality gates.
 
 ### Don't generate secrets management without context
+
 Never suggest hardcoding secrets. Always ask about the project's secret management approach first (this project has none — it's a CLI tool with no deployment secrets).
 
 ### Don't over-engineer infrastructure
+
 This project is a Python CLI tool, not a cloud service. Suggestions for Docker, Kubernetes, Terraform, or cloud provisioning are inappropriate unless explicitly requested.
 
 ## Correction Protocol for Infrastructure
@@ -42,11 +47,11 @@ When corrected on infrastructure patterns:
 
 ## Common AI Mistakes in This Project
 
-| Mistake                              | Correct Approach                            |
-| ------------------------------------ | ------------------------------------------- |
-| Suggesting Docker for deployment     | Project is a CLI tool — no containerization |
-| Using `@latest` for actions          | Pin to `@v4`, `@v5`, etc.                   |
-| Forgetting `timeout-minutes`         | Every job MUST have a timeout               |
-| Not excluding `.data/` from hooks    | Add `exclude: ^\.data/` to code hooks       |
-| Suggesting `requirements.txt`        | Use `pyproject.toml` exclusively            |
-| Adding deploy/release workflows      | Only add when explicitly requested          |
+| Mistake                           | Correct Approach                            |
+| --------------------------------- | ------------------------------------------- |
+| Suggesting Docker for deployment  | Project is a CLI tool — no containerization |
+| Using `@latest` for actions       | Pin to `@v4`, `@v5`, etc.                   |
+| Forgetting `timeout-minutes`      | Every job MUST have a timeout               |
+| Not excluding `.data/` from hooks | Add `exclude: ^\.data/` to code hooks       |
+| Suggesting `requirements.txt`     | Use `pyproject.toml` exclusively            |
+| Adding deploy/release workflows   | Only add when explicitly requested          |

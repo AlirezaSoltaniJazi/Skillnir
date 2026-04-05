@@ -221,3 +221,6 @@ __marimo__/
 /.nicegui/storage-user-480e75d1-9db5-4c7a-9249-b10353d5bf97.json
 /.data/events/
 /.nicegui/storage-user-20bdf579-d729-428f-9380-053a5c227387.json
+/.data/benchmarks/
+/.data/security/index.html
+/.data/security/security-index.json

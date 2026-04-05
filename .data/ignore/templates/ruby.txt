@@ -1,0 +1,11 @@
+# ── Ruby ──────────────────────────────────────────────────
+# Bundler
+vendor/bundle/
+.bundle/
+
+# Lock files
+Gemfile.lock
+
+# Generated packages
+*.gem
+pkg/

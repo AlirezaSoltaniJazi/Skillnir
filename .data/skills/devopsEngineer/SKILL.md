@@ -65,32 +65,32 @@ pyproject.toml                       # hatchling build, uv, dev deps
 
 ## Key Patterns
 
-| Pattern               | Approach                                       | Key Rule                                           |
-| --------------------- | ---------------------------------------------- | -------------------------------------------------- |
-| Composite actions     | Shared setup in `.github/actions/`             | Reuse via `uses: ./.github/actions/setup-python`   |
-| Quality gate ordering | Sequential: cheapest/fastest first             | Black → Autoflake → Pylint → Bandit               |
-| CI ↔ pre-commit parity| Same tools in both, same flags                 | Changes to one MUST be evaluated for the other     |
-| Action pinning        | Major version only                             | `@v4`, `@v5`, `@v7` — never `@main`/`@latest`     |
-| CVE exemptions        | Documented inline with reason                  | `--ignore={CVE}` with comment explaining why       |
-| `.data/` exclusion    | Excluded from all code quality hooks           | `exclude: ^\.data/` on Black, pylint, autoflake    |
-| Timeout enforcement   | Every job gets `timeout-minutes`               | 10 min for test/style, 5 min for automation        |
-| Permission scoping    | Minimum required per job                       | Default read-only, explicit when write needed      |
+| Pattern                | Approach                             | Key Rule                                         |
+| ---------------------- | ------------------------------------ | ------------------------------------------------ |
+| Composite actions      | Shared setup in `.github/actions/`   | Reuse via `uses: ./.github/actions/setup-python` |
+| Quality gate ordering  | Sequential: cheapest/fastest first   | Black → Autoflake → Pylint → Bandit              |
+| CI ↔ pre-commit parity | Same tools in both, same flags       | Changes to one MUST be evaluated for the other   |
+| Action pinning         | Major version only                   | `@v4`, `@v5`, `@v7` — never `@main`/`@latest`    |
+| CVE exemptions         | Documented inline with reason        | `--ignore={CVE}` with comment explaining why     |
+| `.data/` exclusion     | Excluded from all code quality hooks | `exclude: ^\.data/` on Black, pylint, autoflake  |
+| Timeout enforcement    | Every job gets `timeout-minutes`     | 10 min for test/style, 5 min for automation      |
+| Permission scoping     | Minimum required per job             | Default read-only, explicit when write needed    |
 
 See [references/pipeline-patterns.md](references/pipeline-patterns.md) for full workflow examples.
 
 ## Conventions
 
-| Rule                    | Convention                                                     |
-| ----------------------- | -------------------------------------------------------------- |
-| Workflow naming         | File: `kebab-case.yml`, Name: `PR - {Description}`            |
-| Job naming              | Descriptive, title case (e.g., `Lint & Format Check`)         |
-| Step naming             | Imperative, title case (e.g., `Checkout repository`)          |
-| Action pinning          | Major version: `actions/checkout@v4` — never branch refs      |
-| Pre-commit revisions    | Pinned: `rev: vX.Y.Z` — never `main`/`latest`                |
-| Script shebang          | `#!/usr/bin/env bash` + `set -euo pipefail`                   |
-| Script output           | Emoji prefixes: ✅ pass, ❌ fail, ⚠️ warning                  |
-| CI Python version       | 3.14 (set in composite action default)                        |
-| Trigger events          | `pull_request` for all quality gates                           |
+| Rule                 | Convention                                               |
+| -------------------- | -------------------------------------------------------- |
+| Workflow naming      | File: `kebab-case.yml`, Name: `PR - {Description}`       |
+| Job naming           | Descriptive, title case (e.g., `Lint & Format Check`)    |
+| Step naming          | Imperative, title case (e.g., `Checkout repository`)     |
+| Action pinning       | Major version: `actions/checkout@v4` — never branch refs |
+| Pre-commit revisions | Pinned: `rev: vX.Y.Z` — never `main`/`latest`            |
+| Script shebang       | `#!/usr/bin/env bash` + `set -euo pipefail`              |
+| Script output        | Emoji prefixes: ✅ pass, ❌ fail, ⚠️ warning             |
+| CI Python version    | 3.14 (set in composite action default)                   |
+| Trigger events       | `pull_request` for all quality gates                     |
 
 See [references/code-style.md](references/code-style.md) for full formatting examples.
 
@@ -133,13 +133,13 @@ See [references/security-checklist.md](references/security-checklist.md) for sev
 
 | Anti-Pattern                           | Why It's Wrong                                              |
 | -------------------------------------- | ----------------------------------------------------------- |
-| Using `@main`/`@latest` for actions   | Supply chain risk — action updates can break or compromise  |
+| Using `@main`/`@latest` for actions    | Supply chain risk — action updates can break or compromise  |
 | Hardcoding secrets in workflows        | Exposed in repo history — use GitHub Secrets if ever needed |
 | Skipping pre-commit (`--no-verify`)    | Bypasses quality gates — fix the issue instead              |
 | No `timeout-minutes` on jobs           | Runaway jobs waste CI minutes and block PRs                 |
 | Docker/K8s/Terraform for this project  | Skillnir is a CLI tool — no containerization needed         |
 | Adding `requirements.txt`              | `pyproject.toml` is single source of truth                  |
-| Breaking CI ↔ pre-commit parity       | Developers get surprised by CI failures after local pass    |
+| Breaking CI ↔ pre-commit parity        | Developers get surprised by CI failures after local pass    |
 | Overly permissive workflow permissions | Principle of least privilege — scope per job                |
 | Running pylint without `.pylintrc`     | Inconsistent results between local and CI                   |
 
@@ -157,12 +157,12 @@ See [references/security-checklist.md](references/security-checklist.md) for sev
 
 Corrections and preferences persist via [LEARNED.md](LEARNED.md).
 
-| Mode       | Detection Signal                                                       | Behavior                                                              |
-| ---------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| Diagnostic | "CI fails", "hook error", "workflow broken", error logs                | Read error context, check parity, trace root cause, minimal fix       |
-| Efficient  | "same as check-style", "another hook like X", "add step to workflow"  | Minimal explanation, replicate existing patterns, apply conventions    |
-| Teaching   | "what is composite action", "how does pre-commit work", "explain CI"  | Explain with project examples, link to references/, reference docs    |
-| Review     | "review workflow", "check hooks", "audit CI"                          | Read-only analysis, check conventions, delegate to sub-agents          |
+| Mode       | Detection Signal                                                     | Behavior                                                            |
+| ---------- | -------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Diagnostic | "CI fails", "hook error", "workflow broken", error logs              | Read error context, check parity, trace root cause, minimal fix     |
+| Efficient  | "same as check-style", "another hook like X", "add step to workflow" | Minimal explanation, replicate existing patterns, apply conventions |
+| Teaching   | "what is composite action", "how does pre-commit work", "explain CI" | Explain with project examples, link to references/, reference docs  |
+| Review     | "review workflow", "check hooks", "audit CI"                         | Read-only analysis, check conventions, delegate to sub-agents       |
 
 **Self-Learning**: All learnings are **written** to LEARNED.md — not suggested, written:
 
@@ -173,37 +173,37 @@ Corrections and preferences persist via [LEARNED.md](LEARNED.md).
 
 ## Sub-Agent Delegation
 
-| Agent                                            | Role                              | Spawn When                            | Tools                          |
-| ------------------------------------------------ | --------------------------------- | ------------------------------------- | ------------------------------ |
-| [security-scanner](agents/security-scanner.md)   | CI/CD security audit              | Workflow review, secret detection     | Read Glob Grep                 |
-| [pipeline-reviewer](agents/pipeline-reviewer.md) | Pipeline correctness review       | Workflow changes, parity checks       | Read Glob Grep                 |
-| [hook-debugger](agents/hook-debugger.md)         | Pre-commit/CI failure diagnosis   | Hook failures, CI errors, config fix  | Read Edit Write Bash Glob Grep |
+| Agent                                            | Role                            | Spawn When                           | Tools                          |
+| ------------------------------------------------ | ------------------------------- | ------------------------------------ | ------------------------------ |
+| [security-scanner](agents/security-scanner.md)   | CI/CD security audit            | Workflow review, secret detection    | Read Glob Grep                 |
+| [pipeline-reviewer](agents/pipeline-reviewer.md) | Pipeline correctness review     | Workflow changes, parity checks      | Read Glob Grep                 |
+| [hook-debugger](agents/hook-debugger.md)         | Pre-commit/CI failure diagnosis | Hook failures, CI errors, config fix | Read Edit Write Bash Glob Grep |
 
 **Delegation rules**: Spawn when task is self-contained and won't need follow-up context. Never delegate tasks requiring cross-skill decisions. See [agents/](agents/) for full definitions.
 
 ## Freedom Levels
 
-| Level             | Scope                                                                                  | Examples                                                          |
-| ----------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| **MUST** follow   | Action pinning, timeout-minutes, CI ↔ pre-commit parity, `.data/` exclusion, LEARNED.md | "MUST pin actions to major versions", "MUST set timeout"         |
-| **SHOULD** follow | Quality gate ordering, composite action reuse, naming conventions                       | "SHOULD run cheapest checks first", "SHOULD use composite action"|
-| **CAN** customize | Bandit threshold, pylint rules, hook selection, timeout values                          | "CAN adjust bandit severity", "CAN add new hooks"                |
+| Level             | Scope                                                                                   | Examples                                                          |
+| ----------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| **MUST** follow   | Action pinning, timeout-minutes, CI ↔ pre-commit parity, `.data/` exclusion, LEARNED.md | "MUST pin actions to major versions", "MUST set timeout"          |
+| **SHOULD** follow | Quality gate ordering, composite action reuse, naming conventions                       | "SHOULD run cheapest checks first", "SHOULD use composite action" |
+| **CAN** customize | Bandit threshold, pylint rules, hook selection, timeout values                          | "CAN adjust bandit severity", "CAN add new hooks"                 |
 
 ## References
 
-| File                                                                     | Description                                                      |
-| ------------------------------------------------------------------------ | ---------------------------------------------------------------- |
-| [LEARNED.md](LEARNED.md)                                                 | **Auto-updated.** Corrections, preferences, conventions          |
-| [INJECT.md](INJECT.md)                                                   | Always-loaded quick reference (hallucination firewall)           |
-| [references/pipeline-patterns.md](references/pipeline-patterns.md)       | Full workflow examples, CI gate ordering, hook configuration     |
-| [references/code-style.md](references/code-style.md)                     | Workflow naming, YAML structure, script conventions              |
-| [references/security-checklist.md](references/security-checklist.md)     | Severity-classified CI/CD and dependency security checklists     |
-| [references/deployment-guide.md](references/deployment-guide.md)         | Environment topology, quality gate flow, distribution model      |
-| [references/common-issues.md](references/common-issues.md)               | Troubleshooting CI failures, hook errors, parity issues          |
-| [references/ai-interaction-guide.md](references/ai-interaction-guide.md) | Anti-dependency strategies, common AI mistakes for infra         |
-| [assets/workflow-example.yml](assets/workflow-example.yml)               | Copy-paste GitHub Actions workflow template                      |
-| [assets/pre-commit-hook-example.yaml](assets/pre-commit-hook-example.yaml) | Copy-paste pre-commit hook entry template                     |
-| [scripts/validate-infra.sh](scripts/validate-infra.sh)                   | Infrastructure convention checker                                |
-| [agents/security-scanner.md](agents/security-scanner.md)                 | CI/CD security audit agent                                       |
-| [agents/pipeline-reviewer.md](agents/pipeline-reviewer.md)               | Pipeline correctness review agent                                |
-| [agents/hook-debugger.md](agents/hook-debugger.md)                       | Pre-commit/CI failure diagnosis agent                            |
+| File                                                                       | Description                                                  |
+| -------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| [LEARNED.md](LEARNED.md)                                                   | **Auto-updated.** Corrections, preferences, conventions      |
+| [INJECT.md](INJECT.md)                                                     | Always-loaded quick reference (hallucination firewall)       |
+| [references/pipeline-patterns.md](references/pipeline-patterns.md)         | Full workflow examples, CI gate ordering, hook configuration |
+| [references/code-style.md](references/code-style.md)                       | Workflow naming, YAML structure, script conventions          |
+| [references/security-checklist.md](references/security-checklist.md)       | Severity-classified CI/CD and dependency security checklists |
+| [references/deployment-guide.md](references/deployment-guide.md)           | Environment topology, quality gate flow, distribution model  |
+| [references/common-issues.md](references/common-issues.md)                 | Troubleshooting CI failures, hook errors, parity issues      |
+| [references/ai-interaction-guide.md](references/ai-interaction-guide.md)   | Anti-dependency strategies, common AI mistakes for infra     |
+| [assets/workflow-example.yml](assets/workflow-example.yml)                 | Copy-paste GitHub Actions workflow template                  |
+| [assets/pre-commit-hook-example.yaml](assets/pre-commit-hook-example.yaml) | Copy-paste pre-commit hook entry template                    |
+| [scripts/validate-infra.sh](scripts/validate-infra.sh)                     | Infrastructure convention checker                            |
+| [agents/security-scanner.md](agents/security-scanner.md)                   | CI/CD security audit agent                                   |
+| [agents/pipeline-reviewer.md](agents/pipeline-reviewer.md)                 | Pipeline correctness review agent                            |
+| [agents/hook-debugger.md](agents/hook-debugger.md)                         | Pre-commit/CI failure diagnosis agent                        |

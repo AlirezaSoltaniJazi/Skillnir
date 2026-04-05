@@ -15,18 +15,18 @@ Skills are structured markdown files that teach AI assistants project-specific p
 
 ## Tech Stack
 
-| Component      | Technology                                                                    |
-| -------------- | ----------------------------------------------------------------------------- |
-| Language       | Python 3.14+                                                                  |
-| Build          | hatchling + uv (package manager)                                              |
-| CLI            | argparse + questionary (interactive)                                          |
+| Component      | Technology                                                                   |
+| -------------- | ---------------------------------------------------------------------------- |
+| Language       | Python 3.14+                                                                 |
+| Build          | hatchling + uv (package manager)                                             |
+| CLI            | argparse + questionary (interactive)                                         |
 | Web UI         | NiceGUI 2.0+ (Quasar/Vue-based Python web framework)                         |
-| AI Generation  | claude-agent-sdk + subprocess (Claude, Cursor, Gemini, Copilot)               |
+| AI Generation  | claude-agent-sdk + subprocess (Claude, Cursor, Gemini, Copilot)              |
 | i18n           | Custom module, 9 languages (EN, DE, NL, PL, FA, UK, SQ, FR, AR), RTL support |
-| Config Parsing | PyYAML (SKILL.md frontmatter)                                                 |
-| Testing        | pytest + pytest-asyncio                                                       |
-| Linting        | Black (-S), Pylint, Autoflake, Bandit, Prettier                               |
-| Pre-commit     | 11 hooks (whitespace, EOF, YAML, AST, merge-conflict, safety, bandit, etc.)   |
+| Config Parsing | PyYAML (SKILL.md frontmatter)                                                |
+| Testing        | pytest + pytest-asyncio                                                      |
+| Linting        | Black (-S), Pylint, Autoflake, Bandit, Prettier                              |
+| Pre-commit     | 11 hooks (whitespace, EOF, YAML, AST, merge-conflict, safety, bandit, etc.)  |
 
 ## Features
 

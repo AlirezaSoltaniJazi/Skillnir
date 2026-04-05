@@ -18,6 +18,7 @@
       "delete_docs": "Supprimer les Docs",
       "init_skill": "Initialiser un Skill",
       "init_docs": "Initialiser les Docs",
+      "install_ignore": "Installer Ignore",
       "ask_ai": "Interroger l'AI",
       "plan": "Planifier",
       "skills_library": "Bibliotheque de Skills",
@@ -25,6 +26,8 @@
       "usage": "Utilisation",
       "research": "Recherche",
       "events": "Evenements",
+      "benchmarks": "Benchmarks",
+      "security": "Sécurité",
       "settings": "Parametres"
     },
     "sort_modes": {
@@ -292,7 +295,8 @@
         "dotdir": "Dotdir",
         "popularity": "Popularite",
         "performance": "Performance",
-        "price": "Prix"
+        "price": "Prix",
+        "website": "Site web"
       }
     },
 
@@ -344,6 +348,38 @@
       "all_events_have_html": "Tous les evenements ont deja des pages HTML"
     },
 
+    "benchmarks": {
+      "title": "Benchmarks des modeles IA",
+      "subtitle": "Comparez les meilleurs modeles IA en programmation, raisonnement, mathematiques et plus",
+      "categories_label": "Categories de benchmarks :",
+      "filter_by_provider": "Filtrer par fournisseur (optionnel) :",
+      "model_count_label": "Nombre de modeles :",
+      "models_in_kb": "Modeles dans la base de connaissances",
+      "regenerated_landing": "Page regeneree avec {count} modeles",
+      "result_success_title": "Benchmarks mis a jour avec succes",
+      "result_fail_title": "La recherche de benchmarks a echoue",
+      "grid_models_found": "Modeles trouves",
+      "grid_new_models": "Nouveaux modeles",
+      "grid_updated": "Mis a jour",
+      "grid_duration": "Duree"
+    },
+
+    "security": {
+      "title": "Vulnérabilités de sécurité",
+      "subtitle": "Rechercher des CVE critiques, des zero-days et des avis de sécurité",
+      "categories_label": "Catégories :",
+      "filter_by_source": "Filtrer par source (optionnel) :",
+      "vulns_in_kb": "Vulnérabilités dans la base de connaissances",
+      "regenerated_landing": "Page régénérée avec {count} vulnérabilités",
+      "result_success_title": "Recherche de sécurité réussie",
+      "result_fail_title": "Recherche de sécurité échouée",
+      "grid_vulns_found": "Vulnérabilités trouvées",
+      "grid_new_vulns": "Nouvelles",
+      "grid_updated": "Mises à jour",
+      "grid_duration": "Durée",
+      "select_at_least_one_category": "Sélectionnez au moins une catégorie"
+    },
+
     "settings": {
       "title": "Parametres",
       "subtitle": "Configurer les preferences de l'application.",
@@ -359,6 +395,8 @@
         "enabled": "Notifications sonores activees",
         "disabled": "Notifications sonores desactivees"
       },
+      "compression_title": "Compression des prompts",
+      "compression_subtitle": "Compresser les prompts avant l'envoi aux backends IA (economise des tokens)",
       "ai_tool": {
         "title": "Outil AI",
         "description": "Utilisation actuelle : {name}"
@@ -406,6 +444,9 @@
     "generate_skill": "Generer un Skill",
     "update_all_skills": "Mettre a jour tous les Skills",
     "search_latest_news": "Rechercher les dernieres actualites",
+    "search_latest_articles": "Rechercher les derniers articles",
+    "search_benchmarks": "Rechercher des benchmarks",
+    "search_security": "Rechercher des vulnérabilités",
     "search_events": "Rechercher des evenements",
     "view_landing_page": "Voir la page d'accueil",
     "generate_html_files": "Generer les fichiers HTML",
