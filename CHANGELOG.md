@@ -5,6 +5,36 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Google Chat webhook notifications** -- receive a card in a Google Chat space when long-running tasks complete
+  - New "Setup webhook" card in Settings with URL input, "Save" and "Test" buttons
+  - Provider is fixed to Google Chat for now; additional providers can be added later without schema changes
+  - Bell icon in the top app bar toggles notifications on/off globally
+  - Bell is disabled (greyed out) until a webhook URL is saved -- prevents the "enabled but silent" trap
+  - Wired into every existing sound-notification trigger: skill injection, skill sync, skill generation, research, events, security, benchmarks, AI docs, AI rule, AI assistant
+  - Webhook POSTs run in a background thread -- UI never blocks on network
+  - Failures log to stderr; the Test button in Settings surfaces errors visibly for configuration-time validation
+  - Card titles include the active model in the form `Task title (model: <model-id>)` so you can tell which backend produced the result at a glance
+- **At-rest encryption for the webhook URL** (`skillnir.crypto` module) -- the webhook URL is now stored encrypted in `~/.skillnir/config.json` under `gchat_webhook_cipher`
+  - Fernet symmetric encryption keyed from a **per-install UUID** at `~/.skillnir/client_id` combined with a **machine fingerprint** (hostname, username, platform, home path)
+  - A copied `config.json` cannot be decrypted on another machine -- mitigates the "config accidentally committed to git / synced to Dropbox / pasted in a log" leak vector
+  - Client UUID is generated on first access; file is written with `0600` permissions on POSIX
+  - Automatic one-shot migration: legacy plaintext `gchat_webhook_url` fields are encrypted and the plaintext field is removed on first `load_config()`
+  - New `AppConfig.get_webhook_url()` / `AppConfig.set_webhook_url(url)` accessor methods replace direct field access
+  - **Threat model caveat**: this protects against at-rest file leaks and cross-machine copies, but NOT against malware running as the same user on the same machine -- treat webhook URLs as rotatable secrets regardless
+- **`AppConfig.gchat_webhook_cipher`** and **`AppConfig.notifications_enabled`** fields in `~/.skillnir/config.json`; both default to empty/False so existing users see zero behavior change on upgrade
+- **`skillnir.notifier` module** exposing `send_gchat_notification(url, title, detail)` for reuse
+- **`cryptography>=45.0.0`** as a direct project dependency (was previously transitive via `claude-agent-sdk`)
+
+### Fixed
+
+- **Settings page language section** rendered the literal key `pages.settings.language_title` because it was missing from every locale file
+  - Added `language_title`, `language_description`, and `language_current` keys across all 9 locales (en, de, nl, pl, fa, uk, sq, fr, ar)
+  - Non-English locales ship English fallbacks with a `_todo_translate` marker for follow-up translation work
+
 ## [1.2.0] - 2026-04-05
 
 ### Added
