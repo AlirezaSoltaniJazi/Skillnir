@@ -38,7 +38,6 @@
       "alpha": "Alfabetisch"
     }
   },
-
   "pages": {
     "home": {
       "sections": {
@@ -126,7 +125,6 @@
         "ask_ai": "AI vragen"
       }
     },
-
     "install": {
       "title": "Skills installeren",
       "subtitle": "AI-codeervaardigheden in uw project injecteren.",
@@ -149,12 +147,10 @@
       "starting": "Starten...",
       "updating_skills": "Skills bijwerken..."
     },
-
     "update": {
       "title": "Skills bijwerken",
       "subtitle": "Alle skills van bron naar een doelproject synchroniseren."
     },
-
     "skills_library": {
       "title": "Skillbibliotheek",
       "subtitle": "{count} skills beschikbaar",
@@ -164,7 +160,6 @@
       "skill_md_dialog_title": "{name} — SKILL.md",
       "error_reading_skill_md": "Fout bij het lezen van SKILL.md: {error}"
     },
-
     "generate_docs": {
       "title": "AI-Docs genereren",
       "subtitle": "Een project scannen met AI en agents.md + .claude/claude.md genereren",
@@ -173,7 +168,6 @@
       "result_success_title": "Generatie voltooid",
       "result_fail_title": "Generatie mislukt"
     },
-
     "generate_rule": {
       "title": "Regel genereren",
       "subtitle": "Een project scannen met AI en Cursor-regelbestanden (.mdc) genereren",
@@ -185,7 +179,6 @@
       "result_success_title": "Regelgeneratie voltooid",
       "result_fail_title": "Regelgeneratie mislukt"
     },
-
     "delete_docs": {
       "title": "AI-Docs verwijderen",
       "subtitle": "agents.md en de bijbehorende symlinks uit een doelproject verwijderen.",
@@ -200,7 +193,6 @@
       "removed_files": "{count} bestand(en) verwijderd",
       "cleaned_dirs": "{count} lege map(pen) opgeruimd"
     },
-
     "generate_skill": {
       "title": "Skill genereren",
       "subtitle": "Een project scannen met AI en een domeinspecifieke SKILL.md genereren",
@@ -220,7 +212,6 @@
       "grid_tools_used": "Gebruikte tools",
       "grid_backend": "Backend"
     },
-
     "delete_skill": {
       "title": "Skills verwijderen",
       "subtitle": "Skill(s) uit een doelproject verwijderen, inclusief symlinks in alle toolmappen.",
@@ -235,7 +226,6 @@
       "deleted_badge": "verwijderd",
       "deleted_summary": "({symlinks} symlinks, {dirs} mappen opgeruimd)"
     },
-
     "init_skill": {
       "title": "Skill initialiseren",
       "subtitle": "Een standaard skillraamwerk aanmaken met plaatshouderbestanden met commentaar.",
@@ -245,7 +235,6 @@
       "scaffold_created": "Skillraamwerk aangemaakt in {path}",
       "error_prefix": "Fout: {error}"
     },
-
     "init_docs": {
       "title": "AI-Docs initialiseren",
       "subtitle": "Een standaard agents.md-sjabloon aanmaken met commentaarsecties en symlinks voor AI-tools.",
@@ -254,7 +243,6 @@
       "docs_created": "AI-docs-sjabloon aangemaakt!",
       "error_prefix": "Fout: {error}"
     },
-
     "ask": {
       "title": "AI vragen",
       "subtitle": "Stel een vraag over een project. AI antwoordt zonder wijzigingen aan te brengen.",
@@ -265,7 +253,6 @@
       "result_success_title": "Antwoord voltooid",
       "result_fail_title": "Verzoek mislukt"
     },
-
     "plan": {
       "title": "Plannen",
       "subtitle": "Een gedetailleerd implementatieplan van AI ontvangen voor een taak of functie.",
@@ -276,7 +263,6 @@
       "result_success_title": "Plan voltooid",
       "result_fail_title": "Planning mislukt"
     },
-
     "check_skill": {
       "title": "Skill controleren",
       "subtitle": "/skills via AI-backend uitvoeren op een doelproject.",
@@ -284,7 +270,6 @@
       "result_success_title": "Skillcontrole voltooid",
       "result_fail_title": "Skillcontrole mislukt"
     },
-
     "tools_registry": {
       "title": "Toolregister",
       "subtitle": "{count} AI-tools ondersteund (+ .agents/ auto-inject)",
@@ -299,7 +284,6 @@
         "website": "Website"
       }
     },
-
     "usage": {
       "title": "Tokengebruik",
       "subtitle": "Tokengebruik op sessieniveau over alle AI-backends.",
@@ -314,7 +298,6 @@
       "cache_tokens": "Cachetokens",
       "cost": "Kosten"
     },
-
     "research": {
       "title": "AI-Engineering Onderzoek",
       "subtitle": "Laatste AI-engineeringnieuws zoeken, artikelen verdiepen en samenvattingen genereren",
@@ -331,7 +314,6 @@
       "generated_html_pages": "{count} HTML-artikelpagina('s) gegenereerd",
       "all_articles_have_html": "Alle artikelen hebben al HTML-pagina's"
     },
-
     "events": {
       "title": "AI-Evenementen & Conferenties",
       "subtitle": "Aankomende AI-conferenties, meetups en workshops wereldwijd vinden",
@@ -347,7 +329,6 @@
       "generated_html_pages": "{count} HTML-evenementpagina('s) gegenereerd",
       "all_events_have_html": "Alle evenementen hebben al HTML-pagina's"
     },
-
     "benchmarks": {
       "title": "AI Model Benchmarks",
       "subtitle": "Vergelijk top AI-modellen op codering, redenering, wiskunde en meer",
@@ -363,7 +344,6 @@
       "grid_updated": "Bijgewerkt",
       "grid_duration": "Duur"
     },
-
     "security": {
       "title": "Beveiligingskwetsbaarheden",
       "subtitle": "Zoek naar kritieke CVEs, zero-days en beveiligingsadviezen",
@@ -379,7 +359,6 @@
       "grid_duration": "Duur",
       "select_at_least_one_category": "Selecteer ten minste een categorie"
     },
-
     "settings": {
       "title": "Instellingen",
       "subtitle": "Applicatievoorkeuren configureren.",
@@ -408,10 +387,29 @@
       "prompt_version": {
         "title": "Promptversie",
         "description": "Momenteel in gebruik: {version}"
+      },
+      "language_title": "Language",
+      "language_description": "Select your preferred interface language.",
+      "language_current": "Currently using {name}",
+      "webhook": {
+        "title": "Setup webhook",
+        "subtitle": "Receive Google Chat messages when long-running tasks complete.",
+        "provider_label": "Provider",
+        "provider_value": "Google Chat",
+        "provider_note": "More providers coming soon.",
+        "url_label": "Incoming webhook URL",
+        "url_placeholder": "https://chat.googleapis.com/v1/spaces/...",
+        "url_help": "Create one from your Google Chat space -> Apps & integrations -> Webhooks. Treat this URL as a secret.",
+        "save_button": "Save",
+        "test_button": "Test",
+        "test_success": "Test message sent successfully.",
+        "test_failed": "Test failed: {error}",
+        "saved": "Webhook settings saved.",
+        "cleared": "Webhook URL cleared.",
+        "_todo_translate": true
       }
     }
   },
-
   "buttons": {
     "next": "Volgende",
     "back": "Terug",
@@ -462,7 +460,6 @@
     "show_log": "Log tonen",
     "got_it": "Begrepen"
   },
-
   "messages": {
     "using_backend": "In gebruik: {name} ({model})",
     "directory_not_found": "Map niet gevonden: {path}",
@@ -495,7 +492,6 @@
     "cli_not_found": "{command} CLI niet gevonden in PATH.",
     "no_backends_available": "Geen backends beschikbaar. Installeer claude, gemini of copilot CLI."
   },
-
   "components": {
     "hero": {
       "title": "Skillnir",
@@ -566,7 +562,6 @@
       "no_ai_requests_subtitle": "Tokengebruik verschijnt hier nadat u docs, skills heeft gegenereerd of vragen aan AI heeft gesteld."
     }
   },
-
   "layout": {
     "injection_summary": "Injectieoverzicht",
     "target": "Doel:",
@@ -589,10 +584,12 @@
     "tooltips": {
       "cli_setup_guide": "CLI-installatiehandleiding",
       "toggle_dark_light": "Donker/licht modus schakelen",
-      "toggle_sound": "Meldingsgeluid schakelen"
+      "toggle_sound": "Meldingsgeluid schakelen",
+      "notifications_on": "Webhook notifications: ON (click to disable)",
+      "notifications_off": "Webhook notifications: OFF (click to enable)",
+      "notifications_disabled": "Set a webhook URL in Settings first"
     }
   },
-
   "cli": {
     "description": "Injecteer AI-codeervaardigheden in de dotdir van elke tool.",
     "command_help": "install (standaard): skills synchroniseren + in tools injecteren. update: alleen skills synchroniseren. delete-skill: skill(s) uit een project verwijderen. delete-docs: AI-docs uit een project verwijderen. init-skill: een standaard skillraamwerk aanmaken. init-docs: een standaard AI-docs-sjabloon aanmaken. ui: webinterface starten. generate-docs: agents.md genereren met AI. generate-skill: een SKILL.md genereren met AI. generate-rule: Cursor-regel (.mdc) genereren met AI. check-skill: /skills uitvoeren via AI-backend. ask: een vraag stellen aan AI. plan: een implementatieplan ontvangen. research: laatste AI-engineeringnieuws zoeken en samenvattingen genereren. events: aankomende AI-evenementen en conferenties wereldwijd zoeken. config: backend/model beheren. sound: Claude Code-geluidsmeldingen beheren.",

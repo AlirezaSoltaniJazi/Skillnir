@@ -3,6 +3,7 @@
 from nicegui import app, ui
 
 from skillnir.i18n import SUPPORTED_LANGUAGES, get_current_language, set_language, t
+from skillnir.notifier import send_gchat_notification
 from skillnir.ui.components.page_header import page_header
 from skillnir.ui.layout import header
 
@@ -88,6 +89,111 @@ def page_settings():
 
         config = load_config()
         backend_info = BACKENDS[config.backend]
+
+        # ── Setup webhook (Google Chat) ──
+        _lang_wh = get_current_language()
+        with ui.card().classes('w-full p-5 card-hover'):
+            with ui.column().classes('w-full gap-3'):
+                with ui.row().classes('items-center gap-4'):
+                    ui.icon('webhook', color='primary').classes('text-3xl')
+                    with ui.column().classes('gap-0'):
+                        ui.label(t('pages.settings.webhook.title', _lang_wh)).classes(
+                            'text-lg font-semibold'
+                        )
+                        ui.label(
+                            t('pages.settings.webhook.subtitle', _lang_wh)
+                        ).classes('text-sm text-secondary')
+
+                with ui.row().classes('items-center gap-2'):
+                    ui.label(
+                        t('pages.settings.webhook.provider_label', _lang_wh) + ':'
+                    ).classes('text-sm font-medium')
+                    ui.badge(
+                        t('pages.settings.webhook.provider_value', _lang_wh),
+                        color='primary',
+                    )
+                    ui.label(
+                        t('pages.settings.webhook.provider_note', _lang_wh)
+                    ).classes('text-xs text-secondary ml-2')
+
+                webhook_input = (
+                    ui.input(
+                        label=t('pages.settings.webhook.url_label', _lang_wh),
+                        placeholder=t(
+                            'pages.settings.webhook.url_placeholder', _lang_wh
+                        ),
+                        value=config.get_webhook_url(),
+                    )
+                    .props('clearable')
+                    .classes('w-full')
+                )
+                ui.label(t('pages.settings.webhook.url_help', _lang_wh)).classes(
+                    'text-xs text-secondary'
+                )
+
+                def _save_webhook():
+                    new_url = (webhook_input.value or '').strip()
+                    config.set_webhook_url(new_url)
+                    if not new_url and config.notifications_enabled:
+                        # Can't have notifications on with no URL.
+                        config.notifications_enabled = False
+                        app.storage.user['notifications_enabled'] = False
+                    save_config(config)
+                    ui.notify(
+                        (
+                            t('pages.settings.webhook.saved', _lang_wh)
+                            if new_url
+                            else t('pages.settings.webhook.cleared', _lang_wh)
+                        ),
+                        type='positive',
+                    )
+                    # Reload so the top-bar bell picks up the new URL state.
+                    ui.navigate.to('/settings')
+
+                def _test_webhook():
+                    url = (webhook_input.value or '').strip()
+                    if not url:
+                        ui.notify(
+                            t(
+                                'pages.settings.webhook.test_failed',
+                                _lang_wh,
+                                error='webhook URL not set',
+                            ),
+                            type='negative',
+                        )
+                        return
+                    test_title = f"Test message (model: {config.model})"
+                    ok, err = send_gchat_notification(
+                        url,
+                        test_title,
+                        'This is a test from Skillnir settings.',
+                    )
+                    if ok:
+                        ui.notify(
+                            t('pages.settings.webhook.test_success', _lang_wh),
+                            type='positive',
+                        )
+                    else:
+                        ui.notify(
+                            t(
+                                'pages.settings.webhook.test_failed',
+                                _lang_wh,
+                                error=err or 'unknown error',
+                            ),
+                            type='negative',
+                        )
+
+                with ui.row().classes('gap-2 justify-end w-full'):
+                    ui.button(
+                        t('pages.settings.webhook.test_button', _lang_wh),
+                        icon='send',
+                        on_click=_test_webhook,
+                    ).props('flat rounded')
+                    ui.button(
+                        t('pages.settings.webhook.save_button', _lang_wh),
+                        icon='save',
+                        on_click=_save_webhook,
+                    ).props('unelevated rounded')
 
         with ui.card().classes('w-full p-5 card-hover'):
             with ui.row().classes('items-center justify-between w-full'):
@@ -182,12 +288,12 @@ def page_settings():
                 with ui.row().classes('items-center gap-4'):
                     ui.icon('translate', color='deep-purple').classes('text-3xl')
                     with ui.column().classes('gap-0'):
-                        ui.label(
-                            t('pages.settings.language_title', lang) or 'Language'
-                        ).classes('text-lg font-semibold')
-                        ui.label(f'Currently using {lang_name}').classes(
-                            'text-sm text-secondary'
+                        ui.label(t('pages.settings.language_title', lang)).classes(
+                            'text-lg font-semibold'
                         )
+                        ui.label(
+                            t('pages.settings.language_current', lang, name=lang_name)
+                        ).classes('text-sm text-secondary')
 
                 lang_options = {
                     code: name for code, name in SUPPORTED_LANGUAGES.items()

@@ -236,7 +236,9 @@ def page_install():
                         execute_btn.enable()
                         state['injection_results'] = all_results
                         build_results(results_container, all_results)
-                        play_notification(audio_el, sound_state)
+                        play_notification(
+                            audio_el, sound_state, title="Skill injection complete"
+                        )
                         stepper.next()
 
                     execute_btn = ui.button(
@@ -306,7 +308,7 @@ def page_update():
             update_progress_container.clear()
             update_btn.enable()
             build_sync_report(results_container, sync_results)
-            play_notification(audio_el, sound_state)
+            play_notification(audio_el, sound_state, title="Skill sync complete")
             with results_container:
                 with ui.row().classes('gap-3 mt-4'):
                     ui.button(

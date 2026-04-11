@@ -38,7 +38,6 @@
       "alpha": "الفبایی"
     }
   },
-
   "pages": {
     "home": {
       "sections": {
@@ -126,7 +125,6 @@
         "ask_ai": "پرسش از AI"
       }
     },
-
     "install": {
       "title": "نصب مهارت‌ها",
       "subtitle": "تزریق مهارت‌های کدنویسی AI به پروژه شما.",
@@ -149,12 +147,10 @@
       "starting": "شروع...",
       "updating_skills": "به‌روزرسانی مهارت‌ها..."
     },
-
     "update": {
       "title": "به‌روزرسانی مهارت‌ها",
       "subtitle": "همگام‌سازی تمام مهارت‌ها از منبع به پروژه مقصد."
     },
-
     "skills_library": {
       "title": "کتابخانه مهارت‌ها",
       "subtitle": "{count} مهارت موجود",
@@ -164,7 +160,6 @@
       "skill_md_dialog_title": "{name} — SKILL.md",
       "error_reading_skill_md": "خطا در خواندن SKILL.md: {error}"
     },
-
     "generate_docs": {
       "title": "تولید مستندات AI",
       "subtitle": "اسکن پروژه با AI و تولید agents.md + .claude/claude.md",
@@ -173,7 +168,6 @@
       "result_success_title": "تولید کامل شد",
       "result_fail_title": "تولید ناموفق بود"
     },
-
     "generate_rule": {
       "title": "تولید قاعده",
       "subtitle": "اسکن پروژه با AI و تولید فایل‌های قاعده Cursor (.mdc)",
@@ -185,7 +179,6 @@
       "result_success_title": "تولید قاعده کامل شد",
       "result_fail_title": "تولید قاعده ناموفق بود"
     },
-
     "delete_docs": {
       "title": "حذف مستندات AI",
       "subtitle": "حذف agents.md و سیم‌لینک‌های آن از پروژه مقصد.",
@@ -200,7 +193,6 @@
       "removed_files": "{count} فایل حذف شد",
       "cleaned_dirs": "{count} پوشه خالی پاک‌سازی شد"
     },
-
     "generate_skill": {
       "title": "تولید مهارت",
       "subtitle": "اسکن پروژه با AI و تولید یک SKILL.md اختصاصی دامنه",
@@ -220,7 +212,6 @@
       "grid_tools_used": "ابزارهای استفاده‌شده",
       "grid_backend": "بک‌اند"
     },
-
     "delete_skill": {
       "title": "حذف مهارت‌ها",
       "subtitle": "حذف مهارت(ها) از پروژه مقصد، شامل سیم‌لینک‌ها در تمام پوشه‌های ابزار.",
@@ -235,7 +226,6 @@
       "deleted_badge": "حذف‌شده",
       "deleted_summary": "({symlinks} سیم‌لینک، {dirs} پوشه پاک‌سازی‌شده)"
     },
-
     "init_skill": {
       "title": "ایجاد مهارت",
       "subtitle": "ایجاد قالب پیش‌فرض مهارت با فایل‌های جای‌نگهدار توضیح‌دار.",
@@ -245,7 +235,6 @@
       "scaffold_created": "قالب مهارت در {path} ایجاد شد",
       "error_prefix": "خطا: {error}"
     },
-
     "init_docs": {
       "title": "ایجاد مستندات AI",
       "subtitle": "ایجاد قالب پیش‌فرض agents.md با بخش‌های توضیح‌دار و سیم‌لینک برای ابزارهای AI.",
@@ -254,7 +243,6 @@
       "docs_created": "قالب مستندات AI ایجاد شد!",
       "error_prefix": "خطا: {error}"
     },
-
     "ask": {
       "title": "پرسش از AI",
       "subtitle": "درباره یک پروژه سؤال بپرسید. AI بدون اعمال تغییرات پاسخ می‌دهد.",
@@ -265,7 +253,6 @@
       "result_success_title": "پاسخ کامل شد",
       "result_fail_title": "پرسش ناموفق بود"
     },
-
     "plan": {
       "title": "برنامه‌ریزی",
       "subtitle": "دریافت یک برنامه پیاده‌سازی دقیق از AI برای یک وظیفه یا قابلیت.",
@@ -276,7 +263,6 @@
       "result_success_title": "برنامه‌ریزی کامل شد",
       "result_fail_title": "برنامه‌ریزی ناموفق بود"
     },
-
     "check_skill": {
       "title": "بررسی مهارت",
       "subtitle": "اجرای /skills از طریق بک‌اند AI روی پروژه مقصد.",
@@ -284,7 +270,6 @@
       "result_success_title": "بررسی مهارت کامل شد",
       "result_fail_title": "بررسی مهارت ناموفق بود"
     },
-
     "tools_registry": {
       "title": "فهرست ابزارها",
       "subtitle": "{count} ابزار AI پشتیبانی‌شده (+ تزریق خودکار .agents/)",
@@ -299,7 +284,6 @@
         "website": "وب‌سایت"
       }
     },
-
     "usage": {
       "title": "مصرف توکن",
       "subtitle": "مصرف توکن در سطح نشست برای تمام بک‌اندهای AI.",
@@ -314,7 +298,6 @@
       "cache_tokens": "توکن‌های کش",
       "cost": "هزینه"
     },
-
     "research": {
       "title": "پژوهش مهندسی AI",
       "subtitle": "جستجوی آخرین اخبار مهندسی AI، مطالعه عمیق مقالات و تولید خلاصه‌ها",
@@ -331,7 +314,6 @@
       "generated_html_pages": "{count} صفحه HTML مقاله تولید شد",
       "all_articles_have_html": "تمام مقالات از قبل صفحه HTML دارند"
     },
-
     "events": {
       "title": "رویدادها و کنفرانس‌های AI",
       "subtitle": "یافتن کنفرانس‌ها، گردهمایی‌ها و کارگاه‌های AI در سراسر جهان",
@@ -347,7 +329,6 @@
       "generated_html_pages": "{count} صفحه HTML رویداد تولید شد",
       "all_events_have_html": "تمام رویدادها از قبل صفحه HTML دارند"
     },
-
     "benchmarks": {
       "title": "معیارهای مدل هوش مصنوعی",
       "subtitle": "مقایسه مدل‌های برتر هوش مصنوعی در کدنویسی، استدلال، ریاضیات و موارد دیگر",
@@ -363,7 +344,6 @@
       "grid_updated": "به‌روزرسانی شده",
       "grid_duration": "مدت زمان"
     },
-
     "security": {
       "title": "آسیب‌پذیری‌های امنیتی",
       "subtitle": "جستجوی CVEهای بحرانی، حملات روز صفر و توصیه‌نامه‌های امنیتی",
@@ -379,7 +359,6 @@
       "grid_duration": "مدت زمان",
       "select_at_least_one_category": "حداقل یک دسته‌بندی انتخاب کنید"
     },
-
     "settings": {
       "title": "تنظیمات",
       "subtitle": "پیکربندی ترجیحات برنامه.",
@@ -408,10 +387,29 @@
       "prompt_version": {
         "title": "نسخه پرامپت",
         "description": "در حال استفاده از {version}"
+      },
+      "language_title": "Language",
+      "language_description": "Select your preferred interface language.",
+      "language_current": "Currently using {name}",
+      "webhook": {
+        "title": "Setup webhook",
+        "subtitle": "Receive Google Chat messages when long-running tasks complete.",
+        "provider_label": "Provider",
+        "provider_value": "Google Chat",
+        "provider_note": "More providers coming soon.",
+        "url_label": "Incoming webhook URL",
+        "url_placeholder": "https://chat.googleapis.com/v1/spaces/...",
+        "url_help": "Create one from your Google Chat space -> Apps & integrations -> Webhooks. Treat this URL as a secret.",
+        "save_button": "Save",
+        "test_button": "Test",
+        "test_success": "Test message sent successfully.",
+        "test_failed": "Test failed: {error}",
+        "saved": "Webhook settings saved.",
+        "cleared": "Webhook URL cleared.",
+        "_todo_translate": true
       }
     }
   },
-
   "buttons": {
     "next": "بعدی",
     "back": "قبلی",
@@ -462,7 +460,6 @@
     "show_log": "نمایش گزارش",
     "got_it": "متوجه شدم"
   },
-
   "messages": {
     "using_backend": "در حال استفاده: {name} ({model})",
     "directory_not_found": "پوشه یافت نشد: {path}",
@@ -495,7 +492,6 @@
     "cli_not_found": "CLI {command} در PATH یافت نشد.",
     "no_backends_available": "بک‌اندی موجود نیست. claude، gemini یا copilot CLI را نصب کنید."
   },
-
   "components": {
     "hero": {
       "title": "Skillnir",
@@ -566,7 +562,6 @@
       "no_ai_requests_subtitle": "مصرف توکن پس از تولید مستندات، مهارت‌ها یا پرسش از AI در اینجا نمایش داده می‌شود."
     }
   },
-
   "layout": {
     "injection_summary": "خلاصه تزریق",
     "target": "مقصد:",
@@ -589,10 +584,12 @@
     "tooltips": {
       "cli_setup_guide": "راهنمای راه‌اندازی CLI",
       "toggle_dark_light": "تغییر حالت تاریک/روشن",
-      "toggle_sound": "تغییر صدای اعلان"
+      "toggle_sound": "تغییر صدای اعلان",
+      "notifications_on": "Webhook notifications: ON (click to disable)",
+      "notifications_off": "Webhook notifications: OFF (click to enable)",
+      "notifications_disabled": "Set a webhook URL in Settings first"
     }
   },
-
   "cli": {
     "description": "تزریق مهارت‌های کدنویسی AI به پوشه تنظیمات هر ابزار.",
     "command_help": "install (پیش‌فرض): همگام‌سازی مهارت‌ها + تزریق به ابزارها. update: فقط همگام‌سازی مهارت‌ها. delete-skill: حذف مهارت(ها) از پروژه. delete-docs: حذف مستندات AI از پروژه. init-skill: ایجاد قالب پیش‌فرض مهارت. init-docs: ایجاد قالب پیش‌فرض مستندات AI. ui: اجرای رابط وب. generate-docs: تولید agents.md با AI. generate-skill: تولید SKILL.md با AI. generate-rule: تولید قاعده Cursor (.mdc) با AI. check-skill: اجرای /skills از طریق بک‌اند AI. ask: پرسش از AI. plan: دریافت برنامه پیاده‌سازی. research: جستجوی آخرین اخبار مهندسی AI و تولید خلاصه. events: جستجوی رویدادها و کنفرانس‌های AI در سراسر جهان. config: مدیریت بک‌اند/مدل. sound: مدیریت اعلان‌های صوتی Claude Code.",

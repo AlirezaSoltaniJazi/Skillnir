@@ -291,7 +291,7 @@ async def page_benchmarks():
                         icon="home",
                     ).props("flat rounded")
 
-            play_notification(audio_el, sound_state)
+            play_notification(audio_el, sound_state, title="Benchmarks updated")
 
         search_btn = ui.button(
             t("buttons.search_benchmarks", lang),

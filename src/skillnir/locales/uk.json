@@ -38,7 +38,6 @@
       "alpha": "За алфавітом"
     }
   },
-
   "pages": {
     "home": {
       "sections": {
@@ -126,7 +125,6 @@
         "ask_ai": "Запитати AI"
       }
     },
-
     "install": {
       "title": "Встановити навички",
       "subtitle": "Впровадити навички кодування AI у ваш проєкт.",
@@ -149,12 +147,10 @@
       "starting": "Запуск...",
       "updating_skills": "Оновлення навичок..."
     },
-
     "update": {
       "title": "Оновити навички",
       "subtitle": "Синхронізувати всі навички з джерела до цільового проєкту."
     },
-
     "skills_library": {
       "title": "Бібліотека навичок",
       "subtitle": "{count} доступних навичок",
@@ -164,7 +160,6 @@
       "skill_md_dialog_title": "{name} — SKILL.md",
       "error_reading_skill_md": "Помилка читання SKILL.md: {error}"
     },
-
     "generate_docs": {
       "title": "Генерувати документацію AI",
       "subtitle": "Сканувати проєкт за допомогою AI та згенерувати agents.md + .claude/claude.md",
@@ -173,7 +168,6 @@
       "result_success_title": "Генерування завершено",
       "result_fail_title": "Генерування не вдалося"
     },
-
     "generate_rule": {
       "title": "Генерувати правило",
       "subtitle": "Сканувати проєкт за допомогою AI та згенерувати файли правил Cursor (.mdc)",
@@ -185,7 +179,6 @@
       "result_success_title": "Генерування правила завершено",
       "result_fail_title": "Генерування правила не вдалося"
     },
-
     "delete_docs": {
       "title": "Видалити документацію AI",
       "subtitle": "Видалити agents.md та його символічні посилання з цільового проєкту.",
@@ -200,7 +193,6 @@
       "removed_files": "Видалено {count} файл(ів)",
       "cleaned_dirs": "Очищено {count} порожній(х) каталог(ів)"
     },
-
     "generate_skill": {
       "title": "Генерувати навичку",
       "subtitle": "Сканувати проєкт за допомогою AI та згенерувати спеціалізований SKILL.md",
@@ -220,7 +212,6 @@
       "grid_tools_used": "Використані інструменти",
       "grid_backend": "Бекенд"
     },
-
     "delete_skill": {
       "title": "Видалити навички",
       "subtitle": "Видалити навичку(и) з цільового проєкту, включаючи символічні посилання з усіх каталогів інструментів.",
@@ -235,7 +226,6 @@
       "deleted_badge": "видалено",
       "deleted_summary": "({symlinks} посилань, {dirs} каталогів очищено)"
     },
-
     "init_skill": {
       "title": "Ініціювати навичку",
       "subtitle": "Створити каркас навички за замовчуванням з файлами-заповнювачами з коментарями.",
@@ -245,7 +235,6 @@
       "scaffold_created": "Каркас навички створено в {path}",
       "error_prefix": "Помилка: {error}"
     },
-
     "init_docs": {
       "title": "Ініціювати документацію AI",
       "subtitle": "Створити шаблон agents.md за замовчуванням з коментованими розділами та символічними посиланнями для інструментів AI.",
@@ -254,7 +243,6 @@
       "docs_created": "Шаблон документації AI створено!",
       "error_prefix": "Помилка: {error}"
     },
-
     "ask": {
       "title": "Запитати AI",
       "subtitle": "Поставте запитання про проєкт. AI відповідає без внесення змін.",
@@ -265,7 +253,6 @@
       "result_success_title": "Відповідь готова",
       "result_fail_title": "Запит не вдався"
     },
-
     "plan": {
       "title": "План",
       "subtitle": "Отримайте детальний план реалізації від AI для завдання або функції.",
@@ -276,7 +263,6 @@
       "result_success_title": "План готовий",
       "result_fail_title": "Планування не вдалося"
     },
-
     "check_skill": {
       "title": "Перевірити навичку",
       "subtitle": "Виконати /skills через бекенд AI на цільовому проєкті.",
@@ -284,7 +270,6 @@
       "result_success_title": "Перевірка навички завершена",
       "result_fail_title": "Перевірка навички не вдалася"
     },
-
     "tools_registry": {
       "title": "Реєстр інструментів",
       "subtitle": "{count} підтримуваних інструментів AI (+ автоматичне впровадження .agents/)",
@@ -299,7 +284,6 @@
         "website": "Сайт"
       }
     },
-
     "usage": {
       "title": "Використання токенів",
       "subtitle": "Використання токенів на рівні сесії по всіх бекендах AI.",
@@ -314,7 +298,6 @@
       "cache_tokens": "Токени кешу",
       "cost": "Вартість"
     },
-
     "research": {
       "title": "Дослідження інженерії AI",
       "subtitle": "Шукайте найновіші новини з інженерії AI, читайте статті та генеруйте підсумки",
@@ -331,7 +314,6 @@
       "generated_html_pages": "Згенеровано {count} HTML-сторінку(ок) статей",
       "all_articles_have_html": "Усі статті вже мають HTML-сторінки"
     },
-
     "events": {
       "title": "Події та конференції AI",
       "subtitle": "Знаходьте майбутні конференції, зустрічі та воркшопи з AI по всьому світу",
@@ -347,7 +329,6 @@
       "generated_html_pages": "Згенеровано {count} HTML-сторінку(ок) подій",
       "all_events_have_html": "Усі події вже мають HTML-сторінки"
     },
-
     "benchmarks": {
       "title": "Бенчмарки моделей ШІ",
       "subtitle": "Порівняйте найкращі моделі ШІ у кодуванні, логіці, математиці та інших категоріях",
@@ -363,7 +344,6 @@
       "grid_updated": "Оновлено",
       "grid_duration": "Тривалість"
     },
-
     "security": {
       "title": "Вразливості безпеки",
       "subtitle": "Пошук критичних CVE, zero-day та рекомендацій з безпеки",
@@ -379,7 +359,6 @@
       "grid_duration": "Тривалість",
       "select_at_least_one_category": "Виберіть принаймні одну категорію"
     },
-
     "settings": {
       "title": "Налаштування",
       "subtitle": "Налаштуйте параметри додатку.",
@@ -408,10 +387,29 @@
       "prompt_version": {
         "title": "Версія промпту",
         "description": "Наразі використовується: {version}"
+      },
+      "language_title": "Language",
+      "language_description": "Select your preferred interface language.",
+      "language_current": "Currently using {name}",
+      "webhook": {
+        "title": "Setup webhook",
+        "subtitle": "Receive Google Chat messages when long-running tasks complete.",
+        "provider_label": "Provider",
+        "provider_value": "Google Chat",
+        "provider_note": "More providers coming soon.",
+        "url_label": "Incoming webhook URL",
+        "url_placeholder": "https://chat.googleapis.com/v1/spaces/...",
+        "url_help": "Create one from your Google Chat space -> Apps & integrations -> Webhooks. Treat this URL as a secret.",
+        "save_button": "Save",
+        "test_button": "Test",
+        "test_success": "Test message sent successfully.",
+        "test_failed": "Test failed: {error}",
+        "saved": "Webhook settings saved.",
+        "cleared": "Webhook URL cleared.",
+        "_todo_translate": true
       }
     }
   },
-
   "buttons": {
     "next": "Далі",
     "back": "Назад",
@@ -462,7 +460,6 @@
     "show_log": "Показати журнал",
     "got_it": "Зрозуміло"
   },
-
   "messages": {
     "using_backend": "Використовується: {name} ({model})",
     "directory_not_found": "Каталог не знайдено: {path}",
@@ -495,7 +492,6 @@
     "cli_not_found": "CLI {command} не знайдено в PATH.",
     "no_backends_available": "Бекенди недоступні. Встановіть claude, gemini або copilot CLI."
   },
-
   "components": {
     "hero": {
       "title": "Skillnir",
@@ -566,7 +562,6 @@
       "no_ai_requests_subtitle": "Використання токенів з'явиться тут після генерування документації, навичок або запитань до AI."
     }
   },
-
   "layout": {
     "injection_summary": "Підсумок впровадження",
     "target": "Ціль:",
@@ -589,10 +584,12 @@
     "tooltips": {
       "cli_setup_guide": "Посібник налаштування CLI",
       "toggle_dark_light": "Перемкнути темну/світлу тему",
-      "toggle_sound": "Перемкнути звук сповіщень"
+      "toggle_sound": "Перемкнути звук сповіщень",
+      "notifications_on": "Webhook notifications: ON (click to disable)",
+      "notifications_off": "Webhook notifications: OFF (click to enable)",
+      "notifications_disabled": "Set a webhook URL in Settings first"
     }
   },
-
   "cli": {
     "description": "Впроваджуйте навички кодування AI у каталог будь-якого інструменту.",
     "command_help": "install (за замовчуванням): синхронізувати навички + впровадити в інструменти. update: лише синхронізувати навички. delete-skill: видалити навичку(и) з проєкту. delete-docs: видалити документацію AI з проєкту. init-skill: створити каркас навички за замовчуванням. init-docs: створити шаблон документації AI за замовчуванням. ui: запустити вебінтерфейс. generate-docs: згенерувати agents.md за допомогою AI. generate-skill: згенерувати SKILL.md за допомогою AI. generate-rule: згенерувати правило Cursor (.mdc) за допомогою AI. check-skill: виконати /skills через бекенд AI. ask: запитати AI. plan: отримати план реалізації. research: шукати останні новини з інженерії AI та генерувати підсумки. events: шукати майбутні події та конференції AI по всьому світу. config: керувати бекендом/моделлю. sound: керувати звуковими сповіщеннями Claude Code.",

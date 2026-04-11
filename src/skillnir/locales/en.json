@@ -38,7 +38,6 @@
       "alpha": "Alphabetical"
     }
   },
-
   "pages": {
     "home": {
       "sections": {
@@ -126,7 +125,6 @@
         "ask_ai": "Ask AI"
       }
     },
-
     "install": {
       "title": "Install Skills",
       "subtitle": "Inject AI coding skills into your project.",
@@ -149,12 +147,10 @@
       "starting": "Starting...",
       "updating_skills": "Updating skills..."
     },
-
     "update": {
       "title": "Update Skills",
       "subtitle": "Sync all skills from source to a target project."
     },
-
     "skills_library": {
       "title": "Skills Library",
       "subtitle": "{count} skills available",
@@ -164,7 +160,6 @@
       "skill_md_dialog_title": "{name} — SKILL.md",
       "error_reading_skill_md": "Error reading SKILL.md: {error}"
     },
-
     "generate_docs": {
       "title": "Generate AI Docs",
       "subtitle": "Scan a project with AI and generate agents.md + .claude/claude.md",
@@ -173,7 +168,6 @@
       "result_success_title": "Generation Complete",
       "result_fail_title": "Generation Failed"
     },
-
     "generate_rule": {
       "title": "Generate Rule",
       "subtitle": "Scan a project with AI and generate Cursor rule files (.mdc)",
@@ -185,7 +179,6 @@
       "result_success_title": "Rule Generation Complete",
       "result_fail_title": "Rule Generation Failed"
     },
-
     "delete_docs": {
       "title": "Delete AI Docs",
       "subtitle": "Remove agents.md and its symlinks from a target project.",
@@ -200,7 +193,6 @@
       "removed_files": "Removed {count} file(s)",
       "cleaned_dirs": "Cleaned {count} empty dir(s)"
     },
-
     "generate_skill": {
       "title": "Generate Skill",
       "subtitle": "Scan a project with AI and generate a domain-specific SKILL.md",
@@ -220,7 +212,6 @@
       "grid_tools_used": "Tools used",
       "grid_backend": "Backend"
     },
-
     "delete_skill": {
       "title": "Delete Skills",
       "subtitle": "Remove skill(s) from a target project, including symlinks in all tool directories.",
@@ -235,7 +226,6 @@
       "deleted_badge": "deleted",
       "deleted_summary": "({symlinks} symlinks, {dirs} dirs cleaned)"
     },
-
     "init_skill": {
       "title": "Init Skill",
       "subtitle": "Create a default skill scaffold with commented placeholder files.",
@@ -245,7 +235,6 @@
       "scaffold_created": "Skill scaffold created at {path}",
       "error_prefix": "Error: {error}"
     },
-
     "init_docs": {
       "title": "Init AI Docs",
       "subtitle": "Create a default agents.md template with commented sections and symlinks for AI tools.",
@@ -254,7 +243,6 @@
       "docs_created": "AI docs template created!",
       "error_prefix": "Error: {error}"
     },
-
     "ask": {
       "title": "Ask AI",
       "subtitle": "Ask a question about a project. AI answers without making changes.",
@@ -265,7 +253,6 @@
       "result_success_title": "Answer Complete",
       "result_fail_title": "Ask Failed"
     },
-
     "plan": {
       "title": "Plan",
       "subtitle": "Get a detailed implementation plan from AI for a task or feature.",
@@ -276,7 +263,6 @@
       "result_success_title": "Plan Complete",
       "result_fail_title": "Planning Failed"
     },
-
     "check_skill": {
       "title": "Check Skill",
       "subtitle": "Run /skills via AI backend on a target project.",
@@ -284,7 +270,6 @@
       "result_success_title": "Skill Check Complete",
       "result_fail_title": "Skill Check Failed"
     },
-
     "tools_registry": {
       "title": "Tools Registry",
       "subtitle": "{count} AI tools supported (+ .agents/ auto-inject)",
@@ -299,7 +284,6 @@
         "website": "Website"
       }
     },
-
     "usage": {
       "title": "Token Usage",
       "subtitle": "Session-level token usage across all AI backends.",
@@ -314,7 +298,6 @@
       "cache_tokens": "Cache Tokens",
       "cost": "Cost"
     },
-
     "research": {
       "title": "AI Engineering Research",
       "subtitle": "Search latest AI engineering news, deep-read articles, and generate summaries",
@@ -331,7 +314,6 @@
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
     },
-
     "events": {
       "title": "AI Events & Conferences",
       "subtitle": "Find upcoming AI conferences, meetups, and workshops worldwide",
@@ -347,7 +329,6 @@
       "generated_html_pages": "Generated {count} HTML event page(s)",
       "all_events_have_html": "All events already have HTML pages"
     },
-
     "benchmarks": {
       "title": "AI Model Benchmarks",
       "subtitle": "Compare top AI models across coding, reasoning, math, and more",
@@ -363,7 +344,6 @@
       "grid_updated": "Updated",
       "grid_duration": "Duration"
     },
-
     "security": {
       "title": "Security Vulnerabilities",
       "subtitle": "Search for critical CVEs, zero-days, and security advisories",
@@ -379,7 +359,6 @@
       "grid_duration": "Duration",
       "select_at_least_one_category": "Select at least one category"
     },
-
     "settings": {
       "title": "Settings",
       "subtitle": "Configure application preferences.",
@@ -408,10 +387,28 @@
       "prompt_version": {
         "title": "Prompt Version",
         "description": "Currently using {version}"
+      },
+      "language_title": "Language",
+      "language_description": "Select your preferred interface language.",
+      "language_current": "Currently using {name}",
+      "webhook": {
+        "title": "Setup webhook",
+        "subtitle": "Receive Google Chat messages when long-running tasks complete.",
+        "provider_label": "Provider",
+        "provider_value": "Google Chat",
+        "provider_note": "More providers coming soon.",
+        "url_label": "Incoming webhook URL",
+        "url_placeholder": "https://chat.googleapis.com/v1/spaces/...",
+        "url_help": "Create one from your Google Chat space -> Apps & integrations -> Webhooks. Treat this URL as a secret.",
+        "save_button": "Save",
+        "test_button": "Test",
+        "test_success": "Test message sent successfully.",
+        "test_failed": "Test failed: {error}",
+        "saved": "Webhook settings saved.",
+        "cleared": "Webhook URL cleared."
       }
     }
   },
-
   "buttons": {
     "next": "Next",
     "back": "Back",
@@ -462,7 +459,6 @@
     "show_log": "Show Log",
     "got_it": "Got it"
   },
-
   "messages": {
     "using_backend": "Using: {name} ({model})",
     "directory_not_found": "Directory not found: {path}",
@@ -495,7 +491,6 @@
     "cli_not_found": "{command} CLI not found in PATH.",
     "no_backends_available": "No backends available. Install claude, gemini, or copilot CLI."
   },
-
   "components": {
     "hero": {
       "title": "Skillnir",
@@ -566,7 +561,6 @@
       "no_ai_requests_subtitle": "Token usage will appear here after you generate docs, skills, or ask AI questions."
     }
   },
-
   "layout": {
     "injection_summary": "Injection Summary",
     "target": "Target:",
@@ -589,10 +583,12 @@
     "tooltips": {
       "cli_setup_guide": "CLI setup guide",
       "toggle_dark_light": "Toggle dark/light mode",
-      "toggle_sound": "Toggle notification sound"
+      "toggle_sound": "Toggle notification sound",
+      "notifications_on": "Webhook notifications: ON (click to disable)",
+      "notifications_off": "Webhook notifications: OFF (click to enable)",
+      "notifications_disabled": "Set a webhook URL in Settings first"
     }
   },
-
   "cli": {
     "description": "Inject AI coding skills into any tool's dotdir.",
     "command_help": "install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. events: search upcoming AI events and conferences worldwide. config: manage backend/model. sound: manage Claude Code sound notifications.",

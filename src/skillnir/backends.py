@@ -239,12 +239,32 @@ PROMPT_VERSION_LABELS = get_prompt_version_labels()
 
 @dataclass
 class AppConfig:
-    """User's persisted backend/model preferences."""
+    """User's persisted backend/model preferences.
+
+    The webhook URL is stored encrypted at rest in ``gchat_webhook_cipher``
+    (a Fernet token bound to the local machine + per-install UUID). Use
+    ``get_webhook_url()`` / ``set_webhook_url()`` instead of touching the
+    cipher field directly.
+    """
 
     backend: AIBackend = AIBackend.CLAUDE
     model: str = "sonnet"
     prompt_version: str = field(default_factory=_default_prompt_version)
     compress_prompts: bool = False
+    gchat_webhook_cipher: str = ""
+    notifications_enabled: bool = False
+
+    def get_webhook_url(self) -> str:
+        """Decrypt and return the webhook URL, or '' if none / decrypt fails."""
+        from skillnir.crypto import decrypt_string
+
+        return decrypt_string(self.gchat_webhook_cipher)
+
+    def set_webhook_url(self, url: str) -> None:
+        """Encrypt ``url`` with the machine-bound key and store it."""
+        from skillnir.crypto import encrypt_string
+
+        self.gchat_webhook_cipher = encrypt_string(url.strip())
 
     def to_dict(self) -> dict:
         return {
@@ -252,6 +272,8 @@ class AppConfig:
             "model": self.model,
             "prompt_version": self.prompt_version,
             "compress_prompts": self.compress_prompts,
+            "gchat_webhook_cipher": self.gchat_webhook_cipher,
+            "notifications_enabled": self.notifications_enabled,
         }
 
     @classmethod
@@ -265,8 +287,26 @@ class AppConfig:
         if pv not in get_prompt_versions():
             pv = _default_prompt_version()
         compress = bool(d.get("compress_prompts", False))
+        cipher = str(d.get("gchat_webhook_cipher", ""))
+        notif_enabled = bool(d.get("notifications_enabled", False))
+
+        # ── One-shot migration from legacy plaintext field ────────────────
+        # Previous builds stored the webhook URL in plaintext under
+        # ``gchat_webhook_url``. If we see that and no cipher yet, encrypt
+        # it on the fly. ``load_config()`` will persist the migration.
+        legacy_plaintext = str(d.get("gchat_webhook_url", ""))
+        if legacy_plaintext and not cipher:
+            from skillnir.crypto import encrypt_string
+
+            cipher = encrypt_string(legacy_plaintext)
+
         return cls(
-            backend=backend, model=model, prompt_version=pv, compress_prompts=compress
+            backend=backend,
+            model=model,
+            prompt_version=pv,
+            compress_prompts=compress,
+            gchat_webhook_cipher=cipher,
+            notifications_enabled=notif_enabled,
         )
 
 
@@ -275,7 +315,15 @@ def load_config() -> AppConfig:
     if CONFIG_FILE.exists():
         try:
             data = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
-            return AppConfig.from_dict(data)
+            config = AppConfig.from_dict(data)
+            # If we just migrated a legacy plaintext webhook URL, persist
+            # immediately so the plaintext stops sitting on disk.
+            if "gchat_webhook_url" in data:
+                try:
+                    save_config(config)
+                except OSError:
+                    pass
+            return config
         except json.JSONDecodeError, ValueError, KeyError:
             pass
     # Migrate from old config locations if they exist

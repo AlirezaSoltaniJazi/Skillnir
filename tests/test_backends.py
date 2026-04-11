@@ -41,7 +41,34 @@ class TestAppConfig:
             "model": "pro",
             "prompt_version": "v1",
             "compress_prompts": False,
+            "gchat_webhook_cipher": "",
+            "notifications_enabled": False,
         }
+
+    def test_webhook_url_round_trip_via_accessors(self):
+        cfg = AppConfig()
+        assert cfg.get_webhook_url() == ""
+        cfg.set_webhook_url("https://chat.googleapis.com/v1/spaces/X/messages?key=Y")
+        # Stored field is a cipher blob, not plaintext.
+        assert cfg.gchat_webhook_cipher
+        assert "chat.googleapis.com" not in cfg.gchat_webhook_cipher
+        assert (
+            cfg.get_webhook_url()
+            == "https://chat.googleapis.com/v1/spaces/X/messages?key=Y"
+        )
+
+    def test_legacy_plaintext_field_migrates_to_cipher(self):
+        legacy = {
+            "backend": "claude",
+            "gchat_webhook_url": "https://legacy.test/OLD",
+            "notifications_enabled": True,
+        }
+        migrated = AppConfig.from_dict(legacy)
+        assert migrated.gchat_webhook_cipher  # populated
+        assert migrated.get_webhook_url() == "https://legacy.test/OLD"
+        # to_dict() must NOT emit the legacy plaintext field.
+        assert "gchat_webhook_url" not in migrated.to_dict()
+        assert "gchat_webhook_cipher" in migrated.to_dict()
 
     def test_from_dict_round_trip(self):
         original = AppConfig(
