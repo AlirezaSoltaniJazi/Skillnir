@@ -224,3 +224,4 @@ __marimo__/
 /.data/benchmarks/
 /.data/security/index.html
 /.data/security/security-index.json
+/.nicegui/
