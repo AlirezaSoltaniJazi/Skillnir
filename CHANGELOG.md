@@ -5,6 +5,12 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.6] - 2026-04-12
+
+### Added
+
+- **Customizable Google Chat notification cards** -- card text elements are now configurable via environment variables in CI. New env vars: `AI_AGENT_NOTIFY_BUTTON_TEXT` (button label, default `"View source"`), `AI_AGENT_NOTIFY_SUBTITLE` (header subtitle template with `{feature}`, `{count}`, `{part}` placeholders), `AI_AGENT_NOTIFY_OVERFLOW_TEXT` (overflow footer with `{count}` placeholder), and `AI_AGENT_NOTIFY_DESC_MAX` (max description character length, default `150`). All params are keyword-only with backward-compatible defaults on `send_gchat_intel_report()`. Header title ("Skillnir") remains hardcoded.
+
 ## [1.3.5] - 2026-04-12
 
 ### Fixed
@@ -378,6 +384,9 @@ NiceGUI-based dashboard with pages for skill generation, installation, deletion,
 - Rollback strategy and cloud cost awareness in backend generator
 - Severity classification in security sections across backend, frontend, and infra generators
 
+[1.3.6]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.3.6
+[1.3.5]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.3.5
+[1.3.4]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.3.4
 [1.3.3]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.3.3
 [1.3.2]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.3.2
 [1.3.1]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.3.1
