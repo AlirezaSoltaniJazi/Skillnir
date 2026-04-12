@@ -359,4 +359,3 @@ NiceGUI-based dashboard with pages for skill generation, installation, deletion,
 - WCAG 2.1 AA mapping in Android and iOS accessibility sections
 - Rollback strategy and cloud cost awareness in backend generator
 - Severity classification in security sections across backend, frontend, and infra generators
-
