@@ -154,7 +154,7 @@ async def page_research():
         # ── Time range chips ──
         selected_date_range: dict[str, str | None] = {'value': None}
 
-        _DATE_OPTIONS: list[tuple[str, str | None]] = [
+        _dateOptions: list[tuple[str, str | None]] = [
             ('All time', None),
             ('Last 1 month', 'published in the last 1 month'),
             ('Last 3 months', 'published in the last 3 months'),
@@ -172,7 +172,7 @@ async def page_research():
         def _rebuild_date_chips():
             date_chips_container.clear()
             with date_chips_container:
-                for label, value in _DATE_OPTIONS:
+                for label, value in _dateOptions:
 
                     def _toggle(v=value):
                         selected_date_range['value'] = v
