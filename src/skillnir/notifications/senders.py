@@ -242,6 +242,9 @@ def _build_chunk_card(
     total_chunks: int,
     total_items: int,
     overflow_count: int = 0,
+    button_text: str = "View source",
+    subtitle_template: str = "{feature} — {count} new item(s)",
+    overflow_text: str = "+{count} more — see workflow artifact",
 ) -> dict:
     """Build a Cards v2 payload for one chunk of intel items."""
     widgets: list[dict] = []
@@ -256,7 +259,7 @@ def _build_chunk_card(
                     "buttonList": {
                         "buttons": [
                             {
-                                "text": "View source",
+                                "text": button_text,
                                 "onClick": {"openLink": {"url": url}},
                             }
                         ]
@@ -269,12 +272,17 @@ def _build_chunk_card(
         widgets.append(
             {
                 "textParagraph": {
-                    "text": f"<i>+{overflow_count} more — see workflow artifact</i>"
+                    "text": f"<i>{overflow_text.format(count=overflow_count)}</i>"
                 }
             }
         )
 
     part_label = f" ({chunk_index + 1}/{total_chunks})" if total_chunks > 1 else ""
+    subtitle = subtitle_template.format(
+        feature=feature, count=total_items, part=part_label
+    )
+    if part_label and "{part}" not in subtitle_template:
+        subtitle += part_label
     return {
         "cardsV2": [
             {
@@ -282,7 +290,7 @@ def _build_chunk_card(
                 "card": {
                     "header": {
                         "title": "Skillnir",
-                        "subtitle": f"{feature} — {total_items} new item(s){part_label}",
+                        "subtitle": subtitle,
                     },
                     "sections": [{"widgets": widgets}],
                 },
@@ -298,6 +306,8 @@ def _build_chunk_fallback_card(
     total_chunks: int,
     total_items: int,
     overflow_count: int = 0,
+    subtitle_template: str = "{feature} — {count} new item(s)",
+    overflow_text: str = "+{count} more — see workflow artifact",
 ) -> dict:
     """Plain-text fallback for one chunk (no buttons, URLs as bare text)."""
     lines = []
@@ -310,9 +320,14 @@ def _build_chunk_fallback_card(
         lines.append(line)
 
     if chunk_index == total_chunks - 1 and overflow_count > 0:
-        lines.append(f"\n+{overflow_count} more — see workflow artifact")
+        lines.append(f"\n{overflow_text.format(count=overflow_count)}")
 
     part_label = f" ({chunk_index + 1}/{total_chunks})" if total_chunks > 1 else ""
+    subtitle = subtitle_template.format(
+        feature=feature, count=total_items, part=part_label
+    )
+    if part_label and "{part}" not in subtitle_template:
+        subtitle += part_label
     return {
         "cardsV2": [
             {
@@ -320,7 +335,7 @@ def _build_chunk_fallback_card(
                 "card": {
                     "header": {
                         "title": "Skillnir",
-                        "subtitle": f"{feature} — {total_items} new item(s){part_label}",
+                        "subtitle": subtitle,
                     },
                     "sections": [
                         {"widgets": [{"textParagraph": {"text": "\n".join(lines)}}]}
@@ -340,6 +355,9 @@ def send_gchat_intel_report(
     chunk_size: int = _DEFAULT_CHUNK_SIZE,
     chunk_delay: float = _CHUNK_DELAY_SECONDS,
     timeout: float = _DEFAULT_TIMEOUT,
+    button_text: str = "View source",
+    subtitle_template: str = "{feature} — {count} new item(s)",
+    overflow_text: str = "+{count} more — see workflow artifact",
 ) -> tuple[bool, str | None]:
     """POST intel items as chunked Google Chat cards.
 
@@ -353,6 +371,10 @@ def send_gchat_intel_report(
 
     Primary attempt uses ``buttonList`` widgets per item. If a POST returns
     HTTP 4xx, that chunk is retried with a plain-text fallback.
+
+    Card text is customizable via ``button_text``, ``subtitle_template``,
+    and ``overflow_text``. Templates support ``{feature}``, ``{count}``,
+    and ``{part}`` placeholders.
 
     Never raises. Returns ``(True, None)`` if ALL chunks succeeded,
     ``(False, error)`` with the first failure otherwise.
@@ -376,7 +398,15 @@ def send_gchat_intel_report(
             _time.sleep(chunk_delay)
 
         card = _build_chunk_card(
-            feature, chunk, idx, total_chunks, total_items, overflow_count
+            feature,
+            chunk,
+            idx,
+            total_chunks,
+            total_items,
+            overflow_count,
+            button_text=button_text,
+            subtitle_template=subtitle_template,
+            overflow_text=overflow_text,
         )
         ok, err = _post_json(webhook_url, card, timeout)
 
@@ -386,7 +416,14 @@ def send_gchat_intel_report(
         # Retry with plain-text fallback on 4xx
         if err and err.startswith("HTTP 4"):
             fallback = _build_chunk_fallback_card(
-                feature, chunk, idx, total_chunks, total_items, overflow_count
+                feature,
+                chunk,
+                idx,
+                total_chunks,
+                total_items,
+                overflow_count,
+                subtitle_template=subtitle_template,
+                overflow_text=overflow_text,
             )
             ok, err = _post_json(webhook_url, fallback, timeout)
             if ok:

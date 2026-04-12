@@ -282,7 +282,9 @@ def _run_with_fallback(feature: str, backend: AIBackend) -> tuple[Any, str, bool
 _DESC_MAX = 150
 
 
-def _extract_fields(feature: str, item: dict) -> tuple[str, str, str]:
+def _extract_fields(
+    feature: str, item: dict, desc_max: int = _DESC_MAX
+) -> tuple[str, str, str]:
     """Map an index item dict to ``(title, description, reference_url)``."""
     title = str(item.get("title") or item.get("name") or "(no title)").strip()
 
@@ -307,8 +309,8 @@ def _extract_fields(feature: str, item: dict) -> tuple[str, str, str]:
         desc = ""
         url = ""
 
-    if len(desc) > _DESC_MAX:
-        desc = desc[: _DESC_MAX - 3].rstrip() + "..."
+    if len(desc) > desc_max:
+        desc = desc[: desc_max - 3].rstrip() + "..."
 
     return title, desc, url
 
@@ -350,9 +352,26 @@ def _notify_new_items(
         else _DEFAULT_CHUNK_SIZE
     )
 
+    desc_max_str = (os.environ.get("AI_AGENT_NOTIFY_DESC_MAX") or "").strip()
+    desc_max = (
+        int(desc_max_str)
+        if desc_max_str.isdigit() and int(desc_max_str) > 0
+        else _DESC_MAX
+    )
+
+    button_text = (
+        os.environ.get("AI_AGENT_NOTIFY_BUTTON_TEXT") or ""
+    ).strip() or "View source"
+    subtitle_template = (
+        os.environ.get("AI_AGENT_NOTIFY_SUBTITLE") or ""
+    ).strip() or "{feature} — {count} new item(s)"
+    overflow_text = (
+        os.environ.get("AI_AGENT_NOTIFY_OVERFLOW_TEXT") or ""
+    ).strip() or "+{count} more — see workflow artifact"
+
     items_for_card: list[tuple[str, str, str]] = []
     for item in to_send:
-        title, desc, url = _extract_fields(feature, item)
+        title, desc, url = _extract_fields(feature, item, desc_max=desc_max)
         items_for_card.append((title, desc, url))
 
     chunk_count = (len(items_for_card) + chunk_size - 1) // chunk_size
@@ -367,6 +386,9 @@ def _notify_new_items(
         items=items_for_card,
         overflow_count=overflow,
         chunk_size=chunk_size,
+        button_text=button_text,
+        subtitle_template=subtitle_template,
+        overflow_text=overflow_text,
     )
     if ok:
         _log(f"all {chunk_count} chunk(s) sent successfully")
