@@ -182,7 +182,13 @@ def header() -> tuple:
 
     # Load persisted webhook preferences so the bell can reflect them.
     _app_cfg = load_config()
-    _webhook_url_set = bool(_app_cfg.get_webhook_url())
+    # The bell is "ready" iff an active provider is selected AND that
+    # provider has complete credentials stored. This generalizes the old
+    # "gchat URL set" check to the multi-provider world.
+    _webhook_url_set = bool(
+        _app_cfg.active_provider
+        and _app_cfg.has_provider_credentials(_app_cfg.active_provider)
+    )
     _notif_enabled = _app_cfg.notifications_enabled and _webhook_url_set
     # Keep storage in sync with config so play_notification can read it fast.
     app.storage.user['notifications_enabled'] = _notif_enabled
@@ -391,9 +397,11 @@ def play_notification(
 ) -> None:
     """Play the notification chime and optionally POST a webhook message.
 
-    If sound is enabled, plays the local chime. If webhook notifications are
-    enabled (top-bar bell is ON) AND a Google Chat webhook URL is configured,
-    also POSTs a card to the webhook in a background thread (fire-and-forget).
+    If sound is enabled, plays the local chime. If webhook notifications
+    are enabled (top-bar bell is ON) AND a provider is active with
+    valid credentials, also POSTs the message to that provider in a
+    background thread (fire-and-forget). Errors log to stderr; the UI
+    is never notified from the background thread.
     """
     if sound_state.get("enabled", True):
         audio_el.play()
@@ -410,11 +418,23 @@ def play_notification(
 
     try:
         from skillnir.backends import load_config
-        from skillnir.notifier import send_gchat_notification
+        from skillnir.notifications import PROVIDERS, NotificationProvider
 
         cfg = load_config()
-        webhook_url = cfg.get_webhook_url()
-        if not webhook_url:
+        if not cfg.active_provider:
+            return
+
+        try:
+            provider_id = NotificationProvider(cfg.active_provider)
+        except ValueError:
+            return
+
+        spec = PROVIDERS.get(provider_id)
+        if spec is None:
+            return
+
+        creds = cfg.get_provider_credentials(cfg.active_provider)
+        if not creds or not all(creds.values()):
             return
 
         # Decorate the card title with the current model so the user knows
@@ -424,12 +444,12 @@ def play_notification(
         import threading
 
         def _post() -> None:
-            ok, err = send_gchat_notification(webhook_url, decorated_title, detail)
+            ok, err = spec.sender(creds, decorated_title, detail, 10.0)
             if not ok:
                 import sys
 
                 print(
-                    f"[skillnir] webhook notification failed: {err}",
+                    f"[skillnir] {provider_id.value} notification failed: {err}",
                     file=sys.stderr,
                 )
 

@@ -393,7 +393,7 @@
       "language_current": "Currently using {name}",
       "webhook": {
         "title": "Setup webhook",
-        "subtitle": "Receive Google Chat messages when long-running tasks complete.",
+        "subtitle": "Receive messages in your team chat when long-running tasks complete.",
         "provider_label": "Provider",
         "provider_value": "Google Chat",
         "provider_note": "More providers coming soon.",
@@ -406,7 +406,50 @@
         "test_failed": "Test failed: {error}",
         "saved": "Webhook settings saved.",
         "cleared": "Webhook URL cleared.",
-        "_todo_translate": true
+        "_todo_translate": true,
+        "active_provider_label": "Active provider",
+        "active_provider_none": "None (notifications off)",
+        "active_missing_creds": "No credentials saved for {provider} yet.",
+        "active_badge": "Active",
+        "help_link": "Setup guide",
+        "clear_button": "Clear",
+        "make_active_button": "Make active",
+        "now_active": "{provider} is now the active notification provider.",
+        "providers": {
+          "gchat": {
+            "url_label": "Incoming webhook URL",
+            "url_placeholder": "https://chat.googleapis.com/v1/spaces/...",
+            "setup_help": "Create an incoming webhook in your Google Chat space → Apps & integrations → Webhooks. Treat this URL as a secret."
+          },
+          "slack": {
+            "url_label": "Incoming webhook URL",
+            "url_placeholder": "https://hooks.slack.com/services/T.../B.../...",
+            "setup_help": "Create an incoming webhook in your Slack workspace → Apps → Incoming Webhooks. Treat this URL as a secret."
+          },
+          "discord": {
+            "url_label": "Webhook URL",
+            "url_placeholder": "https://discord.com/api/webhooks/<id>/<token>",
+            "setup_help": "In your Discord channel settings → Integrations → Webhooks, create a new webhook and copy the URL. Treat this URL as a secret."
+          },
+          "teams": {
+            "url_label": "Power Automate workflow URL",
+            "url_placeholder": "https://prod-NN.<region>.logic.azure.com/workflows/...",
+            "setup_help": "In Power Automate, create a workflow triggered by 'When an HTTP request is received'. Skillnir sends {title, detail, source} — your flow decides how to render it in Teams."
+          },
+          "telegram": {
+            "bot_token_label": "Bot token",
+            "bot_token_placeholder": "123456789:AAH...",
+            "chat_id_label": "Chat ID",
+            "chat_id_placeholder": "@channel or signed integer",
+            "setup_help": "Create a bot via @BotFather to get a token. Use @userinfobot to find your chat_id, or add your bot to a group/channel. Treat the token as a secret."
+          },
+          "cliq": {
+            "url_label": "Incoming webhook URL",
+            "url_placeholder": "https://cliq.zoho.com/.../message?zapikey=...",
+            "setup_help": "In your Zoho Cliq workspace, create a bot or channel webhook and copy the URL. Must include the zapikey query parameter."
+          },
+          "_todo_translate": true
+        }
       }
     }
   },
