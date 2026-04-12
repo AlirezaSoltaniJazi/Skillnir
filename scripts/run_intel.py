@@ -289,22 +289,60 @@ def _extract_fields(
     title = str(item.get("title") or item.get("name") or "(no title)").strip()
 
     if feature == "research":
+        topic = str(item.get("topic") or "").strip()
+        pub_date = str(item.get("published_date") or "").strip()
+        tag_parts = [p for p in [topic, pub_date] if p]
+        tag = f"[{' - '.join(tag_parts)}] " if tag_parts else ""
+        title = f"{tag}{title}"
         desc = str(item.get("summary") or "").strip()
         url = str(item.get("source_url") or "").strip()
     elif feature == "events":
-        desc = str(item.get("description") or "").strip()
+        event_date = str(item.get("event_date") or "").strip()
+        country = str(item.get("country") or "").strip().upper()
+        topic = str(item.get("topic") or "").strip()
+        is_free = item.get("is_free")
+        price_label = "Free" if is_free else "Paid" if is_free is not None else ""
+        tag_parts = [p for p in [event_date, country, topic, price_label] if p]
+        tag = f"[{' - '.join(tag_parts)}] " if tag_parts else ""
+        raw_desc = str(item.get("description") or "").strip()
+        desc = f"{tag}{raw_desc}"
         url = (
             str(item.get("event_url") or "").strip()
             or str(item.get("registration_url") or "").strip()
         )
     elif feature == "security":
-        desc = str(item.get("description") or "").strip()
+        severity = str(item.get("severity") or "").strip()
+        cvss = item.get("cvss_score")
+        raw_desc = str(item.get("description") or "").strip()
+        if severity and cvss:
+            desc = f"[{severity.upper()} - {cvss}] {raw_desc}"
+        elif severity:
+            desc = f"[{severity.upper()}] {raw_desc}"
+        else:
+            desc = raw_desc
         url = str(item.get("source_url") or "").strip()
     elif feature == "benchmarks":
         provider = str(item.get("provider") or "").strip()
-        desc = f"by {provider}" if provider else ""
-        urls = item.get("source_urls") or []
-        url = str(urls[0]).strip() if urls else ""
+        scores = item.get("category_scores") or {}
+        coding = scores.get("coding")
+        parts = ["[CODING]"]
+        if provider:
+            parts.append(f"by {provider}")
+        if coding is not None:
+            parts.append(f"score: {coding}")
+        input_price = item.get("input_price")
+        output_price = item.get("output_price")
+        if input_price is not None and output_price is not None:
+            parts.append(f"${input_price}/${output_price} per 1M tokens")
+        ctx = item.get("context_window")
+        if ctx:
+            parts.append(
+                f"{ctx // 1000}K ctx"
+                if isinstance(ctx, int) and ctx >= 1000
+                else f"{ctx} ctx"
+            )
+        desc = " | ".join(parts)
+        url = ""  # no per-item URL — all models share the same leaderboard sources
     else:
         desc = ""
         url = ""
@@ -380,15 +418,30 @@ def _notify_new_items(
         f"chunk(s) of {chunk_size}"
     )
 
+    # Enrich feature label for the card subtitle
+    feature_label = feature
+    footer_urls: list[tuple[str, str]] = []
+    if feature == "benchmarks":
+        feature_label = "benchmarks sorted by coding"
+        footer_urls = [
+            ("Chatbot Arena", "https://arena.ai/leaderboard/code"),
+            (
+                "Artificial Analysis",
+                "https://artificialanalysis.ai/leaderboards/models",
+            ),
+            ("SWE-bench", "https://www.swebench.com/"),
+        ]
+
     ok, err = send_gchat_intel_report(
         webhook,
-        feature=feature,
+        feature=feature_label,
         items=items_for_card,
         overflow_count=overflow,
         chunk_size=chunk_size,
         button_text=button_text,
         subtitle_template=subtitle_template,
         overflow_text=overflow_text,
+        footer_urls=footer_urls,
     )
     if ok:
         _log(f"all {chunk_count} chunk(s) sent successfully")
