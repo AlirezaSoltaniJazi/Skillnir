@@ -2,13 +2,13 @@
 
 ## Naming Conventions for Security Utilities
 
-| Context                | Convention          | Example                                |
-| ---------------------- | ------------------- | -------------------------------------- |
-| Encryption functions   | `encrypt_`/`decrypt_` prefix | `encrypt_string()`, `decrypt_string()` |
-| Validation functions   | `validate_`/`is_` prefix     | `validate_path()`, `is_safe_url()`     |
-| Sanitization functions | `sanitize_`/`escape_` prefix | `sanitize_input()`, `escape_html()`    |
-| Security constants     | `SCREAMING_SNAKE_CASE`       | `_SALT`, `_PBKDF2_ITERATIONS`          |
-| Private security helpers | `_` prefix                 | `_derive_key()`, `_machine_fingerprint()` |
+| Context                  | Convention                   | Example                                   |
+| ------------------------ | ---------------------------- | ----------------------------------------- |
+| Encryption functions     | `encrypt_`/`decrypt_` prefix | `encrypt_string()`, `decrypt_string()`    |
+| Validation functions     | `validate_`/`is_` prefix     | `validate_path()`, `is_safe_url()`        |
+| Sanitization functions   | `sanitize_`/`escape_` prefix | `sanitize_input()`, `escape_html()`       |
+| Security constants       | `SCREAMING_SNAKE_CASE`       | `_SALT`, `_PBKDF2_ITERATIONS`             |
+| Private security helpers | `_` prefix                   | `_derive_key()`, `_machine_fingerprint()` |
 
 ## Import Patterns for Security Modules
 

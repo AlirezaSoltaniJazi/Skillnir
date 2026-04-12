@@ -106,12 +106,14 @@
 ## Infrastructure Checklist
 
 ### CI/CD (GitHub Actions)
+
 - [ ] Secrets not exposed in logs
 - [ ] Actions pinned to SHA (not tags)
 - [ ] Branch protections on main
 - [ ] Pre-commit hooks enforced
 
 ### Pre-commit Security Hooks
+
 - [ ] Bandit: Static analysis (`-lll -iii`)
 - [ ] Safety: Dependency CVE check
 - [ ] Autoflake: Remove unused imports (reduces attack surface)
