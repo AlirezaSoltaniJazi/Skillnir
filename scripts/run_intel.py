@@ -344,7 +344,11 @@ def _notify_new_items(
     overflow = max(0, len(new_items) - notify_limit)
 
     chunk_size_str = (os.environ.get("AI_AGENT_NOTIFY_CHUNK_SIZE") or "").strip()
-    chunk_size = int(chunk_size_str) if chunk_size_str.isdigit() and int(chunk_size_str) > 0 else _DEFAULT_CHUNK_SIZE
+    chunk_size = (
+        int(chunk_size_str)
+        if chunk_size_str.isdigit() and int(chunk_size_str) > 0
+        else _DEFAULT_CHUNK_SIZE
+    )
 
     items_for_card: list[tuple[str, str, str]] = []
     for item in to_send:
