@@ -298,7 +298,15 @@ def _extract_fields(
             or str(item.get("registration_url") or "").strip()
         )
     elif feature == "security":
-        desc = str(item.get("description") or "").strip()
+        severity = str(item.get("severity") or "").strip()
+        cvss = item.get("cvss_score")
+        raw_desc = str(item.get("description") or "").strip()
+        if severity and cvss:
+            desc = f"[{severity.upper()} - {cvss}] {raw_desc}"
+        elif severity:
+            desc = f"[{severity.upper()}] {raw_desc}"
+        else:
+            desc = raw_desc
         url = str(item.get("source_url") or "").strip()
     elif feature == "benchmarks":
         provider = str(item.get("provider") or "").strip()
