@@ -5,6 +5,20 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **`date_range` parameter for research** -- `research()` now accepts an optional `date_range` string (e.g. `"published after 2026-01-01"`, `"published in the last 1 month"`, `"published in 2025"`). Injected into the AI prompt replacing the hardcoded "2025-2026 preferred" hint. When provided, the prompt adds "— strictly exclude older articles" to enforce the window. `None` preserves the previous default behavior. Driven from CI via `AI_AGENT_RESEARCH_DATE_RANGE` env var in `run_intel.py`.
+- **Time range selector in research UI** -- new chip row on the research page with 8 options: All time (default), Last 1/3/6/12 months, 2026, 2025, 2024. Selection is passed as `date_range` to `research()`.
+- **`notifier.send_gchat_intel_report()`** -- sends a single consolidated Google Chat cards-v2 message listing multiple intel items. Each item rendered with title, description, and a "View source" `buttonList` widget, separated by dividers. Includes overflow footer when items are truncated. Falls back to plain-text card on HTTP 4xx.
+- **CI / GitHub Actions documentation** in README -- quick-start YAML snippet, full env var table, notification behavior, and output format.
+
+### Changed
+
+- **Default `--notify-limit` raised from 10 to 100** in `scripts/run_intel.py` -- all new items now included in the notification card by default instead of truncating at 10.
+- **Consolidated single-message notifications** -- `run_intel.py` now sends ONE Google Chat card listing all new items (via `send_gchat_intel_report`) instead of one card per item (via `send_gchat_item`).
+
 ## [1.3.1] - 2026-04-12
 
 ### Added
