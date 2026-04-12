@@ -145,6 +145,152 @@ def send_gchat_notification_spec(
 
 
 # ---------------------------------------------------------------------------
+# Google Chat — intel item card (for CI: scripts/run_intel.py)
+# ---------------------------------------------------------------------------
+
+
+def _build_gchat_item_card(
+    feature: str,
+    title: str,
+    description: str,
+    reference_url: str,
+) -> dict:
+    """Build a Cards v2 payload for ONE intel item with a "View source" button.
+
+    Shape: header("Skillnir" / feature subtitle) + textParagraph(title+description)
+    + buttonList with one openLink button to ``reference_url``.
+    """
+    body_text = f"<b>{title}</b>\n\n{description}" if description else f"<b>{title}</b>"
+    return {
+        "cardsV2": [
+            {
+                "cardId": "skillnir-intel-item",
+                "card": {
+                    "header": {
+                        "title": "Skillnir",
+                        "subtitle": feature,
+                    },
+                    "sections": [
+                        {
+                            "widgets": [
+                                {"textParagraph": {"text": body_text}},
+                                {
+                                    "buttonList": {
+                                        "buttons": [
+                                            {
+                                                "text": "View source",
+                                                "onClick": {
+                                                    "openLink": {"url": reference_url}
+                                                },
+                                            }
+                                        ]
+                                    }
+                                },
+                            ]
+                        }
+                    ],
+                },
+            }
+        ]
+    }
+
+
+def _build_gchat_item_fallback_card(
+    feature: str,
+    title: str,
+    description: str,
+    reference_url: str,
+) -> dict:
+    """Plain-text fallback for :func:`_build_gchat_item_card`.
+
+    Used only if the primary card is rejected by Google Chat with a 4xx
+    (e.g. unsupported widget schema on a given space configuration).
+    URL is embedded as bare text — Google Chat auto-links bare URLs in
+    ``textParagraph`` widgets.
+    """
+    parts = [f"<b>{title}</b>"]
+    if description:
+        parts.append(description)
+    if reference_url:
+        parts.append(reference_url)
+    return {
+        "cardsV2": [
+            {
+                "cardId": "skillnir-intel-item-fallback",
+                "card": {
+                    "header": {
+                        "title": "Skillnir",
+                        "subtitle": feature,
+                    },
+                    "sections": [
+                        {"widgets": [{"textParagraph": {"text": "\n\n".join(parts)}}]}
+                    ],
+                },
+            }
+        ]
+    }
+
+
+def send_gchat_item(
+    webhook_url: str,
+    *,
+    feature: str,
+    title: str,
+    description: str,
+    reference_url: str,
+    timeout: float = _DEFAULT_TIMEOUT,
+) -> tuple[bool, str | None]:
+    """POST a Cards v2 message representing ONE intel item.
+
+    Primary attempt uses a ``buttonList`` widget with an openLink button.
+    If the POST returns HTTP 4xx (malformed card, unsupported widget),
+    automatically retries with a plain-text fallback card.
+
+    Never raises. Returns ``(True, None)`` on success, ``(False, error)``
+    on persistent failure.
+
+    Parameters
+    ----------
+    webhook_url:
+        Full Google Chat incoming webhook URL. Validated against the
+        ``chat.googleapis.com`` host allowlist before any socket opens.
+    feature:
+        Short label for the header subtitle — e.g. ``"research"``,
+        ``"events"``, ``"security"``.
+    title:
+        Item title. Rendered bold at the top of the card body.
+    description:
+        Item summary / description. Rendered below the title.
+    reference_url:
+        URL the "View source" button should open. Required.
+    timeout:
+        Per-POST timeout in seconds.
+    """
+    if not webhook_url:
+        return False, "webhook URL not set"
+    if not is_valid_gchat_webhook(webhook_url):
+        return False, "invalid webhook URL"
+    if not reference_url:
+        return False, "reference_url not set"
+
+    primary = _build_gchat_item_card(feature, title, description, reference_url)
+    ok, err = _post_json(webhook_url, primary, timeout)
+    if ok:
+        return True, None
+
+    # Retry with plain-text fallback only on 4xx (client-side rejection).
+    # Server errors (5xx), network errors, and timeouts are not retried —
+    # retrying with a different payload won't fix those.
+    if err and err.startswith("HTTP 4"):
+        fallback = _build_gchat_item_fallback_card(
+            feature, title, description, reference_url
+        )
+        return _post_json(webhook_url, fallback, timeout)
+
+    return False, err
+
+
+# ---------------------------------------------------------------------------
 # Slack — simple text payload
 # ---------------------------------------------------------------------------
 

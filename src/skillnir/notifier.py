@@ -23,6 +23,7 @@ from skillnir.notifications.providers import (
 )
 from skillnir.notifications.senders import (
     _build_gchat_card,
+    send_gchat_item,
     send_gchat_notification,
 )
 
@@ -38,5 +39,6 @@ __all__ = [
     "is_valid_teams_webhook",
     "is_valid_telegram_chat_id",
     "is_valid_telegram_token",
+    "send_gchat_item",
     "send_gchat_notification",
 ]

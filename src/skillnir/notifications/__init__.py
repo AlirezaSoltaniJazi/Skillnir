@@ -16,6 +16,7 @@ from skillnir.notifications.providers import (
 )
 from skillnir.notifications.senders import (
     _build_gchat_card,
+    send_gchat_item,
     send_gchat_notification,
 )
 
@@ -24,6 +25,7 @@ __all__ = [
     "NotificationProvider",
     "ProviderSpec",
     "is_valid_gchat_webhook",
+    "send_gchat_item",
     "send_gchat_notification",
     "_build_gchat_card",
 ]
