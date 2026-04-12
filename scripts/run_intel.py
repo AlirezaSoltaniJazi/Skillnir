@@ -336,7 +336,11 @@ def _extract_fields(
             parts.append(f"${input_price}/${output_price} per 1M tokens")
         ctx = item.get("context_window")
         if ctx:
-            parts.append(f"{ctx // 1000}K ctx" if isinstance(ctx, int) and ctx >= 1000 else f"{ctx} ctx")
+            parts.append(
+                f"{ctx // 1000}K ctx"
+                if isinstance(ctx, int) and ctx >= 1000
+                else f"{ctx} ctx"
+            )
         desc = " | ".join(parts)
         url = ""  # no per-item URL — all models share the same leaderboard sources
     else:
@@ -421,7 +425,10 @@ def _notify_new_items(
         feature_label = "benchmarks sorted by coding"
         footer_urls = [
             ("Chatbot Arena", "https://arena.ai/leaderboard/code"),
-            ("Artificial Analysis", "https://artificialanalysis.ai/leaderboards/models"),
+            (
+                "Artificial Analysis",
+                "https://artificialanalysis.ai/leaderboards/models",
+            ),
             ("SWE-bench", "https://www.swebench.com/"),
         ]
 

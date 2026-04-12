@@ -71,7 +71,9 @@ def main() -> int:
         return 1
 
     data_dir = _find_data_dir()
-    features = {only_feature: _FEATURE_INDEX[only_feature]} if only_feature else _FEATURE_INDEX
+    features = (
+        {only_feature: _FEATURE_INDEX[only_feature]} if only_feature else _FEATURE_INDEX
+    )
 
     for feature, rel_path in features.items():
         index_path = data_dir / rel_path
