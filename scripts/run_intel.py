@@ -360,17 +360,14 @@ def _notify_new_items(
     )
 
     button_text = (
-        (os.environ.get("AI_AGENT_NOTIFY_BUTTON_TEXT") or "").strip()
-        or "View source"
-    )
+        os.environ.get("AI_AGENT_NOTIFY_BUTTON_TEXT") or ""
+    ).strip() or "View source"
     subtitle_template = (
-        (os.environ.get("AI_AGENT_NOTIFY_SUBTITLE") or "").strip()
-        or "{feature} — {count} new item(s)"
-    )
+        os.environ.get("AI_AGENT_NOTIFY_SUBTITLE") or ""
+    ).strip() or "{feature} — {count} new item(s)"
     overflow_text = (
-        (os.environ.get("AI_AGENT_NOTIFY_OVERFLOW_TEXT") or "").strip()
-        or "+{count} more — see workflow artifact"
-    )
+        os.environ.get("AI_AGENT_NOTIFY_OVERFLOW_TEXT") or ""
+    ).strip() or "+{count} more — see workflow artifact"
 
     items_for_card: list[tuple[str, str, str]] = []
     for item in to_send:
