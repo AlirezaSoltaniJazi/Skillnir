@@ -292,7 +292,15 @@ def _extract_fields(
         desc = str(item.get("summary") or "").strip()
         url = str(item.get("source_url") or "").strip()
     elif feature == "events":
-        desc = str(item.get("description") or "").strip()
+        event_date = str(item.get("event_date") or "").strip()
+        country = str(item.get("country") or "").strip().upper()
+        topic = str(item.get("topic") or "").strip()
+        is_free = item.get("is_free")
+        price_label = "Free" if is_free else "Paid" if is_free is not None else ""
+        tag_parts = [p for p in [event_date, country, topic, price_label] if p]
+        tag = f"[{' - '.join(tag_parts)}] " if tag_parts else ""
+        raw_desc = str(item.get("description") or "").strip()
+        desc = f"{tag}{raw_desc}"
         url = (
             str(item.get("event_url") or "").strip()
             or str(item.get("registration_url") or "").strip()
