@@ -18,8 +18,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `AI_AGENT_BENCHMARK_TOP_N` (default `10`) — how many top models to fetch for benchmarks.
   - `AI_AGENT_WEBHOOK_URL` — Google Chat webhook for notifications. Omit to skip.
   - Diffs the on-disk index before/after the run to determine new items, sends ONE consolidated Google Chat card (not one per item) via `send_gchat_intel_report()`. Final stdout line is a machine-readable `SUMMARY {...}` JSON.
-- **`notifier.send_gchat_intel_report()`** -- sends a single consolidated Google Chat cards-v2 message listing multiple intel items. Each item rendered with title, description, and a "View source" `buttonList` widget, separated by dividers. Includes overflow footer ("+N more — see workflow artifact") when items are truncated. Falls back to plain-text card on HTTP 4xx. Reuses `is_valid_gchat_webhook()` and `_post_json()`.
-- **`notifier.send_gchat_item()`** -- sends a single intel item (title + description + reference URL) as a Google Chat cards-v2 message with a clickable "View source" button. Falls back to plain-text card on HTTP 4xx. Reuses `is_valid_gchat_webhook()` and `_post_json()`. Exported from both `skillnir.notifications` and the back-compat `skillnir.notifier` shim.
 
 ## [1.3.0] - 2026-04-12
 
