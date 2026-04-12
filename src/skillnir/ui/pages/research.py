@@ -151,6 +151,43 @@ async def page_research():
 
         _rebuild_source_chips()
 
+        # ── Time range chips ──
+        selected_date_range: dict[str, str | None] = {'value': None}
+
+        _DATE_OPTIONS: list[tuple[str, str | None]] = [
+            ('All time', None),
+            ('Last 1 month', 'published in the last 1 month'),
+            ('Last 3 months', 'published in the last 3 months'),
+            ('Last 6 months', 'published in the last 6 months'),
+            ('Last 12 months', 'published in the last 12 months'),
+            ('2026', 'published in 2026'),
+            ('2025', 'published in 2025'),
+            ('2024', 'published in 2024'),
+        ]
+
+        with ui.row().classes('items-center gap-3'):
+            ui.label('Time range').classes('text-sm font-medium text-secondary')
+        date_chips_container = ui.row().classes('gap-2 flex-wrap')
+
+        def _rebuild_date_chips():
+            date_chips_container.clear()
+            with date_chips_container:
+                for label, value in _DATE_OPTIONS:
+
+                    def _toggle(v=value):
+                        selected_date_range['value'] = v
+                        _rebuild_date_chips()
+
+                    is_sel = selected_date_range['value'] == value
+                    if is_sel:
+                        ui.chip(
+                            label, icon='check', color='accent', on_click=_toggle
+                        ).props('clickable')
+                    else:
+                        ui.chip(label, on_click=_toggle).props('clickable outline')
+
+        _rebuild_date_chips()
+
         # ── Existing articles ──
         research_dir = _get_research_dir()
 
@@ -267,6 +304,7 @@ async def page_research():
                 on_progress=on_progress,
                 topics=selected_topics,
                 sources=selected_sources or None,
+                date_range=selected_date_range['value'],
             )
 
             timer_ctl['active'] = False
