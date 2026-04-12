@@ -231,37 +231,21 @@ def _build_gchat_item_fallback_card(
     }
 
 
-def send_gchat_intel_report(
-    webhook_url: str,
-    *,
+_DEFAULT_CHUNK_SIZE = 15
+_CHUNK_DELAY_SECONDS = 2.0
+
+
+def _build_chunk_card(
     feature: str,
-    items: list[tuple[str, str, str]],
+    chunk: list[tuple[str, str, str]],
+    chunk_index: int,
+    total_chunks: int,
+    total_items: int,
     overflow_count: int = 0,
-    timeout: float = _DEFAULT_TIMEOUT,
-) -> tuple[bool, str | None]:
-    """POST ONE consolidated Cards v2 message listing all new intel items.
-
-    Each item in ``items`` is a ``(title, description, reference_url)`` tuple.
-    Items are rendered as a bulleted list inside a single card. If
-    ``overflow_count > 0``, a footer line is appended indicating how many
-    more items exist beyond those shown.
-
-    Primary attempt uses ``buttonList`` widgets per item for clickable
-    "View source" links. If the POST returns HTTP 4xx, retries with a
-    plain-text fallback where URLs are inlined as bare text.
-
-    Never raises. Returns ``(True, None)`` on success.
-    """
-    if not webhook_url:
-        return False, "webhook URL not set"
-    if not is_valid_gchat_webhook(webhook_url):
-        return False, "invalid webhook URL"
-    if not items:
-        return False, "no items to report"
-
-    # --- primary card (with buttons) ---
+) -> dict:
+    """Build a Cards v2 payload for one chunk of intel items."""
     widgets: list[dict] = []
-    for title, desc, url in items:
+    for title, desc, url in chunk:
         text = f"<b>{title}</b>"
         if desc:
             text += f"\n{desc}"
@@ -281,7 +265,7 @@ def send_gchat_intel_report(
             )
         widgets.append({"divider": {}})
 
-    if overflow_count > 0:
+    if chunk_index == total_chunks - 1 and overflow_count > 0:
         widgets.append(
             {
                 "textParagraph": {
@@ -290,14 +274,15 @@ def send_gchat_intel_report(
             }
         )
 
-    primary = {
+    part_label = f" ({chunk_index + 1}/{total_chunks})" if total_chunks > 1 else ""
+    return {
         "cardsV2": [
             {
-                "cardId": "skillnir-intel-report",
+                "cardId": f"skillnir-intel-report-{chunk_index}",
                 "card": {
                     "header": {
                         "title": "Skillnir",
-                        "subtitle": f"{feature} — {len(items)} new item(s)",
+                        "subtitle": f"{feature} — {total_items} new item(s){part_label}",
                     },
                     "sections": [{"widgets": widgets}],
                 },
@@ -305,41 +290,114 @@ def send_gchat_intel_report(
         ]
     }
 
-    ok, err = _post_json(webhook_url, primary, timeout)
-    if ok:
-        return True, None
 
-    # --- plain-text fallback on 4xx ---
-    if err and err.startswith("HTTP 4"):
-        lines = []
-        for title, desc, url in items:
-            line = f"• <b>{title}</b>"
-            if desc:
-                line += f" — {desc}"
-            if url:
-                line += f"\n  {url}"
-            lines.append(line)
-        if overflow_count > 0:
-            lines.append(f"\n+{overflow_count} more — see workflow artifact")
-        fallback = {
-            "cardsV2": [
-                {
-                    "cardId": "skillnir-intel-report-fallback",
-                    "card": {
-                        "header": {
-                            "title": "Skillnir",
-                            "subtitle": f"{feature} — {len(items)} new item(s)",
-                        },
-                        "sections": [
-                            {"widgets": [{"textParagraph": {"text": "\n".join(lines)}}]}
-                        ],
+def _build_chunk_fallback_card(
+    feature: str,
+    chunk: list[tuple[str, str, str]],
+    chunk_index: int,
+    total_chunks: int,
+    total_items: int,
+    overflow_count: int = 0,
+) -> dict:
+    """Plain-text fallback for one chunk (no buttons, URLs as bare text)."""
+    lines = []
+    for title, desc, url in chunk:
+        line = f"• <b>{title}</b>"
+        if desc:
+            line += f" — {desc}"
+        if url:
+            line += f"\n  {url}"
+        lines.append(line)
+
+    if chunk_index == total_chunks - 1 and overflow_count > 0:
+        lines.append(f"\n+{overflow_count} more — see workflow artifact")
+
+    part_label = f" ({chunk_index + 1}/{total_chunks})" if total_chunks > 1 else ""
+    return {
+        "cardsV2": [
+            {
+                "cardId": f"skillnir-intel-report-fallback-{chunk_index}",
+                "card": {
+                    "header": {
+                        "title": "Skillnir",
+                        "subtitle": f"{feature} — {total_items} new item(s){part_label}",
                     },
-                }
-            ]
-        }
-        return _post_json(webhook_url, fallback, timeout)
+                    "sections": [
+                        {"widgets": [{"textParagraph": {"text": "\n".join(lines)}}]}
+                    ],
+                },
+            }
+        ]
+    }
 
-    return False, err
+
+def send_gchat_intel_report(
+    webhook_url: str,
+    *,
+    feature: str,
+    items: list[tuple[str, str, str]],
+    overflow_count: int = 0,
+    chunk_size: int = _DEFAULT_CHUNK_SIZE,
+    chunk_delay: float = _CHUNK_DELAY_SECONDS,
+    timeout: float = _DEFAULT_TIMEOUT,
+) -> tuple[bool, str | None]:
+    """POST intel items as chunked Google Chat cards.
+
+    Each item in ``items`` is a ``(title, description, reference_url)`` tuple.
+    Items are split into chunks of ``chunk_size`` (default 15). Each chunk
+    is sent as a separate Cards v2 message with a ``chunk_delay`` second
+    pause between them to avoid rate limiting.
+
+    The header shows the part number (e.g. "research — 40 new item(s) (2/3)")
+    so the recipient knows more messages are coming.
+
+    Primary attempt uses ``buttonList`` widgets per item. If a POST returns
+    HTTP 4xx, that chunk is retried with a plain-text fallback.
+
+    Never raises. Returns ``(True, None)`` if ALL chunks succeeded,
+    ``(False, error)`` with the first failure otherwise.
+    """
+    import time as _time
+
+    if not webhook_url:
+        return False, "webhook URL not set"
+    if not is_valid_gchat_webhook(webhook_url):
+        return False, "invalid webhook URL"
+    if not items:
+        return False, "no items to report"
+
+    chunks = [items[i : i + chunk_size] for i in range(0, len(items), chunk_size)]
+    total_chunks = len(chunks)
+    total_items = len(items)
+    first_error: str | None = None
+
+    for idx, chunk in enumerate(chunks):
+        if idx > 0:
+            _time.sleep(chunk_delay)
+
+        card = _build_chunk_card(
+            feature, chunk, idx, total_chunks, total_items, overflow_count
+        )
+        ok, err = _post_json(webhook_url, card, timeout)
+
+        if ok:
+            continue
+
+        # Retry with plain-text fallback on 4xx
+        if err and err.startswith("HTTP 4"):
+            fallback = _build_chunk_fallback_card(
+                feature, chunk, idx, total_chunks, total_items, overflow_count
+            )
+            ok, err = _post_json(webhook_url, fallback, timeout)
+            if ok:
+                continue
+
+        if first_error is None:
+            first_error = f"chunk {idx + 1}/{total_chunks}: {err}"
+
+    if first_error:
+        return False, first_error
+    return True, None
 
 
 def send_gchat_item(

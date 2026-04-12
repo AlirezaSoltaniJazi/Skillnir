@@ -318,15 +318,18 @@ def _extract_fields(feature: str, item: dict) -> tuple[str, str, str]:
 # ---------------------------------------------------------------------------
 
 
+_DEFAULT_CHUNK_SIZE = 15
+
+
 def _notify_new_items(
     feature: str,
     new_items: list[dict],
     notify_limit: int,
 ) -> bool:
-    """Send ONE consolidated Google Chat card listing all new items.
+    """Send Google Chat cards for new items, chunked to avoid size limits.
 
-    Returns True if the notification was sent (or skipped because webhook
-    is not set / no items). Returns False on post failure.
+    Items are split into chunks of 15 and sent as separate messages with
+    a 2-second delay between them. Returns True if all chunks succeeded.
     """
     webhook = (os.environ.get("AI_AGENT_WEBHOOK_URL") or "").strip()
     if not webhook:
@@ -340,19 +343,29 @@ def _notify_new_items(
     to_send = new_items[:notify_limit]
     overflow = max(0, len(new_items) - notify_limit)
 
+    chunk_size_str = (os.environ.get("AI_AGENT_NOTIFY_CHUNK_SIZE") or "").strip()
+    chunk_size = int(chunk_size_str) if chunk_size_str.isdigit() and int(chunk_size_str) > 0 else _DEFAULT_CHUNK_SIZE
+
     items_for_card: list[tuple[str, str, str]] = []
     for item in to_send:
         title, desc, url = _extract_fields(feature, item)
         items_for_card.append((title, desc, url))
+
+    chunk_count = (len(items_for_card) + chunk_size - 1) // chunk_size
+    _log(
+        f"sending {len(items_for_card)} item(s) in {chunk_count} "
+        f"chunk(s) of {chunk_size}"
+    )
 
     ok, err = send_gchat_intel_report(
         webhook,
         feature=feature,
         items=items_for_card,
         overflow_count=overflow,
+        chunk_size=chunk_size,
     )
     if ok:
-        _log(f"sent 1 consolidated card with {len(items_for_card)} item(s)")
+        _log(f"all {chunk_count} chunk(s) sent successfully")
     else:
         _err(f"notification failed: {err}")
     return ok
