@@ -167,9 +167,7 @@ def _ids_of(items: list[dict]) -> set[str]:
 # ---------------------------------------------------------------------------
 
 
-async def _run_feature(
-    feature: str, model: str | None, backend: AIBackend
-) -> Any:
+async def _run_feature(feature: str, model: str | None, backend: AIBackend) -> Any:
     """Invoke the matching Skillnir async entry point.
 
     All filter parameters are read from env vars at call time so the
@@ -231,9 +229,7 @@ async def _run_feature(
     raise ValueError(f"unknown feature: {feature}")
 
 
-def _run_with_fallback(
-    feature: str, backend: AIBackend
-) -> tuple[Any, str, bool]:
+def _run_with_fallback(feature: str, backend: AIBackend) -> tuple[Any, str, bool]:
     """Run the feature with the primary model; fall back on failure."""
     primary = (os.environ.get("AI_AGENT_MODEL") or "auto").strip() or "auto"
     fallback = (os.environ.get("AI_AGENT_MODEL_FALLBACK") or "").strip() or None

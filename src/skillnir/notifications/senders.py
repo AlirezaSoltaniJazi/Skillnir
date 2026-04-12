@@ -331,11 +331,7 @@ def send_gchat_intel_report(
                             "subtitle": f"{feature} — {len(items)} new item(s)",
                         },
                         "sections": [
-                            {
-                                "widgets": [
-                                    {"textParagraph": {"text": "\n".join(lines)}}
-                                ]
-                            }
+                            {"widgets": [{"textParagraph": {"text": "\n".join(lines)}}]}
                         ],
                     },
                 }
