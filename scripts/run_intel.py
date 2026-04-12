@@ -325,8 +325,7 @@ def _extract_fields(
         if ctx:
             parts.append(f"{ctx // 1000}K ctx" if isinstance(ctx, int) and ctx >= 1000 else f"{ctx} ctx")
         desc = " | ".join(parts)
-        urls = item.get("source_urls") or []
-        url = str(urls[0]).strip() if urls else ""
+        url = ""  # no per-item URL — all models share the same leaderboard sources
     else:
         desc = ""
         url = ""
@@ -404,8 +403,14 @@ def _notify_new_items(
 
     # Enrich feature label for the card subtitle
     feature_label = feature
+    footer_urls: list[tuple[str, str]] = []
     if feature == "benchmarks":
         feature_label = "benchmarks sorted by coding"
+        footer_urls = [
+            ("Chatbot Arena", "https://arena.ai/leaderboard/code"),
+            ("Artificial Analysis", "https://artificialanalysis.ai/leaderboards/models"),
+            ("SWE-bench", "https://www.swebench.com/"),
+        ]
 
     ok, err = send_gchat_intel_report(
         webhook,
@@ -416,6 +421,7 @@ def _notify_new_items(
         button_text=button_text,
         subtitle_template=subtitle_template,
         overflow_text=overflow_text,
+        footer_urls=footer_urls,
     )
     if ok:
         _log(f"all {chunk_count} chunk(s) sent successfully")

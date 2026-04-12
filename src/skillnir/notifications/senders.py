@@ -245,6 +245,7 @@ def _build_chunk_card(
     button_text: str = "View source",
     subtitle_template: str = "{feature} — {count} new item(s)",
     overflow_text: str = "+{count} more — see workflow artifact",
+    footer_urls: list[tuple[str, str]] | None = None,
 ) -> dict:
     """Build a Cards v2 payload for one chunk of intel items."""
     widgets: list[dict] = []
@@ -276,6 +277,14 @@ def _build_chunk_card(
                 }
             }
         )
+
+    # Footer source links — shown once on the last chunk only
+    if chunk_index == total_chunks - 1 and footer_urls:
+        buttons = [
+            {"text": label, "onClick": {"openLink": {"url": url}}}
+            for label, url in footer_urls
+        ]
+        widgets.append({"buttonList": {"buttons": buttons}})
 
     part_label = f" ({chunk_index + 1}/{total_chunks})" if total_chunks > 1 else ""
     subtitle = subtitle_template.format(
@@ -358,6 +367,7 @@ def send_gchat_intel_report(
     button_text: str = "View source",
     subtitle_template: str = "{feature} — {count} new item(s)",
     overflow_text: str = "+{count} more — see workflow artifact",
+    footer_urls: list[tuple[str, str]] | None = None,
 ) -> tuple[bool, str | None]:
     """POST intel items as chunked Google Chat cards.
 
@@ -375,6 +385,10 @@ def send_gchat_intel_report(
     Card text is customizable via ``button_text``, ``subtitle_template``,
     and ``overflow_text``. Templates support ``{feature}``, ``{count}``,
     and ``{part}`` placeholders.
+
+    ``footer_urls`` is an optional list of ``(label, url)`` tuples shown
+    as buttons on the last chunk only (useful when all items share the
+    same sources, e.g. benchmark leaderboard links).
 
     Never raises. Returns ``(True, None)`` if ALL chunks succeeded,
     ``(False, error)`` with the first failure otherwise.
@@ -407,6 +421,7 @@ def send_gchat_intel_report(
             button_text=button_text,
             subtitle_template=subtitle_template,
             overflow_text=overflow_text,
+            footer_urls=footer_urls,
         )
         ok, err = _post_json(webhook_url, card, timeout)
 
