@@ -16,8 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `AI_AGENT_RESEARCH_TOPICS` — comma-separated topic filter for research. Empty = all.
   - `AI_AGENT_SECURITY_CATEGORIES` — comma-separated category filter for security. Empty = all.
   - `AI_AGENT_BENCHMARK_TOP_N` (default `10`) — how many top models to fetch for benchmarks.
-  - `AI_AGENT_WEBHOOK_URL` — Google Chat webhook for notifications. Omit to skip.
-  - Diffs the on-disk index before/after the run to determine new items, sends ONE consolidated Google Chat card (not one per item) via `send_gchat_intel_report()`. Final stdout line is a machine-readable `SUMMARY {...}` JSON.
 
 ## [1.3.0] - 2026-04-12
 
