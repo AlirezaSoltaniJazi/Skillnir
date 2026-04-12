@@ -342,6 +342,9 @@ NiceGUI-based dashboard with pages for skill generation, installation, deletion,
 - Rollback strategy and cloud cost awareness in backend generator
 - Severity classification in security sections across backend, frontend, and infra generators
 
+[1.3.1]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.3.1
+[1.3.0]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.3.0
+[1.2.0]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.2.0
 [1.1.2]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.1.2
 [1.1.1]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.1.1
 [1.1.0]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.1.0

@@ -2,48 +2,55 @@
 
 ## What This Is
 
-CLI + Web UI tool that generates, manages, and injects domain-specific AI skills into 35+ AI coding tool directories (.claude/, .cursor/, .github/, .windsurf/, etc.). Skills are structured markdown directories symlinked from a central `.data/skills/` store into each tool's dotdir. Python 3.14+, built with NiceGUI, questionary, and claude-agent-sdk.
+CLI + Web UI tool that generates, manages, and injects domain-specific AI skills into 38 AI coding tool directories (.claude/, .cursor/, .github/, .windsurf/, etc.). Skills are structured markdown directories symlinked from a central `.data/skills/` store into each tool's dotdir. Python 3.14+, built with NiceGUI, questionary, and claude-agent-sdk.
 
 ## Stack
 
-| Component      | Technology                                                                                                        |
-| -------------- | ----------------------------------------------------------------------------------------------------------------- |
-| Language       | Python 3.14+                                                                                                      |
-| Build          | hatchling + uv (package manager)                                                                                  |
-| CLI            | argparse + questionary (interactive prompts)                                                                      |
-| Web UI         | NiceGUI 2.0+                                                                                                      |
-| AI Generation  | claude-agent-sdk + subprocess backends                                                                            |
-| Config Parsing | PyYAML (SKILL.md frontmatter)                                                                                     |
-| Testing        | pytest + pytest-asyncio                                                                                           |
-| Linting        | Black (-S), Pylint, Autoflake, Bandit, Prettier                                                                   |
-| Pre-commit     | 7 hooks (trailing-whitespace, EOF, YAML, AST, merge-conflict, safety, bandit, autoflake, pylint, black, prettier) |
+| Component      | Technology                                                                                                                      |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Language       | Python 3.14+                                                                                                                    |
+| Build          | hatchling + uv (package manager)                                                                                                |
+| CLI            | argparse + questionary (interactive prompts)                                                                                    |
+| Web UI         | NiceGUI 2.0+                                                                                                                    |
+| AI Generation  | claude-agent-sdk + subprocess backends                                                                                          |
+| Config Parsing | PyYAML (SKILL.md frontmatter)                                                                                                   |
+| Testing        | pytest + pytest-asyncio                                                                                                         |
+| Linting        | Black (-S), Pylint, Autoflake, Bandit, Prettier                                                                                 |
+| Pre-commit     | 12 hooks (trailing-whitespace, EOF, YAML, large-files, AST, merge-conflict, safety, bandit, autoflake, pylint, black, prettier) |
 
 ## Project Structure
 
 ```
 src/skillnir/              # Core package (all modules)
-├── cli.py                 # CLI entry point — 16 commands, argparse + questionary
-├── skill_generator.py     # Multi-backend skill generation (async SDK + subprocess)
-├── researcher.py          # AI news research and summarization
-├── events.py              # AI events search pipeline (per-country)
-├── i18n.py                # Internationalization (9 languages, t() function)
+├── cli.py                 # CLI entry point — 18 commands, argparse + questionary
 ├── backends.py            # Backend registry (Claude, Cursor, Gemini, Copilot)
+├── benchmarks.py          # AI model benchmarks search pipeline
+├── compressor.py          # Rule-based prompt compression (30-50% token reduction)
+├── crypto.py              # Fernet encryption for at-rest credential storage
+├── events.py              # AI events search pipeline (per-country)
 ├── generator.py           # AI docs (agents.md) generation
+├── hooks.py               # Claude Code sound notification hooks
+├── i18n.py                # Internationalization (9 languages, t() function)
+├── injector.py            # Symlink injection into tool dotdirs
+├── notifications/         # Multi-provider webhook package (providers, senders)
+├── notifier.py            # Back-compat notification shim → notifications/
+├── remover.py             # Skill and docs removal
+├── researcher.py          # AI news research and summarization
 ├── rule_generator.py      # Cursor rule (.mdc) generation
 ├── scaffold.py            # Skill scaffolding and templates
-├── injector.py            # Symlink injection into tool dotdirs
-├── syncer.py              # Version-aware skill synchronization
-├── remover.py             # Skill and docs removal
-├── tools.py               # AI tool registry (35+ tools, ratings)
-├── hooks.py               # Claude Code sound notification hooks
+├── security.py            # Security vulnerability search pipeline
+├── skill_generator.py     # Multi-backend skill generation (async SDK + subprocess)
 ├── skills.py              # Skill discovery and YAML frontmatter parsing
+├── syncer.py              # Version-aware skill synchronization
+├── tools.py               # AI tool registry (38 tools)
 ├── usage.py               # Usage statistics tracking
 ├── locales/               # Translation files (en, de, nl, pl, fa, uk, sq, fr, ar)
 ├── ui/                    # NiceGUI web interface
 │   ├── layout.py          # Navigation structure (get_nav_groups + i18n)
-│   ├── pages/             # 14+ page modules (one per feature)
+│   ├── pages/             # 15 page modules (one per feature)
 │   └── components/        # 12 reusable UI components
 └── resources/             # HTML templates and static assets
+scripts/                   # CI runner scripts (run_intel.py)
 .data/                     # Central skill storage (SOURCE OF TRUTH)
 ├── skills/                # Installed skills (symlinked into tool dotdirs)
 │   └── <skillName>/       # camelCase directories
@@ -53,10 +60,10 @@ src/skillnir/              # Core package (all modules)
 │       ├── references/    # Detailed docs and code samples
 │       ├── scripts/       # Validation scripts
 │       └── agents/        # Sub-agent definitions
-├── promptsv1/             # 26+ skill generation prompt templates
+├── promptsv1/             # 32 skill generation prompt templates
 ├── research/articles/     # 500+ research articles (organized by topic)
 └── events/                # AI events data (organized by topic)
-tests/                     # 14 test files (pytest, class-based)
+tests/                     # 18 test files (pytest, class-based)
 ```
 
 ## How To Run
@@ -136,20 +143,26 @@ OS/file errors caught with specific exceptions (`OSError`, `FileNotFoundError`, 
 
 ## Files To Know
 
-| File                        | Purpose                                                                         |
-| --------------------------- | ------------------------------------------------------------------------------- |
-| `src/skillnir/cli.py`       | CLI entry point — `main()` at bottom, 16 commands                               |
-| `src/skillnir/tools.py`     | AI tool registry — `TOOLS` tuple, `AITool` dataclass, `SOURCE_DOTDIR` constant  |
-| `src/skillnir/backends.py`  | Backend configs — `BACKENDS` dict, `BackendInfo`, model lists                   |
-| `src/skillnir/skills.py`    | Skill discovery — `Skill` dataclass, `parse_frontmatter()`, `discover_skills()` |
-| `src/skillnir/injector.py`  | Symlink creation — `inject_skill()`                                             |
-| `src/skillnir/scaffold.py`  | Skill template scaffolding                                                      |
-| `src/skillnir/events.py`    | Events pipeline — `Event`, `search_events()`, 12 countries                      |
-| `src/skillnir/i18n.py`      | Internationalization — `t()`, `load_locale()`, 9 languages                      |
-| `src/skillnir/ui/layout.py` | Web UI navigation structure + language picker                                   |
-| `pyproject.toml`            | Build config, deps, entry point                                                 |
-| `.pylintrc`                 | Linting rules (100 char, snake_case)                                            |
-| `.pre-commit-config.yaml`   | 7 pre-commit hooks                                                              |
+| File                          | Purpose                                                                                           |
+| ----------------------------- | ------------------------------------------------------------------------------------------------- |
+| `src/skillnir/cli.py`         | CLI entry point — `main()` at bottom, 18 commands                                                 |
+| `src/skillnir/tools.py`       | AI tool registry — `TOOLS` tuple, `AITool` dataclass, `SOURCE_DOTDIR` constant                    |
+| `src/skillnir/backends.py`    | Backend configs — `BACKENDS` dict, `BackendInfo`, model lists                                     |
+| `src/skillnir/skills.py`      | Skill discovery — `Skill` dataclass, `parse_frontmatter()`, `discover_skills()`                   |
+| `src/skillnir/injector.py`    | Symlink creation — `inject_skill()`                                                               |
+| `src/skillnir/scaffold.py`    | Skill template scaffolding                                                                        |
+| `src/skillnir/events.py`      | Events pipeline — `Event`, `search_events()`, 12 countries                                        |
+| `src/skillnir/benchmarks.py`  | AI model benchmarks search — 7 categories, 10 providers                                           |
+| `src/skillnir/security.py`    | Security vulnerability search — 10 categories, 8 sources                                          |
+| `src/skillnir/compressor.py`  | Prompt token compression with protected zones (code, URLs, headers)                               |
+| `src/skillnir/crypto.py`      | Fernet encryption — machine-bound key derivation, credential encrypt/decrypt                      |
+| `src/skillnir/notifications/` | Multi-provider webhook notifications — 6 providers (GChat, Slack, Discord, Teams, Telegram, Cliq) |
+| `src/skillnir/i18n.py`        | Internationalization — `t()`, `load_locale()`, 9 languages                                        |
+| `src/skillnir/ui/layout.py`   | Web UI navigation structure + language picker                                                     |
+| `scripts/run_intel.py`        | Non-interactive CI runner for intel pipelines (research, events, security, benchmarks)            |
+| `pyproject.toml`              | Build config, deps, entry point                                                                   |
+| `.pylintrc`                   | Linting rules (100 char, snake_case)                                                              |
+| `.pre-commit-config.yaml`     | 12 pre-commit hooks                                                                               |
 
 ## Files To Never Touch
 
@@ -170,10 +183,9 @@ AITool(
     "ToolName",
     ".tooldir",
     "CompanyName",
-    popularity=5,
-    performance=5,
-    price=5,
-    icon_url="https://github.com/org.png?size=32",
+    icon_url="/static/icons/tool.png",
+    website_url="https://tool.example.com",
+    ignore_file=".toolignore",
 )
 ```
 
@@ -223,7 +235,20 @@ for skill in skills:
 No `.env` file used. Configuration stored in `~/.skillnir/config.json`:
 
 ```json
-{ "backend": "claude", "model": "claude-opus-4-6", "prompt_version": "v1" }
+{
+  "backend": "claude",
+  "model": "claude-opus-4-6",
+  "prompt_version": "v1",
+  "active_provider": "gchat",
+  "notifications_enabled": true,
+  "gchat_webhook_cipher": "<encrypted>",
+  "slack_webhook_cipher": "",
+  "discord_webhook_cipher": "",
+  "teams_webhook_cipher": "",
+  "telegram_bot_token_cipher": "",
+  "telegram_chat_id_cipher": "",
+  "cliq_webhook_cipher": ""
+}
 ```
 
 AI backends expect their CLIs in PATH: `claude`, `agent` (Cursor), `gemini`, `copilot`.
@@ -232,6 +257,7 @@ AI backends expect their CLIs in PATH: `claude`, `agent` (Cursor), `gemini`, `co
 
 - **Claude API** — via claude-agent-sdk (async, streaming)
 - **Cursor/Gemini/Copilot CLIs** — subprocess calls to locally installed tools
+- **Notification webhooks** — Google Chat, Slack, Discord, Microsoft Teams, Telegram Bot API, Zoho Cliq (outbound HTTPS POST only)
 - **No DB, cache, queue, or cloud storage** — all local filesystem
 
 ## Testing
@@ -255,6 +281,10 @@ uv run pytest -k "test_creates_symlink"  # single test
 - **Pre-commit hooks** enforce both on every commit
 - **No secrets in code** — backends use CLI tools already authenticated locally
 - **Symlinks only** — injector never copies or modifies skill content
+- **At-rest encryption** — webhook credentials encrypted with machine-bound Fernet key (`crypto.py`)
+- **SSRF hardening** — per-provider webhook URL validation with host allowlists
+- **NiceGUI binds to 127.0.0.1 only** — prevents LAN exposure of unauthenticated Settings page
+- **Config file permissions** — `~/.skillnir/config.json` and `client_id` written with `0o600`
 
 ## Known Gotchas
 
@@ -267,18 +297,21 @@ uv run pytest -k "test_creates_symlink"  # single test
 - **Thread-safe usage tracker** uses `threading.Lock()` — don't bypass the `SessionUsageTracker` interface
 - **Black `-S` flag** means NO single quotes — formatter enforces double quotes throughout
 - **`.data/` excluded from autoflake and pylint** — prompt templates contain Python-like syntax that triggers false positives
+- **Encrypted credentials are machine-bound** — copying `config.json` to another machine breaks decryption. Rotate webhook URLs after migration.
+- **Notification providers require HTTPS + host-allowlist** — custom/self-hosted endpoints blocked by design (SSRF hardening)
+- **`notifier.py` is a shim** — new code should import from `skillnir.notifications`, not `skillnir.notifier`
 
 ## Freedom Levels
 
-| MUST follow                           | SHOULD follow                   | CAN customize                        |
-| ------------------------------------- | ------------------------------- | ------------------------------------ |
-| Absolute imports only                 | Result dataclass error pattern  | UI page layout and components        |
-| `pathlib.Path` for all filesystem ops | Class-based test organization   | Prompt template content              |
-| camelCase skill directory names       | questionary for CLI interaction | Backend model lists                  |
-| Relative symlinks for injection       | `frozen=True` for config models | Tool ratings (popularity/perf/price) |
-| Type hints on all function signatures | Single-line docstrings          | Research article organization        |
-| Black -S formatting (double quotes)   | `tmp_path` fixture in tests     | CLI argument names                   |
-| `.data/skills/` as source of truth    | Streaming via callback pattern  | UI component styling                 |
+| MUST follow                           | SHOULD follow                   | CAN customize                         |
+| ------------------------------------- | ------------------------------- | ------------------------------------- |
+| Absolute imports only                 | Result dataclass error pattern  | UI page layout and components         |
+| `pathlib.Path` for all filesystem ops | Class-based test organization   | Prompt template content               |
+| camelCase skill directory names       | questionary for CLI interaction | Backend model lists                   |
+| Relative symlinks for injection       | `frozen=True` for config models | Research article organization         |
+| Type hints on all function signatures | Single-line docstrings          | Tool metadata (website, icon, ignore) |
+| Black -S formatting (double quotes)   | `tmp_path` fixture in tests     | CLI argument names                    |
+| `.data/skills/` as source of truth    | Streaming via callback pattern  | UI component styling                  |
 
 ## AI Interaction Guidelines
 
@@ -291,7 +324,7 @@ uv run pytest -k "test_creates_symlink"  # single test
 ## Skills Reference
 
 > Project-specific conventions live in `.data/skills/`. Check before making architectural decisions.
-> Skills available: backendEngineer, frontendEngineer, devopsEngineer, skillnir
+> Skills available: backendEngineer, devopsEngineer, frontendEngineer, promptCompressor, pythonDeveloper, securityEngineer, skillnir
 
 ## Sub-Agent Capabilities
 
