@@ -289,6 +289,11 @@ def _extract_fields(
     title = str(item.get("title") or item.get("name") or "(no title)").strip()
 
     if feature == "research":
+        topic = str(item.get("topic") or "").strip()
+        pub_date = str(item.get("published_date") or "").strip()
+        tag_parts = [p for p in [topic, pub_date] if p]
+        tag = f"[{' - '.join(tag_parts)}] " if tag_parts else ""
+        title = f"{tag}{title}"
         desc = str(item.get("summary") or "").strip()
         url = str(item.get("source_url") or "").strip()
     elif feature == "events":
