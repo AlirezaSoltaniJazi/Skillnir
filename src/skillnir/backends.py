@@ -692,6 +692,9 @@ def build_subprocess_command(
             "--model",
             model_id,
             "--trust",
+            "--sandbox",
+            "disabled",
+            "--force",
         ]
     elif backend == AIBackend.GEMINI:
         cmd = [

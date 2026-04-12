@@ -712,15 +712,8 @@ def _research_topic_subprocess(
         except ValueError:
             pass
 
-    # Disable Cursor sandbox and force-approve web tool calls in headless mode
-    if backend == AIBackend.CURSOR:
-        try:
-            sep = cmd.index("--")
-            cmd.insert(sep, "disabled")
-            cmd.insert(sep, "--sandbox")
-            cmd.insert(sep, "--force")
-        except ValueError:
-            cmd.extend(["--force", "--sandbox", "disabled"])
+    # Note: Cursor --sandbox disabled + --force are now set globally in
+    # backends.py:build_subprocess_command() so all features benefit.
 
     collected_text: list[str] = []
     raw_lines: list[str] = []

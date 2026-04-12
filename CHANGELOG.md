@@ -5,6 +5,12 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.5] - 2026-04-12
+
+### Fixed
+
+- **`--sandbox disabled --force` moved to global Cursor command builder** -- previously these flags were only injected in `researcher.py`, so security, events, and benchmarks pipelines still had Cursor's network sandbox active and web tool calls were auto-rejected as `"User Rejected"`. Moved to `backends.py:build_subprocess_command()` so every Cursor invocation gets web access. Removed the now-redundant override from `researcher.py`.
+
 ## [1.3.4] - 2026-04-12
 
 ### Added
