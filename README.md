@@ -185,6 +185,77 @@ skillName/
 | Operations & Security   | infra, security, observability, performance                            |
 | Specialized             | chrome-extension, accessibility, migration, general-system             |
 
+## CI / GitHub Actions Usage
+
+Skillnir can be used as a library in CI pipelines via `scripts/run_intel.py` — a non-interactive runner that calls the async Python API directly (avoids the interactive CLI which would hang in CI).
+
+### Quick Start (GitHub Actions)
+
+```yaml
+- name: Checkout Skillnir
+  uses: actions/checkout@v6
+  with:
+    repository: AlirezaSoltaniJazi/Skillnir
+    ref: main
+    path: skillnir
+
+- name: Install uv + Python + Skillnir
+  run: |
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    uv python install 3.14
+    cd skillnir && uv venv --python 3.14 .venv
+    . .venv/bin/activate && uv pip install -e .
+
+- name: Install Cursor CLI
+  run: curl https://cursor.com/install -fsSL | bash
+
+- name: Run research pipeline
+  env:
+    AI_AGENT_TOOL: cursor
+    AI_AGENT_API_KEY: ${{ secrets.AI_AGENT_API_KEY }}
+    AI_AGENT_WEBHOOK_URL: ${{ secrets.AI_AGENT_WEBHOOK_URL }}
+    AI_AGENT_MODEL: auto
+  run: |
+    cd skillnir && . .venv/bin/activate
+    python scripts/run_intel.py research
+```
+
+### Supported Features
+
+```bash
+python scripts/run_intel.py research     # AI news articles
+python scripts/run_intel.py events       # AI conferences & meetups
+python scripts/run_intel.py security     # CVEs & advisories
+python scripts/run_intel.py benchmarks   # AI model leaderboards
+```
+
+### Environment Variables
+
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `AI_AGENT_API_KEY` | Yes | — | API key for the AI tool (e.g. Cursor API key) |
+| `AI_AGENT_TOOL` | No | `cursor` | Which AI backend to use |
+| `AI_AGENT_WEBHOOK_URL` | No | — | Google Chat webhook for notifications. Omit to skip |
+| `AI_AGENT_MODEL` | No | `auto` | Primary model name |
+| `AI_AGENT_MODEL_FALLBACK` | No | — | Fallback model on primary failure |
+| `AI_AGENT_RESEARCH_DATE_RANGE` | No | — | Date filter for research (e.g. `published after 2026-01-01`) |
+| `AI_AGENT_RESEARCH_TOPICS` | No | all | Comma-separated topic keys |
+| `AI_AGENT_EVENT_COUNTRIES` | No | all | Comma-separated country codes (e.g. `uk,de`) |
+| `AI_AGENT_SECURITY_CATEGORIES` | No | all | Comma-separated category keys |
+| `AI_AGENT_BENCHMARK_TOP_N` | No | `10` | Number of top models to fetch |
+
+### Notifications
+
+When `AI_AGENT_WEBHOOK_URL` is set, the runner sends a single consolidated Google Chat card listing all new items discovered in the run. Each item includes title, description, and a clickable "View source" button. Dedup is automatic via on-disk index files — running the same feature twice produces zero duplicate notifications.
+
+### Output
+
+The final stdout line is a machine-readable JSON summary:
+
+```
+SUMMARY {"feature":"research","tool_used":"cursor","new_count":5,"notified":true,"model_used":"auto","fallback_used":false,...}
+```
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup, code style, and PR guidelines.
