@@ -180,11 +180,17 @@ async def _run_feature(feature: str, model: str | None, backend: AIBackend) -> A
         topics = _csv_env("AI_AGENT_RESEARCH_TOPICS")
         if topics:
             _log(f"research topics filter: {topics}")
+        date_range = (
+            os.environ.get("AI_AGENT_RESEARCH_DATE_RANGE") or ""
+        ).strip() or None
+        if date_range:
+            _log(f"research date range: {date_range}")
         return await research(
             on_progress=_emit_progress,
             backend_override=backend,
             model_override=model,
             topics=topics,
+            date_range=date_range,
         )
 
     if feature == "events":
@@ -369,8 +375,8 @@ def main() -> int:
     parser.add_argument(
         "--notify-limit",
         type=int,
-        default=10,
-        help="Max items to include in the notification card (default: 10).",
+        default=100,
+        help="Max items to include in the notification card (default: 100).",
     )
     args = parser.parse_args()
 

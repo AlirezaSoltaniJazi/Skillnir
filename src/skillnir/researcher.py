@@ -222,7 +222,7 @@ important, actionable insights.
 
 ## Instructions
 
-For the topic below, find 5-8 recent articles (2025-2026 preferred). For EACH article:
+For the topic below, find 5-8 recent articles ({date_hint}). For EACH article:
 
 1. **Search** for recent, high-quality articles (blog posts, research papers, official docs, conference talks)
 2. **Deep-read** each article — do not just summarize the title
@@ -656,6 +656,7 @@ def _research_topic_subprocess(
     model: str,
     sources: list[str] | None = None,
     on_progress: Callable[[GenerationProgress], None] | None = None,
+    date_range: str | None = None,
 ) -> list[Article]:
     """Search and summarize articles for a single topic using subprocess."""
     info = BACKENDS[backend]
@@ -684,6 +685,12 @@ def _research_topic_subprocess(
             "At least 2-3 of your articles should come from these preferred sources when relevant content exists."
         )
 
+    # Build date hint for the prompt
+    if date_range:
+        date_hint = f"{date_range} — strictly exclude older articles"
+    else:
+        date_hint = "2025-2026 preferred"
+
     # Try skill-based prompt first, fall back to inline prompt
     skill_prompt = _load_research_skill()
     base_prompt = skill_prompt if skill_prompt else _RESEARCH_PROMPT
@@ -692,6 +699,7 @@ def _research_topic_subprocess(
         search_query=search_query,
         existing_ids=existing_ids_str,
         source_instruction=source_instruction,
+        date_hint=date_hint,
     )
 
     cmd = build_subprocess_command(backend, prompt, model=model, max_turns=10)
@@ -703,6 +711,15 @@ def _research_topic_subprocess(
             cmd[idx + 1] = "Read,Glob,Grep,Bash,Write,WebFetch,WebSearch"
         except ValueError:
             pass
+
+    # Disable Cursor sandbox so the agent can make outbound web requests
+    if backend == AIBackend.CURSOR:
+        try:
+            sep = cmd.index("--")
+            cmd.insert(sep, "disabled")
+            cmd.insert(sep, "--sandbox")
+        except ValueError:
+            cmd.extend(["--sandbox", "disabled"])
 
     collected_text: list[str] = []
     raw_lines: list[str] = []
@@ -876,6 +893,7 @@ async def research(
     model_override: str | None = None,
     topics: list[str] | None = None,
     sources: list[str] | None = None,
+    date_range: str | None = None,
 ) -> ResearchResult:
     """Main entry: search web for each topic, summarize with AI, generate landing page."""
     _emit(on_progress, "phase", "Initializing research pipeline...")
@@ -938,6 +956,7 @@ async def research(
             model,
             sources,
             on_progress,
+            date_range,
         )
 
         for article in articles:
