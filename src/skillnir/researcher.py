@@ -712,14 +712,15 @@ def _research_topic_subprocess(
         except ValueError:
             pass
 
-    # Disable Cursor sandbox so the agent can make outbound web requests
+    # Disable Cursor sandbox and force-approve web tool calls in headless mode
     if backend == AIBackend.CURSOR:
         try:
             sep = cmd.index("--")
             cmd.insert(sep, "disabled")
             cmd.insert(sep, "--sandbox")
+            cmd.insert(sep, "--force")
         except ValueError:
-            cmd.extend(["--sandbox", "disabled"])
+            cmd.extend(["--force", "--sandbox", "disabled"])
 
     collected_text: list[str] = []
     raw_lines: list[str] = []
