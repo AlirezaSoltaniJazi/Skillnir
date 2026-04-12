@@ -3,7 +3,7 @@
 from nicegui import app, ui
 
 from skillnir.i18n import SUPPORTED_LANGUAGES, get_current_language, set_language, t
-from skillnir.notifier import send_gchat_notification
+from skillnir.notifier import is_valid_gchat_webhook, send_gchat_notification
 from skillnir.ui.components.page_header import page_header
 from skillnir.ui.layout import header
 
@@ -133,6 +133,16 @@ def page_settings():
 
                 def _save_webhook():
                     new_url = (webhook_input.value or '').strip()
+                    if new_url and not is_valid_gchat_webhook(new_url):
+                        ui.notify(
+                            t(
+                                'pages.settings.webhook.test_failed',
+                                _lang_wh,
+                                error='invalid webhook URL',
+                            ),
+                            type='negative',
+                        )
+                        return
                     config.set_webhook_url(new_url)
                     if not new_url and config.notifications_enabled:
                         # Can't have notifications on with no URL.
@@ -158,6 +168,16 @@ def page_settings():
                                 'pages.settings.webhook.test_failed',
                                 _lang_wh,
                                 error='webhook URL not set',
+                            ),
+                            type='negative',
+                        )
+                        return
+                    if not is_valid_gchat_webhook(url):
+                        ui.notify(
+                            t(
+                                'pages.settings.webhook.test_failed',
+                                _lang_wh,
+                                error='invalid webhook URL',
                             ),
                             type='negative',
                         )

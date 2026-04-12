@@ -12,7 +12,32 @@ from __future__ import annotations
 
 import json
 import urllib.error
+import urllib.parse
 import urllib.request
+
+_GCHAT_WEBHOOK_HOST = "chat.googleapis.com"
+
+
+def is_valid_gchat_webhook(url: str) -> bool:
+    """Return True if ``url`` is a well-formed Google Chat webhook URL.
+
+    Accepts only ``https://chat.googleapis.com/...``. Any other scheme
+    (``http``, ``file``, ``ftp``, ...) or host is rejected. This blocks
+    typos that would leak the capability token over plaintext and
+    SSRF-style probes against internal addresses via ``file://`` or
+    ``http://127.0.0.1``.
+    """
+    if not url:
+        return False
+    try:
+        parts = urllib.parse.urlsplit(url)
+    except ValueError:
+        return False
+    if parts.scheme != "https":
+        return False
+    # ``netloc`` includes any ``userinfo@`` and ``:port`` — strip both.
+    host = parts.hostname or ""
+    return host.lower() == _GCHAT_WEBHOOK_HOST
 
 
 def _build_gchat_card(title: str, detail: str | None) -> dict:
@@ -56,8 +81,10 @@ def send_gchat_notification(
     Returns ``(True, None)`` on HTTP 2xx, ``(False, error_message)`` otherwise.
     Never raises.
     """
-    if not webhook_url:
-        return False, "webhook URL not set"
+    if not webhook_url or not is_valid_gchat_webhook(webhook_url):
+        return False, (
+            "webhook URL not set" if not webhook_url else "invalid webhook URL"
+        )
 
     payload = _build_gchat_card(title, detail)
     data = json.dumps(payload).encode("utf-8")
@@ -68,6 +95,9 @@ def send_gchat_notification(
         method="POST",
     )
 
+    # B310 (urllib scheme check) is handled above by is_valid_gchat_webhook,
+    # which enforces https://chat.googleapis.com and rejects file://, http://,
+    # and arbitrary hosts before we ever open a socket.
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:  # nosec B310
             status = getattr(resp, "status", 200)

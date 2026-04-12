@@ -4,6 +4,7 @@ import functools
 import json
 import shutil
 import subprocess
+import sys
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
@@ -321,8 +322,17 @@ def load_config() -> AppConfig:
             if "gchat_webhook_url" in data:
                 try:
                     save_config(config)
-                except OSError:
-                    pass
+                except OSError as exc:
+                    # Don't swallow silently: the plaintext webhook URL
+                    # is still on disk and the user should know so they
+                    # can rotate the webhook in Google Chat.
+                    print(
+                        "skillnir: WARNING — failed to re-persist config after "
+                        f"migrating legacy plaintext webhook URL: {exc}. "
+                        "Rotate the webhook in Google Chat and fix "
+                        f"{CONFIG_FILE} permissions.",
+                        file=sys.stderr,
+                    )
             return config
         except json.JSONDecodeError, ValueError, KeyError:
             pass
@@ -344,12 +354,21 @@ def load_config() -> AppConfig:
 
 
 def save_config(config: AppConfig) -> None:
-    """Persist config to ~/.skillnir/config.json."""
+    """Persist config to ~/.skillnir/config.json (owner-read/write only)."""
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     CONFIG_FILE.write_text(
         json.dumps(config.to_dict(), indent=2) + "\n",
         encoding="utf-8",
     )
+    # Restrict to owner read/write on POSIX; best-effort on Windows.
+    # The file contains ``gchat_webhook_cipher``, which — together with
+    # the same-user-readable ``client_id`` and machine fingerprint — is
+    # enough to recover the webhook URL. Keep its permissions in sync
+    # with crypto.CLIENT_ID_FILE (also 0o600).
+    try:
+        CONFIG_FILE.chmod(0o600)
+    except OSError:
+        pass
 
 
 # ---------------------------------------------------------------------------

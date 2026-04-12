@@ -1,8 +1,12 @@
 """Tests for skillnir.backends -- config, command builder, stream parsers."""
 
 import json
+import os
+import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 from skillnir.backends import (
@@ -124,6 +128,20 @@ class TestConfigPersistence:
         with patch("skillnir.backends.CONFIG_FILE", config_file):
             cfg = load_config()
             assert cfg.backend == AIBackend.CLAUDE
+
+    @pytest.mark.skipif(
+        sys.platform.startswith("win"),
+        reason="POSIX file mode not enforced on Windows",
+    )
+    def test_save_config_sets_owner_only_permissions(self, tmp_path: Path):
+        config_file = tmp_path / "config.json"
+        with (
+            patch("skillnir.backends.CONFIG_FILE", config_file),
+            patch("skillnir.backends.CONFIG_DIR", tmp_path),
+        ):
+            save_config(AppConfig())
+        mode = os.stat(config_file).st_mode & 0o777
+        assert mode == 0o600, f"expected 0o600, got {oct(mode)}"
 
 
 # ── Prompt version constants ─────────────────────────────────
