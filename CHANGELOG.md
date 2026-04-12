@@ -5,6 +5,18 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.7] - 2026-04-12
+
+### Added
+
+- **`scripts/test_cards.py`** -- local test script to preview Google Chat card layouts without running AI pipelines. Reads existing index data from `.data/` and sends sample cards to `AI_AGENT_WEBHOOK_URL`. Supports per-feature testing (`python scripts/test_cards.py 3 research`) and item count override. Useful for iterating on card formatting without burning Cursor API credits.
+- **Enriched card metadata for all features**:
+  - Research: title prefixed with `[topic - published_date]`
+  - Events: description prefixed with `[date - country - topic - Free/Paid]`
+  - Security: description prefixed with `[SEVERITY - CVSS]`
+  - Benchmarks: `[CODING]` tag + score + pricing + context window; per-item "View source" buttons replaced with single footer row of leaderboard links (Chatbot Arena, Artificial Analysis, SWE-bench); subtitle shows "benchmarks sorted by coding"
+- **`footer_urls` parameter on `send_gchat_intel_report()`** -- optional list of `(label, url)` button pairs shown once on the last chunk. Used by benchmarks to display shared leaderboard sources instead of repeating per-item buttons.
+
 ## [1.3.6] - 2026-04-12
 
 ### Added
