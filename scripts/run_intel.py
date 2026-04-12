@@ -402,9 +402,14 @@ def _notify_new_items(
         f"chunk(s) of {chunk_size}"
     )
 
+    # Enrich feature label for the card subtitle
+    feature_label = feature
+    if feature == "benchmarks":
+        feature_label = "benchmarks sorted by coding"
+
     ok, err = send_gchat_intel_report(
         webhook,
-        feature=feature,
+        feature=feature_label,
         items=items_for_card,
         overflow_count=overflow,
         chunk_size=chunk_size,
