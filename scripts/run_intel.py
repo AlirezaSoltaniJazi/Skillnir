@@ -180,7 +180,9 @@ async def _run_feature(feature: str, model: str | None, backend: AIBackend) -> A
         topics = _csv_env("AI_AGENT_RESEARCH_TOPICS")
         if topics:
             _log(f"research topics filter: {topics}")
-        date_range = (os.environ.get("AI_AGENT_RESEARCH_DATE_RANGE") or "").strip() or None
+        date_range = (
+            os.environ.get("AI_AGENT_RESEARCH_DATE_RANGE") or ""
+        ).strip() or None
         if date_range:
             _log(f"research date range: {date_range}")
         return await research(

@@ -231,18 +231,18 @@ python scripts/run_intel.py benchmarks   # AI model leaderboards
 
 ### Environment Variables
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `AI_AGENT_API_KEY` | Yes | — | API key for the AI tool (e.g. Cursor API key) |
-| `AI_AGENT_TOOL` | No | `cursor` | Which AI backend to use |
-| `AI_AGENT_WEBHOOK_URL` | No | — | Google Chat webhook for notifications. Omit to skip |
-| `AI_AGENT_MODEL` | No | `auto` | Primary model name |
-| `AI_AGENT_MODEL_FALLBACK` | No | — | Fallback model on primary failure |
-| `AI_AGENT_RESEARCH_DATE_RANGE` | No | — | Date filter for research (e.g. `published after 2026-01-01`) |
-| `AI_AGENT_RESEARCH_TOPICS` | No | all | Comma-separated topic keys |
-| `AI_AGENT_EVENT_COUNTRIES` | No | all | Comma-separated country codes (e.g. `uk,de`) |
-| `AI_AGENT_SECURITY_CATEGORIES` | No | all | Comma-separated category keys |
-| `AI_AGENT_BENCHMARK_TOP_N` | No | `10` | Number of top models to fetch |
+| Variable                       | Required | Default  | Description                                                  |
+| ------------------------------ | -------- | -------- | ------------------------------------------------------------ |
+| `AI_AGENT_API_KEY`             | Yes      | —        | API key for the AI tool (e.g. Cursor API key)                |
+| `AI_AGENT_TOOL`                | No       | `cursor` | Which AI backend to use                                      |
+| `AI_AGENT_WEBHOOK_URL`         | No       | —        | Google Chat webhook for notifications. Omit to skip          |
+| `AI_AGENT_MODEL`               | No       | `auto`   | Primary model name                                           |
+| `AI_AGENT_MODEL_FALLBACK`      | No       | —        | Fallback model on primary failure                            |
+| `AI_AGENT_RESEARCH_DATE_RANGE` | No       | —        | Date filter for research (e.g. `published after 2026-01-01`) |
+| `AI_AGENT_RESEARCH_TOPICS`     | No       | all      | Comma-separated topic keys                                   |
+| `AI_AGENT_EVENT_COUNTRIES`     | No       | all      | Comma-separated country codes (e.g. `uk,de`)                 |
+| `AI_AGENT_SECURITY_CATEGORIES` | No       | all      | Comma-separated category keys                                |
+| `AI_AGENT_BENCHMARK_TOP_N`     | No       | `10`     | Number of top models to fetch                                |
 
 ### Notifications
 
