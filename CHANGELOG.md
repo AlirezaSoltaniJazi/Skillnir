@@ -5,12 +5,25 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.3.0] - 2026-04-12
+## [1.3.1] - 2026-04-12
 
 ### Added
 
-- **`scripts/run_intel.py`** -- non-interactive CI runner for the `research`, `events`, and `security` pipelines. Invokes the async Python API directly (avoids the interactive `skillnir` CLI, which uses `questionary` prompts and would hang in CI). Diffs the on-disk `<feature>-index.json` before and after the run to determine which items are new, then POSTs each one as a Google Chat card via `send_gchat_item`. Tool-agnostic: reads `AI_AGENT_TOOL` (default `cursor`) and `AI_AGENT_API_KEY` and translates them into the env var the underlying CLI expects (e.g. `CURSOR_API_KEY`). Currently only `cursor` is wired up; the `_TOOL_REGISTRY` table at the top of the script is the single place to add new tools as Skillnir gains support for them. Also reads `AI_AGENT_WEBHOOK_URL`, `AI_AGENT_MODEL`, `AI_AGENT_MODEL_FALLBACK`. Includes fallback-model retry logic: if the primary model fails, the runner retries once with `AI_AGENT_MODEL_FALLBACK` before giving up. Final stdout line is a machine-readable `SUMMARY {...}` JSON object (feature, tool used, pre/post counts, new count, notified, failures, model used, fallback used) so surrounding workflows can parse it. Intended for GitHub Actions.
-- **`notifier.send_gchat_item()`** -- sends a single intel item (title + description + reference URL) as a Google Chat cards-v2 message with a clickable "View source" button (`buttonList` widget with `openLink`). If the primary POST returns HTTP 4xx (malformed card / unsupported widget on the target space), automatically retries with a plain-text fallback card where the URL is inlined as bare text (Google Chat auto-links). 5xx errors and network errors are NOT retried with the fallback — retrying with a different payload can't fix server-side or connection problems. Reuses `is_valid_gchat_webhook()` validation and the shared `_post_json()` helper. Exported from both `skillnir.notifications` and the back-compat `skillnir.notifier` shim.
+- **`scripts/run_intel.py` — CI runner for all four intel pipelines** (`research`, `events`, `security`, `benchmarks`). Non-interactive entry point for GitHub Actions. All customization is done via environment variables — no Skillnir code changes needed to adjust filters or behavior:
+  - `AI_AGENT_TOOL` (default `cursor`) + `AI_AGENT_API_KEY` — tool-agnostic; the runner translates these into the backend's native env var (e.g. `CURSOR_API_KEY`). New tools are a one-line addition to the `_TOOL_REGISTRY` table.
+  - `AI_AGENT_MODEL` / `AI_AGENT_MODEL_FALLBACK` — primary model with automatic fallback retry on failure.
+  - `AI_AGENT_EVENT_COUNTRIES` — comma-separated country filter for events (e.g. `uk,de`). Empty = all.
+  - `AI_AGENT_RESEARCH_TOPICS` — comma-separated topic filter for research. Empty = all.
+  - `AI_AGENT_SECURITY_CATEGORIES` — comma-separated category filter for security. Empty = all.
+  - `AI_AGENT_BENCHMARK_TOP_N` (default `10`) — how many top models to fetch for benchmarks.
+  - `AI_AGENT_WEBHOOK_URL` — Google Chat webhook for notifications. Omit to skip.
+  - Diffs the on-disk index before/after the run to determine new items, sends ONE consolidated Google Chat card (not one per item) via `send_gchat_intel_report()`. Final stdout line is a machine-readable `SUMMARY {...}` JSON.
+- **`notifier.send_gchat_intel_report()`** -- sends a single consolidated Google Chat cards-v2 message listing multiple intel items. Each item rendered with title, description, and a "View source" `buttonList` widget, separated by dividers. Includes overflow footer ("+N more — see workflow artifact") when items are truncated. Falls back to plain-text card on HTTP 4xx. Reuses `is_valid_gchat_webhook()` and `_post_json()`.
+- **`notifier.send_gchat_item()`** -- sends a single intel item (title + description + reference URL) as a Google Chat cards-v2 message with a clickable "View source" button. Falls back to plain-text card on HTTP 4xx. Reuses `is_valid_gchat_webhook()` and `_post_json()`. Exported from both `skillnir.notifications` and the back-compat `skillnir.notifier` shim.
+
+## [1.3.0] - 2026-04-12
+
+### Added
 - **Multi-provider webhook notifications** -- receive a message in your team chat when long-running tasks complete. Six providers supported: **Google Chat, Slack, Discord, Microsoft Teams (Power Automate), Telegram, Zoho Cliq**.
   - New `skillnir.notifications` package splits the subsystem into `providers` (registry + validators) and `senders` (per-provider POST functions) with a shared `_post_json` helper
   - **Per-provider expansion panels** on the Settings page -- one collapsible card per provider with its own credential inputs, Save, Test, Clear, and "Make active" buttons
