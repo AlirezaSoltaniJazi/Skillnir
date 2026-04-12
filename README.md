@@ -231,23 +231,27 @@ python scripts/run_intel.py benchmarks   # AI model leaderboards
 
 ### Environment Variables
 
-| Variable                       | Required | Default  | Description                                                  |
-| ------------------------------ | -------- | -------- | ------------------------------------------------------------ |
-| `AI_AGENT_API_KEY`             | Yes      | —        | API key for the AI tool (e.g. Cursor API key)                |
-| `AI_AGENT_TOOL`                | No       | `cursor` | Which AI backend to use                                      |
-| `AI_AGENT_WEBHOOK_URL`         | No       | —        | Google Chat webhook for notifications. Omit to skip          |
-| `AI_AGENT_MODEL`               | No       | `auto`   | Primary model name                                           |
-| `AI_AGENT_MODEL_FALLBACK`      | No       | —        | Fallback model on primary failure                            |
-| `AI_AGENT_RESEARCH_DATE_RANGE` | No       | —        | Date filter for research (e.g. `published after 2026-01-01`) |
-| `AI_AGENT_RESEARCH_TOPICS`     | No       | all      | Comma-separated topic keys                                   |
-| `AI_AGENT_EVENT_COUNTRIES`     | No       | all      | Comma-separated country codes (e.g. `uk,de`)                 |
-| `AI_AGENT_SECURITY_CATEGORIES` | No       | all      | Comma-separated category keys                                |
-| `AI_AGENT_BENCHMARK_TOP_N`     | No       | `10`     | Number of top models to fetch                                |
-| `AI_AGENT_NOTIFY_CHUNK_SIZE`   | No       | `15`     | Items per Google Chat card (chunked to avoid 32KB limit)     |
+| Variable                        | Required | Default                                 | Description                                                                   |
+| ------------------------------- | -------- | --------------------------------------- | ----------------------------------------------------------------------------- |
+| `AI_AGENT_API_KEY`              | Yes      | —                                       | API key for the AI tool (e.g. Cursor API key)                                 |
+| `AI_AGENT_TOOL`                 | No       | `cursor`                                | Which AI backend to use                                                       |
+| `AI_AGENT_WEBHOOK_URL`          | No       | —                                       | Google Chat webhook for notifications. Omit to skip                           |
+| `AI_AGENT_MODEL`                | No       | `auto`                                  | Primary model name                                                            |
+| `AI_AGENT_MODEL_FALLBACK`       | No       | —                                       | Fallback model on primary failure                                             |
+| `AI_AGENT_RESEARCH_DATE_RANGE`  | No       | —                                       | Date filter for research (e.g. `published after 2026-01-01`)                  |
+| `AI_AGENT_RESEARCH_TOPICS`      | No       | all                                     | Comma-separated topic keys                                                    |
+| `AI_AGENT_EVENT_COUNTRIES`      | No       | all                                     | Comma-separated country codes (e.g. `uk,de`)                                  |
+| `AI_AGENT_SECURITY_CATEGORIES`  | No       | all                                     | Comma-separated category keys                                                 |
+| `AI_AGENT_BENCHMARK_TOP_N`      | No       | `10`                                    | Number of top models to fetch                                                 |
+| `AI_AGENT_NOTIFY_CHUNK_SIZE`    | No       | `15`                                    | Items per Google Chat card (chunked to avoid 32KB limit)                      |
+| `AI_AGENT_NOTIFY_BUTTON_TEXT`   | No       | `View source`                           | Label for the per-item link button                                            |
+| `AI_AGENT_NOTIFY_SUBTITLE`      | No       | `{feature} — {count} new item(s)`       | Card header subtitle template. Placeholders: `{feature}`, `{count}`, `{part}` |
+| `AI_AGENT_NOTIFY_OVERFLOW_TEXT` | No       | `+{count} more — see workflow artifact` | Overflow footer text. Placeholder: `{count}`                                  |
+| `AI_AGENT_NOTIFY_DESC_MAX`      | No       | `150`                                   | Max characters for item descriptions (truncated with `...`)                   |
 
 ### Notifications
 
-When `AI_AGENT_WEBHOOK_URL` is set, the runner sends a single consolidated Google Chat card listing all new items discovered in the run. Each item includes title, description, and a clickable "View source" button. Dedup is automatic via on-disk index files — running the same feature twice produces zero duplicate notifications.
+When `AI_AGENT_WEBHOOK_URL` is set, the runner sends a single consolidated Google Chat card listing all new items discovered in the run. Each item includes title, description, and a clickable link button. Dedup is automatic via on-disk index files — running the same feature twice produces zero duplicate notifications. Card text (subtitle, button label, overflow message, description length) is customizable via the `AI_AGENT_NOTIFY_*` env vars above.
 
 ### Output
 
