@@ -5,6 +5,12 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.4] - 2026-04-12
+
+### Added
+
+- **Chunked Google Chat notifications** -- `send_gchat_intel_report()` now splits items into chunks (default 15 per card) and sends them as separate messages with a 2-second delay between each. Avoids the 32KB Google Chat card limit that caused "View source" buttons to disappear when sending 100+ items in a single card. Each chunk header shows the part number (e.g. "research — 40 new item(s) (2/3)"). Chunk size is configurable via `AI_AGENT_NOTIFY_CHUNK_SIZE` env var in CI.
+
 ## [1.3.3] - 2026-04-12
 
 ### Fixed

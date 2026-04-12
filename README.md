@@ -243,6 +243,7 @@ python scripts/run_intel.py benchmarks   # AI model leaderboards
 | `AI_AGENT_EVENT_COUNTRIES`     | No       | all      | Comma-separated country codes (e.g. `uk,de`)                 |
 | `AI_AGENT_SECURITY_CATEGORIES` | No       | all      | Comma-separated category keys                                |
 | `AI_AGENT_BENCHMARK_TOP_N`     | No       | `10`     | Number of top models to fetch                                |
+| `AI_AGENT_NOTIFY_CHUNK_SIZE`   | No       | `15`     | Items per Google Chat card (chunked to avoid 32KB limit)     |
 
 ### Notifications
 
