@@ -5,7 +5,7 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.3.2] - 2026-04-12
 
 ### Added
 
@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Time range selector in research UI** -- new chip row on the research page with 8 options: All time (default), Last 1/3/6/12 months, 2026, 2025, 2024. Selection is passed as `date_range` to `research()`.
 - **`notifier.send_gchat_intel_report()`** -- sends a single consolidated Google Chat cards-v2 message listing multiple intel items. Each item rendered with title, description, and a "View source" `buttonList` widget, separated by dividers. Includes overflow footer when items are truncated. Falls back to plain-text card on HTTP 4xx.
 - **CI / GitHub Actions documentation** in README -- quick-start YAML snippet, full env var table, notification behavior, and output format.
+
+### Fixed
+
+- **Cursor sandbox blocks web access in research pipeline** -- the Cursor `agent` CLI runs with network sandbox enabled by default, which blocks all outbound HTTP (web search, fetch, curl). The research pipeline now injects `--sandbox disabled` into the Cursor subprocess command so the agent can perform live web searches. Only affects the research pipeline; other Skillnir features keep the sandbox on. Claude backend was unaffected (uses `--allowedTools` with `WebFetch,WebSearch` instead).
 
 ### Changed
 
@@ -356,10 +360,3 @@ NiceGUI-based dashboard with pages for skill generation, installation, deletion,
 - Rollback strategy and cloud cost awareness in backend generator
 - Severity classification in security sections across backend, frontend, and infra generators
 
-[1.3.1]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.3.1
-[1.3.0]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.3.0
-[1.2.0]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.2.0
-[1.1.2]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.1.2
-[1.1.1]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.1.1
-[1.1.0]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.1.0
-[1.0.0]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.0.0
