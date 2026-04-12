@@ -46,7 +46,7 @@ uv run pytest
 
 | Tool      | Purpose                         | Config                                             |
 | --------- | ------------------------------- | -------------------------------------------------- |
-| Black     | Formatting (PEP 8)              | `-S` flag (skip string normalization), Python 3.13 |
+| Black     | Formatting (PEP 8)              | `-S` flag (skip string normalization), Python 3.14 |
 | Pylint    | Linting                         | `.pylintrc` (line-length=100, fail-under=10)       |
 | Autoflake | Remove unused imports/variables | Excludes `.data/`                                  |
 | Bandit    | Security scanning               | `-lll -iii` (low false-positive threshold)         |
@@ -96,7 +96,7 @@ All checks must pass before merging.
 - **Config**: frozen dataclasses
 - **Results**: result dataclasses (not tuples or dicts)
 - **Line length**: 100 characters max
-- **Quotes**: single quotes (Black `-S`)
+- **Quotes**: double quotes (Black `-S` skips normalization; codebase convention is double quotes)
 
 ## Adding Dependencies
 
@@ -123,7 +123,7 @@ uv run skillnir ui
 # Navigate to "Generate Skill"
 ```
 
-Available scopes: backend, frontend, android, ios, infra, testing, js, python, test-design, general-system.
+Available scopes: backend, frontend, android, ios, infra, testing, security, and 19 more. See the [Available Scopes table in README.md](README.md#available-scopes-26) for the full list.
 
 ## GitHub Actions
 

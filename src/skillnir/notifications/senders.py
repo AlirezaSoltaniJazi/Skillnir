@@ -231,6 +231,117 @@ def _build_gchat_item_fallback_card(
     }
 
 
+def send_gchat_intel_report(
+    webhook_url: str,
+    *,
+    feature: str,
+    items: list[tuple[str, str, str]],
+    overflow_count: int = 0,
+    timeout: float = _DEFAULT_TIMEOUT,
+) -> tuple[bool, str | None]:
+    """POST ONE consolidated Cards v2 message listing all new intel items.
+
+    Each item in ``items`` is a ``(title, description, reference_url)`` tuple.
+    Items are rendered as a bulleted list inside a single card. If
+    ``overflow_count > 0``, a footer line is appended indicating how many
+    more items exist beyond those shown.
+
+    Primary attempt uses ``buttonList`` widgets per item for clickable
+    "View source" links. If the POST returns HTTP 4xx, retries with a
+    plain-text fallback where URLs are inlined as bare text.
+
+    Never raises. Returns ``(True, None)`` on success.
+    """
+    if not webhook_url:
+        return False, "webhook URL not set"
+    if not is_valid_gchat_webhook(webhook_url):
+        return False, "invalid webhook URL"
+    if not items:
+        return False, "no items to report"
+
+    # --- primary card (with buttons) ---
+    widgets: list[dict] = []
+    for title, desc, url in items:
+        text = f"<b>{title}</b>"
+        if desc:
+            text += f"\n{desc}"
+        widgets.append({"textParagraph": {"text": text}})
+        if url:
+            widgets.append(
+                {
+                    "buttonList": {
+                        "buttons": [
+                            {
+                                "text": "View source",
+                                "onClick": {"openLink": {"url": url}},
+                            }
+                        ]
+                    }
+                }
+            )
+        widgets.append({"divider": {}})
+
+    if overflow_count > 0:
+        widgets.append(
+            {
+                "textParagraph": {
+                    "text": f"<i>+{overflow_count} more — see workflow artifact</i>"
+                }
+            }
+        )
+
+    primary = {
+        "cardsV2": [
+            {
+                "cardId": "skillnir-intel-report",
+                "card": {
+                    "header": {
+                        "title": "Skillnir",
+                        "subtitle": f"{feature} — {len(items)} new item(s)",
+                    },
+                    "sections": [{"widgets": widgets}],
+                },
+            }
+        ]
+    }
+
+    ok, err = _post_json(webhook_url, primary, timeout)
+    if ok:
+        return True, None
+
+    # --- plain-text fallback on 4xx ---
+    if err and err.startswith("HTTP 4"):
+        lines = []
+        for title, desc, url in items:
+            line = f"• <b>{title}</b>"
+            if desc:
+                line += f" — {desc}"
+            if url:
+                line += f"\n  {url}"
+            lines.append(line)
+        if overflow_count > 0:
+            lines.append(f"\n+{overflow_count} more — see workflow artifact")
+        fallback = {
+            "cardsV2": [
+                {
+                    "cardId": "skillnir-intel-report-fallback",
+                    "card": {
+                        "header": {
+                            "title": "Skillnir",
+                            "subtitle": f"{feature} — {len(items)} new item(s)",
+                        },
+                        "sections": [
+                            {"widgets": [{"textParagraph": {"text": "\n".join(lines)}}]}
+                        ],
+                    },
+                }
+            ]
+        }
+        return _post_json(webhook_url, fallback, timeout)
+
+    return False, err
+
+
 def send_gchat_item(
     webhook_url: str,
     *,

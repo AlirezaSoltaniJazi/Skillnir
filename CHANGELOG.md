@@ -5,6 +5,18 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2026-04-12
+
+### Added
+
+- **`scripts/run_intel.py` — CI runner for all four intel pipelines** (`research`, `events`, `security`, `benchmarks`). Non-interactive entry point for GitHub Actions. All customization is done via environment variables — no Skillnir code changes needed to adjust filters or behavior:
+  - `AI_AGENT_TOOL` (default `cursor`) + `AI_AGENT_API_KEY` — tool-agnostic; the runner translates these into the backend's native env var (e.g. `CURSOR_API_KEY`). New tools are a one-line addition to the `_TOOL_REGISTRY` table.
+  - `AI_AGENT_MODEL` / `AI_AGENT_MODEL_FALLBACK` — primary model with automatic fallback retry on failure.
+  - `AI_AGENT_EVENT_COUNTRIES` — comma-separated country filter for events (e.g. `uk,de`). Empty = all.
+  - `AI_AGENT_RESEARCH_TOPICS` — comma-separated topic filter for research. Empty = all.
+  - `AI_AGENT_SECURITY_CATEGORIES` — comma-separated category filter for security. Empty = all.
+  - `AI_AGENT_BENCHMARK_TOP_N` (default `10`) — how many top models to fetch for benchmarks.
+
 ## [1.3.0] - 2026-04-12
 
 ### Added
@@ -330,6 +342,9 @@ NiceGUI-based dashboard with pages for skill generation, installation, deletion,
 - Rollback strategy and cloud cost awareness in backend generator
 - Severity classification in security sections across backend, frontend, and infra generators
 
+[1.3.1]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.3.1
+[1.3.0]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.3.0
+[1.2.0]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.2.0
 [1.1.2]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.1.2
 [1.1.1]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.1.1
 [1.1.0]: https://github.com/AlirezaSoltaniJazi/Skillnir/releases/tag/v1.1.0
