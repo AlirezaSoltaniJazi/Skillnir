@@ -310,7 +310,21 @@ def _extract_fields(
         url = str(item.get("source_url") or "").strip()
     elif feature == "benchmarks":
         provider = str(item.get("provider") or "").strip()
-        desc = f"by {provider}" if provider else ""
+        scores = item.get("category_scores") or {}
+        coding = scores.get("coding")
+        parts = ["[CODING]"]
+        if provider:
+            parts.append(f"by {provider}")
+        if coding is not None:
+            parts.append(f"score: {coding}")
+        input_price = item.get("input_price")
+        output_price = item.get("output_price")
+        if input_price is not None and output_price is not None:
+            parts.append(f"${input_price}/${output_price} per 1M tokens")
+        ctx = item.get("context_window")
+        if ctx:
+            parts.append(f"{ctx // 1000}K ctx" if isinstance(ctx, int) and ctx >= 1000 else f"{ctx} ctx")
+        desc = " | ".join(parts)
         urls = item.get("source_urls") or []
         url = str(urls[0]).strip() if urls else ""
     else:
