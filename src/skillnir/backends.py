@@ -4,6 +4,7 @@ import functools
 import json
 import shutil
 import subprocess
+import sys
 from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
@@ -237,14 +238,130 @@ PROMPT_VERSIONS = get_prompt_versions()
 PROMPT_VERSION_LABELS = get_prompt_version_labels()
 
 
+# Per-provider cipher field mapping. Ordered dict so iteration is
+# stable in the Settings UI (expansion panel order matches registry).
+# Keep this in sync with ``skillnir.notifications.providers.PROVIDERS``.
+_CIPHER_FIELD_MAP: dict[str, tuple[str, ...]] = {
+    "gchat": ("gchat_webhook_cipher",),
+    "slack": ("slack_webhook_cipher",),
+    "discord": ("discord_webhook_cipher",),
+    "teams": ("teams_webhook_cipher",),
+    "telegram": ("telegram_bot_token_cipher", "telegram_chat_id_cipher"),
+    "cliq": ("cliq_webhook_cipher",),
+}
+
+# Maps each cipher field to its logical credential key name. Used by
+# ``get_provider_credentials`` to zip back into ``{"url": ...}`` or
+# ``{"bot_token": ..., "chat_id": ...}`` dicts for the Settings UI and
+# sender signatures.
+_CIPHER_FIELD_TO_KEY: dict[str, str] = {
+    "gchat_webhook_cipher": "url",
+    "slack_webhook_cipher": "url",
+    "discord_webhook_cipher": "url",
+    "teams_webhook_cipher": "url",
+    "telegram_bot_token_cipher": "bot_token",
+    "telegram_chat_id_cipher": "chat_id",
+    "cliq_webhook_cipher": "url",
+}
+
+_VALID_PROVIDER_IDS: frozenset[str] = frozenset(_CIPHER_FIELD_MAP.keys()) | {""}
+
+
 @dataclass
 class AppConfig:
-    """User's persisted backend/model preferences."""
+    """User's persisted backend/model + notification preferences.
+
+    Per-provider credentials are stored encrypted at rest as Fernet tokens
+    bound to the local machine + per-install UUID. Use
+    :meth:`get_provider_credentials` / :meth:`set_provider_credentials`
+    instead of touching the cipher fields directly.
+    """
 
     backend: AIBackend = AIBackend.CLAUDE
     model: str = "sonnet"
     prompt_version: str = field(default_factory=_default_prompt_version)
     compress_prompts: bool = False
+    # ── Notification credentials (one cipher field per secret) ──
+    gchat_webhook_cipher: str = ""
+    slack_webhook_cipher: str = ""
+    discord_webhook_cipher: str = ""
+    teams_webhook_cipher: str = ""
+    telegram_bot_token_cipher: str = ""
+    telegram_chat_id_cipher: str = ""
+    cliq_webhook_cipher: str = ""
+    notifications_enabled: bool = False
+    active_provider: str = ""  # "" | "gchat" | "slack" | ... | "cliq"
+
+    # ── Generic per-provider credential accessors ────────────────────────
+
+    def get_provider_credentials(self, provider: str) -> dict[str, str]:
+        """Decrypt and return the named provider's credentials as a dict.
+
+        Returns ``{}`` if the provider id is unknown, or a dict like
+        ``{"url": "..."}`` / ``{"bot_token": "...", "chat_id": "..."}``.
+        Missing or decrypt-failing fields come back as empty strings.
+        """
+        from skillnir.crypto import decrypt_string
+
+        cipher_fields = _CIPHER_FIELD_MAP.get(provider)
+        if not cipher_fields:
+            return {}
+        creds: dict[str, str] = {}
+        for cipher_field in cipher_fields:
+            key = _CIPHER_FIELD_TO_KEY[cipher_field]
+            cipher = getattr(self, cipher_field, "") or ""
+            creds[key] = decrypt_string(cipher) if cipher else ""
+        return creds
+
+    def set_provider_credentials(self, provider: str, creds: dict[str, str]) -> None:
+        """Encrypt and store ``creds`` for the named provider.
+
+        Missing keys in ``creds`` are treated as empty strings (which
+        clears that field's cipher).
+        """
+        from skillnir.crypto import encrypt_string
+
+        cipher_fields = _CIPHER_FIELD_MAP.get(provider)
+        if not cipher_fields:
+            return
+        for cipher_field in cipher_fields:
+            key = _CIPHER_FIELD_TO_KEY[cipher_field]
+            value = (creds.get(key) or "").strip()
+            setattr(self, cipher_field, encrypt_string(value) if value else "")
+
+    def clear_provider_credentials(self, provider: str) -> None:
+        """Wipe all cipher fields for the named provider."""
+        cipher_fields = _CIPHER_FIELD_MAP.get(provider)
+        if not cipher_fields:
+            return
+        for cipher_field in cipher_fields:
+            setattr(self, cipher_field, "")
+
+    def has_provider_credentials(self, provider: str) -> bool:
+        """True iff all required cipher fields for ``provider`` are non-empty."""
+        cipher_fields = _CIPHER_FIELD_MAP.get(provider)
+        if not cipher_fields:
+            return False
+        return all(getattr(self, f, "") for f in cipher_fields)
+
+    # ── Legacy single-URL accessors (back-compat shims) ──────────────────
+
+    def get_webhook_url(self) -> str:
+        """Decrypt and return the *Google Chat* webhook URL.
+
+        Deprecated: prefer :meth:`get_provider_credentials`. Kept so
+        existing tests and third-party call sites keep working.
+        """
+        return self.get_provider_credentials("gchat").get("url", "")
+
+    def set_webhook_url(self, url: str) -> None:
+        """Encrypt and store the *Google Chat* webhook URL.
+
+        Deprecated: prefer :meth:`set_provider_credentials`.
+        """
+        self.set_provider_credentials("gchat", {"url": url})
+
+    # ── Serialization ────────────────────────────────────────────────────
 
     def to_dict(self) -> dict:
         return {
@@ -252,6 +369,15 @@ class AppConfig:
             "model": self.model,
             "prompt_version": self.prompt_version,
             "compress_prompts": self.compress_prompts,
+            "gchat_webhook_cipher": self.gchat_webhook_cipher,
+            "slack_webhook_cipher": self.slack_webhook_cipher,
+            "discord_webhook_cipher": self.discord_webhook_cipher,
+            "teams_webhook_cipher": self.teams_webhook_cipher,
+            "telegram_bot_token_cipher": self.telegram_bot_token_cipher,
+            "telegram_chat_id_cipher": self.telegram_chat_id_cipher,
+            "cliq_webhook_cipher": self.cliq_webhook_cipher,
+            "notifications_enabled": self.notifications_enabled,
+            "active_provider": self.active_provider,
         }
 
     @classmethod
@@ -265,8 +391,71 @@ class AppConfig:
         if pv not in get_prompt_versions():
             pv = _default_prompt_version()
         compress = bool(d.get("compress_prompts", False))
+        gchat_cipher = str(d.get("gchat_webhook_cipher", ""))
+        slack_cipher = str(d.get("slack_webhook_cipher", ""))
+        discord_cipher = str(d.get("discord_webhook_cipher", ""))
+        teams_cipher = str(d.get("teams_webhook_cipher", ""))
+        telegram_bot_token_cipher = str(d.get("telegram_bot_token_cipher", ""))
+        telegram_chat_id_cipher = str(d.get("telegram_chat_id_cipher", ""))
+        cliq_cipher = str(d.get("cliq_webhook_cipher", ""))
+        notif_enabled = bool(d.get("notifications_enabled", False))
+        active_provider = str(d.get("active_provider", ""))
+
+        # ── One-shot migration from legacy plaintext field ────────────────
+        # Previous builds stored the webhook URL in plaintext under
+        # ``gchat_webhook_url``. If we see that and no cipher yet, encrypt
+        # it on the fly. ``load_config()`` will persist the migration.
+        legacy_plaintext = str(d.get("gchat_webhook_url", ""))
+        if legacy_plaintext and not gchat_cipher:
+            from skillnir.crypto import encrypt_string
+
+            gchat_cipher = encrypt_string(legacy_plaintext)
+
+        # ── Normalize active_provider ─────────────────────────────────────
+        if active_provider not in _VALID_PROVIDER_IDS:
+            active_provider = ""
+
+        # ── Default active_provider for legacy single-provider configs ────
+        # If the user upgrades from the single-provider era (they had gchat
+        # configured but `active_provider` didn't exist), auto-set it so
+        # their notifications keep working after the upgrade.
+        if not active_provider:
+            cipher_map = {
+                "gchat": gchat_cipher,
+                "slack": slack_cipher,
+                "discord": discord_cipher,
+                "teams": teams_cipher,
+                "telegram": telegram_bot_token_cipher and telegram_chat_id_cipher,
+                "cliq": cliq_cipher,
+            }
+            # Prefer gchat (the only pre-existing provider), then the
+            # first non-empty in registry order.
+            for provider_id in (
+                "gchat",
+                "slack",
+                "discord",
+                "teams",
+                "telegram",
+                "cliq",
+            ):
+                if cipher_map[provider_id]:
+                    active_provider = provider_id
+                    break
+
         return cls(
-            backend=backend, model=model, prompt_version=pv, compress_prompts=compress
+            backend=backend,
+            model=model,
+            prompt_version=pv,
+            compress_prompts=compress,
+            gchat_webhook_cipher=gchat_cipher,
+            slack_webhook_cipher=slack_cipher,
+            discord_webhook_cipher=discord_cipher,
+            teams_webhook_cipher=teams_cipher,
+            telegram_bot_token_cipher=telegram_bot_token_cipher,
+            telegram_chat_id_cipher=telegram_chat_id_cipher,
+            cliq_webhook_cipher=cliq_cipher,
+            notifications_enabled=notif_enabled,
+            active_provider=active_provider,
         )
 
 
@@ -275,7 +464,24 @@ def load_config() -> AppConfig:
     if CONFIG_FILE.exists():
         try:
             data = json.loads(CONFIG_FILE.read_text(encoding="utf-8"))
-            return AppConfig.from_dict(data)
+            config = AppConfig.from_dict(data)
+            # If we just migrated a legacy plaintext webhook URL, persist
+            # immediately so the plaintext stops sitting on disk.
+            if "gchat_webhook_url" in data:
+                try:
+                    save_config(config)
+                except OSError as exc:
+                    # Don't swallow silently: the plaintext webhook URL
+                    # is still on disk and the user should know so they
+                    # can rotate the webhook in Google Chat.
+                    print(
+                        "skillnir: WARNING — failed to re-persist config after "
+                        f"migrating legacy plaintext webhook URL: {exc}. "
+                        "Rotate the webhook in Google Chat and fix "
+                        f"{CONFIG_FILE} permissions.",
+                        file=sys.stderr,
+                    )
+            return config
         except json.JSONDecodeError, ValueError, KeyError:
             pass
     # Migrate from old config locations if they exist
@@ -296,12 +502,21 @@ def load_config() -> AppConfig:
 
 
 def save_config(config: AppConfig) -> None:
-    """Persist config to ~/.skillnir/config.json."""
+    """Persist config to ~/.skillnir/config.json (owner-read/write only)."""
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)
     CONFIG_FILE.write_text(
         json.dumps(config.to_dict(), indent=2) + "\n",
         encoding="utf-8",
     )
+    # Restrict to owner read/write on POSIX; best-effort on Windows.
+    # The file contains ``gchat_webhook_cipher``, which — together with
+    # the same-user-readable ``client_id`` and machine fingerprint — is
+    # enough to recover the webhook URL. Keep its permissions in sync
+    # with crypto.CLIENT_ID_FILE (also 0o600).
+    try:
+        CONFIG_FILE.chmod(0o600)
+    except OSError:
+        pass
 
 
 # ---------------------------------------------------------------------------

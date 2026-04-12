@@ -141,7 +141,7 @@ async def page_generate_docs():
                         icon='home',
                     ).props('flat rounded')
 
-            play_notification(audio_el, sound_state)
+            play_notification(audio_el, sound_state, title="AI docs generated")
 
         generate_btn = ui.button(
             t('buttons.generate_ai_docs', lang),
@@ -291,7 +291,7 @@ async def page_generate_rule():
                         icon='home',
                     ).props('flat rounded')
 
-            play_notification(audio_el, sound_state)
+            play_notification(audio_el, sound_state, title="AI rule generated")
 
         generate_btn = ui.button(
             t('buttons.generate_rule', lang),

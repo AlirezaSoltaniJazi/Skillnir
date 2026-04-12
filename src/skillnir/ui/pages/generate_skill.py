@@ -232,7 +232,7 @@ async def page_generate_skill():
                         icon='home',
                     ).props('flat rounded')
 
-            play_notification(audio_el, sound_state)
+            play_notification(audio_el, sound_state, title="Skill generation complete")
 
         generate_btn = ui.button(
             t('buttons.generate_skill', lang),

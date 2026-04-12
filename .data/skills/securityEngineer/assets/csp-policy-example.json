@@ -1,0 +1,16 @@
+{
+  "_comment": "Content Security Policy template for NiceGUI applications",
+  "_note": "NiceGUI requires unsafe-inline/unsafe-eval for its Quasar/Vue frontend",
+  "default-src": ["'self'"],
+  "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+  "style-src": ["'self'", "'unsafe-inline'"],
+  "img-src": ["'self'", "data:", "https:"],
+  "font-src": ["'self'", "data:"],
+  "connect-src": ["'self'", "ws:", "wss:"],
+  "frame-src": ["'none'"],
+  "object-src": ["'none'"],
+  "base-uri": ["'self'"],
+  "form-action": ["'self'"],
+  "frame-ancestors": ["'self'"],
+  "upgrade-insecure-requests": true
+}

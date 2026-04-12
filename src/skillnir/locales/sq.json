@@ -38,7 +38,6 @@
       "alpha": "Alfabetikisht"
     }
   },
-
   "pages": {
     "home": {
       "sections": {
@@ -126,7 +125,6 @@
         "ask_ai": "Pyet AI"
       }
     },
-
     "install": {
       "title": "Instalo aftësitë",
       "subtitle": "Injekto aftësi kodimi AI në projektin tënd.",
@@ -149,12 +147,10 @@
       "starting": "Fillimi...",
       "updating_skills": "Përditësimi i aftësive..."
     },
-
     "update": {
       "title": "Përditëso aftësitë",
       "subtitle": "Sinkronizo të gjitha aftësitë nga burimi në projektin objektiv."
     },
-
     "skills_library": {
       "title": "Biblioteka e aftësive",
       "subtitle": "{count} aftësi të disponueshme",
@@ -164,7 +160,6 @@
       "skill_md_dialog_title": "{name} — SKILL.md",
       "error_reading_skill_md": "Gabim gjatë leximit të SKILL.md: {error}"
     },
-
     "generate_docs": {
       "title": "Gjenero dokumentacionin AI",
       "subtitle": "Skano një projekt me AI dhe gjenero agents.md + .claude/claude.md",
@@ -173,7 +168,6 @@
       "result_success_title": "Gjenerimi u përfundua",
       "result_fail_title": "Gjenerimi dështoi"
     },
-
     "generate_rule": {
       "title": "Gjenero rregull",
       "subtitle": "Skano një projekt me AI dhe gjenero skedarë rregullash Cursor (.mdc)",
@@ -185,7 +179,6 @@
       "result_success_title": "Gjenerimi i rregullit u përfundua",
       "result_fail_title": "Gjenerimi i rregullit dështoi"
     },
-
     "delete_docs": {
       "title": "Fshi dokumentacionin AI",
       "subtitle": "Hiq agents.md dhe lidhjet e tij simbolike nga projekti objektiv.",
@@ -200,7 +193,6 @@
       "removed_files": "U hoqën {count} skedar(ë)",
       "cleaned_dirs": "U pastruan {count} direktori(a) bosh(e)"
     },
-
     "generate_skill": {
       "title": "Gjenero aftësi",
       "subtitle": "Skano një projekt me AI dhe gjenero një SKILL.md të specializuar",
@@ -220,7 +212,6 @@
       "grid_tools_used": "Mjetet e përdorura",
       "grid_backend": "Backend"
     },
-
     "delete_skill": {
       "title": "Fshi aftësitë",
       "subtitle": "Hiq aftësinë(të) nga projekti objektiv, duke përfshirë lidhjet simbolike nga të gjitha direktoritë e mjeteve.",
@@ -235,7 +226,6 @@
       "deleted_badge": "u fshi",
       "deleted_summary": "({symlinks} lidhje, {dirs} direktori të pastruara)"
     },
-
     "init_skill": {
       "title": "Inicializo aftësi",
       "subtitle": "Krijo një strukturë bazë aftësie me skedarë vendmbajtës të komentuar.",
@@ -245,7 +235,6 @@
       "scaffold_created": "Struktura e aftësisë u krijua në {path}",
       "error_prefix": "Gabim: {error}"
     },
-
     "init_docs": {
       "title": "Inicializo dokumentacionin AI",
       "subtitle": "Krijo një shabllon agents.md të parazgjedhur me seksione të komentuara dhe lidhje simbolike për mjetet AI.",
@@ -254,7 +243,6 @@
       "docs_created": "Shablloni i dokumentacionit AI u krijua!",
       "error_prefix": "Gabim: {error}"
     },
-
     "ask": {
       "title": "Pyet AI",
       "subtitle": "Bëj një pyetje rreth një projekti. AI përgjigjet pa bërë ndryshime.",
@@ -265,7 +253,6 @@
       "result_success_title": "Përgjigja u përfundua",
       "result_fail_title": "Pyetja dështoi"
     },
-
     "plan": {
       "title": "Plan",
       "subtitle": "Merr një plan të detajuar implementimi nga AI për një detyrë ose funksionalitet.",
@@ -276,7 +263,6 @@
       "result_success_title": "Plani u përfundua",
       "result_fail_title": "Planifikimi dështoi"
     },
-
     "check_skill": {
       "title": "Kontrollo aftësinë",
       "subtitle": "Ekzekuto /skills nëpërmjet backendit AI në projektin objektiv.",
@@ -284,7 +270,6 @@
       "result_success_title": "Kontrolli i aftësisë u përfundua",
       "result_fail_title": "Kontrolli i aftësisë dështoi"
     },
-
     "tools_registry": {
       "title": "Regjistri i mjeteve",
       "subtitle": "{count} mjete AI të mbështetura (+ injektim automatik .agents/)",
@@ -299,7 +284,6 @@
         "website": "Faqja"
       }
     },
-
     "usage": {
       "title": "Përdorimi i tokenëve",
       "subtitle": "Përdorimi i tokenëve në nivel sesioni në të gjithë backendet AI.",
@@ -314,7 +298,6 @@
       "cache_tokens": "Tokenë cache",
       "cost": "Kostoja"
     },
-
     "research": {
       "title": "Kërkimi i inxhinierisë AI",
       "subtitle": "Kërko lajmet më të fundit të inxhinierisë AI, lexo artikuj dhe gjenero përmbledhje",
@@ -331,7 +314,6 @@
       "generated_html_pages": "U gjeneruan {count} faqe HTML artikujsh",
       "all_articles_have_html": "Të gjithë artikujt kanë tashmë faqe HTML"
     },
-
     "events": {
       "title": "Ngjarje dhe konferenca AI",
       "subtitle": "Gjej konferenca, takime dhe punëtori të ardhshme AI në mbarë botën",
@@ -347,7 +329,6 @@
       "generated_html_pages": "U gjeneruan {count} faqe HTML ngjarjesh",
       "all_events_have_html": "Të gjitha ngjarjet kanë tashmë faqe HTML"
     },
-
     "benchmarks": {
       "title": "Benchmarke te modeleve AI",
       "subtitle": "Krahasoni modelet kryesore te AI ne kodim, arsyetim, matematike dhe me shume",
@@ -363,7 +344,6 @@
       "grid_updated": "Te perditesuar",
       "grid_duration": "Kohezgjatja"
     },
-
     "security": {
       "title": "Dobësi sigurie",
       "subtitle": "Kërko CVE kritike, zero-day dhe këshilla sigurie",
@@ -379,7 +359,6 @@
       "grid_duration": "Kohëzgjatja",
       "select_at_least_one_category": "Zgjidhni të paktën një kategori"
     },
-
     "settings": {
       "title": "Cilësimet",
       "subtitle": "Konfiguro preferencat e aplikacionit.",
@@ -408,10 +387,72 @@
       "prompt_version": {
         "title": "Versioni i promptit",
         "description": "Aktualisht po përdoret: {version}"
+      },
+      "language_title": "Language",
+      "language_description": "Select your preferred interface language.",
+      "language_current": "Currently using {name}",
+      "webhook": {
+        "title": "Setup webhook",
+        "subtitle": "Receive messages in your team chat when long-running tasks complete.",
+        "provider_label": "Provider",
+        "provider_value": "Google Chat",
+        "provider_note": "More providers coming soon.",
+        "url_label": "Incoming webhook URL",
+        "url_placeholder": "https://chat.googleapis.com/v1/spaces/...",
+        "url_help": "Create one from your Google Chat space -> Apps & integrations -> Webhooks. Treat this URL as a secret.",
+        "save_button": "Save",
+        "test_button": "Test",
+        "test_success": "Test message sent successfully.",
+        "test_failed": "Test failed: {error}",
+        "saved": "Webhook settings saved.",
+        "cleared": "Webhook URL cleared.",
+        "_todo_translate": true,
+        "active_provider_label": "Active provider",
+        "active_provider_none": "None (notifications off)",
+        "active_missing_creds": "No credentials saved for {provider} yet.",
+        "active_badge": "Active",
+        "help_link": "Setup guide",
+        "clear_button": "Clear",
+        "make_active_button": "Make active",
+        "now_active": "{provider} is now the active notification provider.",
+        "providers": {
+          "gchat": {
+            "url_label": "Incoming webhook URL",
+            "url_placeholder": "https://chat.googleapis.com/v1/spaces/...",
+            "setup_help": "Create an incoming webhook in your Google Chat space → Apps & integrations → Webhooks. Treat this URL as a secret."
+          },
+          "slack": {
+            "url_label": "Incoming webhook URL",
+            "url_placeholder": "https://hooks.slack.com/services/T.../B.../...",
+            "setup_help": "Create an incoming webhook in your Slack workspace → Apps → Incoming Webhooks. Treat this URL as a secret."
+          },
+          "discord": {
+            "url_label": "Webhook URL",
+            "url_placeholder": "https://discord.com/api/webhooks/<id>/<token>",
+            "setup_help": "In your Discord channel settings → Integrations → Webhooks, create a new webhook and copy the URL. Treat this URL as a secret."
+          },
+          "teams": {
+            "url_label": "Power Automate workflow URL",
+            "url_placeholder": "https://prod-NN.<region>.logic.azure.com/workflows/...",
+            "setup_help": "In Power Automate, create a workflow triggered by 'When an HTTP request is received'. Skillnir sends {title, detail, source} — your flow decides how to render it in Teams."
+          },
+          "telegram": {
+            "bot_token_label": "Bot token",
+            "bot_token_placeholder": "123456789:AAH...",
+            "chat_id_label": "Chat ID",
+            "chat_id_placeholder": "@channel or signed integer",
+            "setup_help": "Create a bot via @BotFather to get a token. Use @userinfobot to find your chat_id, or add your bot to a group/channel. Treat the token as a secret."
+          },
+          "cliq": {
+            "url_label": "Incoming webhook URL",
+            "url_placeholder": "https://cliq.zoho.com/.../message?zapikey=...",
+            "setup_help": "In your Zoho Cliq workspace, create a bot or channel webhook and copy the URL. Must include the zapikey query parameter."
+          },
+          "_todo_translate": true
+        }
       }
     }
   },
-
   "buttons": {
     "next": "Tjetri",
     "back": "Mbrapa",
@@ -462,7 +503,6 @@
     "show_log": "Shfaq regjistrin",
     "got_it": "E kuptova"
   },
-
   "messages": {
     "using_backend": "Po përdoret: {name} ({model})",
     "directory_not_found": "Direktoria nuk u gjet: {path}",
@@ -495,7 +535,6 @@
     "cli_not_found": "CLI {command} nuk u gjet në PATH.",
     "no_backends_available": "Nuk ka backende të disponueshme. Instalo claude, gemini ose copilot CLI."
   },
-
   "components": {
     "hero": {
       "title": "Skillnir",
@@ -566,7 +605,6 @@
       "no_ai_requests_subtitle": "Përdorimi i tokenëve do të shfaqet këtu pasi të gjeneroni dokumentacion, aftësi ose t'i bëni pyetje AI."
     }
   },
-
   "layout": {
     "injection_summary": "Përmbledhja e injektimit",
     "target": "Objektivi:",
@@ -589,10 +627,12 @@
     "tooltips": {
       "cli_setup_guide": "Udhëzues konfigurimi CLI",
       "toggle_dark_light": "Kalo midis mënyrës së errët/ndriçuar",
-      "toggle_sound": "Kalo tingullin e njoftimeve"
+      "toggle_sound": "Kalo tingullin e njoftimeve",
+      "notifications_on": "Webhook notifications: ON (click to disable)",
+      "notifications_off": "Webhook notifications: OFF (click to enable)",
+      "notifications_disabled": "Set a webhook URL in Settings first"
     }
   },
-
   "cli": {
     "description": "Injekto aftësi kodimi AI në direktorinë e çdo mjeti.",
     "command_help": "install (parazgjedhur): sinkronizo aftësitë + injekto në mjete. update: vetëm sinkronizo aftësitë. delete-skill: hiq aftësinë(të) nga një projekt. delete-docs: hiq dokumentacionin AI nga një projekt. init-skill: krijo strukturën bazë të aftësisë. init-docs: krijo shabllonin bazë të dokumentacionit AI. ui: hap ndërfaqen ueb. generate-docs: gjenero agents.md me AI. generate-skill: gjenero SKILL.md me AI. generate-rule: gjenero rregull Cursor (.mdc) me AI. check-skill: ekzekuto /skills nëpërmjet backendit AI. ask: bëj një pyetje AI. plan: merr një plan implementimi. research: kërko lajmet e fundit të inxhinierisë AI dhe gjenero përmbledhje. events: kërko ngjarje dhe konferenca të ardhshme AI në mbarë botën. config: menaxho backendin/modelin. sound: menaxho njoftimet zanore të Claude Code.",

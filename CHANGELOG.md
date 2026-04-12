@@ -5,6 +5,59 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-04-12
+
+### Added
+
+- **`scripts/run_intel.py`** -- non-interactive CI runner for the `research`, `events`, and `security` pipelines. Invokes the async Python API directly (avoids the interactive `skillnir` CLI, which uses `questionary` prompts and would hang in CI). Diffs the on-disk `<feature>-index.json` before and after the run to determine which items are new, then POSTs each one as a Google Chat card via `send_gchat_item`. Tool-agnostic: reads `AI_AGENT_TOOL` (default `cursor`) and `AI_AGENT_API_KEY` and translates them into the env var the underlying CLI expects (e.g. `CURSOR_API_KEY`). Currently only `cursor` is wired up; the `_TOOL_REGISTRY` table at the top of the script is the single place to add new tools as Skillnir gains support for them. Also reads `AI_AGENT_WEBHOOK_URL`, `AI_AGENT_MODEL`, `AI_AGENT_MODEL_FALLBACK`. Includes fallback-model retry logic: if the primary model fails, the runner retries once with `AI_AGENT_MODEL_FALLBACK` before giving up. Final stdout line is a machine-readable `SUMMARY {...}` JSON object (feature, tool used, pre/post counts, new count, notified, failures, model used, fallback used) so surrounding workflows can parse it. Intended for GitHub Actions.
+- **`notifier.send_gchat_item()`** -- sends a single intel item (title + description + reference URL) as a Google Chat cards-v2 message with a clickable "View source" button (`buttonList` widget with `openLink`). If the primary POST returns HTTP 4xx (malformed card / unsupported widget on the target space), automatically retries with a plain-text fallback card where the URL is inlined as bare text (Google Chat auto-links). 5xx errors and network errors are NOT retried with the fallback — retrying with a different payload can't fix server-side or connection problems. Reuses `is_valid_gchat_webhook()` validation and the shared `_post_json()` helper. Exported from both `skillnir.notifications` and the back-compat `skillnir.notifier` shim.
+- **Multi-provider webhook notifications** -- receive a message in your team chat when long-running tasks complete. Six providers supported: **Google Chat, Slack, Discord, Microsoft Teams (Power Automate), Telegram, Zoho Cliq**.
+  - New `skillnir.notifications` package splits the subsystem into `providers` (registry + validators) and `senders` (per-provider POST functions) with a shared `_post_json` helper
+  - **Per-provider expansion panels** on the Settings page -- one collapsible card per provider with its own credential inputs, Save, Test, Clear, and "Make active" buttons
+  - **Active provider dropdown** at the top of the Notifications card -- save credentials for any/all providers but dispatch goes to the one marked active
+  - Bell icon in the top app bar toggles notifications on/off globally; disabled until the active provider has complete credentials
+  - Wired into every existing sound-notification trigger: skill injection, skill sync, skill generation, research, events, security, benchmarks, AI docs, AI rule, AI assistant
+  - Webhook POSTs run in a background thread -- UI never blocks on network
+  - Failures log to stderr; the Test button in Settings surfaces errors visibly for configuration-time validation
+  - Message titles include the active model in the form `Task title (model: <model-id>)` so you can tell which backend produced the result at a glance
+  - **Provider-specific payload shapes**: Google Chat cards-v2, Slack text with bold title, Discord rich embeds, Teams `{title,detail,source}` dict (user's Power Automate flow renders), Telegram Bot API plain text, Zoho Cliq text
+  - **Telegram credentials are split**: bot token + chat ID are stored as two separate encrypted fields, not combined into one
+  - **Automatic active-provider migration** for users upgrading from the single-provider era: if only `gchat_webhook_cipher` is set, `active_provider` auto-promotes to `"gchat"` on first load
+- **At-rest encryption for the webhook URL** (`skillnir.crypto` module) -- the webhook URL is now stored encrypted in `~/.skillnir/config.json` under `gchat_webhook_cipher`
+  - Fernet symmetric encryption keyed from a **per-install UUID** at `~/.skillnir/client_id` combined with a **machine fingerprint** (hostname, username, platform, home path)
+  - A copied `config.json` cannot be decrypted on another machine -- mitigates the "config accidentally committed to git / synced to Dropbox / pasted in a log" leak vector
+  - Client UUID is generated on first access; file is written with `0600` permissions on POSIX
+  - Automatic one-shot migration: legacy plaintext `gchat_webhook_url` fields are encrypted and the plaintext field is removed on first `load_config()`
+  - New `AppConfig.get_webhook_url()` / `AppConfig.set_webhook_url(url)` accessor methods replace direct field access
+  - **Threat model caveat**: this protects against at-rest file leaks and cross-machine copies, but NOT against malware running as the same user on the same machine -- treat webhook URLs as rotatable secrets regardless
+- **`AppConfig` multi-provider credential fields** in `~/.skillnir/config.json`: `gchat_webhook_cipher`, `slack_webhook_cipher`, `discord_webhook_cipher`, `teams_webhook_cipher`, `telegram_bot_token_cipher`, `telegram_chat_id_cipher`, `cliq_webhook_cipher`, plus `active_provider` and `notifications_enabled`. All default to empty so existing users see zero behavior change on upgrade.
+- **Generic credential accessors** on `AppConfig`: `get_provider_credentials(provider)`, `set_provider_credentials(provider, creds)`, `clear_provider_credentials(provider)`, `has_provider_credentials(provider)`. Each credential is independently encrypted using the same machine-bound Fernet key. Legacy `get_webhook_url()` / `set_webhook_url()` remain as deprecated wrappers that delegate to the `"gchat"` provider.
+- **`skillnir.notifications` package** with `providers.py` (registry + per-provider validators) and `senders.py` (per-provider POST senders + `_post_json` helper). The original `skillnir.notifier` module becomes a thin back-compat re-export shim so existing call sites and tests keep working unchanged.
+- **`cryptography>=45.0.0`** as a direct project dependency (was previously transitive via `claude-agent-sdk`)
+
+### Security
+
+- **Webhook URL validation (SSRF hardening) — per provider** -- every sender in `skillnir.notifications.senders` rejects URLs outside its provider's host allowlist before opening a socket
+  - Google Chat: exact-host match on `chat.googleapis.com`
+  - Slack: exact-host match on `hooks.slack.com`
+  - Discord: host in `{discord.com, discordapp.com}`
+  - Microsoft Teams: host ends in `.logic.azure.com` with enforced dot boundary (blocks `evillogic.azure.com` suffix forgery)
+  - Zoho Cliq: host in the known regional set (`cliq.zoho.{com,eu,in,com.au,com.cn,jp,sa}`, `cliq.zohocloud.ca`) AND URL must include the `zapikey` query parameter
+  - Telegram: URL is constructed internally from a validated `bot_token` (regex `^\d+:[A-Za-z0-9_-]{30,}$`) and `chat_id` (signed int or `@username`); the user never pastes a URL
+  - All validators enforce `https://` scheme and strip userinfo/port via `urllib.parse.urlsplit`, blocking `http://` (plaintext token leak), `file://` (local file read via urllib), `ftp://`, foreign hosts, `127.0.0.1`/metadata probes, suffix tricks, and userinfo masquerades
+  - Settings page validates on both "Save" and "Test" so a typo can't silently persist an unsafe URL
+- **Telegram bot token redaction in error messages** -- the Telegram sender post-processes any error string and replaces the bot token with `<redacted>` before returning. Bot tokens ARE capability tokens — a stack trace or UI toast echoing the full URL would leak credentials. Enforced by a hard test assertion in `tests/test_notifications_senders.py::TestSendTelegram::test_error_redacts_bot_token`.
+- **NiceGUI server now binds to `127.0.0.1` only** -- previously `ui.run()` used NiceGUI's default (`0.0.0.0`), which exposed the unauthenticated Settings page (and its decrypted webhook URL) to anyone on the same LAN
+- **`~/.skillnir/config.json` is now written with `0o600` permissions** -- previously inherited the process umask (typically world-readable), which combined with the same-user-readable `client_id` was enough for a local attacker to decrypt the webhook cipher. Now matches `client_id`'s permissions
+- **Loud migration failure for legacy plaintext webhooks** -- if `save_config()` fails while migrating a legacy `gchat_webhook_url` plaintext field to `gchat_webhook_cipher`, skillnir now prints a stderr warning so the user knows to rotate the webhook in Google Chat (previously failed silently, leaving plaintext on disk)
+- **`pytest` removed from runtime dependencies** -- was accidentally listed alongside production deps in `pyproject.toml`, pulling the full test framework into every end-user install. pytest stays in `[project.optional-dependencies].dev` and `[dependency-groups].dev`
+
+### Fixed
+
+- **Settings page language section** rendered the literal key `pages.settings.language_title` because it was missing from every locale file
+  - Added `language_title`, `language_description`, and `language_current` keys across all 9 locales (en, de, nl, pl, fa, uk, sq, fr, ar)
+  - Non-English locales ship English fallbacks with a `_todo_translate` marker for follow-up translation work
+
 ## [1.2.0] - 2026-04-05
 
 ### Added

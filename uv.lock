@@ -1181,12 +1181,12 @@ wheels = [
 
 [[package]]
 name = "skillnir"
-version = "1.1.2"
+version = "1.2.0"
 source = { editable = "." }
 dependencies = [
     { name = "claude-agent-sdk" },
+    { name = "cryptography" },
     { name = "nicegui" },
-    { name = "pytest" },
     { name = "pyyaml" },
     { name = "questionary" },
 ]
@@ -1211,8 +1211,8 @@ dev = [
 requires-dist = [
     { name = "claude-agent-sdk", specifier = ">=0.1.44" },
     { name = "claude-agent-sdk", marker = "extra == 'generate'", specifier = ">=0.1.40" },
+    { name = "cryptography", specifier = ">=45.0.0" },
     { name = "nicegui", specifier = ">=2.0.0" },
-    { name = "pytest", specifier = ">=9.0.2" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.24" },
     { name = "pyyaml", specifier = ">=6.0" },

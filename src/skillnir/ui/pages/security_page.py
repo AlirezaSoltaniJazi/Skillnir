@@ -322,7 +322,7 @@ async def page_security():
                         icon="home",
                     ).props("flat rounded")
 
-            play_notification(audio_el, sound_state)
+            play_notification(audio_el, sound_state, title="Security scan complete")
 
         search_btn = ui.button(
             t("buttons.search_security", lang),

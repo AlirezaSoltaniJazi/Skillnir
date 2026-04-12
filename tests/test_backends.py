@@ -1,8 +1,12 @@
 """Tests for skillnir.backends -- config, command builder, stream parsers."""
 
 import json
+import os
+import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 from skillnir.backends import (
@@ -41,7 +45,41 @@ class TestAppConfig:
             "model": "pro",
             "prompt_version": "v1",
             "compress_prompts": False,
+            "gchat_webhook_cipher": "",
+            "slack_webhook_cipher": "",
+            "discord_webhook_cipher": "",
+            "teams_webhook_cipher": "",
+            "telegram_bot_token_cipher": "",
+            "telegram_chat_id_cipher": "",
+            "cliq_webhook_cipher": "",
+            "notifications_enabled": False,
+            "active_provider": "",
         }
+
+    def test_webhook_url_round_trip_via_accessors(self):
+        cfg = AppConfig()
+        assert cfg.get_webhook_url() == ""
+        cfg.set_webhook_url("https://chat.googleapis.com/v1/spaces/X/messages?key=Y")
+        # Stored field is a cipher blob, not plaintext.
+        assert cfg.gchat_webhook_cipher
+        assert "chat.googleapis.com" not in cfg.gchat_webhook_cipher
+        assert (
+            cfg.get_webhook_url()
+            == "https://chat.googleapis.com/v1/spaces/X/messages?key=Y"
+        )
+
+    def test_legacy_plaintext_field_migrates_to_cipher(self):
+        legacy = {
+            "backend": "claude",
+            "gchat_webhook_url": "https://legacy.test/OLD",
+            "notifications_enabled": True,
+        }
+        migrated = AppConfig.from_dict(legacy)
+        assert migrated.gchat_webhook_cipher  # populated
+        assert migrated.get_webhook_url() == "https://legacy.test/OLD"
+        # to_dict() must NOT emit the legacy plaintext field.
+        assert "gchat_webhook_url" not in migrated.to_dict()
+        assert "gchat_webhook_cipher" in migrated.to_dict()
 
     def test_from_dict_round_trip(self):
         original = AppConfig(
@@ -64,6 +102,140 @@ class TestAppConfig:
         cfg = AppConfig.from_dict({})
         assert cfg.backend == AIBackend.CLAUDE
         assert cfg.prompt_version in get_prompt_versions()
+
+
+class TestMultiProviderCredentials:
+    """Multi-provider AppConfig API: get/set/clear/has_provider_credentials."""
+
+    def test_set_and_get_gchat(self):
+        cfg = AppConfig()
+        cfg.set_provider_credentials(
+            "gchat", {"url": "https://chat.googleapis.com/v1/spaces/X"}
+        )
+        creds = cfg.get_provider_credentials("gchat")
+        assert creds == {"url": "https://chat.googleapis.com/v1/spaces/X"}
+        # Stored encrypted — plaintext NOT in the cipher field
+        assert "chat.googleapis.com" not in cfg.gchat_webhook_cipher
+
+    def test_set_and_get_slack(self):
+        cfg = AppConfig()
+        cfg.set_provider_credentials(
+            "slack", {"url": "https://hooks.slack.com/services/T/B/X"}
+        )
+        assert cfg.get_provider_credentials("slack") == {
+            "url": "https://hooks.slack.com/services/T/B/X"
+        }
+
+    def test_set_and_get_telegram_two_fields(self):
+        cfg = AppConfig()
+        cfg.set_provider_credentials(
+            "telegram",
+            {
+                "bot_token": "123456789:AAHtYjKlmNopQrStUvWxYzAbCdEfGhIjKl",
+                "chat_id": "-100999",
+            },
+        )
+        creds = cfg.get_provider_credentials("telegram")
+        assert creds["bot_token"] == "123456789:AAHtYjKlmNopQrStUvWxYzAbCdEfGhIjKl"
+        assert creds["chat_id"] == "-100999"
+        # Both cipher fields populated
+        assert cfg.telegram_bot_token_cipher
+        assert cfg.telegram_chat_id_cipher
+
+    def test_round_trip_all_providers_via_dict(self):
+        cfg = AppConfig()
+        test_creds = {
+            "gchat": {"url": "https://chat.googleapis.com/v1/a"},
+            "slack": {"url": "https://hooks.slack.com/services/a"},
+            "discord": {"url": "https://discord.com/api/webhooks/1/a"},
+            "teams": {"url": "https://prod-1.westus.logic.azure.com/x"},
+            "telegram": {
+                "bot_token": "123456789:AAHtYjKlmNopQrStUvWxYzAbCdEfGhIjKl",
+                "chat_id": "@mychannel",
+            },
+            "cliq": {"url": "https://cliq.zoho.com/api/v2/x?zapikey=abc"},
+        }
+        for provider_id, creds in test_creds.items():
+            cfg.set_provider_credentials(provider_id, creds)
+
+        # Round-trip through to_dict/from_dict
+        restored = AppConfig.from_dict(cfg.to_dict())
+        for provider_id, expected in test_creds.items():
+            assert restored.get_provider_credentials(provider_id) == expected
+
+    def test_clear_provider_credentials(self):
+        cfg = AppConfig()
+        cfg.set_provider_credentials("slack", {"url": "https://hooks.slack.com/a"})
+        assert cfg.has_provider_credentials("slack") is True
+        cfg.clear_provider_credentials("slack")
+        assert cfg.has_provider_credentials("slack") is False
+        assert cfg.slack_webhook_cipher == ""
+
+    def test_has_provider_credentials_telegram_requires_both(self):
+        cfg = AppConfig()
+        cfg.set_provider_credentials(
+            "telegram",
+            {
+                "bot_token": "123456789:AAHtYjKlmNopQrStUvWxYzAbCdEfGhIjKl",
+                "chat_id": "",
+            },
+        )
+        # Only one of two fields populated → not complete
+        assert cfg.has_provider_credentials("telegram") is False
+
+    def test_unknown_provider_returns_empty(self):
+        cfg = AppConfig()
+        assert cfg.get_provider_credentials("myspace") == {}
+        cfg.set_provider_credentials("myspace", {"url": "x"})  # no-op
+        assert cfg.has_provider_credentials("myspace") is False
+
+    def test_legacy_webhook_url_accessors_still_work(self):
+        cfg = AppConfig()
+        cfg.set_webhook_url("https://chat.googleapis.com/v1/spaces/X")
+        assert cfg.get_webhook_url() == "https://chat.googleapis.com/v1/spaces/X"
+        assert (
+            cfg.get_provider_credentials("gchat")["url"]
+            == "https://chat.googleapis.com/v1/spaces/X"
+        )
+
+
+class TestActiveProviderMigration:
+    def test_empty_config_has_empty_active_provider(self):
+        cfg = AppConfig.from_dict({})
+        assert cfg.active_provider == ""
+
+    def test_legacy_gchat_only_config_auto_promotes(self):
+        """Users upgrading from the single-provider era should get
+        active_provider auto-set to 'gchat' if they had gchat configured."""
+        # Build a config with only gchat cipher set (simulates upgrade)
+        cfg = AppConfig()
+        cfg.set_provider_credentials(
+            "gchat", {"url": "https://chat.googleapis.com/v1/a"}
+        )
+        d = cfg.to_dict()
+        d["active_provider"] = ""  # legacy config had no such field
+        restored = AppConfig.from_dict(d)
+        assert restored.active_provider == "gchat"
+
+    def test_invalid_active_provider_normalized_to_empty(self):
+        cfg = AppConfig.from_dict({"active_provider": "myspace"})
+        assert cfg.active_provider == ""
+
+    def test_valid_active_provider_preserved(self):
+        cfg = AppConfig.from_dict({"active_provider": "slack"})
+        assert cfg.active_provider == "slack"
+
+    def test_first_non_empty_provider_wins_when_no_gchat(self):
+        """If only discord is configured but active_provider is empty,
+        auto-promote discord."""
+        cfg = AppConfig()
+        cfg.set_provider_credentials(
+            "discord", {"url": "https://discord.com/api/webhooks/1/a"}
+        )
+        d = cfg.to_dict()
+        d["active_provider"] = ""
+        restored = AppConfig.from_dict(d)
+        assert restored.active_provider == "discord"
 
 
 class TestConfigPersistence:
@@ -97,6 +269,20 @@ class TestConfigPersistence:
         with patch("skillnir.backends.CONFIG_FILE", config_file):
             cfg = load_config()
             assert cfg.backend == AIBackend.CLAUDE
+
+    @pytest.mark.skipif(
+        sys.platform.startswith("win"),
+        reason="POSIX file mode not enforced on Windows",
+    )
+    def test_save_config_sets_owner_only_permissions(self, tmp_path: Path):
+        config_file = tmp_path / "config.json"
+        with (
+            patch("skillnir.backends.CONFIG_FILE", config_file),
+            patch("skillnir.backends.CONFIG_DIR", tmp_path),
+        ):
+            save_config(AppConfig())
+        mode = os.stat(config_file).st_mode & 0o777
+        assert mode == 0o600, f"expected 0o600, got {oct(mode)}"
 
 
 # ── Prompt version constants ─────────────────────────────────

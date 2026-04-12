@@ -353,7 +353,7 @@ async def page_research():
                         icon='home',
                     ).props('flat rounded')
 
-            play_notification(audio_el, sound_state)
+            play_notification(audio_el, sound_state, title="Research complete")
 
         research_btn = ui.button(
             t('buttons.search_latest_articles', lang),

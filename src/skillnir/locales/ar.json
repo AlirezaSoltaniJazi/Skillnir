@@ -38,7 +38,6 @@
       "alpha": "أبجدي"
     }
   },
-
   "pages": {
     "home": {
       "sections": {
@@ -126,7 +125,6 @@
         "ask_ai": "سؤال AI"
       }
     },
-
     "install": {
       "title": "تثبيت المهارات",
       "subtitle": "حقن مهارات البرمجة بالذكاء الاصطناعي في مشروعك.",
@@ -149,12 +147,10 @@
       "starting": "جارٍ البدء...",
       "updating_skills": "جارٍ تحديث المهارات..."
     },
-
     "update": {
       "title": "تحديث المهارات",
       "subtitle": "مزامنة جميع المهارات من المصدر إلى المشروع الهدف."
     },
-
     "skills_library": {
       "title": "مكتبة المهارات",
       "subtitle": "{count} مهارة متاحة",
@@ -164,7 +160,6 @@
       "skill_md_dialog_title": "{name} — SKILL.md",
       "error_reading_skill_md": "خطأ في قراءة SKILL.md: {error}"
     },
-
     "generate_docs": {
       "title": "توليد مستندات AI",
       "subtitle": "فحص المشروع بالذكاء الاصطناعي وتوليد agents.md + .claude/claude.md",
@@ -173,7 +168,6 @@
       "result_success_title": "اكتمل التوليد",
       "result_fail_title": "فشل التوليد"
     },
-
     "generate_rule": {
       "title": "توليد قاعدة",
       "subtitle": "فحص المشروع بالذكاء الاصطناعي وتوليد ملفات قواعد Cursor (.mdc)",
@@ -185,7 +179,6 @@
       "result_success_title": "اكتمل توليد القاعدة",
       "result_fail_title": "فشل توليد القاعدة"
     },
-
     "delete_docs": {
       "title": "حذف مستندات AI",
       "subtitle": "إزالة agents.md وروابطه الرمزية من المشروع الهدف.",
@@ -200,7 +193,6 @@
       "removed_files": "تم حذف {count} ملف(ات)",
       "cleaned_dirs": "تم تنظيف {count} مجلد(ات) فارغ"
     },
-
     "generate_skill": {
       "title": "توليد مهارة",
       "subtitle": "فحص المشروع بالذكاء الاصطناعي وتوليد SKILL.md متخصص بالمجال",
@@ -220,7 +212,6 @@
       "grid_tools_used": "الأدوات المستخدمة",
       "grid_backend": "الواجهة الخلفية"
     },
-
     "delete_skill": {
       "title": "حذف المهارات",
       "subtitle": "إزالة مهارة (أو أكثر) من المشروع الهدف، بما في ذلك الروابط الرمزية في جميع مجلدات الأدوات.",
@@ -235,7 +226,6 @@
       "deleted_badge": "محذوف",
       "deleted_summary": "({symlinks} رابط رمزي، {dirs} مجلد تم تنظيفه)"
     },
-
     "init_skill": {
       "title": "إنشاء مهارة",
       "subtitle": "إنشاء قالب مهارة افتراضي مع ملفات عناصر نائبة موضحة.",
@@ -245,7 +235,6 @@
       "scaffold_created": "تم إنشاء قالب المهارة في {path}",
       "error_prefix": "خطأ: {error}"
     },
-
     "init_docs": {
       "title": "إنشاء مستندات AI",
       "subtitle": "إنشاء قالب agents.md افتراضي مع أقسام موضحة وروابط رمزية لأدوات AI.",
@@ -254,7 +243,6 @@
       "docs_created": "تم إنشاء قالب مستندات AI!",
       "error_prefix": "خطأ: {error}"
     },
-
     "ask": {
       "title": "سؤال AI",
       "subtitle": "اطرح سؤالاً حول مشروع. يجيب AI دون إجراء تغييرات.",
@@ -265,7 +253,6 @@
       "result_success_title": "اكتملت الإجابة",
       "result_fail_title": "فشل السؤال"
     },
-
     "plan": {
       "title": "تخطيط",
       "subtitle": "الحصول على خطة تنفيذ مفصلة من AI لمهمة أو ميزة.",
@@ -276,7 +263,6 @@
       "result_success_title": "اكتمل التخطيط",
       "result_fail_title": "فشل التخطيط"
     },
-
     "check_skill": {
       "title": "فحص المهارة",
       "subtitle": "تشغيل /skills عبر واجهة AI الخلفية على المشروع الهدف.",
@@ -284,7 +270,6 @@
       "result_success_title": "اكتمل فحص المهارة",
       "result_fail_title": "فشل فحص المهارة"
     },
-
     "tools_registry": {
       "title": "سجل الأدوات",
       "subtitle": "{count} أداة AI مدعومة (+ حقن تلقائي .agents/)",
@@ -299,7 +284,6 @@
         "website": "الموقع"
       }
     },
-
     "usage": {
       "title": "استهلاك التوكنات",
       "subtitle": "استهلاك التوكنات على مستوى الجلسة لجميع واجهات AI الخلفية.",
@@ -314,7 +298,6 @@
       "cache_tokens": "توكنات التخزين المؤقت",
       "cost": "التكلفة"
     },
-
     "research": {
       "title": "بحث هندسة AI",
       "subtitle": "البحث عن أحدث أخبار هندسة AI، قراءة المقالات بعمق وتوليد الملخصات",
@@ -331,7 +314,6 @@
       "generated_html_pages": "تم توليد {count} صفحة(ات) HTML للمقالات",
       "all_articles_have_html": "جميع المقالات لديها صفحات HTML بالفعل"
     },
-
     "events": {
       "title": "فعاليات ومؤتمرات AI",
       "subtitle": "العثور على مؤتمرات ولقاءات وورش عمل AI القادمة حول العالم",
@@ -347,7 +329,6 @@
       "generated_html_pages": "تم توليد {count} صفحة(ات) HTML للفعاليات",
       "all_events_have_html": "جميع الفعاليات لديها صفحات HTML بالفعل"
     },
-
     "benchmarks": {
       "title": "معايير نماذج الذكاء الاصطناعي",
       "subtitle": "قارن أفضل نماذج الذكاء الاصطناعي في البرمجة والاستدلال والرياضيات والمزيد",
@@ -363,7 +344,6 @@
       "grid_updated": "محدّثة",
       "grid_duration": "المدة"
     },
-
     "security": {
       "title": "ثغرات أمنية",
       "subtitle": "البحث عن ثغرات CVE الحرجة وهجمات اليوم الصفري والتنبيهات الأمنية",
@@ -379,7 +359,6 @@
       "grid_duration": "المدة",
       "select_at_least_one_category": "حدد فئة واحدة على الأقل"
     },
-
     "settings": {
       "title": "الإعدادات",
       "subtitle": "تكوين تفضيلات التطبيق.",
@@ -408,10 +387,72 @@
       "prompt_version": {
         "title": "إصدار الموجه",
         "description": "قيد الاستخدام حالياً: {version}"
+      },
+      "language_title": "Language",
+      "language_description": "Select your preferred interface language.",
+      "language_current": "Currently using {name}",
+      "webhook": {
+        "title": "Setup webhook",
+        "subtitle": "Receive messages in your team chat when long-running tasks complete.",
+        "provider_label": "Provider",
+        "provider_value": "Google Chat",
+        "provider_note": "More providers coming soon.",
+        "url_label": "Incoming webhook URL",
+        "url_placeholder": "https://chat.googleapis.com/v1/spaces/...",
+        "url_help": "Create one from your Google Chat space -> Apps & integrations -> Webhooks. Treat this URL as a secret.",
+        "save_button": "Save",
+        "test_button": "Test",
+        "test_success": "Test message sent successfully.",
+        "test_failed": "Test failed: {error}",
+        "saved": "Webhook settings saved.",
+        "cleared": "Webhook URL cleared.",
+        "_todo_translate": true,
+        "active_provider_label": "Active provider",
+        "active_provider_none": "None (notifications off)",
+        "active_missing_creds": "No credentials saved for {provider} yet.",
+        "active_badge": "Active",
+        "help_link": "Setup guide",
+        "clear_button": "Clear",
+        "make_active_button": "Make active",
+        "now_active": "{provider} is now the active notification provider.",
+        "providers": {
+          "gchat": {
+            "url_label": "Incoming webhook URL",
+            "url_placeholder": "https://chat.googleapis.com/v1/spaces/...",
+            "setup_help": "Create an incoming webhook in your Google Chat space → Apps & integrations → Webhooks. Treat this URL as a secret."
+          },
+          "slack": {
+            "url_label": "Incoming webhook URL",
+            "url_placeholder": "https://hooks.slack.com/services/T.../B.../...",
+            "setup_help": "Create an incoming webhook in your Slack workspace → Apps → Incoming Webhooks. Treat this URL as a secret."
+          },
+          "discord": {
+            "url_label": "Webhook URL",
+            "url_placeholder": "https://discord.com/api/webhooks/<id>/<token>",
+            "setup_help": "In your Discord channel settings → Integrations → Webhooks, create a new webhook and copy the URL. Treat this URL as a secret."
+          },
+          "teams": {
+            "url_label": "Power Automate workflow URL",
+            "url_placeholder": "https://prod-NN.<region>.logic.azure.com/workflows/...",
+            "setup_help": "In Power Automate, create a workflow triggered by 'When an HTTP request is received'. Skillnir sends {title, detail, source} — your flow decides how to render it in Teams."
+          },
+          "telegram": {
+            "bot_token_label": "Bot token",
+            "bot_token_placeholder": "123456789:AAH...",
+            "chat_id_label": "Chat ID",
+            "chat_id_placeholder": "@channel or signed integer",
+            "setup_help": "Create a bot via @BotFather to get a token. Use @userinfobot to find your chat_id, or add your bot to a group/channel. Treat the token as a secret."
+          },
+          "cliq": {
+            "url_label": "Incoming webhook URL",
+            "url_placeholder": "https://cliq.zoho.com/.../message?zapikey=...",
+            "setup_help": "In your Zoho Cliq workspace, create a bot or channel webhook and copy the URL. Must include the zapikey query parameter."
+          },
+          "_todo_translate": true
+        }
       }
     }
   },
-
   "buttons": {
     "next": "التالي",
     "back": "السابق",
@@ -462,7 +503,6 @@
     "show_log": "إظهار السجل",
     "got_it": "فهمت"
   },
-
   "messages": {
     "using_backend": "قيد الاستخدام: {name} ({model})",
     "directory_not_found": "المجلد غير موجود: {path}",
@@ -495,7 +535,6 @@
     "cli_not_found": "CLI {command} غير موجود في PATH.",
     "no_backends_available": "لا تتوفر واجهات خلفية. ثبّت claude أو gemini أو copilot CLI."
   },
-
   "components": {
     "hero": {
       "title": "Skillnir",
@@ -566,7 +605,6 @@
       "no_ai_requests_subtitle": "سيظهر استهلاك التوكنات هنا بعد توليد المستندات أو المهارات أو طرح أسئلة على AI."
     }
   },
-
   "layout": {
     "injection_summary": "ملخص الحقن",
     "target": "الهدف:",
@@ -589,10 +627,12 @@
     "tooltips": {
       "cli_setup_guide": "دليل إعداد CLI",
       "toggle_dark_light": "تبديل الوضع الداكن/الفاتح",
-      "toggle_sound": "تبديل صوت الإشعارات"
+      "toggle_sound": "تبديل صوت الإشعارات",
+      "notifications_on": "Webhook notifications: ON (click to disable)",
+      "notifications_off": "Webhook notifications: OFF (click to enable)",
+      "notifications_disabled": "Set a webhook URL in Settings first"
     }
   },
-
   "cli": {
     "description": "حقن مهارات البرمجة بالذكاء الاصطناعي في مجلد إعدادات أي أداة.",
     "command_help": "install (افتراضي): مزامنة المهارات + الحقن في الأدوات. update: مزامنة المهارات فقط. delete-skill: إزالة مهارة (أو أكثر) من مشروع. delete-docs: إزالة مستندات AI من مشروع. init-skill: إنشاء قالب مهارة افتراضي. init-docs: إنشاء قالب مستندات AI افتراضي. ui: تشغيل واجهة الويب. generate-docs: توليد agents.md بالذكاء الاصطناعي. generate-skill: توليد SKILL.md بالذكاء الاصطناعي. generate-rule: توليد قاعدة Cursor (.mdc) بالذكاء الاصطناعي. check-skill: تشغيل /skills عبر واجهة AI الخلفية. ask: سؤال AI. plan: الحصول على خطة تنفيذ. research: البحث عن أحدث أخبار هندسة AI وتوليد الملخصات. events: البحث عن فعاليات ومؤتمرات AI القادمة حول العالم. config: إدارة الواجهة الخلفية/النموذج. sound: إدارة إشعارات Claude Code الصوتية.",

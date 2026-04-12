@@ -158,6 +158,7 @@ def header() -> tuple:
     """Build the shared layout with drawer nav and return (audio_element, sound_state)."""
     from nicegui import app, ui
 
+    from skillnir.backends import load_config, save_config
     from skillnir.ui import _GLOBAL_CSS
 
     is_dark = app.storage.user.get('dark_mode', True)
@@ -178,6 +179,20 @@ def header() -> tuple:
 
     sound_enabled = app.storage.user.get("sound_enabled", True)
     sound_state = {"enabled": sound_enabled}
+
+    # Load persisted webhook preferences so the bell can reflect them.
+    _app_cfg = load_config()
+    # The bell is "ready" iff an active provider is selected AND that
+    # provider has complete credentials stored. This generalizes the old
+    # "gchat URL set" check to the multi-provider world.
+    _webhook_url_set = bool(
+        _app_cfg.active_provider
+        and _app_cfg.has_provider_credentials(_app_cfg.active_provider)
+    )
+    _notif_enabled = _app_cfg.notifications_enabled and _webhook_url_set
+    # Keep storage in sync with config so play_notification can read it fast.
+    app.storage.user['notifications_enabled'] = _notif_enabled
+    notif_state = {"enabled": _notif_enabled}
 
     # ── Detect current route for active highlighting ──
     current_path = ui.context.client.page.path
@@ -328,16 +343,121 @@ def header() -> tuple:
                     .tooltip(SUPPORTED_LANGUAGES.get(lang, 'Language'))
                 )
 
+            # ── Webhook notifications toggle ──
+            def _bell_icon() -> str:
+                return (
+                    'notifications' if notif_state["enabled"] else 'notifications_off'
+                )
+
+            def _bell_tooltip() -> str:
+                if not _webhook_url_set:
+                    return t('layout.tooltips.notifications_disabled', lang)
+                if notif_state["enabled"]:
+                    return t('layout.tooltips.notifications_on', lang)
+                return t('layout.tooltips.notifications_off', lang)
+
+            def toggle_notifications():
+                if not _webhook_url_set:
+                    ui.notify(
+                        t('layout.tooltips.notifications_disabled', lang),
+                        type='warning',
+                    )
+                    return
+                notif_state["enabled"] = not notif_state["enabled"]
+                app.storage.user['notifications_enabled'] = notif_state["enabled"]
+                _app_cfg.notifications_enabled = notif_state["enabled"]
+                try:
+                    save_config(_app_cfg)
+                except OSError:
+                    pass
+                bell_btn.props(f'icon={_bell_icon()}')
+                bell_btn.tooltip(_bell_tooltip())
+
+            bell_btn = (
+                ui.button(icon=_bell_icon(), on_click=toggle_notifications)
+                .props(_hdr)
+                .classes('hdr-btn')
+                .tooltip(_bell_tooltip())
+            )
+            if not _webhook_url_set:
+                bell_btn.props('disable')
+
     audio_el = ui.audio("/static/notification.mp3").props("preload=auto")
     audio_el.set_visibility(False)
 
     return audio_el, sound_state
 
 
-def play_notification(audio_el, sound_state: dict) -> None:
-    """Play the notification chime if sound is enabled."""
+def play_notification(
+    audio_el,
+    sound_state: dict,
+    *,
+    title: str = "Task complete",
+    detail: str | None = None,
+) -> None:
+    """Play the notification chime and optionally POST a webhook message.
+
+    If sound is enabled, plays the local chime. If webhook notifications
+    are enabled (top-bar bell is ON) AND a provider is active with
+    valid credentials, also POSTs the message to that provider in a
+    background thread (fire-and-forget). Errors log to stderr; the UI
+    is never notified from the background thread.
+    """
     if sound_state.get("enabled", True):
         audio_el.play()
+
+    # Webhook dispatch — gated on the top-bar toggle state.
+    try:
+        from nicegui import app
+
+        if not app.storage.user.get('notifications_enabled', False):
+            return
+    except RuntimeError, ImportError:
+        # No NiceGUI request context — skip silently (e.g. unit tests).
+        return
+
+    try:
+        from skillnir.backends import load_config
+        from skillnir.notifications import PROVIDERS, NotificationProvider
+
+        cfg = load_config()
+        if not cfg.active_provider:
+            return
+
+        try:
+            provider_id = NotificationProvider(cfg.active_provider)
+        except ValueError:
+            return
+
+        spec = PROVIDERS.get(provider_id)
+        if spec is None:
+            return
+
+        creds = cfg.get_provider_credentials(cfg.active_provider)
+        if not creds or not all(creds.values()):
+            return
+
+        # Decorate the card title with the current model so the user knows
+        # which backend produced the result at a glance.
+        decorated_title = f"{title} (model: {cfg.model})"
+
+        import threading
+
+        def _post() -> None:
+            ok, err = spec.sender(creds, decorated_title, detail, 10.0)
+            if not ok:
+                import sys
+
+                print(
+                    f"[skillnir] {provider_id.value} notification failed: {err}",
+                    file=sys.stderr,
+                )
+
+        threading.Thread(target=_post, daemon=True).start()
+    except (OSError, ImportError) as exc:
+        import sys
+
+        print(f"[skillnir] webhook dispatch error: {exc}", file=sys.stderr)
 
 
 def tool_icon(tool: AITool) -> None:

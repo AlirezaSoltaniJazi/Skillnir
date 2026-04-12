@@ -309,7 +309,7 @@ async def page_events():
                         icon="home",
                     ).props("flat rounded")
 
-            play_notification(audio_el, sound_state)
+            play_notification(audio_el, sound_state, title="Events search complete")
 
         search_btn = ui.button(
             t("buttons.search_events", lang),

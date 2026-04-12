@@ -38,7 +38,6 @@
       "alpha": "Alphabetique"
     }
   },
-
   "pages": {
     "home": {
       "sections": {
@@ -126,7 +125,6 @@
         "ask_ai": "Interroger l'AI"
       }
     },
-
     "install": {
       "title": "Installer des Skills",
       "subtitle": "Injecter des skills de codage AI dans votre projet.",
@@ -149,12 +147,10 @@
       "starting": "Demarrage...",
       "updating_skills": "Mise a jour des skills..."
     },
-
     "update": {
       "title": "Mettre a jour les Skills",
       "subtitle": "Synchroniser tous les skills de la source vers un projet cible."
     },
-
     "skills_library": {
       "title": "Bibliotheque de Skills",
       "subtitle": "{count} skills disponibles",
@@ -164,7 +160,6 @@
       "skill_md_dialog_title": "{name} — SKILL.md",
       "error_reading_skill_md": "Erreur lors de la lecture de SKILL.md : {error}"
     },
-
     "generate_docs": {
       "title": "Generer les Docs AI",
       "subtitle": "Scanner un projet avec l'AI et generer agents.md + .claude/claude.md",
@@ -173,7 +168,6 @@
       "result_success_title": "Generation terminee",
       "result_fail_title": "Generation echouee"
     },
-
     "generate_rule": {
       "title": "Generer une Regle",
       "subtitle": "Scanner un projet avec l'AI et generer des fichiers de regles Cursor (.mdc)",
@@ -185,7 +179,6 @@
       "result_success_title": "Generation de regle terminee",
       "result_fail_title": "Generation de regle echouee"
     },
-
     "delete_docs": {
       "title": "Supprimer les Docs AI",
       "subtitle": "Supprimer agents.md et ses symlinks d'un projet cible.",
@@ -200,7 +193,6 @@
       "removed_files": "{count} fichier(s) supprime(s)",
       "cleaned_dirs": "{count} repertoire(s) vide(s) nettoye(s)"
     },
-
     "generate_skill": {
       "title": "Generer un Skill",
       "subtitle": "Scanner un projet avec l'AI et generer un SKILL.md specifique au domaine",
@@ -220,7 +212,6 @@
       "grid_tools_used": "Outils utilises",
       "grid_backend": "Backend"
     },
-
     "delete_skill": {
       "title": "Supprimer des Skills",
       "subtitle": "Supprimer un ou plusieurs skills d'un projet cible, y compris les symlinks dans tous les repertoires d'outils.",
@@ -235,7 +226,6 @@
       "deleted_badge": "supprime",
       "deleted_summary": "({symlinks} symlinks, {dirs} repertoires nettoyes)"
     },
-
     "init_skill": {
       "title": "Initialiser un Skill",
       "subtitle": "Creer un squelette de skill par defaut avec des fichiers de remplacement commentes.",
@@ -245,7 +235,6 @@
       "scaffold_created": "Squelette du skill cree dans {path}",
       "error_prefix": "Erreur : {error}"
     },
-
     "init_docs": {
       "title": "Initialiser les Docs AI",
       "subtitle": "Creer un modele agents.md par defaut avec des sections commentees et des symlinks pour les outils AI.",
@@ -254,7 +243,6 @@
       "docs_created": "Modele de docs AI cree !",
       "error_prefix": "Erreur : {error}"
     },
-
     "ask": {
       "title": "Interroger l'AI",
       "subtitle": "Posez une question sur un projet. L'AI repond sans effectuer de modifications.",
@@ -265,7 +253,6 @@
       "result_success_title": "Reponse terminee",
       "result_fail_title": "Echec de la requete"
     },
-
     "plan": {
       "title": "Planifier",
       "subtitle": "Obtenir un plan d'implementation detaille de l'AI pour une tache ou une fonctionnalite.",
@@ -276,7 +263,6 @@
       "result_success_title": "Plan termine",
       "result_fail_title": "Planification echouee"
     },
-
     "check_skill": {
       "title": "Verifier le Skill",
       "subtitle": "Executer /skills via le backend AI sur un projet cible.",
@@ -284,7 +270,6 @@
       "result_success_title": "Verification du skill terminee",
       "result_fail_title": "Verification du skill echouee"
     },
-
     "tools_registry": {
       "title": "Registre des Outils",
       "subtitle": "{count} outils AI pris en charge (+ .agents/ auto-inject)",
@@ -299,7 +284,6 @@
         "website": "Site web"
       }
     },
-
     "usage": {
       "title": "Utilisation des Tokens",
       "subtitle": "Utilisation des tokens au niveau de la session sur tous les backends AI.",
@@ -314,7 +298,6 @@
       "cache_tokens": "Tokens de cache",
       "cost": "Cout"
     },
-
     "research": {
       "title": "Recherche en Ingenierie AI",
       "subtitle": "Rechercher les dernieres actualites en ingenierie AI, approfondir les articles et generer des resumes",
@@ -331,7 +314,6 @@
       "generated_html_pages": "{count} page(s) HTML d'article generee(s)",
       "all_articles_have_html": "Tous les articles ont deja des pages HTML"
     },
-
     "events": {
       "title": "Evenements & Conferences AI",
       "subtitle": "Trouver les prochaines conferences, meetups et ateliers AI dans le monde",
@@ -347,7 +329,6 @@
       "generated_html_pages": "{count} page(s) HTML d'evenement generee(s)",
       "all_events_have_html": "Tous les evenements ont deja des pages HTML"
     },
-
     "benchmarks": {
       "title": "Benchmarks des modeles IA",
       "subtitle": "Comparez les meilleurs modeles IA en programmation, raisonnement, mathematiques et plus",
@@ -363,7 +344,6 @@
       "grid_updated": "Mis a jour",
       "grid_duration": "Duree"
     },
-
     "security": {
       "title": "Vulnérabilités de sécurité",
       "subtitle": "Rechercher des CVE critiques, des zero-days et des avis de sécurité",
@@ -379,7 +359,6 @@
       "grid_duration": "Durée",
       "select_at_least_one_category": "Sélectionnez au moins une catégorie"
     },
-
     "settings": {
       "title": "Parametres",
       "subtitle": "Configurer les preferences de l'application.",
@@ -408,10 +387,72 @@
       "prompt_version": {
         "title": "Version du Prompt",
         "description": "Utilisation actuelle : {version}"
+      },
+      "language_title": "Language",
+      "language_description": "Select your preferred interface language.",
+      "language_current": "Currently using {name}",
+      "webhook": {
+        "title": "Setup webhook",
+        "subtitle": "Receive messages in your team chat when long-running tasks complete.",
+        "provider_label": "Provider",
+        "provider_value": "Google Chat",
+        "provider_note": "More providers coming soon.",
+        "url_label": "Incoming webhook URL",
+        "url_placeholder": "https://chat.googleapis.com/v1/spaces/...",
+        "url_help": "Create one from your Google Chat space -> Apps & integrations -> Webhooks. Treat this URL as a secret.",
+        "save_button": "Save",
+        "test_button": "Test",
+        "test_success": "Test message sent successfully.",
+        "test_failed": "Test failed: {error}",
+        "saved": "Webhook settings saved.",
+        "cleared": "Webhook URL cleared.",
+        "_todo_translate": true,
+        "active_provider_label": "Active provider",
+        "active_provider_none": "None (notifications off)",
+        "active_missing_creds": "No credentials saved for {provider} yet.",
+        "active_badge": "Active",
+        "help_link": "Setup guide",
+        "clear_button": "Clear",
+        "make_active_button": "Make active",
+        "now_active": "{provider} is now the active notification provider.",
+        "providers": {
+          "gchat": {
+            "url_label": "Incoming webhook URL",
+            "url_placeholder": "https://chat.googleapis.com/v1/spaces/...",
+            "setup_help": "Create an incoming webhook in your Google Chat space → Apps & integrations → Webhooks. Treat this URL as a secret."
+          },
+          "slack": {
+            "url_label": "Incoming webhook URL",
+            "url_placeholder": "https://hooks.slack.com/services/T.../B.../...",
+            "setup_help": "Create an incoming webhook in your Slack workspace → Apps → Incoming Webhooks. Treat this URL as a secret."
+          },
+          "discord": {
+            "url_label": "Webhook URL",
+            "url_placeholder": "https://discord.com/api/webhooks/<id>/<token>",
+            "setup_help": "In your Discord channel settings → Integrations → Webhooks, create a new webhook and copy the URL. Treat this URL as a secret."
+          },
+          "teams": {
+            "url_label": "Power Automate workflow URL",
+            "url_placeholder": "https://prod-NN.<region>.logic.azure.com/workflows/...",
+            "setup_help": "In Power Automate, create a workflow triggered by 'When an HTTP request is received'. Skillnir sends {title, detail, source} — your flow decides how to render it in Teams."
+          },
+          "telegram": {
+            "bot_token_label": "Bot token",
+            "bot_token_placeholder": "123456789:AAH...",
+            "chat_id_label": "Chat ID",
+            "chat_id_placeholder": "@channel or signed integer",
+            "setup_help": "Create a bot via @BotFather to get a token. Use @userinfobot to find your chat_id, or add your bot to a group/channel. Treat the token as a secret."
+          },
+          "cliq": {
+            "url_label": "Incoming webhook URL",
+            "url_placeholder": "https://cliq.zoho.com/.../message?zapikey=...",
+            "setup_help": "In your Zoho Cliq workspace, create a bot or channel webhook and copy the URL. Must include the zapikey query parameter."
+          },
+          "_todo_translate": true
+        }
       }
     }
   },
-
   "buttons": {
     "next": "Suivant",
     "back": "Retour",
@@ -462,7 +503,6 @@
     "show_log": "Afficher le log",
     "got_it": "Compris"
   },
-
   "messages": {
     "using_backend": "Utilisation : {name} ({model})",
     "directory_not_found": "Repertoire introuvable : {path}",
@@ -495,7 +535,6 @@
     "cli_not_found": "{command} CLI introuvable dans le PATH.",
     "no_backends_available": "Aucun backend disponible. Installez claude, gemini ou copilot CLI."
   },
-
   "components": {
     "hero": {
       "title": "Skillnir",
@@ -566,7 +605,6 @@
       "no_ai_requests_subtitle": "L'utilisation des tokens apparaitra ici apres avoir genere des docs, des skills ou pose des questions a l'AI."
     }
   },
-
   "layout": {
     "injection_summary": "Resume de l'injection",
     "target": "Cible :",
@@ -589,10 +627,12 @@
     "tooltips": {
       "cli_setup_guide": "Guide de configuration CLI",
       "toggle_dark_light": "Basculer mode sombre/clair",
-      "toggle_sound": "Basculer le son de notification"
+      "toggle_sound": "Basculer le son de notification",
+      "notifications_on": "Webhook notifications: ON (click to disable)",
+      "notifications_off": "Webhook notifications: OFF (click to enable)",
+      "notifications_disabled": "Set a webhook URL in Settings first"
     }
   },
-
   "cli": {
     "description": "Injectez des skills de codage AI dans le dotdir de n'importe quel outil.",
     "command_help": "install (par defaut) : synchroniser les skills + injecter dans les outils. update : synchroniser les skills uniquement. delete-skill : supprimer un ou plusieurs skills d'un projet. delete-docs : supprimer les docs AI d'un projet. init-skill : creer un squelette de skill par defaut. init-docs : creer un modele de docs AI par defaut. ui : lancer l'interface web. generate-docs : generer agents.md avec l'AI. generate-skill : generer un SKILL.md avec l'AI. generate-rule : generer une regle Cursor (.mdc) avec l'AI. check-skill : executer /skills via le backend AI. ask : poser une question a l'AI. plan : obtenir un plan d'implementation. research : rechercher les dernieres actualites en ingenierie AI et generer des resumes. events : rechercher les prochains evenements et conferences AI dans le monde. config : gerer le backend/modele. sound : gerer les notifications sonores de Claude Code.",

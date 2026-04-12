@@ -132,8 +132,14 @@ def run_ui(port: int = 8080) -> None:
     )
 
     # ── Start server ─────────────────────────────────────────
+    # Bind to loopback only. The UI has no authentication and exposes
+    # the Google Chat webhook URL (a capability token) on the Settings
+    # page, so binding to 0.0.0.0 (NiceGUI's default) would leak it to
+    # anyone on the same LAN. Users who deliberately want remote access
+    # should run this behind their own reverse proxy + auth.
     ui.run(
         title="Skillnir",
+        host="127.0.0.1",
         port=port,
         reload=False,
         show=True,

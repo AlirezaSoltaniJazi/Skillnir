@@ -101,7 +101,7 @@ async def _run_subprocess_page(
                         f'{fail_title} ({t("messages.exit_code", code=str(exit_code))})'
                     ).classes('text-negative')
 
-    play_notification(audio_el, sound_state)
+    play_notification(audio_el, sound_state, title="AI assistant finished")
     for c in controls:
         c.enable()
 
