@@ -110,11 +110,13 @@ bandit -lll -iii -r src/
 | `generate-docs`  | Generate `agents.md` with AI-powered project analysis              |
 | `generate-skill` | Generate a domain-specific `SKILL.md` with AI                      |
 | `generate-rule`  | Generate Cursor rule files (`.mdc`) with AI                        |
+| `generate-wiki`  | Generate project wiki (`llms.txt` + `docs/`) with AI               |
 | `check-skill`    | Validate installed skill patterns via AI backend                   |
 | `init-skill`     | Create a default skill scaffold with placeholder files             |
 | `init-docs`      | Create a default `agents.md` template with tool symlinks           |
 | `delete-skill`   | Remove skill(s) from a project                                     |
 | `delete-docs`    | Remove AI docs from a project                                      |
+| `delete-wiki`    | Remove project wiki (`llms.txt` + `docs/`) from a project          |
 | `ask`            | Ask AI a question about a project (read-only)                      |
 | `plan`           | Get a detailed implementation plan from AI                         |
 | `research`       | Search latest AI engineering news and generate summaries           |
