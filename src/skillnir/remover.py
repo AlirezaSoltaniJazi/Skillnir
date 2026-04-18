@@ -30,6 +30,13 @@ class IgnoreRemovalResult:
     error: str | None = None
 
 
+@dataclass
+class WikiRemovalResult:
+    removed_files: list[Path] = field(default_factory=list)
+    cleaned_dirs: list[Path] = field(default_factory=list)
+    error: str | None = None
+
+
 def find_skill_installations(project_root: Path, skill_name: str) -> list[Path]:
     """Return paths where a skill is installed across all tool dotdirs."""
     found: list[Path] = []
@@ -153,6 +160,60 @@ def delete_docs(project_root: Path) -> DocsRemovalResult:
         ]:
             if _try_clean_empty_dir(parent_dir):
                 result.cleaned_dirs.append(parent_dir)
+
+    except OSError as e:
+        result.error = str(e)
+
+    return result
+
+
+_WIKI_DOC_NAMES = (
+    "architecture.md",
+    "modules.md",
+    "dataflow.md",
+    "extending.md",
+    "getting-started.md",
+    "troubleshooting.md",
+)
+
+
+def find_wiki_installations(project_root: Path) -> list[Path]:
+    """Return paths of wiki files (llms.txt + docs/*.md) in the project.
+
+    Only includes the canonical 6 docs pages produced by ``generate-wiki``;
+    leaves any other unrelated ``docs/*.md`` files untouched so we never
+    delete user-authored documentation.
+    """
+    found: list[Path] = []
+    llms_txt = project_root / "llms.txt"
+    if llms_txt.exists():
+        found.append(llms_txt)
+    docs_dir = project_root / "docs"
+    if docs_dir.is_dir():
+        for name in _WIKI_DOC_NAMES:
+            page = docs_dir / name
+            if page.exists():
+                found.append(page)
+    return found
+
+
+def delete_wiki(project_root: Path) -> WikiRemovalResult:
+    """Delete wiki artefacts from a target project.
+
+    1. Remove llms.txt at project root
+    2. Remove the canonical 6 docs/*.md pages
+    3. Clean docs/ if it is empty afterwards (never if it has other content)
+    """
+    result = WikiRemovalResult()
+
+    try:
+        for path in find_wiki_installations(project_root):
+            path.unlink()
+            result.removed_files.append(path)
+
+        docs_dir = project_root / "docs"
+        if _try_clean_empty_dir(docs_dir):
+            result.cleaned_dirs.append(docs_dir)
 
     except OSError as e:
         result.error = str(e)

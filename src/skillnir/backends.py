@@ -61,27 +61,18 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         supports_stream_json=True,
         models=(
             ModelInfo(
-                "claude-opus-4-6", "opus", "Claude Opus 4.6", is_default=True, tier=1
+                "claude-opus-4-7", "opus", "Claude Opus 4.7", is_default=True, tier=1
             ),
+            ModelInfo("claude-opus-4-6", "opus-4.6", "Claude Opus 4.6", tier=1),
             ModelInfo("claude-sonnet-4-6", "sonnet", "Claude Sonnet 4.6", tier=2),
-            ModelInfo("claude-haiku-4-5-20251001", "haiku", "Claude Haiku 4.5", tier=3),
-            ModelInfo("claude-opus-4-0-20250514", "opus-4.0", "Claude Opus 4", tier=1),
-            ModelInfo(
-                "claude-sonnet-4-0-20250514", "sonnet-4.0", "Claude Sonnet 4", tier=2
-            ),
-            ModelInfo(
-                "claude-sonnet-4-5-20251001", "sonnet-4.5", "Claude Sonnet 4.5", tier=2
-            ),
-            ModelInfo(
-                "claude-3-5-sonnet-20241022", "3.5-sonnet", "Claude 3.5 Sonnet", tier=2
-            ),
-            ModelInfo(
-                "claude-3-5-haiku-20241022", "3.5-haiku", "Claude 3.5 Haiku", tier=3
-            ),
-            ModelInfo("claude-3-opus-20240229", "3-opus", "Claude 3 Opus", tier=1),
-            ModelInfo("claude-3-haiku-20240307", "3-haiku", "Claude 3 Haiku", tier=3),
+            ModelInfo("claude-haiku-4-5", "haiku", "Claude Haiku 4.5", tier=3),
+            ModelInfo("claude-opus-4-5", "opus-4.5", "Claude Opus 4.5", tier=1),
+            ModelInfo("claude-opus-4-1", "opus-4.1", "Claude Opus 4.1", tier=1),
+            ModelInfo("claude-opus-4-0", "opus-4.0", "Claude Opus 4", tier=1),
+            ModelInfo("claude-sonnet-4-5", "sonnet-4.5", "Claude Sonnet 4.5", tier=2),
+            ModelInfo("claude-sonnet-4-0", "sonnet-4.0", "Claude Sonnet 4", tier=2),
         ),
-        default_model="sonnet",
+        default_model="opus",
         usage_command=None,
         usage_url="https://console.anthropic.com/settings/billing",
         version_command=("claude", "--version"),
@@ -100,7 +91,8 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
             ModelInfo("auto", "auto", "Auto (recommended)", is_default=True, tier=2),
             ModelInfo("gpt-5.4", "gpt-5.4", "GPT-5.4", tier=1),
             ModelInfo("gpt-5.3-code", "gpt-5.3-code", "GPT-5.3 Code", tier=1),
-            ModelInfo("claude-opus-4-6", "opus", "Claude Opus 4.6", tier=1),
+            ModelInfo("claude-opus-4-7", "opus", "Claude Opus 4.7", tier=1),
+            ModelInfo("claude-opus-4-6", "opus-4.6", "Claude Opus 4.6", tier=1),
             ModelInfo("claude-sonnet-4-6", "sonnet", "Claude Sonnet 4.6", tier=2),
             ModelInfo("gemini-2.5-pro", "gemini-pro", "Gemini 2.5 Pro", tier=2),
             ModelInfo("gpt-4o", "gpt-4o", "GPT-4o", tier=2),
@@ -170,7 +162,8 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
             ModelInfo("o4-mini", "o4-mini", "o4-mini", tier=3),
             ModelInfo("gpt-5.4", "gpt-5.4", "GPT-5.4", tier=1),
             ModelInfo("gpt-5.3", "gpt-5.3", "GPT-5.3", tier=2),
-            ModelInfo("claude-opus-4-6", "claude-opus", "Claude Opus 4.6", tier=1),
+            ModelInfo("claude-opus-4-7", "claude-opus", "Claude Opus 4.7", tier=1),
+            ModelInfo("claude-opus-4-6", "claude-opus-4.6", "Claude Opus 4.6", tier=1),
             ModelInfo("gemini-2.5-pro", "gemini-pro", "Gemini 2.5 Pro", tier=1),
             ModelInfo("o3-pro", "o3-pro", "o3 Pro", tier=1),
             ModelInfo("gpt-4o-mini", "gpt-4o-mini", "GPT-4o Mini", tier=3),
@@ -266,6 +259,12 @@ _CIPHER_FIELD_TO_KEY: dict[str, str] = {
 
 _VALID_PROVIDER_IDS: frozenset[str] = frozenset(_CIPHER_FIELD_MAP.keys()) | {""}
 
+# ── Effort + thinking config (Claude SDK only) ──
+EFFORT_LEVELS: tuple[str, ...] = ("low", "medium", "high", "max")
+THINKING_MODES: tuple[str, ...] = ("adaptive", "disabled")
+DEFAULT_EFFORT = "high"
+DEFAULT_THINKING_MODE = "adaptive"
+
 
 @dataclass
 class AppConfig:
@@ -278,9 +277,12 @@ class AppConfig:
     """
 
     backend: AIBackend = AIBackend.CLAUDE
-    model: str = "sonnet"
+    model: str = "opus"
     prompt_version: str = field(default_factory=_default_prompt_version)
     compress_prompts: bool = False
+    # ── Claude SDK reasoning controls (other backends ignore) ──
+    effort: str = DEFAULT_EFFORT  # low | medium | high | max
+    thinking_mode: str = DEFAULT_THINKING_MODE  # adaptive | disabled
     # ── Notification credentials (one cipher field per secret) ──
     gchat_webhook_cipher: str = ""
     slack_webhook_cipher: str = ""
@@ -369,6 +371,8 @@ class AppConfig:
             "model": self.model,
             "prompt_version": self.prompt_version,
             "compress_prompts": self.compress_prompts,
+            "effort": self.effort,
+            "thinking_mode": self.thinking_mode,
             "gchat_webhook_cipher": self.gchat_webhook_cipher,
             "slack_webhook_cipher": self.slack_webhook_cipher,
             "discord_webhook_cipher": self.discord_webhook_cipher,
@@ -391,6 +395,12 @@ class AppConfig:
         if pv not in get_prompt_versions():
             pv = _default_prompt_version()
         compress = bool(d.get("compress_prompts", False))
+        effort = str(d.get("effort", DEFAULT_EFFORT))
+        if effort not in EFFORT_LEVELS:
+            effort = DEFAULT_EFFORT
+        thinking_mode = str(d.get("thinking_mode", DEFAULT_THINKING_MODE))
+        if thinking_mode not in THINKING_MODES:
+            thinking_mode = DEFAULT_THINKING_MODE
         gchat_cipher = str(d.get("gchat_webhook_cipher", ""))
         slack_cipher = str(d.get("slack_webhook_cipher", ""))
         discord_cipher = str(d.get("discord_webhook_cipher", ""))
@@ -447,6 +457,8 @@ class AppConfig:
             model=model,
             prompt_version=pv,
             compress_prompts=compress,
+            effort=effort,
+            thinking_mode=thinking_mode,
             gchat_webhook_cipher=gchat_cipher,
             slack_webhook_cipher=slack_cipher,
             discord_webhook_cipher=discord_cipher,
@@ -607,6 +619,25 @@ def get_usage_info(backend: AIBackend) -> str | None:
     return None
 
 
+def build_claude_sdk_kwargs(config: "AppConfig | None" = None) -> dict:
+    """Return ``ClaudeAgentOptions`` kwargs for ``effort`` and ``thinking``.
+
+    Centralizes the per-config translation so every Claude SDK call site
+    stays consistent. Returns an empty dict when both knobs are at their
+    defaults so we don't pin parameters the user hasn't customized.
+    """
+    if config is None:
+        config = load_config()
+    kwargs: dict = {}
+    if config.effort and config.effort != DEFAULT_EFFORT:
+        kwargs["effort"] = config.effort
+    if config.thinking_mode == "adaptive":
+        kwargs["thinking"] = {"type": "adaptive"}
+    elif config.thinking_mode == "disabled":
+        kwargs["thinking"] = {"type": "disabled"}
+    return kwargs
+
+
 def resolve_model_id(backend: AIBackend, alias_or_id: str) -> str:
     """Resolve a model alias to its full ID. Returns as-is if not an alias."""
     info = BACKENDS[backend]
@@ -670,6 +701,7 @@ def build_subprocess_command(
     prompt, extra_flags = _apply_mode(prompt, mode, info)
 
     if backend == AIBackend.CLAUDE:
+        cfg = load_config()
         cmd = [
             info.cli_command,
             "-p",
@@ -683,6 +715,10 @@ def build_subprocess_command(
             str(max_turns),
             "--verbose",
         ]
+        # Pass --effort only when user customized it; keeps default behavior
+        # unchanged for users on the older default ("high" is implicit).
+        if cfg.effort and cfg.effort != DEFAULT_EFFORT:
+            cmd += ["--effort", cfg.effort]
     elif backend == AIBackend.CURSOR:
         cmd = [
             info.cli_command,

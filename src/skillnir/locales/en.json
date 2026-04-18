@@ -15,7 +15,9 @@
       "generate_skill": "Generate Skill",
       "generate_rule": "Generate Rule",
       "generate_docs": "Generate Docs",
+      "generate_wiki": "Generate Wiki",
       "delete_docs": "Delete Docs",
+      "delete_wiki": "Delete Wiki",
       "init_skill": "Init Skill",
       "init_docs": "Init Docs",
       "install_ignore": "Install Ignore",
@@ -188,6 +190,27 @@
       "symlink": "symlink",
       "file": "file",
       "no_docs_to_delete": "No docs found to delete.",
+      "deletion_complete": "Deletion Complete",
+      "deletion_failed": "Deletion Failed",
+      "removed_files": "Removed {count} file(s)",
+      "cleaned_dirs": "Cleaned {count} empty dir(s)"
+    },
+    "generate_wiki": {
+      "title": "Generate Project Wiki",
+      "subtitle": "Scan a project with AI and generate llms.txt + docs/ pages.",
+      "target_project_root": "Target project root",
+      "prompt_version": "Prompt version",
+      "result_success_title": "Wiki Generation Complete",
+      "result_fail_title": "Wiki Generation Failed"
+    },
+    "delete_wiki": {
+      "title": "Delete Project Wiki",
+      "subtitle": "Remove llms.txt and the canonical docs/ pages from a target project.",
+      "target_project_root": "Target project root",
+      "no_wiki_found": "No project wiki found in target project.",
+      "found_label": "Found:",
+      "file": "file",
+      "no_wiki_to_delete": "No wiki files found to delete.",
       "deletion_complete": "Deletion Complete",
       "deletion_failed": "Deletion Failed",
       "removed_files": "Removed {count} file(s)",
@@ -376,6 +399,16 @@
       },
       "compression_title": "Prompt Compression",
       "compression_subtitle": "Compress prompts before sending to AI backends (saves tokens)",
+      "effort": {
+        "title": "Reasoning Effort",
+        "description": "Currently {value}. Controls thinking depth and overall token spend (Claude SDK only).",
+        "claude_only": "Only used when the backend is Claude."
+      },
+      "thinking": {
+        "title": "Thinking Mode",
+        "description": "Currently {value}. Adaptive lets Claude decide thinking depth per request.",
+        "claude_only": "Only used when the backend is Claude."
+      },
       "ai_tool": {
         "title": "AI Tool",
         "description": "Currently using {name}"
@@ -481,6 +514,8 @@
     "generate_ai_docs": "Generate AI Docs",
     "generate_rule": "Generate Rule",
     "generate_skill": "Generate Skill",
+    "generate_wiki": "Generate Wiki",
+    "delete_wiki": "Delete Wiki",
     "update_all_skills": "Update All Skills",
     "search_latest_news": "Search Latest News",
     "search_latest_articles": "Search Latest Articles",
@@ -711,6 +746,21 @@
       "generating": "Generating Cursor rule...",
       "complete": "Rule generation complete!",
       "failed": "Rule generation failed: {error}"
+    },
+    "generate_wiki": {
+      "generating": "Generating project wiki...",
+      "complete": "Wiki generation complete!",
+      "failed": "Wiki generation failed: {error}",
+      "will_generate": "This will scan the project with AI and generate:",
+      "llms_txt": "llms.txt (project root)",
+      "docs_pages": "docs/ (architecture, modules, dataflow, extending, getting-started, troubleshooting)"
+    },
+    "delete_wiki": {
+      "no_wiki": "No project wiki found in target project.",
+      "will_delete": "Will delete:",
+      "removed_files": "Removed {count} files",
+      "cleaned_dirs": "Cleaned {count} empty directories",
+      "error": "Error: {error}"
     },
     "check_skill": {
       "running": "Running {command} check...",

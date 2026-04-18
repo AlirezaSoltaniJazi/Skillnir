@@ -41,7 +41,9 @@ NAV_GROUPS = [
         [
             ('gavel', 'Generate Rule', '/generate-rule'),
             ('auto_stories', 'Generate Docs', '/generate-docs'),
+            ('menu_book', 'Generate Wiki', '/generate-wiki'),
             ('delete_sweep', 'Delete Docs', '/delete-docs'),
+            ('layers_clear', 'Delete Wiki', '/delete-wiki'),
         ],
     ),
     (
@@ -92,7 +94,9 @@ def get_nav_groups(lang: str | None = None) -> list:
             [
                 ("gavel", t("nav.items.generate_rule", lang), "/generate-rule"),
                 ("auto_stories", t("nav.items.generate_docs", lang), "/generate-docs"),
+                ("menu_book", t("nav.items.generate_wiki", lang), "/generate-wiki"),
                 ("delete_sweep", t("nav.items.delete_docs", lang), "/delete-docs"),
+                ("layers_clear", t("nav.items.delete_wiki", lang), "/delete-wiki"),
             ],
         ),
         (

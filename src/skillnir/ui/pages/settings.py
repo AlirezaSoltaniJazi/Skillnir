@@ -474,6 +474,89 @@ def page_settings():
                     '', value=config.compress_prompts, on_change=on_compress_toggle
                 )
 
+        # ── Effort (Claude SDK only) ──
+        from skillnir.backends import (
+            AIBackend,
+            EFFORT_LEVELS,
+            THINKING_MODES,
+        )
+
+        _claude_only = config.backend == AIBackend.CLAUDE
+
+        with ui.card().classes('w-full p-5 card-hover'):
+            with ui.row().classes('items-center justify-between w-full'):
+                with ui.row().classes('items-center gap-4'):
+                    ui.icon('speed', color='orange').classes('text-3xl')
+                    with ui.column().classes('gap-0'):
+                        ui.label(
+                            t('pages.settings.effort.title', get_current_language())
+                        ).classes('text-lg font-semibold')
+                        ui.label(
+                            t(
+                                'pages.settings.effort.description',
+                                get_current_language(),
+                                value=config.effort,
+                            )
+                        ).classes('text-sm text-secondary')
+                        if not _claude_only:
+                            ui.label(
+                                t(
+                                    'pages.settings.effort.claude_only',
+                                    get_current_language(),
+                                )
+                            ).classes('text-xs text-warning')
+
+                def on_effort_change(e):
+                    config.effort = e.value
+                    save_config(config)
+                    ui.notify(f'Effort set to {e.value}', type='info')
+                    ui.navigate.to('/settings')
+
+                ui.select(
+                    options=list(EFFORT_LEVELS),
+                    value=config.effort,
+                    on_change=on_effort_change,
+                ).classes('w-32').props('outlined dense rounded')
+
+        # ── Thinking mode (Claude SDK only) ──
+        with ui.card().classes('w-full p-5 card-hover'):
+            with ui.row().classes('items-center justify-between w-full'):
+                with ui.row().classes('items-center gap-4'):
+                    ui.icon('psychology', color='deep-purple').classes('text-3xl')
+                    with ui.column().classes('gap-0'):
+                        ui.label(
+                            t(
+                                'pages.settings.thinking.title',
+                                get_current_language(),
+                            )
+                        ).classes('text-lg font-semibold')
+                        ui.label(
+                            t(
+                                'pages.settings.thinking.description',
+                                get_current_language(),
+                                value=config.thinking_mode,
+                            )
+                        ).classes('text-sm text-secondary')
+                        if not _claude_only:
+                            ui.label(
+                                t(
+                                    'pages.settings.thinking.claude_only',
+                                    get_current_language(),
+                                )
+                            ).classes('text-xs text-warning')
+
+                def on_thinking_change(e):
+                    config.thinking_mode = e.value
+                    save_config(config)
+                    ui.notify(f'Thinking set to {e.value}', type='info')
+                    ui.navigate.to('/settings')
+
+                ui.select(
+                    options=list(THINKING_MODES),
+                    value=config.thinking_mode,
+                    on_change=on_thinking_change,
+                ).classes('w-40').props('outlined dense rounded')
+
         # ── Language ──
         lang = get_current_language()
         lang_name = SUPPORTED_LANGUAGES.get(lang, lang)

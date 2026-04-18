@@ -129,6 +129,7 @@ def run_ui(port: int = 8080) -> None:
         supported,
         templates,
         usage_page,
+        wiki,
     )
 
     # ── Start server ─────────────────────────────────────────

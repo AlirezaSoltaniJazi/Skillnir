@@ -10,8 +10,10 @@ from skillnir.injector import inject_skill
 from skillnir.remover import (
     delete_docs,
     delete_skill,
+    delete_wiki,
     find_docs_installations,
     find_skill_installations,
+    find_wiki_installations,
 )
 from skillnir.scaffold import init_docs, init_skill, validate_skill_name
 from skillnir.skills import discover_skills, discover_skills_from_dir
@@ -491,6 +493,97 @@ def _generate_rule() -> None:
     else:
         print(f"  Rule generation failed: {result.error}")
     print(f"{'─' * 50}\n")
+
+
+def _generate_wiki() -> None:
+    """Generate a project wiki (llms.txt + docs/) for a target project."""
+    import asyncio
+
+    target_root = _ask_target_project()
+
+    from skillnir.backends import BACKENDS, PROMPT_VERSION_LABELS, load_config
+
+    config = load_config()
+    backend_info = BACKENDS[config.backend]
+    pv_label = PROMPT_VERSION_LABELS.get(config.prompt_version, config.prompt_version)
+
+    print(f"\n  Target:  {target_root}")
+    print(f"  Backend: {backend_info.name} ({config.model})")
+    print(f"  Prompts: {pv_label}")
+    print("  This will scan the project with AI and generate:")
+    print("    - llms.txt (project root)")
+    print("    - docs/ (architecture, modules, dataflow, extending,")
+    print("            getting-started, troubleshooting)\n")
+
+    if not questionary.confirm(
+        "Proceed with project wiki generation?", default=True
+    ).ask():
+        print("Aborted.")
+        sys.exit(0)
+
+    from skillnir.generator import GenerationProgress
+    from skillnir.wiki_generator import generate_wiki
+
+    tool_count = 0
+
+    def on_progress(p: GenerationProgress) -> None:
+        nonlocal tool_count
+        if p.kind == "phase":
+            print(f"\n  >>> {p.content}")
+        elif p.kind == "status":
+            print(f"  [{p.kind}] {p.content}")
+        elif p.kind == "tool_use":
+            tool_count += 1
+            print(f"  [{tool_count}] {p.content}")
+        elif p.kind == "text":
+            print(p.content, end="", flush=True)
+        elif p.kind == "error":
+            print(f"  [ERROR] {p.content}")
+
+    print(f"\n{'─' * 50}")
+    print("  Generating project wiki...")
+    print(f"{'─' * 50}\n")
+
+    result = asyncio.run(generate_wiki(target_root, on_progress=on_progress))
+
+    print(f"\n{'─' * 50}")
+    if result.success:
+        print("  Wiki generation complete!")
+        print(f"    llms.txt:  {result.llms_txt_path}")
+        print(f"    docs/:     {result.docs_dir}")
+        print(f"    Files:     {len(result.files_created)} created/updated")
+        if result.backend_used:
+            print(f"    Backend:   {result.backend_used.value}")
+    else:
+        print(f"  Wiki generation failed: {result.error}")
+    print(f"{'─' * 50}\n")
+
+
+def _delete_wiki_cmd() -> None:
+    """Delete project wiki (llms.txt + docs/) from a target project."""
+    target_root = _ask_target_project()
+
+    installations = find_wiki_installations(target_root)
+    if not installations:
+        print("No project wiki found in target project.")
+        sys.exit(0)
+
+    print("\n  Will delete:")
+    for path in installations:
+        print(f"    - {path}")
+    print()
+
+    if not questionary.confirm("Proceed with deletion?", default=False).ask():
+        print("Aborted.")
+        sys.exit(0)
+
+    result = delete_wiki(target_root)
+    if result.error:
+        print(f"  ✗ Error: {result.error}")
+    else:
+        print(f"  ✓ Removed {len(result.removed_files)} files")
+        if result.cleaned_dirs:
+            print(f"  ✓ Cleaned {len(result.cleaned_dirs)} empty directories")
 
 
 def _sound() -> None:
@@ -1341,6 +1434,8 @@ def main() -> None:
             "generate-docs",
             "generate-skill",
             "generate-rule",
+            "generate-wiki",
+            "delete-wiki",
             "check-skill",
             "ask",
             "plan",
@@ -1349,7 +1444,7 @@ def main() -> None:
             "config",
             "sound",
         ],
-        help="install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. events: search upcoming AI events and conferences worldwide. config: manage backend/model. sound: manage Claude Code sound notifications.",
+        help="install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. delete-wiki: remove project wiki (llms.txt + docs/) from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. generate-wiki: generate project wiki (llms.txt + docs/) with AI. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. events: search upcoming AI events and conferences worldwide. config: manage backend/model. sound: manage Claude Code sound notifications.",
     )
     args = parser.parse_args()
 
@@ -1365,6 +1460,10 @@ def main() -> None:
         _generate_skill()
     elif args.command == "generate-rule":
         _generate_rule()
+    elif args.command == "generate-wiki":
+        _generate_wiki()
+    elif args.command == "delete-wiki":
+        _delete_wiki_cmd()
     elif args.command == "check-skill":
         _check_skill()
     elif args.command == "ask":

@@ -10,6 +10,7 @@ from typing import Callable
 from skillnir.backends import (
     BACKENDS,
     AIBackend,
+    build_claude_sdk_kwargs,
     build_subprocess_command,
     load_config,
     parse_stream_line,
@@ -103,6 +104,7 @@ async def generate_docs_sdk(
         allowed_tools=["Read", "Glob", "Grep", "Bash", "Write"],
         permission_mode="acceptEdits",
         cwd=str(target_project),
+        **build_claude_sdk_kwargs(),
     )
 
     user_prompt = (
