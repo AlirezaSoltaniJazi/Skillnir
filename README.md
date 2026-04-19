@@ -111,6 +111,8 @@ bandit -lll -iii -r src/
 | `generate-skill` | Generate a domain-specific `SKILL.md` with AI                      |
 | `generate-rule`  | Generate Cursor rule files (`.mdc`) with AI                        |
 | `generate-wiki`  | Generate project wiki (`llms.txt` + `docs/`) with AI               |
+| `compress-docs`  | Rule-based + AI tone compression of all AI-related docs            |
+| `optimize-docs`  | Audit and (optionally) fix AI-doc inconsistencies + cross-refs     |
 | `check-skill`    | Validate installed skill patterns via AI backend                   |
 | `init-skill`     | Create a default skill scaffold with placeholder files             |
 | `init-docs`      | Create a default `agents.md` template with tool symlinks           |
