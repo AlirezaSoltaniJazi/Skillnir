@@ -335,7 +335,15 @@ def _generate_skill() -> None:
         sys.exit(0)
     scope = scope_answer
 
-    # Step 2b: Add to current project?
+    # Step 2b: Pure / generic mode?
+    pure = questionary.confirm(
+        "Pure / generic skill (don't scan target project)?",
+        default=False,
+    ).ask()
+    if pure is None:
+        sys.exit(0)
+
+    # Step 2c: Add to current project?
     add_to_current = False
     if target_root.resolve() != Path.cwd().resolve():
         add_to_current = questionary.confirm(
@@ -361,6 +369,7 @@ def _generate_skill() -> None:
     print(f"  Project:    {project_name}")
     print(f"  Scope:      {scope}")
     print(f"  Skill name: {skill_name}")
+    print(f"  Mode:       {'pure / generic' if pure else 'project-specific'}")
     print(f"  Output:     {target_root}/.data/skills/{skill_name}/SKILL.md\n")
 
     if not questionary.confirm("Proceed with skill generation?", default=True).ask():
@@ -393,7 +402,13 @@ def _generate_skill() -> None:
     print(f"{'─' * 50}\n")
 
     result = asyncio.run(
-        generate_skill(target_root, project_name, scope, on_progress=on_progress)
+        generate_skill(
+            target_root,
+            project_name,
+            scope,
+            on_progress=on_progress,
+            pure=pure,
+        )
     )
 
     # Step 6: Report
@@ -584,6 +599,170 @@ def _delete_wiki_cmd() -> None:
         print(f"  ✓ Removed {len(result.removed_files)} files")
         if result.cleaned_dirs:
             print(f"  ✓ Cleaned {len(result.cleaned_dirs)} empty directories")
+
+
+def _compress_docs() -> None:
+    """Compress AI-related docs (rule-based, optional AI tone pass)."""
+    import asyncio
+
+    target_root = _ask_target_project()
+
+    from skillnir.docs_compressor import (
+        compress_docs_apply,
+        compress_docs_dry_run,
+        find_ai_docs,
+    )
+
+    docs = find_ai_docs(target_root)
+    if not docs:
+        print("\n  No AI-related docs found in target project.")
+        sys.exit(0)
+
+    # Step 1: dry-run
+    print(f"\n  Found {len(docs)} AI docs. Running dry-run...\n")
+    dry = compress_docs_dry_run(target_root)
+    for r in dry.files:
+        rel = r.path.relative_to(target_root)
+        if r.error:
+            print(f"  [error] {rel}: {r.error}")
+        else:
+            print(
+                f"  - {rel}: {r.original_chars} -> {r.compressed_chars} chars "
+                f"({r.reduction_pct:.1f}% smaller)"
+            )
+    print(
+        f"\n  Total: {dry.total_original_chars} -> {dry.total_compressed_chars} "
+        f"chars ({dry.total_reduction_pct:.1f}% smaller)\n"
+    )
+
+    if not questionary.confirm("Apply rule-based compression?", default=False).ask():
+        print("Aborted.")
+        sys.exit(0)
+
+    with_tone = questionary.confirm(
+        "Also run AI tone-tightening pass after compression?", default=True
+    ).ask()
+    if with_tone is None:
+        sys.exit(0)
+
+    # Step 2: apply
+    from skillnir.generator import GenerationProgress
+
+    tool_count = 0
+
+    def on_progress(p: GenerationProgress) -> None:
+        nonlocal tool_count
+        if p.kind == "phase":
+            print(f"\n  >>> {p.content}")
+        elif p.kind == "status":
+            print(f"  [{p.kind}] {p.content}")
+        elif p.kind == "tool_use":
+            tool_count += 1
+            print(f"  [{tool_count}] {p.content}")
+        elif p.kind == "text":
+            print(p.content, end="", flush=True)
+        elif p.kind == "error":
+            print(f"  [ERROR] {p.content}")
+
+    print(f"\n{'─' * 50}")
+    print("  Applying compression...")
+    print(f"{'─' * 50}\n")
+
+    result = asyncio.run(
+        compress_docs_apply(
+            target_root, with_ai_tone=with_tone, on_progress=on_progress
+        )
+    )
+
+    print(f"\n{'─' * 50}")
+    written = sum(1 for r in result.files if r.written)
+    print(f"  Compressed {written}/{len(result.files)} files")
+    print(
+        f"  Total: {result.total_original_chars} -> {result.total_compressed_chars} "
+        f"chars ({result.total_reduction_pct:.1f}% smaller)"
+    )
+    print(f"  AI tone pass: {'applied' if result.ai_tone_applied else 'skipped'}")
+    if result.error:
+        print(f"  Note: {result.error}")
+    print(f"{'─' * 50}\n")
+
+
+def _optimize_docs() -> None:
+    """Audit and optionally fix AI-doc inconsistencies in a target project."""
+    import asyncio
+
+    target_root = _ask_target_project()
+
+    mode = questionary.select(
+        "Mode:",
+        choices=[
+            questionary.Choice(title="Report (dry-run, no writes)", value="report"),
+            questionary.Choice(
+                title="Apply (fix inconsistencies in place)", value="apply"
+            ),
+        ],
+    ).ask()
+    if mode is None:
+        sys.exit(0)
+
+    from skillnir.backends import BACKENDS, load_config
+
+    config = load_config()
+    backend_info = BACKENDS[config.backend]
+
+    print(f"\n  Target:  {target_root}")
+    print(f"  Backend: {backend_info.name} ({config.model})")
+    print(f"  Mode:    {mode}")
+    print("  Output:  docs/ai-context-report.md")
+    if mode == "apply":
+        print("  Plus:    in-place edits to fix sync/cross-reference issues\n")
+    else:
+        print()
+
+    if not questionary.confirm("Proceed?", default=True).ask():
+        print("Aborted.")
+        sys.exit(0)
+
+    from skillnir.docs_optimizer import optimize_docs
+    from skillnir.generator import GenerationProgress
+
+    tool_count = 0
+
+    def on_progress(p: GenerationProgress) -> None:
+        nonlocal tool_count
+        if p.kind == "phase":
+            print(f"\n  >>> {p.content}")
+        elif p.kind == "status":
+            print(f"  [{p.kind}] {p.content}")
+        elif p.kind == "tool_use":
+            tool_count += 1
+            print(f"  [{tool_count}] {p.content}")
+        elif p.kind == "text":
+            print(p.content, end="", flush=True)
+        elif p.kind == "error":
+            print(f"  [ERROR] {p.content}")
+
+    print(f"\n{'─' * 50}")
+    print(f"  Optimizing AI docs ({mode} mode)...")
+    print(f"{'─' * 50}\n")
+
+    result = asyncio.run(optimize_docs(target_root, mode=mode, on_progress=on_progress))
+
+    print(f"\n{'─' * 50}")
+    if result.success:
+        print("  Optimize complete!")
+        print(f"    Mode:        {result.mode}")
+        if result.report_path:
+            print(f"    Report:      {result.report_path}")
+        if result.files_touched:
+            print(f"    Files touched: {len(result.files_touched)}")
+            for p in result.files_touched:
+                print(f"      - {p}")
+        if result.backend_used:
+            print(f"    Backend:     {result.backend_used.value}")
+    else:
+        print(f"  Optimize failed: {result.error}")
+    print(f"{'─' * 50}\n")
 
 
 def _sound() -> None:
@@ -1436,6 +1615,8 @@ def main() -> None:
             "generate-rule",
             "generate-wiki",
             "delete-wiki",
+            "compress-docs",
+            "optimize-docs",
             "check-skill",
             "ask",
             "plan",
@@ -1444,7 +1625,7 @@ def main() -> None:
             "config",
             "sound",
         ],
-        help="install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. delete-wiki: remove project wiki (llms.txt + docs/) from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. generate-wiki: generate project wiki (llms.txt + docs/) with AI. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. events: search upcoming AI events and conferences worldwide. config: manage backend/model. sound: manage Claude Code sound notifications.",
+        help="install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. delete-wiki: remove project wiki (llms.txt + docs/) from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. generate-wiki: generate project wiki (llms.txt + docs/) with AI. compress-docs: rule-based + AI tone compression of all AI-related docs. optimize-docs: audit and optionally fix AI-doc inconsistencies/cross-references. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. events: search upcoming AI events and conferences worldwide. config: manage backend/model. sound: manage Claude Code sound notifications.",
     )
     args = parser.parse_args()
 
@@ -1464,6 +1645,10 @@ def main() -> None:
         _generate_wiki()
     elif args.command == "delete-wiki":
         _delete_wiki_cmd()
+    elif args.command == "compress-docs":
+        _compress_docs()
+    elif args.command == "optimize-docs":
+        _optimize_docs()
     elif args.command == "check-skill":
         _check_skill()
     elif args.command == "ask":

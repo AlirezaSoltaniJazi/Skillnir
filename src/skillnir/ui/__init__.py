@@ -122,6 +122,7 @@ def run_ui(port: int = 8080) -> None:
         generate_skill,
         home,
         ignore,
+        optimize_docs,
         research,
         security_page,
         settings,

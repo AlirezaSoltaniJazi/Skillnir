@@ -69,6 +69,7 @@ SKILL_SCOPES: tuple[str, ...] = (
     "wdio",
     "selenium",
     "appium",
+    "manual-tester",
 )
 
 SCOPE_LABELS: dict[str, str] = {
@@ -98,6 +99,7 @@ SCOPE_LABELS: dict[str, str] = {
     "wdio": "WebDriverIO (wdio.conf/custom commands/services/BiDi/reporters/visual testing)",
     "selenium": "Selenium (Selenium 4+/Grid/multi-language/PageFactory/Actions API/waits)",
     "appium": "Appium (Appium 2.0/XCUITest/UiAutomator2/gestures/hybrid apps/cloud testing)",
+    "manual-tester": "Manual Tester (ISTQB/test cases/boundary values/equivalence/exploratory/test plans)",
 }
 
 
@@ -230,8 +232,17 @@ def _build_user_prompt(
     target_project: Path,
     project_name: str,
     scope: str,
+    pure: bool = False,
 ) -> str:
-    """Construct the runtime user prompt with project-specific details."""
+    """Construct the runtime user prompt with project-specific details.
+
+    When ``pure`` is True, the prompt instructs the AI to skip the
+    project-scan phases and produce a generic, reusable skill grounded
+    only in the system prompt's best-practice patterns. The output
+    directory still lives under ``target_project/.data/skills/`` so the
+    user can install the skill into a real project, but the skill body
+    references no project-specific paths.
+    """
     skill_name = to_camel_case(project_name)
     output_dir = target_project / ".data" / "skills" / skill_name
     output_file = output_dir / "SKILL.md"
@@ -242,6 +253,24 @@ def _build_user_prompt(
         ref_section = (
             f"\n\nReference skill for format guidance: {ref_skill}\n"
             f"Read {ref_skill / 'SKILL.md'} before generating to match the style."
+        )
+
+    if pure:
+        return (
+            f"PURE MODE — generate a generic, reusable {scope} skill.\n\n"
+            "Do NOT scan or read the target project. Skip every project-scan / "
+            "synthesis phase in the system prompt. Generate the skill grounded "
+            "ONLY in the system prompt's best-practice patterns and templates.\n\n"
+            "Use these placeholders where project specifics would normally go:\n"
+            "- File paths: write `path/to/your/file.ext` (never invent real paths)\n"
+            "- Project name: write `YOUR_PROJECT`\n"
+            "- Stack / framework: list common options for the scope, not a specific choice\n"
+            "- Examples: synthetic / canonical (not derived from any real codebase)\n\n"
+            f"The skill name is \"{skill_name}\".\n"
+            f"Use \"{skill_name}\" as the 'name' field in YAML frontmatter.\n"
+            f"Create the output directory if needed: mkdir -p {output_dir}\n"
+            f"Write the final SKILL.md to: {output_file}"
+            f"{ref_section}"
         )
 
     return (
@@ -262,6 +291,7 @@ async def generate_skill_sdk(
     scope: str,
     prompt_text: str,
     on_progress: Callable[[GenerationProgress], None] | None = None,
+    pure: bool = False,
 ) -> SkillGenerationResult:
     """Generate skill using claude-agent-sdk (async, streaming). Claude only."""
     from claude_agent_sdk import (
@@ -287,7 +317,7 @@ async def generate_skill_sdk(
         **build_claude_sdk_kwargs(),
     )
 
-    user_prompt = _build_user_prompt(target_project, project_name, scope)
+    user_prompt = _build_user_prompt(target_project, project_name, scope, pure=pure)
 
     try:
         async for message in query(prompt=user_prompt, options=options):
@@ -328,18 +358,24 @@ def generate_skill_subprocess(
     backend: AIBackend,
     model: str,
     on_progress: Callable[[GenerationProgress], None] | None = None,
+    pure: bool = False,
 ) -> SkillGenerationResult:
     """Generate skill using any backend CLI subprocess with real-time streaming."""
     skill_name = to_camel_case(project_name)
     info = BACKENDS[backend]
     _emit(on_progress, "phase", f"Starting {info.name}...")
 
-    user_prompt = _build_user_prompt(target_project, project_name, scope)
+    user_prompt = _build_user_prompt(target_project, project_name, scope, pure=pure)
     full_prompt = prompt_text + "\n\n---\n\n" + user_prompt
     cmd = build_subprocess_command(backend, full_prompt, model=model, max_turns=20)
 
     try:
-        _emit(on_progress, "phase", f"Scanning project ({scope})...")
+        phase_label = (
+            f"Generating generic ({scope}) skill..."
+            if pure
+            else f"Scanning project ({scope})..."
+        )
+        _emit(on_progress, "phase", phase_label)
 
         proc = subprocess.Popen(
             cmd,
@@ -477,8 +513,13 @@ async def generate_skill(
     backend_override: AIBackend | None = None,
     model_override: str | None = None,
     prompt_version_override: str | None = None,
+    pure: bool = False,
 ) -> SkillGenerationResult:
-    """Main entry point: load prompt, use configured backend, generate skill."""
+    """Main entry point: load prompt, use configured backend, generate skill.
+
+    When ``pure`` is True the AI is told to skip the project scan and
+    produce a generic, reusable skill grounded only in the system prompt.
+    """
     skill_name = to_camel_case(project_name)
     _emit(on_progress, "phase", "Loading skill prompt...")
 
@@ -502,7 +543,12 @@ async def generate_skill(
     if backend == AIBackend.CLAUDE and _claude_sdk_available():
         _emit(on_progress, "status", "Using Claude SDK")
         return await generate_skill_sdk(
-            target_project, project_name, scope, prompt_text, on_progress
+            target_project,
+            project_name,
+            scope,
+            prompt_text,
+            on_progress,
+            pure=pure,
         )
 
     if not cli_available:
@@ -526,4 +572,5 @@ async def generate_skill(
         backend,
         model,
         on_progress,
+        pure,
     )
