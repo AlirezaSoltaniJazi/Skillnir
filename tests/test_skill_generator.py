@@ -112,6 +112,33 @@ class TestBuildUserPrompt:
             prompt = _build_user_prompt(tmp_path, "myproj", "backend")
             assert "ref-skill" in prompt
 
+    def test_pure_mode_marker_present(self, tmp_path: Path):
+        """Pure mode must include explicit instructions to skip the scan."""
+        with patch("skillnir.skill_generator._find_reference_skill", return_value=None):
+            prompt = _build_user_prompt(tmp_path, "myproj", "backend", pure=True)
+            assert "PURE MODE" in prompt
+            assert "Do NOT scan" in prompt
+            assert "YOUR_PROJECT" in prompt
+
+    def test_default_mode_has_no_pure_marker(self, tmp_path: Path):
+        with patch("skillnir.skill_generator._find_reference_skill", return_value=None):
+            prompt = _build_user_prompt(tmp_path, "myproj", "backend")
+            assert "PURE MODE" not in prompt
+
+
+class TestManualTesterScope:
+    def test_in_skill_scopes(self):
+        assert "manual-tester" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "manual-tester" in SCOPE_LABELS
+        assert "ISTQB" in SCOPE_LABELS["manual-tester"]
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("manual-tester", "v1")
+        assert "ISTQB" in text
+        assert "Manual Tester" in text or "manual tester" in text.lower()
+
 
 # ── _check_skill_outputs ─────────────────────────────────────
 
