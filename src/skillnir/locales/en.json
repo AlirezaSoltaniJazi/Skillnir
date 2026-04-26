@@ -148,6 +148,8 @@
       "sort_by": "Sort by:",
       "project_root": "Project root",
       "source_skills_path": "Source skills path",
+      "derive_source_from_target": "Derive from target",
+      "derive_source_tooltip": "Set source to <target>/.data/skills",
       "syncing_skill": "Syncing skill {index}/{total}: {name}...",
       "injecting_skill": "Injecting skill {index}/{total}: {name}...",
       "starting": "Starting...",
