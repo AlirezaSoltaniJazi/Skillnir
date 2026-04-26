@@ -93,6 +93,14 @@ def run_ui(port: int = 8080) -> None:
     if _research_dir.is_dir():
         app.add_static_files("/research-files", str(_research_dir))
 
+    _testing_research_dir = (
+        Path(__file__).resolve().parent.parent.parent.parent
+        / ".data"
+        / "testing-research"
+    )
+    _testing_research_dir.mkdir(parents=True, exist_ok=True)
+    app.add_static_files("/testing-research-files", str(_testing_research_dir))
+
     # ── Events files (landing page + event pages) ────────────
     _events_dir = (
         Path(__file__).resolve().parent.parent.parent.parent / ".data" / "events"
@@ -129,6 +137,7 @@ def run_ui(port: int = 8080) -> None:
         skill,
         supported,
         templates,
+        testing_research,
         usage_page,
         wiki,
     )
