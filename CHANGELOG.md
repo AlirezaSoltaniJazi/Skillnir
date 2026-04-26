@@ -5,6 +5,41 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2026-04-26
+
+### Added
+
+- **`testing-research` CLI command + `/testing-research` UI page** -- sibling of the existing `research` (AI-engineering) feature, scoped to **testing & QA** content. New module [src/skillnir/testing_researcher.py](src/skillnir/testing_researcher.py) clones the research pipeline (per-topic AI search, dedup by article ID, markdown + HTML article pages, filterable landing page, Google Chat/Slack/Discord/Teams/Telegram/Cliq notification cards via the existing `send_gchat_intel_report`). 16 topics: test-automation, manual-testing, ai-in-testing, performance, API/contract, mobile, accessibility, security, visual-regression, test-data-management, chaos-engineering, testops-cicd, BDD/TDD, quality-engineering, test-reporting, qa-conferences. 35-domain source allowlist (Ministry of Testing, DevelopSense, Satisfice, BrowserStack, Sauce Labs, Playwright/Cypress/WebdriverIO/Selenium docs, Mabl, Applitools, k6, etc.) grouped into 10 source filters. CI runner ([scripts/run_intel.py](scripts/run_intel.py)) gains `testing-research` dispatch + `AI_AGENT_TESTING_RESEARCH_TOPICS` / `AI_AGENT_TESTING_RESEARCH_DATE_RANGE` env vars. Storage at `.data/testing-research/`, served at `/testing-research-files/index.html`.
+- **New skill scope `manual-tester`** -- generates an ISTQB-grounded manual testing skill (test case design, boundary value analysis, equivalence partitioning, decision tables, state transition, exploratory charters, defect reports). Scope catalog is now 27 entries. New prompt template at [.data/promptsv1/generate-skill-manual-tester.md](.data/promptsv1/generate-skill-manual-tester.md) covers Phase 1-8 with required reference files, asset templates, anti-patterns, and ISTQB technique tables.
+- **Pure / generic skill mode** -- `generate-skill` now accepts a `pure: bool` flag (CLI prompt + UI checkbox). When enabled, the AI skips the project-scan phases and produces a generic, reusable skill grounded only in the system-prompt's best-practice patterns. Useful for building a skill library that's not tied to one codebase. Output still lands under `.data/skills/{name}/` so the user can install it into any project.
+- **`compress-docs` CLI command + `/compress-docs` UI page** -- finds canonical AI-related docs across a target project (`agents.md`, `INJECT.md`, `llms.txt`, `docs/*.md`, `.cursor/rules/*.mdc`, `.data/skills/*/SKILL.md`, `INJECT.md`, `LEARNED.md`, `references/*.md`, etc.), runs the existing rule-based `compress_prompt()` on each, and optionally chains an AI tone-tightening pass through Claude. Symlinks skipped so canonical files are only rewritten once. Dry-run by default; explicit Apply step rewrites in place.
+- **`optimize-docs` CLI command + `/optimize-docs` UI page** -- AI-driven audit of all AI-context docs in a project. Two modes: `report` (default, dry-run) writes `docs/ai-context-report.md` with findings (skill list drift, frontmatter issues, token-budget violations, missing cross-references, contradictions); `apply` mode also fixes inconsistencies in place via `Edit` (smallest possible diffs, never wholesale-rewrites generated files).
+- **`docs_compressor.py` module** -- new `find_ai_docs()`, `compress_docs_dry_run()`, `compress_docs_apply()` (with optional AI tone pass via SDK / subprocess).
+- **`docs_optimizer.py` module** -- mirrors the dual SDK / subprocess pattern of `wiki_generator.py`. `OptimizeDocsResult` dataclass tracks mode, report path, and files touched.
+- **Two new prompt templates** -- `.data/promptsv1/compress-docs-tone.md` (tone tightener with strict preservation rules for code, frontmatter, and tables) and `.data/promptsv1/optimize-docs.md` (full audit + fix recipe).
+- **`generate-wiki` CLI command + `/generate-wiki` UI page** -- scans a target project with the configured AI backend and emits an `llms.txt` index at the project root plus a `docs/` folder with 6 focused pages (architecture, modules, dataflow, extending, getting-started, troubleshooting). Token-efficient entry point for AI agents -- saves 5k-50k tokens per session compared to broad codebase crawling. Sibling to `generate-docs` and `generate-rule`. Mirrors the same dual-path execution (Claude SDK + subprocess fallback for Cursor/Gemini/Copilot).
+- **`delete-wiki` CLI command + `/delete-wiki` UI page** -- removes `llms.txt` and the canonical `docs/*.md` pages produced by `generate-wiki`. Preserves any user-authored docs under `docs/` (only deletes the 6 canonical pages by name, then cleans the directory if empty).
+- **Claude Opus 4.7 (`claude-opus-4-7`)** -- added as the new default tier-1 Claude model. Mirrored across Cursor and Copilot backends (both expose Claude models).
+- **Claude Opus 4.5 and Opus 4.1** -- added to the active legacy model list.
+- **Reasoning effort control** (Claude SDK only) -- new `effort` config field with `low | medium | high | max` levels. Persisted in `~/.skillnir/config.json`. Selectable from the Settings page; current value shown in the header backend chip. Default `high` (omitted from SDK calls so models that don't support effort don't error).
+- **Thinking mode control** (Claude SDK only) -- new `thinking_mode` config field with `adaptive | disabled` options. Persisted in `~/.skillnir/config.json`. Selectable from the Settings page; current value shown in the header backend chip. Default `adaptive` (recommended for Opus 4.6/4.7 and Sonnet 4.6; required for Opus 4.7 since `budget_tokens` is removed there).
+- **`--effort` flag passed to Claude subprocess** -- `build_subprocess_command()` now appends `--effort <level>` to Claude CLI invocations when the user has customized the value.
+- **`build_claude_sdk_kwargs()` helper** in `backends.py` -- single source of truth for translating user config to `ClaudeAgentOptions` kwargs (effort + thinking). Used by all 4 SDK call sites (`generator`, `rule_generator`, `skill_generator`, `wiki_generator`).
+
+### Changed
+
+- **Manual-tester skill prompt enriched** ([.data/promptsv1/generate-skill-manual-tester.md](.data/promptsv1/generate-skill-manual-tester.md)) -- new "PHASE 2.5: ADDITIONAL CRAFT" section grounded in current web sources: ISTQB CTFL **v4.0** (May 2024 redesign, 6 chapters, 1135-min curriculum), Session-Based Test Management (SBTM 5-phase / 60-120 min sessions / 20-30 % time allocation rule), Bach + Bolton heuristic oracles (FEW HICCUPPS, SFDIPOT, CRUSSPIC STMPL), RIMGEA defect-report heuristic, AI-in-QA 2026 trends (GenAI test generation, autonomous QA, self-healing locators, visual validation AI, observability-driven quality, test orchestration over automation), WCAG 2.2 manual testing matrix (NVDA/JAWS/VoiceOver/TalkBack + ADA Title II April 24 2026 deadline), real-device cloud strategy (BrowserStack/Sauce Labs/LambdaTest/AWS Device Farm/Perfecto/Kobiton), test-data management (synthetic data, masking, GDPR/HIPAA), shift-left + shift-right in manual context, documentation modernization (mind maps, screen recording, AI-summarized session notes). Sources cited at the bottom of the prompt.
+- **Default Claude model bumped from `sonnet` (4.6) to `opus` (4.7)** -- defaults users to the most capable model.
+- **Cleaned up Claude model list** -- switched dated suffix IDs to clean aliases where supported by the API (`claude-haiku-4-5` instead of `claude-haiku-4-5-20251001`, `claude-opus-4-0` instead of `claude-opus-4-0-20250514`, `claude-sonnet-4-5` instead of `claude-sonnet-4-5-20251001`, etc.).
+
+### Removed
+
+- **Retired Claude models pruned from the model list**:
+  - `claude-3-opus-20240229` (retired Jan 5, 2026)
+  - `claude-3-5-sonnet-20241022` (retired Oct 28, 2025)
+  - `claude-3-5-haiku-20241022` (retired Feb 19, 2026)
+  - `claude-3-haiku-20240307` (deprecated, retires Apr 19, 2026)
+
 ## [1.3.7] - 2026-04-12
 
 ### Added
