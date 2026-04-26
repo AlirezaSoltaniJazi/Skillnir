@@ -18,6 +18,9 @@ AI_AGENT_EVENT_COUNTRIES      (optional) — comma-separated country codes (e.g.
                                Empty or unset = all countries.
 AI_AGENT_RESEARCH_TOPICS      (optional) — comma-separated research topic keys.
                                Empty or unset = all topics.
+AI_AGENT_TESTING_RESEARCH_TOPICS  (optional) — comma-separated testing-research topic keys.
+                                   Empty or unset = all topics.
+AI_AGENT_TESTING_RESEARCH_DATE_RANGE  (optional) — date-range filter string.
 AI_AGENT_SECURITY_CATEGORIES  (optional) — comma-separated security category keys.
                                Empty or unset = all categories.
 AI_AGENT_BENCHMARK_TOP_N      (optional, default "10") — how many top models to fetch.
@@ -26,8 +29,8 @@ Usage
 -----
     python scripts/run_intel.py <feature> [--notify-limit N]
 
-Where ``<feature>`` is one of ``research``, ``events``, ``security``,
-``benchmarks``.
+Where ``<feature>`` is one of ``research``, ``testing-research``, ``events``,
+``security``, ``benchmarks``.
 
 Exit codes
 ----------
@@ -129,6 +132,10 @@ def _index_path_for(feature: str) -> Path:
         from skillnir.researcher import _get_research_dir
 
         return _get_research_dir() / "research-index.json"
+    if feature == "testing-research":
+        from skillnir.testing_researcher import _get_testing_research_dir
+
+        return _get_testing_research_dir() / "testing-research-index.json"
     if feature == "events":
         from skillnir.events import _get_events_dir
 
@@ -186,6 +193,25 @@ async def _run_feature(feature: str, model: str | None, backend: AIBackend) -> A
         if date_range:
             _log(f"research date range: {date_range}")
         return await research(
+            on_progress=_emit_progress,
+            backend_override=backend,
+            model_override=model,
+            topics=topics,
+            date_range=date_range,
+        )
+
+    if feature == "testing-research":
+        from skillnir.testing_researcher import testing_research
+
+        topics = _csv_env("AI_AGENT_TESTING_RESEARCH_TOPICS")
+        if topics:
+            _log(f"testing-research topics filter: {topics}")
+        date_range = (
+            os.environ.get("AI_AGENT_TESTING_RESEARCH_DATE_RANGE") or ""
+        ).strip() or None
+        if date_range:
+            _log(f"testing-research date range: {date_range}")
+        return await testing_research(
             on_progress=_emit_progress,
             backend_override=backend,
             model_override=model,
@@ -288,7 +314,7 @@ def _extract_fields(
     """Map an index item dict to ``(title, description, reference_url)``."""
     title = str(item.get("title") or item.get("name") or "(no title)").strip()
 
-    if feature == "research":
+    if feature in ("research", "testing-research"):
         topic = str(item.get("topic") or "").strip()
         pub_date = str(item.get("published_date") or "").strip()
         tag_parts = [p for p in [topic, pub_date] if p]
@@ -461,7 +487,7 @@ def main() -> int:
     )
     parser.add_argument(
         "feature",
-        choices=["research", "events", "security", "benchmarks"],
+        choices=["research", "testing-research", "events", "security", "benchmarks"],
         help="Which intel pipeline to run.",
     )
     parser.add_argument(
