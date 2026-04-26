@@ -24,13 +24,16 @@ AI_AGENT_TESTING_RESEARCH_DATE_RANGE  (optional) — date-range filter string.
 AI_AGENT_SECURITY_CATEGORIES  (optional) — comma-separated security category keys.
                                Empty or unset = all categories.
 AI_AGENT_BENCHMARK_TOP_N      (optional, default "10") — how many top models to fetch.
+AI_AGENT_NEWS_CATEGORIES      (optional) — comma-separated news category keys.
+                               Empty or unset = all categories.
+AI_AGENT_NEWS_RECENCY         (optional, default "7d") — one of "24h", "48h", "7d".
 
 Usage
 -----
     python scripts/run_intel.py <feature> [--notify-limit N]
 
 Where ``<feature>`` is one of ``research``, ``testing-research``, ``events``,
-``security``, ``benchmarks``.
+``security``, ``benchmarks``, ``news``.
 
 Exit codes
 ----------
@@ -148,6 +151,10 @@ def _index_path_for(feature: str) -> Path:
         from skillnir.benchmarks import _get_benchmarks_dir
 
         return _get_benchmarks_dir() / "benchmarks-index.json"
+    if feature == "news":
+        from skillnir.news import _get_news_dir
+
+        return _get_news_dir() / "news-index.json"
     raise ValueError(f"unknown feature: {feature}")
 
 
@@ -258,6 +265,27 @@ async def _run_feature(feature: str, model: str | None, backend: AIBackend) -> A
             model_count=top_n,
         )
 
+    if feature == "news":
+        from skillnir.news import DEFAULT_RECENCY, NEWS_RECENCY, search_news
+
+        categories = _csv_env("AI_AGENT_NEWS_CATEGORIES")
+        if categories:
+            _log(f"news categories filter: {categories}")
+        recency = (
+            os.environ.get("AI_AGENT_NEWS_RECENCY") or DEFAULT_RECENCY
+        ).strip() or DEFAULT_RECENCY
+        if recency not in NEWS_RECENCY:
+            _log(f"unknown recency {recency!r}; falling back to {DEFAULT_RECENCY}")
+            recency = DEFAULT_RECENCY
+        _log(f"news recency: {recency}")
+        return await search_news(
+            on_progress=_emit_progress,
+            backend_override=backend,
+            model_override=model,
+            categories=categories,
+            recency=recency,
+        )
+
     raise ValueError(f"unknown feature: {feature}")
 
 
@@ -346,6 +374,14 @@ def _extract_fields(
             desc = f"[{severity.upper()}] {raw_desc}"
         else:
             desc = raw_desc
+        url = str(item.get("source_url") or "").strip()
+    elif feature == "news":
+        category = str(item.get("category") or "").strip()
+        pub_date = str(item.get("published_date") or "").strip()
+        tag_parts = [p for p in [category, pub_date] if p]
+        tag = f"[{' - '.join(tag_parts)}] " if tag_parts else ""
+        title = f"{tag}{title}"
+        desc = str(item.get("summary") or "").strip()
         url = str(item.get("source_url") or "").strip()
     elif feature == "benchmarks":
         provider = str(item.get("provider") or "").strip()
@@ -487,7 +523,14 @@ def main() -> int:
     )
     parser.add_argument(
         "feature",
-        choices=["research", "testing-research", "events", "security", "benchmarks"],
+        choices=[
+            "research",
+            "testing-research",
+            "events",
+            "security",
+            "benchmarks",
+            "news",
+        ],
         help="Which intel pipeline to run.",
     )
     parser.add_argument(

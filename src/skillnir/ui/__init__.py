@@ -108,6 +108,10 @@ def run_ui(port: int = 8080) -> None:
     _events_dir.mkdir(parents=True, exist_ok=True)
     app.add_static_files("/events-files", str(_events_dir))
 
+    _news_dir = Path(__file__).resolve().parent.parent.parent.parent / ".data" / "news"
+    _news_dir.mkdir(parents=True, exist_ok=True)
+    app.add_static_files("/news-files", str(_news_dir))
+
     _benchmarks_dir = (
         Path(__file__).resolve().parent.parent.parent.parent / ".data" / "benchmarks"
     )
@@ -130,6 +134,7 @@ def run_ui(port: int = 8080) -> None:
         generate_skill,
         home,
         ignore,
+        news,
         optimize_docs,
         research,
         security_page,
