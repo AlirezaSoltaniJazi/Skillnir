@@ -59,7 +59,7 @@ async def page_generate_skill():
             )
 
             add_to_current_cb = ui.checkbox(
-                t('pages.generate_skill.also_add_to_current', lang), value=True
+                t('pages.generate_skill.also_add_to_current', lang), value=False
             ).classes('hidden')
 
             def _on_target_change():

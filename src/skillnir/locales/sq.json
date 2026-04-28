@@ -197,7 +197,7 @@
       "title": "Gjenero aftësi",
       "subtitle": "Skano një projekt me AI dhe gjenero një SKILL.md të specializuar",
       "target_project_root": "Direktoria rrënjësore e projektit objektiv",
-      "project_name": "Emri i projektit",
+      "project_name": "Emri i aftësisë",
       "skill_scope": "Fusha e aftësisë",
       "prompt_version": "Versioni i promptit",
       "also_add_to_current": "Shto aftësinë edhe në projektin aktual",

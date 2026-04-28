@@ -197,7 +197,7 @@
       "title": "Skill generieren",
       "subtitle": "Ein Projekt mit AI scannen und eine domainspezifische SKILL.md generieren",
       "target_project_root": "Zielprojekt-Stammpfad",
-      "project_name": "Projektname",
+      "project_name": "Skill-Name",
       "skill_scope": "Skill-Umfang",
       "prompt_version": "Prompt-Version",
       "also_add_to_current": "Skill auch zum aktuellen Projekt hinzufuegen",

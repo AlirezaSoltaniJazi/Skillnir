@@ -197,7 +197,7 @@
       "title": "Generer un Skill",
       "subtitle": "Scanner un projet avec l'AI et generer un SKILL.md specifique au domaine",
       "target_project_root": "Racine du projet cible",
-      "project_name": "Nom du projet",
+      "project_name": "Nom du skill",
       "skill_scope": "Portee du skill",
       "prompt_version": "Version du prompt",
       "also_add_to_current": "Ajouter aussi le skill au projet actuel",

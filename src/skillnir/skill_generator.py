@@ -464,35 +464,13 @@ def _check_skill_outputs(
     except Exception:
         pass  # Don't fail on frontmatter issues — the file exists
 
-    # Copy to skillnir's .data/skills/
-    source_path = _copy_to_source(skill_dir, skill_name)
-
     return SkillGenerationResult(
         success=True,
         skill_name=skill_name,
         target_skill_path=skill_md,
-        source_skill_path=source_path,
+        source_skill_path=skill_md,
         backend_used=backend,
     )
-
-
-def _copy_to_source(target_skill_dir: Path, skill_name: str) -> Path | None:
-    """Copy generated skill back to skillnir's .data/skills/."""
-    try:
-        source_skills = get_source_skills_dir()
-        dest = source_skills / skill_name
-
-        # Skip copy if source and destination are the same path
-        # (happens when generating a skill for the skillnir project itself)
-        if dest.resolve() == target_skill_dir.resolve():
-            return dest / "SKILL.md"
-
-        if dest.exists():
-            shutil.rmtree(dest)
-        shutil.copytree(target_skill_dir, dest)
-        return dest / "SKILL.md"
-    except Exception:
-        return None
 
 
 def _claude_sdk_available() -> bool:

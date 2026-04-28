@@ -149,10 +149,9 @@ class TestCheckSkillOutputs:
         skill_dir.mkdir(parents=True)
         (skill_dir / "SKILL.md").write_text("---\nname: proj-backend\n---\n")
 
-        with patch("skillnir.skill_generator._copy_to_source", return_value=None):
-            result = _check_skill_outputs(tmp_path, "proj-backend", AIBackend.CLAUDE)
-            assert result.success is True
-            assert result.target_skill_path == skill_dir / "SKILL.md"
+        result = _check_skill_outputs(tmp_path, "proj-backend", AIBackend.CLAUDE)
+        assert result.success is True
+        assert result.target_skill_path == skill_dir / "SKILL.md"
 
     def test_failure_when_skill_md_missing(self, tmp_path: Path):
         result = _check_skill_outputs(tmp_path, "proj-backend", AIBackend.CLAUDE)
@@ -164,10 +163,9 @@ class TestCheckSkillOutputs:
         skill_dir.mkdir(parents=True)
         (skill_dir / "SKILL.md").write_text("---\ndescription: no name\n---\n")
 
-        with patch("skillnir.skill_generator._copy_to_source", return_value=None):
-            result = _check_skill_outputs(tmp_path, "proj-backend", AIBackend.CLAUDE)
-            assert result.success is False
-            assert "name" in result.error
+        result = _check_skill_outputs(tmp_path, "proj-backend", AIBackend.CLAUDE)
+        assert result.success is False
+        assert "name" in result.error
 
 
 # ── generate_skill (mocked orchestration) ────────────────────

@@ -248,7 +248,7 @@
       "title": "Generate Skill",
       "subtitle": "Scan a project with AI and generate a domain-specific SKILL.md",
       "target_project_root": "Target project root",
-      "project_name": "Project name",
+      "project_name": "Skill name",
       "skill_scope": "Skill scope",
       "prompt_version": "Prompt version",
       "also_add_to_current": "Also add skill to current project",
