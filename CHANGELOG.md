@@ -49,7 +49,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Progress-panel elapsed-time ticker no longer crashes when its UI element is disposed** -- the async tick task in `progress_panel.py` now catches `RuntimeError` from accessing a torn-down NiceGUI element and self-cancels instead of bubbling an unhandled task exception. Hit when navigating away from a generate-skill / generate-wiki page mid-run.
 - **Generate-skill page now stops the elapsed timer even when generation raises** -- `generate_skill()` is now wrapped in `try/finally` so a backend exception no longer leaks a runaway elapsed-time ticker into the next page render.
 
-
 ### Removed
 
 - **Retired Claude models pruned from the model list**:
