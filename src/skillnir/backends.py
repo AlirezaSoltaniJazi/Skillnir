@@ -88,17 +88,61 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         cli_command="agent",
         supports_stream_json=True,
         models=(
+            # Tier 2 — balanced (default)
             ModelInfo("auto", "auto", "Auto (recommended)", is_default=True, tier=2),
-            ModelInfo("gpt-5.4", "gpt-5.4", "GPT-5.4", tier=1),
-            ModelInfo("gpt-5.3-code", "gpt-5.3-code", "GPT-5.3 Code", tier=1),
-            ModelInfo("claude-opus-4-7", "opus", "Claude Opus 4.7", tier=1),
-            ModelInfo("claude-opus-4-6", "opus-4.6", "Claude Opus 4.6", tier=1),
-            ModelInfo("claude-sonnet-4-6", "sonnet", "Claude Sonnet 4.6", tier=2),
-            ModelInfo("gemini-2.5-pro", "gemini-pro", "Gemini 2.5 Pro", tier=2),
-            ModelInfo("gpt-4o", "gpt-4o", "GPT-4o", tier=2),
-            ModelInfo("o3", "o3", "o3", tier=1),
-            ModelInfo("claude-haiku-4-5", "haiku", "Claude Haiku 4.5", tier=3),
-            ModelInfo("gpt-5.3", "gpt-5.3", "GPT-5.3", tier=2),
+            ModelInfo("composer-2", "composer-2", "Composer 2", tier=2),
+            ModelInfo(
+                "claude-4.6-sonnet-medium",
+                "claude-4.6-sonnet-medium",
+                "Claude 4.6 Sonnet",
+                tier=2,
+            ),
+            ModelInfo(
+                "claude-4.6-sonnet-medium-thinking",
+                "claude-4.6-sonnet-medium-thinking",
+                "Claude 4.6 Sonnet (thinking)",
+                tier=2,
+            ),
+            ModelInfo("gpt-5.4-medium", "gpt-5.4-medium", "GPT-5.4 Medium", tier=2),
+            ModelInfo("gpt-5.3-codex", "gpt-5.3-codex", "GPT-5.3 Codex", tier=2),
+            ModelInfo(
+                "claude-4.5-sonnet", "claude-4.5-sonnet", "Claude 4.5 Sonnet", tier=2
+            ),
+            # Tier 1 — powerful
+            ModelInfo(
+                "claude-4.6-opus-max",
+                "claude-4.6-opus-max",
+                "Claude 4.6 Opus Max",
+                tier=1,
+            ),
+            ModelInfo(
+                "claude-4.6-opus-max-thinking",
+                "claude-4.6-opus-max-thinking",
+                "Claude 4.6 Opus Max (thinking)",
+                tier=1,
+            ),
+            ModelInfo("gpt-5.5-high", "gpt-5.5-high", "GPT-5.5 High", tier=1),
+            ModelInfo(
+                "gpt-5.5-extra-high", "gpt-5.5-extra-high", "GPT-5.5 Extra High", tier=1
+            ),
+            ModelInfo("gpt-5.4-xhigh", "gpt-5.4-xhigh", "GPT-5.4 XHigh", tier=1),
+            ModelInfo("gemini-3.1-pro", "gemini-3.1-pro", "Gemini 3.1 Pro", tier=1),
+            ModelInfo(
+                "grok-4-20-thinking",
+                "grok-4-20-thinking",
+                "Grok 4-20 (thinking)",
+                tier=1,
+            ),
+            # Tier 3 — fast / cheap
+            ModelInfo("composer-2-fast", "composer-2-fast", "Composer 2 Fast", tier=3),
+            ModelInfo(
+                "gpt-5.4-mini-medium", "gpt-5.4-mini-medium", "GPT-5.4 Mini", tier=3
+            ),
+            ModelInfo("gpt-5-mini", "gpt-5-mini", "GPT-5 Mini", tier=3),
+            ModelInfo(
+                "gpt-5.4-nano-medium", "gpt-5.4-nano-medium", "GPT-5.4 Nano", tier=3
+            ),
+            ModelInfo("gemini-3-flash", "gemini-3-flash", "Gemini 3 Flash", tier=3),
         ),
         default_model="auto",
         usage_command=None,
@@ -156,19 +200,27 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         cli_command="copilot",
         supports_stream_json=False,
         models=(
-            ModelInfo("gpt-4o", "gpt-4o", "GPT-4o", is_default=True, tier=2),
-            ModelInfo("claude-sonnet-4", "claude-sonnet", "Claude Sonnet 4", tier=2),
-            ModelInfo("o3", "o3", "o3", tier=1),
+            # Names match the identifiers shown by Copilot CLI's /model picker.
+            # Tier 2 — balanced (default)
+            ModelInfo(
+                "claude-sonnet-4-5",
+                "claude-sonnet-4-5",
+                "Claude Sonnet 4.5",
+                is_default=True,
+                tier=2,
+            ),
+            ModelInfo("claude-sonnet-4", "claude-sonnet-4", "Claude Sonnet 4", tier=2),
+            ModelInfo("gpt-5", "gpt-5", "GPT-5", tier=2),
+            ModelInfo("gpt-4.1", "gpt-4.1", "GPT-4.1", tier=2),
+            # Tier 1 — powerful
+            ModelInfo("claude-opus-4-1", "claude-opus-4-1", "Claude Opus 4.1", tier=1),
+            ModelInfo("claude-opus-4", "claude-opus-4", "Claude Opus 4", tier=1),
+            ModelInfo("gemini-2.5-pro", "gemini-2.5-pro", "Gemini 2.5 Pro", tier=1),
+            # Tier 3 — fast / cheap
+            ModelInfo("gpt-5-mini", "gpt-5-mini", "GPT-5 Mini", tier=3),
             ModelInfo("o4-mini", "o4-mini", "o4-mini", tier=3),
-            ModelInfo("gpt-5.4", "gpt-5.4", "GPT-5.4", tier=1),
-            ModelInfo("gpt-5.3", "gpt-5.3", "GPT-5.3", tier=2),
-            ModelInfo("claude-opus-4-7", "claude-opus", "Claude Opus 4.7", tier=1),
-            ModelInfo("claude-opus-4-6", "claude-opus-4.6", "Claude Opus 4.6", tier=1),
-            ModelInfo("gemini-2.5-pro", "gemini-pro", "Gemini 2.5 Pro", tier=1),
-            ModelInfo("o3-pro", "o3-pro", "o3 Pro", tier=1),
-            ModelInfo("gpt-4o-mini", "gpt-4o-mini", "GPT-4o Mini", tier=3),
         ),
-        default_model="gpt-4o",
+        default_model="claude-sonnet-4-5",
         usage_command=None,
         usage_url="https://github.com/settings/billing",
         version_command=("copilot", "--version"),
@@ -391,6 +443,9 @@ class AppConfig:
         except ValueError:
             backend = AIBackend.CLAUDE
         model = d.get("model", BACKENDS[backend].default_model)
+        valid_aliases = {m.alias for m in BACKENDS[backend].models}
+        if model not in valid_aliases:
+            model = BACKENDS[backend].default_model
         pv = d.get("prompt_version", _default_prompt_version())
         if pv not in get_prompt_versions():
             pv = _default_prompt_version()

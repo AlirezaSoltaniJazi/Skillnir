@@ -5,37 +5,46 @@ _CLI_SETUP_INFO: tuple[dict, ...] = (
         'name': 'Claude Code',
         'icon': 'smart_toy',
         'install': 'npm install -g @anthropic-ai/claude-code',
-        'install_alt': 'brew install claude-code',
+        'install_alt': 'brew install --cask claude-code',
         'login': 'claude login',
         'verify': 'claude --version',
-        'notes': 'Requires Node.js 18+. You can also install via Homebrew.',
+        'notes': 'Requires Node.js 18+. macOS users can also install via Homebrew (cask).',
     },
     {
         'name': 'Cursor Agent',
         'icon': 'code',
-        'install': 'npm install -g @anthropic-ai/cursor-agent',
+        'install': 'curl https://cursor.com/install -fsS | bash',
         'install_alt': 'Also available via Cursor IDE (ships with the IDE)',
-        'login': 'agent login',
-        'verify': 'agent --version',
-        'notes': 'Requires Node.js 18+. Can also be used through the Cursor IDE.',
+        'login': 'cursor-agent login',
+        'verify': 'cursor-agent --version',
+        'notes': (
+            'Installs the cursor-agent binary (also available as "agent"). '
+            'Can also be used through the Cursor IDE.'
+        ),
     },
     {
         'name': 'Gemini CLI',
         'icon': 'diamond',
-        'install': 'npm install -g @anthropic-ai/gemini-cli',
-        'install_alt': None,
-        'login': 'gemini login',
+        'install': 'npm install -g @google/gemini-cli',
+        'install_alt': 'brew install gemini-cli',
+        'login': 'gemini',
         'verify': 'gemini --version',
-        'notes': 'Requires Node.js 18+ and a Google AI account.',
+        'notes': (
+            'Requires Node.js 18+ and a Google AI account. '
+            'Sign in via the in-app prompt the first time you run "gemini".'
+        ),
     },
     {
         'name': 'GitHub Copilot',
         'icon': 'hub',
-        'install': 'npm install -g @anthropic-ai/copilot-cli',
+        'install': 'npm install -g @github/copilot',
         'install_alt': None,
-        'login': 'copilot login',
+        'login': 'copilot  (then run /login inside the TUI)',
         'verify': 'copilot --version',
-        'notes': 'Requires a GitHub account with Copilot access.',
+        'notes': (
+            'Requires Node.js 22+ and a GitHub account with Copilot access. '
+            'Sign in by running "copilot" and using the /login command.'
+        ),
     },
 )
 
@@ -76,7 +85,7 @@ async def show_welcome_dialog() -> None:
         )
         if dismissed == 'true':
             return
-    except TimeoutError:
+    except TimeoutError, RuntimeError:
         return
 
     dont_show = {'checked': False}

@@ -160,16 +160,18 @@ async def page_generate_skill():
 
             from skillnir.skill_generator import generate_skill
 
-            result = await generate_skill(
-                target,
-                project_name,
-                scope,
-                on_progress=on_progress,
-                prompt_version_override=skill_version_select.value,
-                pure=pure_cb.value,
-            )
+            try:
+                result = await generate_skill(
+                    target,
+                    project_name,
+                    scope,
+                    on_progress=on_progress,
+                    prompt_version_override=skill_version_select.value,
+                    pure=pure_cb.value,
+                )
+            finally:
+                timer_ctl['active'] = False
 
-            timer_ctl['active'] = False
             secs = int(time.time() - start_time)
             progress_container.clear()
 

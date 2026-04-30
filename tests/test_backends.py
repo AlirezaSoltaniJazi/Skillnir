@@ -87,12 +87,19 @@ class TestAppConfig:
 
     def test_from_dict_round_trip(self):
         original = AppConfig(
-            backend=AIBackend.COPILOT, model="gpt-4o", prompt_version="v1"
+            backend=AIBackend.COPILOT, model="claude-sonnet-4-5", prompt_version="v1"
         )
         restored = AppConfig.from_dict(original.to_dict())
         assert restored.backend == original.backend
         assert restored.model == original.model
         assert restored.prompt_version == original.prompt_version
+
+    def test_from_dict_invalid_model_falls_back(self):
+        cfg = AppConfig.from_dict(
+            {"backend": "cursor", "model": "gpt-5.3"}  # stale, no longer in registry
+        )
+        assert cfg.backend == AIBackend.CURSOR
+        assert cfg.model == BACKENDS[AIBackend.CURSOR].default_model
 
     def test_from_dict_invalid_backend_falls_back(self):
         cfg = AppConfig.from_dict({"backend": "nonexistent"})
