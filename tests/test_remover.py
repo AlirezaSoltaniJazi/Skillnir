@@ -6,8 +6,10 @@ from skillnir.remover import (
     delete_docs,
     delete_skill,
     delete_skills,
+    delete_wiki,
     find_docs_installations,
     find_skill_installations,
+    find_wiki_installations,
 )
 
 
@@ -227,5 +229,75 @@ class TestDeleteDocs:
 
     def test_handles_no_docs(self, tmp_path: Path):
         result = delete_docs(tmp_path)
+        assert result.error is None
+        assert result.removed_files == []
+
+
+# ── Wiki removal ─────────────────────────────────────────────
+
+
+def _setup_wiki(tmp_path: Path) -> None:
+    """Create a llms.txt + canonical docs/ pages."""
+    (tmp_path / "llms.txt").write_text("# project\n", encoding="utf-8")
+    docs = tmp_path / "docs"
+    docs.mkdir()
+    for name in (
+        "architecture.md",
+        "modules.md",
+        "dataflow.md",
+        "extending.md",
+        "getting-started.md",
+        "troubleshooting.md",
+    ):
+        (docs / name).write_text(f"# {name}\n", encoding="utf-8")
+
+
+class TestFindWikiInstallations:
+    def test_finds_llms_and_canonical_docs(self, tmp_path: Path):
+        _setup_wiki(tmp_path)
+        found = find_wiki_installations(tmp_path)
+        names = {p.name for p in found}
+        assert "llms.txt" in names
+        assert "architecture.md" in names
+        assert "troubleshooting.md" in names
+
+    def test_ignores_unrelated_docs_files(self, tmp_path: Path):
+        (tmp_path / "llms.txt").write_text("# x")
+        docs = tmp_path / "docs"
+        docs.mkdir()
+        (docs / "user-guide.md").write_text("# user guide")
+        found = find_wiki_installations(tmp_path)
+        # Only llms.txt — user-guide.md is not part of the canonical wiki
+        assert {p.name for p in found} == {"llms.txt"}
+
+    def test_returns_empty_when_no_wiki(self, tmp_path: Path):
+        assert find_wiki_installations(tmp_path) == []
+
+
+class TestDeleteWiki:
+    def test_removes_llms_and_docs(self, tmp_path: Path):
+        _setup_wiki(tmp_path)
+        result = delete_wiki(tmp_path)
+        assert result.error is None
+        assert len(result.removed_files) == 7  # llms.txt + 6 canonical pages
+        assert not (tmp_path / "llms.txt").exists()
+        assert not (tmp_path / "docs" / "architecture.md").exists()
+
+    def test_cleans_empty_docs_dir(self, tmp_path: Path):
+        _setup_wiki(tmp_path)
+        result = delete_wiki(tmp_path)
+        assert tmp_path / "docs" in result.cleaned_dirs
+        assert not (tmp_path / "docs").exists()
+
+    def test_preserves_docs_dir_with_other_content(self, tmp_path: Path):
+        _setup_wiki(tmp_path)
+        (tmp_path / "docs" / "user-guide.md").write_text("# user")
+        result = delete_wiki(tmp_path)
+        assert tmp_path / "docs" not in result.cleaned_dirs
+        assert (tmp_path / "docs").exists()
+        assert (tmp_path / "docs" / "user-guide.md").exists()
+
+    def test_handles_no_wiki(self, tmp_path: Path):
+        result = delete_wiki(tmp_path)
         assert result.error is None
         assert result.removed_files == []

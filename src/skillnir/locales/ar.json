@@ -197,7 +197,7 @@
       "title": "توليد مهارة",
       "subtitle": "فحص المشروع بالذكاء الاصطناعي وتوليد SKILL.md متخصص بالمجال",
       "target_project_root": "جذر المشروع الهدف",
-      "project_name": "اسم المشروع",
+      "project_name": "اسم المهارة",
       "skill_scope": "نطاق المهارة",
       "prompt_version": "إصدار الموجه",
       "also_add_to_current": "إضافة المهارة إلى المشروع الحالي أيضاً",

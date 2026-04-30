@@ -64,14 +64,30 @@ def page_install():
                 ui.label(t('pages.install.source_skills_help', lang)).classes(
                     'text-secondary mb-2 mt-4'
                 )
-                source_input = (
-                    ui.input(
-                        t('pages.install.source_skills_path', lang),
-                        value=default_source,
+                with ui.row().classes('w-full max-w-xl items-center gap-2'):
+                    source_input = (
+                        ui.input(
+                            t('pages.install.source_skills_path', lang),
+                            value=default_source,
+                        )
+                        .classes('flex-grow')
+                        .props('outlined dense rounded')
                     )
-                    .classes('w-full max-w-xl')
-                    .props('outlined dense rounded')
-                )
+
+                    def derive_source_from_target():
+                        target_value = (target_input.value or '').strip()
+                        if not target_value:
+                            return
+                        derived = Path(target_value).expanduser() / '.data' / 'skills'
+                        source_input.value = str(derived)
+
+                    ui.button(
+                        t('pages.install.derive_source_from_target', lang),
+                        on_click=derive_source_from_target,
+                        icon='sync',
+                    ).props('flat dense rounded').tooltip(
+                        t('pages.install.derive_source_tooltip', lang)
+                    )
                 target_error = ui.label('').classes('text-red-500 hidden')
 
                 def validate_and_next():

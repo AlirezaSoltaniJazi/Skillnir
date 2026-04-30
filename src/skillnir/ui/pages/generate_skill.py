@@ -59,7 +59,7 @@ async def page_generate_skill():
             )
 
             add_to_current_cb = ui.checkbox(
-                t('pages.generate_skill.also_add_to_current', lang), value=True
+                t('pages.generate_skill.also_add_to_current', lang), value=False
             ).classes('hidden')
 
             def _on_target_change():
@@ -103,6 +103,10 @@ async def page_generate_skill():
                     .props('outlined dense rounded')
                 )
 
+            pure_cb = ui.checkbox(
+                t('pages.generate_skill.pure_mode', lang), value=False
+            )
+
             skill_name_label = ui.label(
                 t(
                     'pages.generate_skill.skill_name_preview',
@@ -144,6 +148,7 @@ async def page_generate_skill():
             name_input.disable()
             scope_select.disable()
             skill_version_select.disable()
+            pure_cb.disable()
             results_container.clear()
 
             start_time = time.time()
@@ -155,15 +160,18 @@ async def page_generate_skill():
 
             from skillnir.skill_generator import generate_skill
 
-            result = await generate_skill(
-                target,
-                project_name,
-                scope,
-                on_progress=on_progress,
-                prompt_version_override=skill_version_select.value,
-            )
+            try:
+                result = await generate_skill(
+                    target,
+                    project_name,
+                    scope,
+                    on_progress=on_progress,
+                    prompt_version_override=skill_version_select.value,
+                    pure=pure_cb.value,
+                )
+            finally:
+                timer_ctl['active'] = False
 
-            timer_ctl['active'] = False
             secs = int(time.time() - start_time)
             progress_container.clear()
 
@@ -172,6 +180,7 @@ async def page_generate_skill():
             name_input.enable()
             scope_select.enable()
             skill_version_select.enable()
+            pure_cb.enable()
 
             if result.success:
                 # Sync to current project if requested

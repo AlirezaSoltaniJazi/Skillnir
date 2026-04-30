@@ -197,7 +197,7 @@
       "title": "Skill genereren",
       "subtitle": "Een project scannen met AI en een domeinspecifieke SKILL.md genereren",
       "target_project_root": "Hoofdpad van het doelproject",
-      "project_name": "Projectnaam",
+      "project_name": "Skillnaam",
       "skill_scope": "Skillomvang",
       "prompt_version": "Promptversie",
       "also_add_to_current": "Skill ook aan huidig project toevoegen",

@@ -197,7 +197,7 @@
       "title": "تولید مهارت",
       "subtitle": "اسکن پروژه با AI و تولید یک SKILL.md اختصاصی دامنه",
       "target_project_root": "ریشه پروژه مقصد",
-      "project_name": "نام پروژه",
+      "project_name": "نام مهارت",
       "skill_scope": "حوزه مهارت",
       "prompt_version": "نسخه پرامپت",
       "also_add_to_current": "افزودن مهارت به پروژه فعلی نیز",

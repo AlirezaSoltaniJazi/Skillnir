@@ -1,4 +1,17 @@
-"""Rule generation with multi-backend support (Claude, Gemini, Copilot)."""
+"""Optimize and sync AI docs across a target project.
+
+Two modes:
+
+- **Report** (default, dry-run) — AI scans every AI-context file in the
+  project, identifies sync gaps and inconsistencies, and writes a single
+  ``docs/ai-context-report.md`` with findings. No other files are modified.
+- **Apply** — AI scans, then **edits files in place** to fix inconsistencies,
+  add cross-references between docs, and sync the skill list across
+  ``agents.md`` / ``llms.txt`` / ``INJECT.md`` / ``docs/*.md``.
+
+Mirrors the dual SDK / subprocess execution pattern used by the other
+generators (``generator.py``, ``rule_generator.py``, ``wiki_generator.py``).
+"""
 
 import asyncio
 import shutil
@@ -19,52 +32,67 @@ from skillnir.generator import GenerationProgress, _emit, get_prompts_dir
 
 
 @dataclass
-class RuleGenerationResult:
+class OptimizeDocsResult:
     success: bool
-    rule_files: list[Path] = field(default_factory=list)
+    mode: str = "report"  # "report" | "apply"
+    report_path: Path | None = None
+    files_touched: list[Path] = field(default_factory=list)
     error: str | None = None
     backend_used: AIBackend | None = None
 
 
-def load_rule_prompt(version: str = "") -> str:
-    """Load the rule generation prompt."""
-    prompt_file = get_prompts_dir(version) / "generate-rule-general.md"
+REPORT_FILENAME = "ai-context-report.md"
+
+
+def load_optimize_prompt(version: str = "") -> str:
+    """Load the AI sync/optimize system prompt."""
+    prompt_file = get_prompts_dir(version) / "optimize-docs.md"
     if not prompt_file.exists():
         raise FileNotFoundError(
             f"Prompt file not found: {prompt_file}\n"
-            f"Expected at {get_prompts_dir(version)}/generate-rule-general.md"
+            f"Expected at {get_prompts_dir(version)}/optimize-docs.md"
         )
     return prompt_file.read_text(encoding="utf-8")
 
 
-def _build_rule_user_prompt(target_project: Path, rule_topic: str) -> str:
-    """Construct the runtime user prompt with project-specific details."""
+def _build_user_prompt(target_project: Path, mode: str) -> str:
+    """User prompt: describe the project and tell the AI which mode to run."""
+    if mode == "apply":
+        return (
+            f"Optimize AI documentation for the project at {target_project}.\n"
+            "Mode: APPLY. Follow phases 1-4 in the system prompt: scan, "
+            "identify, fix, and add cross-references. Edit files in place.\n"
+            "After fixing, write a brief summary of changes to "
+            f"docs/{REPORT_FILENAME}."
+        )
     return (
-        f"Create a Cursor rule for the project at {target_project}.\n"
-        f'Rule topic: "{rule_topic}"\n'
-        f"Follow all instructions in the system prompt.\n"
-        f"Write the .mdc file to: {target_project}/.cursor/rules/\n"
-        f"Create the .cursor/rules/ directory if it doesn't exist: "
-        f"mkdir -p {target_project}/.cursor/rules"
+        f"Audit AI documentation for the project at {target_project}.\n"
+        "Mode: REPORT (dry-run). Follow phases 1-3 in the system prompt: "
+        "scan and identify, but **do not fix**. Write all findings and "
+        f"recommended fixes to docs/{REPORT_FILENAME}.\n"
+        "Do not edit any other file."
     )
 
 
-def _snapshot_rules(target_project: Path) -> set[Path]:
-    """Return current set of .mdc files in .cursor/rules/."""
-    rules_dir = target_project / ".cursor" / "rules"
-    if not rules_dir.is_dir():
-        return set()
-    return {p for p in rules_dir.glob("*.mdc")}
+def _snapshot_docs(target_project: Path) -> set[Path]:
+    """Capture current AI doc paths so we can diff what changed in apply mode."""
+    from skillnir.docs_compressor import find_ai_docs
+
+    snapshot: set[Path] = set(find_ai_docs(target_project))
+    report = target_project / "docs" / REPORT_FILENAME
+    if report.exists():
+        snapshot.add(report.resolve())
+    return snapshot
 
 
-async def generate_rule_sdk(
+async def optimize_docs_sdk(
     target_project: Path,
-    rule_topic: str,
+    mode: str,
     prompt_text: str,
     before_files: set[Path],
     on_progress: Callable[[GenerationProgress], None] | None = None,
-) -> RuleGenerationResult:
-    """Generate rule using claude-agent-sdk (async, streaming). Claude only."""
+) -> OptimizeDocsResult:
+    """Optimize via claude-agent-sdk (async, streaming). Claude only."""
     from claude_agent_sdk import (
         AssistantMessage,
         ClaudeAgentOptions,
@@ -78,16 +106,23 @@ async def generate_rule_sdk(
 
     _emit(on_progress, "phase", "Connecting to Claude SDK...")
 
+    # Apply mode needs Edit; report mode only needs Read + Write (the report).
+    tools = (
+        ["Read", "Glob", "Grep", "Bash", "Edit", "Write"]
+        if mode == "apply"
+        else ["Read", "Glob", "Grep", "Bash", "Write"]
+    )
+
     options = ClaudeAgentOptions(
         system_prompt=prompt_text,
-        max_turns=10,
-        allowed_tools=["Read", "Glob", "Grep", "Bash", "Write"],
+        max_turns=30 if mode == "apply" else 20,
+        allowed_tools=tools,
         permission_mode="acceptEdits",
         cwd=str(target_project),
         **build_claude_sdk_kwargs(),
     )
 
-    user_prompt = _build_rule_user_prompt(target_project, rule_topic)
+    user_prompt = _build_user_prompt(target_project, mode)
 
     try:
         async for message in query(prompt=user_prompt, options=options):
@@ -109,36 +144,35 @@ async def generate_rule_sdk(
                         message.usage,
                         getattr(message, 'total_cost_usd', None),
                     )
-    except Exception as e:
-        return RuleGenerationResult(
+    except Exception as exc:
+        return OptimizeDocsResult(
             success=False,
-            error=str(e),
+            mode=mode,
+            error=str(exc),
             backend_used=AIBackend.CLAUDE,
         )
 
-    return _check_rule_outputs(target_project, before_files, AIBackend.CLAUDE)
+    return _check_outputs(target_project, mode, before_files, AIBackend.CLAUDE)
 
 
-def generate_rule_subprocess(
+def optimize_docs_subprocess(
     target_project: Path,
-    rule_topic: str,
+    mode: str,
     prompt_text: str,
     before_files: set[Path],
     backend: AIBackend,
     model: str,
     on_progress: Callable[[GenerationProgress], None] | None = None,
-) -> RuleGenerationResult:
-    """Generate rule using any backend CLI subprocess with real-time streaming."""
+) -> OptimizeDocsResult:
+    """Optimize via backend CLI subprocess with real-time streaming."""
     info = BACKENDS[backend]
     _emit(on_progress, "phase", f"Starting {info.name}...")
 
-    user_prompt = _build_rule_user_prompt(target_project, rule_topic)
+    user_prompt = _build_user_prompt(target_project, mode)
     full_prompt = prompt_text + "\n\n---\n\n" + user_prompt
-    cmd = build_subprocess_command(backend, full_prompt, model=model, max_turns=10)
+    cmd = build_subprocess_command(backend, full_prompt, model=model)
 
     try:
-        _emit(on_progress, "phase", "Generating rule...")
-
         proc = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,
@@ -161,57 +195,65 @@ def generate_rule_subprocess(
         for line in proc.stdout:
             parse_stream_line(backend, line, on_progress)
 
-        proc.wait(timeout=300)
+        proc.wait(timeout=600)
         stderr_thread.join(timeout=5)
         stderr = ''.join(stderr_chunks)
 
         if proc.returncode != 0:
-            return RuleGenerationResult(
+            return OptimizeDocsResult(
                 success=False,
+                mode=mode,
                 error=f"{info.name} exited with code {proc.returncode}: {stderr}",
                 backend_used=backend,
             )
 
     except subprocess.TimeoutExpired:
         proc.kill()
-        return RuleGenerationResult(
+        return OptimizeDocsResult(
             success=False,
-            error=f"{info.name} timed out after 5 minutes.",
+            mode=mode,
+            error=f"{info.name} timed out after 10 minutes.",
             backend_used=backend,
         )
     except FileNotFoundError:
-        return RuleGenerationResult(
+        return OptimizeDocsResult(
             success=False,
+            mode=mode,
             error=f"{info.cli_command} CLI not found in PATH.",
             backend_used=backend,
         )
 
-    _emit(on_progress, "phase", "Verifying outputs...")
-    return _check_rule_outputs(target_project, before_files, backend)
+    return _check_outputs(target_project, mode, before_files, backend)
 
 
-def _check_rule_outputs(
+def _check_outputs(
     target_project: Path,
+    mode: str,
     before_files: set[Path],
     backend: AIBackend,
-) -> RuleGenerationResult:
-    """Verify that at least one new .mdc file was created."""
-    after_files = _snapshot_rules(target_project)
-    new_files = sorted(after_files - before_files)
+) -> OptimizeDocsResult:
+    """Verify expected outputs exist (report mode: report only; apply: any diff)."""
+    report_path = target_project / "docs" / REPORT_FILENAME
 
-    if not new_files:
-        return RuleGenerationResult(
+    if not report_path.exists():
+        return OptimizeDocsResult(
             success=False,
+            mode=mode,
             error=(
-                "No new .mdc files were created in .cursor/rules/. "
-                "The AI may need more turns or the topic may be too broad."
+                f"docs/{REPORT_FILENAME} was not created. "
+                "The AI may need more turns or the project may be too small."
             ),
             backend_used=backend,
         )
 
-    return RuleGenerationResult(
+    after_files = _snapshot_docs(target_project)
+    new_or_modified = sorted(after_files - before_files)
+
+    return OptimizeDocsResult(
         success=True,
-        rule_files=new_files,
+        mode=mode,
+        report_path=report_path,
+        files_touched=new_or_modified,
         backend_used=backend,
     )
 
@@ -225,24 +267,29 @@ def _claude_sdk_available() -> bool:
         return False
 
 
-async def generate_rule(
+async def optimize_docs(
     target_project: Path,
-    rule_topic: str,
+    mode: str = "report",
     on_progress: Callable[[GenerationProgress], None] | None = None,
     backend_override: AIBackend | None = None,
     model_override: str | None = None,
     prompt_version_override: str | None = None,
-) -> RuleGenerationResult:
-    """Main entry point: load prompt, use configured backend, generate rule."""
-    _emit(on_progress, "phase", "Loading rule prompt...")
+) -> OptimizeDocsResult:
+    """Main entry point. ``mode`` is ``"report"`` (default) or ``"apply"``."""
+    if mode not in ("report", "apply"):
+        return OptimizeDocsResult(
+            success=False, mode=mode, error=f"Unknown mode: {mode!r}"
+        )
+
+    _emit(on_progress, "phase", "Loading optimize prompt...")
 
     config = load_config()
     version = prompt_version_override or config.prompt_version
 
     try:
-        prompt_text = load_rule_prompt(version)
-    except FileNotFoundError as e:
-        return RuleGenerationResult(success=False, error=str(e))
+        prompt_text = load_optimize_prompt(version)
+    except FileNotFoundError as exc:
+        return OptimizeDocsResult(success=False, mode=mode, error=str(exc))
 
     backend = backend_override or config.backend
     model = model_override or config.model
@@ -250,19 +297,19 @@ async def generate_rule(
 
     _emit(on_progress, "phase", f"Using {info.name}...")
 
-    before_files = _snapshot_rules(target_project)
-
+    before_files = _snapshot_docs(target_project)
     cli_available = bool(shutil.which(info.cli_command))
 
     if backend == AIBackend.CLAUDE and _claude_sdk_available():
         _emit(on_progress, "status", "Using Claude SDK")
-        return await generate_rule_sdk(
-            target_project, rule_topic, prompt_text, before_files, on_progress
+        return await optimize_docs_sdk(
+            target_project, mode, prompt_text, before_files, on_progress
         )
 
     if not cli_available:
-        return RuleGenerationResult(
+        return OptimizeDocsResult(
             success=False,
+            mode=mode,
             error=f"{info.name} CLI ({info.cli_command}) not found in PATH.",
             backend_used=backend,
         )
@@ -272,9 +319,9 @@ async def generate_rule(
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(
         None,
-        generate_rule_subprocess,
+        optimize_docs_subprocess,
         target_project,
-        rule_topic,
+        mode,
         prompt_text,
         before_files,
         backend,

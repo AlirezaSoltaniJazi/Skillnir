@@ -1,4 +1,10 @@
-"""Rule generation with multi-backend support (Claude, Gemini, Copilot)."""
+"""Project wiki generation with multi-backend support (Claude, Gemini, Copilot).
+
+Generates a token-efficient ``llms.txt`` index plus a ``docs/`` folder with
+focused markdown pages (architecture, modules, dataflow, extending,
+getting-started, troubleshooting). Sibling to ``generator.py`` (single-file
+agents.md) and ``rule_generator.py`` (Cursor .mdc files).
+"""
 
 import asyncio
 import shutil
@@ -19,52 +25,55 @@ from skillnir.generator import GenerationProgress, _emit, get_prompts_dir
 
 
 @dataclass
-class RuleGenerationResult:
+class WikiGenerationResult:
     success: bool
-    rule_files: list[Path] = field(default_factory=list)
+    llms_txt_path: Path | None = None
+    docs_dir: Path | None = None
+    files_created: list[Path] = field(default_factory=list)
     error: str | None = None
     backend_used: AIBackend | None = None
 
 
-def load_rule_prompt(version: str = "") -> str:
-    """Load the rule generation prompt."""
-    prompt_file = get_prompts_dir(version) / "generate-rule-general.md"
+def load_wiki_prompt(version: str = "") -> str:
+    """Load the project wiki generation prompt."""
+    prompt_file = get_prompts_dir(version) / "generate-wiki.md"
     if not prompt_file.exists():
         raise FileNotFoundError(
             f"Prompt file not found: {prompt_file}\n"
-            f"Expected at {get_prompts_dir(version)}/generate-rule-general.md"
+            f"Expected at {get_prompts_dir(version)}/generate-wiki.md"
         )
     return prompt_file.read_text(encoding="utf-8")
 
 
-def _build_rule_user_prompt(target_project: Path, rule_topic: str) -> str:
-    """Construct the runtime user prompt with project-specific details."""
+def _build_wiki_user_prompt(target_project: Path) -> str:
+    """Construct the runtime user prompt for wiki generation."""
     return (
-        f"Create a Cursor rule for the project at {target_project}.\n"
-        f'Rule topic: "{rule_topic}"\n'
-        f"Follow all instructions in the system prompt.\n"
-        f"Write the .mdc file to: {target_project}/.cursor/rules/\n"
-        f"Create the .cursor/rules/ directory if it doesn't exist: "
-        f"mkdir -p {target_project}/.cursor/rules"
+        f"Generate a project wiki for the project at {target_project}.\n"
+        "Follow all phases in the system prompt.\n"
+        f"Write llms.txt to the project root and create the docs/ folder under "
+        f"{target_project}/docs/ with the markdown pages listed in the prompt."
     )
 
 
-def _snapshot_rules(target_project: Path) -> set[Path]:
-    """Return current set of .mdc files in .cursor/rules/."""
-    rules_dir = target_project / ".cursor" / "rules"
-    if not rules_dir.is_dir():
-        return set()
-    return {p for p in rules_dir.glob("*.mdc")}
+def _snapshot_wiki(target_project: Path) -> set[Path]:
+    """Return current wiki artefacts (llms.txt + docs/*.md)."""
+    snapshot: set[Path] = set()
+    llms_txt = target_project / "llms.txt"
+    if llms_txt.exists():
+        snapshot.add(llms_txt)
+    docs_dir = target_project / "docs"
+    if docs_dir.is_dir():
+        snapshot.update(p for p in docs_dir.glob("*.md"))
+    return snapshot
 
 
-async def generate_rule_sdk(
+async def generate_wiki_sdk(
     target_project: Path,
-    rule_topic: str,
     prompt_text: str,
     before_files: set[Path],
     on_progress: Callable[[GenerationProgress], None] | None = None,
-) -> RuleGenerationResult:
-    """Generate rule using claude-agent-sdk (async, streaming). Claude only."""
+) -> WikiGenerationResult:
+    """Generate wiki using claude-agent-sdk (async, streaming). Claude only."""
     from claude_agent_sdk import (
         AssistantMessage,
         ClaudeAgentOptions,
@@ -80,14 +89,14 @@ async def generate_rule_sdk(
 
     options = ClaudeAgentOptions(
         system_prompt=prompt_text,
-        max_turns=10,
+        max_turns=20,
         allowed_tools=["Read", "Glob", "Grep", "Bash", "Write"],
         permission_mode="acceptEdits",
         cwd=str(target_project),
         **build_claude_sdk_kwargs(),
     )
 
-    user_prompt = _build_rule_user_prompt(target_project, rule_topic)
+    user_prompt = _build_wiki_user_prompt(target_project)
 
     try:
         async for message in query(prompt=user_prompt, options=options):
@@ -110,34 +119,33 @@ async def generate_rule_sdk(
                         getattr(message, 'total_cost_usd', None),
                     )
     except Exception as e:
-        return RuleGenerationResult(
+        return WikiGenerationResult(
             success=False,
             error=str(e),
             backend_used=AIBackend.CLAUDE,
         )
 
-    return _check_rule_outputs(target_project, before_files, AIBackend.CLAUDE)
+    return _check_wiki_outputs(target_project, before_files, AIBackend.CLAUDE)
 
 
-def generate_rule_subprocess(
+def generate_wiki_subprocess(
     target_project: Path,
-    rule_topic: str,
     prompt_text: str,
     before_files: set[Path],
     backend: AIBackend,
     model: str,
     on_progress: Callable[[GenerationProgress], None] | None = None,
-) -> RuleGenerationResult:
-    """Generate rule using any backend CLI subprocess with real-time streaming."""
+) -> WikiGenerationResult:
+    """Generate wiki using any backend CLI subprocess with real-time streaming."""
     info = BACKENDS[backend]
     _emit(on_progress, "phase", f"Starting {info.name}...")
 
-    user_prompt = _build_rule_user_prompt(target_project, rule_topic)
+    user_prompt = _build_wiki_user_prompt(target_project)
     full_prompt = prompt_text + "\n\n---\n\n" + user_prompt
-    cmd = build_subprocess_command(backend, full_prompt, model=model, max_turns=10)
+    cmd = build_subprocess_command(backend, full_prompt, model=model)
 
     try:
-        _emit(on_progress, "phase", "Generating rule...")
+        _emit(on_progress, "phase", "Scanning project...")
 
         proc = subprocess.Popen(
             cmd,
@@ -161,12 +169,12 @@ def generate_rule_subprocess(
         for line in proc.stdout:
             parse_stream_line(backend, line, on_progress)
 
-        proc.wait(timeout=300)
+        proc.wait(timeout=600)
         stderr_thread.join(timeout=5)
         stderr = ''.join(stderr_chunks)
 
         if proc.returncode != 0:
-            return RuleGenerationResult(
+            return WikiGenerationResult(
                 success=False,
                 error=f"{info.name} exited with code {proc.returncode}: {stderr}",
                 backend_used=backend,
@@ -174,44 +182,55 @@ def generate_rule_subprocess(
 
     except subprocess.TimeoutExpired:
         proc.kill()
-        return RuleGenerationResult(
+        return WikiGenerationResult(
             success=False,
-            error=f"{info.name} timed out after 5 minutes.",
+            error=f"{info.name} timed out after 10 minutes.",
             backend_used=backend,
         )
     except FileNotFoundError:
-        return RuleGenerationResult(
+        return WikiGenerationResult(
             success=False,
             error=f"{info.cli_command} CLI not found in PATH.",
             backend_used=backend,
         )
 
     _emit(on_progress, "phase", "Verifying outputs...")
-    return _check_rule_outputs(target_project, before_files, backend)
+    return _check_wiki_outputs(target_project, before_files, backend)
 
 
-def _check_rule_outputs(
+def _check_wiki_outputs(
     target_project: Path,
     before_files: set[Path],
     backend: AIBackend,
-) -> RuleGenerationResult:
-    """Verify that at least one new .mdc file was created."""
-    after_files = _snapshot_rules(target_project)
+) -> WikiGenerationResult:
+    """Verify llms.txt + at least one new docs/*.md page."""
+    after_files = _snapshot_wiki(target_project)
     new_files = sorted(after_files - before_files)
+    llms_txt = target_project / "llms.txt"
+    docs_dir = target_project / "docs"
 
-    if not new_files:
-        return RuleGenerationResult(
+    if not llms_txt.exists():
+        return WikiGenerationResult(
             success=False,
             error=(
-                "No new .mdc files were created in .cursor/rules/. "
-                "The AI may need more turns or the topic may be too broad."
+                "llms.txt was not created. The AI may need more turns or the "
+                "project may be too complex."
             ),
             backend_used=backend,
         )
 
-    return RuleGenerationResult(
+    if not docs_dir.is_dir() or not any(docs_dir.glob("*.md")):
+        return WikiGenerationResult(
+            success=False,
+            error="No docs/*.md pages were created.",
+            backend_used=backend,
+        )
+
+    return WikiGenerationResult(
         success=True,
-        rule_files=new_files,
+        llms_txt_path=llms_txt,
+        docs_dir=docs_dir,
+        files_created=new_files,
         backend_used=backend,
     )
 
@@ -225,24 +244,23 @@ def _claude_sdk_available() -> bool:
         return False
 
 
-async def generate_rule(
+async def generate_wiki(
     target_project: Path,
-    rule_topic: str,
     on_progress: Callable[[GenerationProgress], None] | None = None,
     backend_override: AIBackend | None = None,
     model_override: str | None = None,
     prompt_version_override: str | None = None,
-) -> RuleGenerationResult:
-    """Main entry point: load prompt, use configured backend, generate rule."""
-    _emit(on_progress, "phase", "Loading rule prompt...")
+) -> WikiGenerationResult:
+    """Main entry point: load prompt, use configured backend, generate wiki."""
+    _emit(on_progress, "phase", "Loading wiki prompt...")
 
     config = load_config()
     version = prompt_version_override or config.prompt_version
 
     try:
-        prompt_text = load_rule_prompt(version)
+        prompt_text = load_wiki_prompt(version)
     except FileNotFoundError as e:
-        return RuleGenerationResult(success=False, error=str(e))
+        return WikiGenerationResult(success=False, error=str(e))
 
     backend = backend_override or config.backend
     model = model_override or config.model
@@ -250,18 +268,18 @@ async def generate_rule(
 
     _emit(on_progress, "phase", f"Using {info.name}...")
 
-    before_files = _snapshot_rules(target_project)
+    before_files = _snapshot_wiki(target_project)
 
     cli_available = bool(shutil.which(info.cli_command))
 
     if backend == AIBackend.CLAUDE and _claude_sdk_available():
         _emit(on_progress, "status", "Using Claude SDK")
-        return await generate_rule_sdk(
-            target_project, rule_topic, prompt_text, before_files, on_progress
+        return await generate_wiki_sdk(
+            target_project, prompt_text, before_files, on_progress
         )
 
     if not cli_available:
-        return RuleGenerationResult(
+        return WikiGenerationResult(
             success=False,
             error=f"{info.name} CLI ({info.cli_command}) not found in PATH.",
             backend_used=backend,
@@ -272,9 +290,8 @@ async def generate_rule(
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(
         None,
-        generate_rule_subprocess,
+        generate_wiki_subprocess,
         target_project,
-        rule_topic,
         prompt_text,
         before_files,
         backend,

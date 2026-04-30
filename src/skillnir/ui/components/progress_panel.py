@@ -79,11 +79,15 @@ def start_elapsed_timer(refs: dict, start_time: float) -> dict:
 
     async def _tick():
         while control['active']:
-            secs = int(time.time() - start_time)
-            if secs < 60:
-                refs['elapsed'].text = f'{secs}s'
-            else:
-                refs['elapsed'].text = f'{secs // 60}m {secs % 60}s'
+            try:
+                secs = int(time.time() - start_time)
+                if secs < 60:
+                    refs['elapsed'].text = f'{secs}s'
+                else:
+                    refs['elapsed'].text = f'{secs // 60}m {secs % 60}s'
+            except RuntimeError:
+                control['active'] = False
+                return
             await asyncio.sleep(1)
 
     asyncio.create_task(_tick())

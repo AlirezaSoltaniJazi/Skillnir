@@ -10,8 +10,10 @@ from skillnir.injector import inject_skill
 from skillnir.remover import (
     delete_docs,
     delete_skill,
+    delete_wiki,
     find_docs_installations,
     find_skill_installations,
+    find_wiki_installations,
 )
 from skillnir.scaffold import init_docs, init_skill, validate_skill_name
 from skillnir.skills import discover_skills, discover_skills_from_dir
@@ -333,7 +335,15 @@ def _generate_skill() -> None:
         sys.exit(0)
     scope = scope_answer
 
-    # Step 2b: Add to current project?
+    # Step 2b: Pure / generic mode?
+    pure = questionary.confirm(
+        "Pure / generic skill (don't scan target project)?",
+        default=False,
+    ).ask()
+    if pure is None:
+        sys.exit(0)
+
+    # Step 2c: Add to current project?
     add_to_current = False
     if target_root.resolve() != Path.cwd().resolve():
         add_to_current = questionary.confirm(
@@ -359,6 +369,7 @@ def _generate_skill() -> None:
     print(f"  Project:    {project_name}")
     print(f"  Scope:      {scope}")
     print(f"  Skill name: {skill_name}")
+    print(f"  Mode:       {'pure / generic' if pure else 'project-specific'}")
     print(f"  Output:     {target_root}/.data/skills/{skill_name}/SKILL.md\n")
 
     if not questionary.confirm("Proceed with skill generation?", default=True).ask():
@@ -391,7 +402,13 @@ def _generate_skill() -> None:
     print(f"{'─' * 50}\n")
 
     result = asyncio.run(
-        generate_skill(target_root, project_name, scope, on_progress=on_progress)
+        generate_skill(
+            target_root,
+            project_name,
+            scope,
+            on_progress=on_progress,
+            pure=pure,
+        )
     )
 
     # Step 6: Report
@@ -490,6 +507,261 @@ def _generate_rule() -> None:
             print(f"    Backend: {result.backend_used.value}")
     else:
         print(f"  Rule generation failed: {result.error}")
+    print(f"{'─' * 50}\n")
+
+
+def _generate_wiki() -> None:
+    """Generate a project wiki (llms.txt + docs/) for a target project."""
+    import asyncio
+
+    target_root = _ask_target_project()
+
+    from skillnir.backends import BACKENDS, PROMPT_VERSION_LABELS, load_config
+
+    config = load_config()
+    backend_info = BACKENDS[config.backend]
+    pv_label = PROMPT_VERSION_LABELS.get(config.prompt_version, config.prompt_version)
+
+    print(f"\n  Target:  {target_root}")
+    print(f"  Backend: {backend_info.name} ({config.model})")
+    print(f"  Prompts: {pv_label}")
+    print("  This will scan the project with AI and generate:")
+    print("    - llms.txt (project root)")
+    print("    - docs/ (architecture, modules, dataflow, extending,")
+    print("            getting-started, troubleshooting)\n")
+
+    if not questionary.confirm(
+        "Proceed with project wiki generation?", default=True
+    ).ask():
+        print("Aborted.")
+        sys.exit(0)
+
+    from skillnir.generator import GenerationProgress
+    from skillnir.wiki_generator import generate_wiki
+
+    tool_count = 0
+
+    def on_progress(p: GenerationProgress) -> None:
+        nonlocal tool_count
+        if p.kind == "phase":
+            print(f"\n  >>> {p.content}")
+        elif p.kind == "status":
+            print(f"  [{p.kind}] {p.content}")
+        elif p.kind == "tool_use":
+            tool_count += 1
+            print(f"  [{tool_count}] {p.content}")
+        elif p.kind == "text":
+            print(p.content, end="", flush=True)
+        elif p.kind == "error":
+            print(f"  [ERROR] {p.content}")
+
+    print(f"\n{'─' * 50}")
+    print("  Generating project wiki...")
+    print(f"{'─' * 50}\n")
+
+    result = asyncio.run(generate_wiki(target_root, on_progress=on_progress))
+
+    print(f"\n{'─' * 50}")
+    if result.success:
+        print("  Wiki generation complete!")
+        print(f"    llms.txt:  {result.llms_txt_path}")
+        print(f"    docs/:     {result.docs_dir}")
+        print(f"    Files:     {len(result.files_created)} created/updated")
+        if result.backend_used:
+            print(f"    Backend:   {result.backend_used.value}")
+    else:
+        print(f"  Wiki generation failed: {result.error}")
+    print(f"{'─' * 50}\n")
+
+
+def _delete_wiki_cmd() -> None:
+    """Delete project wiki (llms.txt + docs/) from a target project."""
+    target_root = _ask_target_project()
+
+    installations = find_wiki_installations(target_root)
+    if not installations:
+        print("No project wiki found in target project.")
+        sys.exit(0)
+
+    print("\n  Will delete:")
+    for path in installations:
+        print(f"    - {path}")
+    print()
+
+    if not questionary.confirm("Proceed with deletion?", default=False).ask():
+        print("Aborted.")
+        sys.exit(0)
+
+    result = delete_wiki(target_root)
+    if result.error:
+        print(f"  ✗ Error: {result.error}")
+    else:
+        print(f"  ✓ Removed {len(result.removed_files)} files")
+        if result.cleaned_dirs:
+            print(f"  ✓ Cleaned {len(result.cleaned_dirs)} empty directories")
+
+
+def _compress_docs() -> None:
+    """Compress AI-related docs (rule-based, optional AI tone pass)."""
+    import asyncio
+
+    target_root = _ask_target_project()
+
+    from skillnir.docs_compressor import (
+        compress_docs_apply,
+        compress_docs_dry_run,
+        find_ai_docs,
+    )
+
+    docs = find_ai_docs(target_root)
+    if not docs:
+        print("\n  No AI-related docs found in target project.")
+        sys.exit(0)
+
+    # Step 1: dry-run
+    print(f"\n  Found {len(docs)} AI docs. Running dry-run...\n")
+    dry = compress_docs_dry_run(target_root)
+    for r in dry.files:
+        rel = r.path.relative_to(target_root)
+        if r.error:
+            print(f"  [error] {rel}: {r.error}")
+        else:
+            print(
+                f"  - {rel}: {r.original_chars} -> {r.compressed_chars} chars "
+                f"({r.reduction_pct:.1f}% smaller)"
+            )
+    print(
+        f"\n  Total: {dry.total_original_chars} -> {dry.total_compressed_chars} "
+        f"chars ({dry.total_reduction_pct:.1f}% smaller)\n"
+    )
+
+    if not questionary.confirm("Apply rule-based compression?", default=False).ask():
+        print("Aborted.")
+        sys.exit(0)
+
+    with_tone = questionary.confirm(
+        "Also run AI tone-tightening pass after compression?", default=True
+    ).ask()
+    if with_tone is None:
+        sys.exit(0)
+
+    # Step 2: apply
+    from skillnir.generator import GenerationProgress
+
+    tool_count = 0
+
+    def on_progress(p: GenerationProgress) -> None:
+        nonlocal tool_count
+        if p.kind == "phase":
+            print(f"\n  >>> {p.content}")
+        elif p.kind == "status":
+            print(f"  [{p.kind}] {p.content}")
+        elif p.kind == "tool_use":
+            tool_count += 1
+            print(f"  [{tool_count}] {p.content}")
+        elif p.kind == "text":
+            print(p.content, end="", flush=True)
+        elif p.kind == "error":
+            print(f"  [ERROR] {p.content}")
+
+    print(f"\n{'─' * 50}")
+    print("  Applying compression...")
+    print(f"{'─' * 50}\n")
+
+    result = asyncio.run(
+        compress_docs_apply(
+            target_root, with_ai_tone=with_tone, on_progress=on_progress
+        )
+    )
+
+    print(f"\n{'─' * 50}")
+    written = sum(1 for r in result.files if r.written)
+    print(f"  Compressed {written}/{len(result.files)} files")
+    print(
+        f"  Total: {result.total_original_chars} -> {result.total_compressed_chars} "
+        f"chars ({result.total_reduction_pct:.1f}% smaller)"
+    )
+    print(f"  AI tone pass: {'applied' if result.ai_tone_applied else 'skipped'}")
+    if result.error:
+        print(f"  Note: {result.error}")
+    print(f"{'─' * 50}\n")
+
+
+def _optimize_docs() -> None:
+    """Audit and optionally fix AI-doc inconsistencies in a target project."""
+    import asyncio
+
+    target_root = _ask_target_project()
+
+    mode = questionary.select(
+        "Mode:",
+        choices=[
+            questionary.Choice(title="Report (dry-run, no writes)", value="report"),
+            questionary.Choice(
+                title="Apply (fix inconsistencies in place)", value="apply"
+            ),
+        ],
+    ).ask()
+    if mode is None:
+        sys.exit(0)
+
+    from skillnir.backends import BACKENDS, load_config
+
+    config = load_config()
+    backend_info = BACKENDS[config.backend]
+
+    print(f"\n  Target:  {target_root}")
+    print(f"  Backend: {backend_info.name} ({config.model})")
+    print(f"  Mode:    {mode}")
+    print("  Output:  docs/ai-context-report.md")
+    if mode == "apply":
+        print("  Plus:    in-place edits to fix sync/cross-reference issues\n")
+    else:
+        print()
+
+    if not questionary.confirm("Proceed?", default=True).ask():
+        print("Aborted.")
+        sys.exit(0)
+
+    from skillnir.docs_optimizer import optimize_docs
+    from skillnir.generator import GenerationProgress
+
+    tool_count = 0
+
+    def on_progress(p: GenerationProgress) -> None:
+        nonlocal tool_count
+        if p.kind == "phase":
+            print(f"\n  >>> {p.content}")
+        elif p.kind == "status":
+            print(f"  [{p.kind}] {p.content}")
+        elif p.kind == "tool_use":
+            tool_count += 1
+            print(f"  [{tool_count}] {p.content}")
+        elif p.kind == "text":
+            print(p.content, end="", flush=True)
+        elif p.kind == "error":
+            print(f"  [ERROR] {p.content}")
+
+    print(f"\n{'─' * 50}")
+    print(f"  Optimizing AI docs ({mode} mode)...")
+    print(f"{'─' * 50}\n")
+
+    result = asyncio.run(optimize_docs(target_root, mode=mode, on_progress=on_progress))
+
+    print(f"\n{'─' * 50}")
+    if result.success:
+        print("  Optimize complete!")
+        print(f"    Mode:        {result.mode}")
+        if result.report_path:
+            print(f"    Report:      {result.report_path}")
+        if result.files_touched:
+            print(f"    Files touched: {len(result.files_touched)}")
+            for p in result.files_touched:
+                print(f"      - {p}")
+        if result.backend_used:
+            print(f"    Backend:     {result.backend_used.value}")
+    else:
+        print(f"  Optimize failed: {result.error}")
     print(f"{'─' * 50}\n")
 
 
@@ -999,6 +1271,176 @@ def _research_cmd() -> None:
     print(f"{'─' * 50}\n")
 
 
+def _testing_research_cmd() -> None:
+    """Search latest testing / QA news, summarize articles, and generate a landing page."""
+    import asyncio
+    import webbrowser
+
+    from skillnir.backends import BACKENDS, load_config
+    from skillnir.testing_researcher import (
+        SOURCE_FILTERS,
+        TOPIC_LABELS,
+        testing_research,
+    )
+
+    if "--regenerate" in sys.argv:
+        from skillnir.testing_researcher import regenerate_landing
+
+        print("\n  Regenerating HTML article pages and landing page...")
+        count, index_path = regenerate_landing()
+        if count:
+            print(f"  Generated {count} HTML article page(s)")
+        else:
+            print("  All articles already have HTML pages")
+        if index_path:
+            print(f"  Landing page: {index_path}")
+            if questionary.confirm("Open landing page in browser?").ask():
+                webbrowser.open(str(index_path))
+        return
+
+    config = load_config()
+    backend_info = BACKENDS[config.backend]
+
+    print("\n  Testing & QA Research")
+    print(f"  Backend: {backend_info.name} ({config.model})")
+    print(f"\n  Topics to search:")
+    for key, label in TOPIC_LABELS.items():
+        print(f"    • {label}")
+
+    source_choices = questionary.checkbox(
+        "\n  Filter by source (leave blank for all):",
+        choices=[
+            questionary.Choice(label, value=key)
+            for key, label in SOURCE_FILTERS.items()
+        ],
+    ).ask()
+
+    if not questionary.confirm("\n  Search for latest articles?", default=True).ask():
+        sys.exit(0)
+
+    def on_progress(p) -> None:
+        if p.kind == "phase":
+            print(f"\n  >>> {p.content}")
+        elif p.kind == "status":
+            print(f"      {p.content}")
+        elif p.kind == "error":
+            print(f"  [ERROR] {p.content}")
+
+    print(f"\n{'─' * 50}\nSearching and summarizing...\n")
+
+    result = asyncio.run(
+        testing_research(on_progress=on_progress, sources=source_choices or None)
+    )
+
+    print(f"\n{'─' * 50}")
+    if result.success:
+        print(f"  Articles found:   {result.articles_found}")
+        print(f"  New articles:     {result.articles_new}")
+        print(f"  Skipped (dedup):  {result.articles_skipped}")
+        if result.index_path:
+            print(f"  Landing page:     {result.index_path}")
+            if questionary.confirm(
+                "\n  Open landing page in browser?", default=True
+            ).ask():
+                webbrowser.open(result.index_path.as_uri())
+    else:
+        print(f"  Failed: {result.error}")
+    print(f"{'─' * 50}\n")
+
+
+def _news_cmd() -> None:
+    """Search the latest AI news headlines by category and recency window."""
+    import asyncio
+    import webbrowser
+
+    from skillnir.backends import BACKENDS, load_config
+    from skillnir.news import (
+        DEFAULT_RECENCY,
+        NEWS_CATEGORIES,
+        NEWS_RECENCY,
+        search_news,
+    )
+
+    if "--regenerate" in sys.argv:
+        from skillnir.news import regenerate_landing
+
+        print("\n  Regenerating news markdown files and landing page...")
+        count, index_path = regenerate_landing()
+        if count:
+            print(f"  Generated {count} news markdown file(s)")
+        else:
+            print("  All news items already have markdown files")
+        if index_path:
+            print(f"  Landing page: {index_path}")
+            if questionary.confirm("Open landing page in browser?").ask():
+                webbrowser.open(str(index_path))
+        return
+
+    config = load_config()
+    backend_info = BACKENDS[config.backend]
+
+    print("\n  AI News Search")
+    print(f"  Backend: {backend_info.name} ({config.model})")
+
+    recency = questionary.select(
+        "\n  Recency window:",
+        choices=[
+            questionary.Choice("Last 24 hours", value="24h"),
+            questionary.Choice("Last 48 hours", value="48h"),
+            questionary.Choice("Last 7 days", value="7d"),
+        ],
+        default="Last 7 days",
+    ).ask()
+    if not recency:
+        recency = DEFAULT_RECENCY
+    if recency not in NEWS_RECENCY:
+        recency = DEFAULT_RECENCY
+
+    category_choices = questionary.checkbox(
+        "\n  Select categories (leave blank for all):",
+        choices=[
+            questionary.Choice(label, value=key, checked=True)
+            for key, label in NEWS_CATEGORIES.items()
+        ],
+    ).ask()
+
+    if not questionary.confirm("\n  Search for fresh AI news?", default=True).ask():
+        sys.exit(0)
+
+    def on_progress(p) -> None:
+        if p.kind == "phase":
+            print(f"\n  >>> {p.content}")
+        elif p.kind == "status":
+            print(f"      {p.content}")
+        elif p.kind == "error":
+            print(f"  [ERROR] {p.content}")
+
+    print(f"\n{'─' * 50}\nSearching for news...\n")
+
+    result = asyncio.run(
+        search_news(
+            on_progress=on_progress,
+            categories=category_choices or None,
+            recency=recency,
+        )
+    )
+
+    print(f"\n{'─' * 50}")
+    if result.success:
+        print(f"  Items found:      {result.items_found}")
+        print(f"  New items:        {result.items_new}")
+        print(f"  Skipped (dedup):  {result.items_skipped}")
+        if result.index_path:
+            print(f"  Landing page:     {result.index_path}")
+            if questionary.confirm(
+                "\n  Open landing page in browser?", default=True
+            ).ask():
+                webbrowser.open(result.index_path.as_uri())
+    else:
+        print(f"  Failed: {result.error}")
+    print(f"{'─' * 50}\n")
+
+
 def _events_cmd() -> None:
     """Search for upcoming AI events, conferences, and meetups worldwide."""
     import asyncio
@@ -1341,15 +1783,21 @@ def main() -> None:
             "generate-docs",
             "generate-skill",
             "generate-rule",
+            "generate-wiki",
+            "delete-wiki",
+            "compress-docs",
+            "optimize-docs",
             "check-skill",
             "ask",
             "plan",
             "research",
+            "testing-research",
             "events",
+            "news",
             "config",
             "sound",
         ],
-        help="install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. events: search upcoming AI events and conferences worldwide. config: manage backend/model. sound: manage Claude Code sound notifications.",
+        help="install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. delete-wiki: remove project wiki (llms.txt + docs/) from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. generate-wiki: generate project wiki (llms.txt + docs/) with AI. compress-docs: rule-based + AI tone compression of all AI-related docs. optimize-docs: audit and optionally fix AI-doc inconsistencies/cross-references. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. testing-research: search latest testing/QA news, summarize articles, generate landing page. events: search upcoming AI events and conferences worldwide. news: search fresh AI news headlines by category and recency. config: manage backend/model. sound: manage Claude Code sound notifications.",
     )
     args = parser.parse_args()
 
@@ -1365,6 +1813,14 @@ def main() -> None:
         _generate_skill()
     elif args.command == "generate-rule":
         _generate_rule()
+    elif args.command == "generate-wiki":
+        _generate_wiki()
+    elif args.command == "delete-wiki":
+        _delete_wiki_cmd()
+    elif args.command == "compress-docs":
+        _compress_docs()
+    elif args.command == "optimize-docs":
+        _optimize_docs()
     elif args.command == "check-skill":
         _check_skill()
     elif args.command == "ask":
@@ -1373,8 +1829,12 @@ def main() -> None:
         _plan_cmd()
     elif args.command == "research":
         _research_cmd()
+    elif args.command == "testing-research":
+        _testing_research_cmd()
     elif args.command == "events":
         _events_cmd()
+    elif args.command == "news":
+        _news_cmd()
     elif args.command == "delete-skill":
         _delete_skill_cmd()
     elif args.command == "delete-docs":

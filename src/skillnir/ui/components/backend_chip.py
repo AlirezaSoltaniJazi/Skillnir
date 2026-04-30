@@ -2,6 +2,8 @@
 
 from nicegui import ui
 
+from skillnir.backends import AIBackend
+
 
 def backend_chip(config, backend_info, on_click_switch=None) -> None:
     """Render a compact chip showing AI tool icon + model name."""
@@ -12,4 +14,10 @@ def backend_chip(config, backend_info, on_click_switch=None) -> None:
             with ui.column().classes('gap-0'):
                 ui.label(backend_info.name).classes('text-sm font-bold')
                 ui.label(f'Model: {config.model}').classes('text-xs text-secondary')
+                # Reasoning controls only meaningful for Claude SDK; hide for
+                # other backends so the chip stays compact and accurate.
+                if config.backend == AIBackend.CLAUDE:
+                    ui.label(
+                        f'Effort: {config.effort} · Thinking: {config.thinking_mode}'
+                    ).classes('text-xs text-secondary')
             ui.icon('expand_more', color='grey').classes('text-lg')

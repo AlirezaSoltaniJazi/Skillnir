@@ -41,7 +41,11 @@ NAV_GROUPS = [
         [
             ('gavel', 'Generate Rule', '/generate-rule'),
             ('auto_stories', 'Generate Docs', '/generate-docs'),
+            ('menu_book', 'Generate Wiki', '/generate-wiki'),
+            ('compress', 'Compress Docs', '/compress-docs'),
+            ('auto_fix_high', 'Optimize Docs', '/optimize-docs'),
             ('delete_sweep', 'Delete Docs', '/delete-docs'),
+            ('layers_clear', 'Delete Wiki', '/delete-wiki'),
         ],
     ),
     (
@@ -66,7 +70,9 @@ NAV_GROUPS = [
             ('devices', 'Tools Registry', '/tools'),
             ('analytics', 'Usage', '/usage'),
             ('science', 'Research', '/research'),
+            ('biotech', 'Testing Research', '/testing-research'),
             ('event', 'Events', '/events'),
+            ('newspaper', 'News', '/news'),
             ('assessment', 'Benchmarks', '/benchmarks'),
             ('security', 'Security', '/security'),
         ],
@@ -92,7 +98,15 @@ def get_nav_groups(lang: str | None = None) -> list:
             [
                 ("gavel", t("nav.items.generate_rule", lang), "/generate-rule"),
                 ("auto_stories", t("nav.items.generate_docs", lang), "/generate-docs"),
+                ("menu_book", t("nav.items.generate_wiki", lang), "/generate-wiki"),
+                ("compress", t("nav.items.compress_docs", lang), "/compress-docs"),
+                (
+                    "auto_fix_high",
+                    t("nav.items.optimize_docs", lang),
+                    "/optimize-docs",
+                ),
                 ("delete_sweep", t("nav.items.delete_docs", lang), "/delete-docs"),
+                ("layers_clear", t("nav.items.delete_wiki", lang), "/delete-wiki"),
             ],
         ),
         (
@@ -121,7 +135,13 @@ def get_nav_groups(lang: str | None = None) -> list:
                 ("devices", t("nav.items.tools_registry", lang), "/tools"),
                 ("analytics", t("nav.items.usage", lang), "/usage"),
                 ("science", t("nav.items.research", lang), "/research"),
+                (
+                    "biotech",
+                    t("nav.items.testing_research", lang),
+                    "/testing-research",
+                ),
                 ("event", t("nav.items.events", lang), "/events"),
+                ("newspaper", t("nav.items.news", lang), "/news"),
                 ("assessment", t("nav.items.benchmarks", lang), "/benchmarks"),
                 ("security", t("nav.items.security", lang), "/security"),
             ],

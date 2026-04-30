@@ -102,26 +102,31 @@ bandit -lll -iii -r src/
 
 ## CLI Commands
 
-| Command          | Description                                                        |
-| ---------------- | ------------------------------------------------------------------ |
-| `install`        | Sync skills and inject symlinks into AI tool directories (default) |
-| `install-ignore` | Install ignore files into AI tool directories                      |
-| `update`         | Sync skills only (version comparison, no symlink changes)          |
-| `generate-docs`  | Generate `agents.md` with AI-powered project analysis              |
-| `generate-skill` | Generate a domain-specific `SKILL.md` with AI                      |
-| `generate-rule`  | Generate Cursor rule files (`.mdc`) with AI                        |
-| `check-skill`    | Validate installed skill patterns via AI backend                   |
-| `init-skill`     | Create a default skill scaffold with placeholder files             |
-| `init-docs`      | Create a default `agents.md` template with tool symlinks           |
-| `delete-skill`   | Remove skill(s) from a project                                     |
-| `delete-docs`    | Remove AI docs from a project                                      |
-| `ask`            | Ask AI a question about a project (read-only)                      |
-| `plan`           | Get a detailed implementation plan from AI                         |
-| `research`       | Search latest AI engineering news and generate summaries           |
-| `events`         | Search upcoming AI events and conferences worldwide                |
-| `config`         | Manage backend and model configuration                             |
-| `sound`          | Manage Claude Code sound notification hooks                        |
-| `ui`             | Launch the web interface                                           |
+| Command            | Description                                                                   |
+| ------------------ | ----------------------------------------------------------------------------- |
+| `install`          | Sync skills and inject symlinks into AI tool directories (default)            |
+| `install-ignore`   | Install ignore files into AI tool directories                                 |
+| `update`           | Sync skills only (version comparison, no symlink changes)                     |
+| `generate-docs`    | Generate `agents.md` with AI-powered project analysis                         |
+| `generate-skill`   | Generate a domain-specific `SKILL.md` with AI                                 |
+| `generate-rule`    | Generate Cursor rule files (`.mdc`) with AI                                   |
+| `generate-wiki`    | Generate project wiki (`llms.txt` + `docs/`) with AI                          |
+| `compress-docs`    | Rule-based + AI tone compression of all AI-related docs                       |
+| `optimize-docs`    | Audit and (optionally) fix AI-doc inconsistencies + cross-refs                |
+| `check-skill`      | Validate installed skill patterns via AI backend                              |
+| `init-skill`       | Create a default skill scaffold with placeholder files                        |
+| `init-docs`        | Create a default `agents.md` template with tool symlinks                      |
+| `delete-skill`     | Remove skill(s) from a project                                                |
+| `delete-docs`      | Remove AI docs from a project                                                 |
+| `delete-wiki`      | Remove project wiki (`llms.txt` + `docs/`) from a project                     |
+| `ask`              | Ask AI a question about a project (read-only)                                 |
+| `plan`             | Get a detailed implementation plan from AI                                    |
+| `research`         | Search latest AI engineering news and generate summaries                      |
+| `testing-research` | Search latest testing/QA news (manual, automation, AI-in-testing, perf, a11y) |
+| `events`           | Search upcoming AI events and conferences worldwide                           |
+| `config`           | Manage backend and model configuration                                        |
+| `sound`            | Manage Claude Code sound notification hooks                                   |
+| `ui`               | Launch the web interface                                                      |
 
 ## Project Structure
 

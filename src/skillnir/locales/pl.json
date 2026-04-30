@@ -197,7 +197,7 @@
       "title": "Generuj umiejętność",
       "subtitle": "Skanuj projekt za pomocą AI i generuj specjalistyczny SKILL.md",
       "target_project_root": "Katalog główny projektu docelowego",
-      "project_name": "Nazwa projektu",
+      "project_name": "Nazwa umiejętności",
       "skill_scope": "Zakres umiejętności",
       "prompt_version": "Wersja promptu",
       "also_add_to_current": "Dodaj również umiejętność do bieżącego projektu",

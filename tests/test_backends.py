@@ -34,8 +34,10 @@ class TestAppConfig:
     def test_defaults(self):
         cfg = AppConfig()
         assert cfg.backend == AIBackend.CLAUDE
-        assert cfg.model == "sonnet"
+        assert cfg.model == "opus"
         assert cfg.prompt_version in get_prompt_versions()
+        assert cfg.effort == "high"
+        assert cfg.thinking_mode == "adaptive"
 
     def test_to_dict(self):
         cfg = AppConfig(backend=AIBackend.GEMINI, model="pro", prompt_version="v1")
@@ -45,6 +47,8 @@ class TestAppConfig:
             "model": "pro",
             "prompt_version": "v1",
             "compress_prompts": False,
+            "effort": "high",
+            "thinking_mode": "adaptive",
             "gchat_webhook_cipher": "",
             "slack_webhook_cipher": "",
             "discord_webhook_cipher": "",
@@ -83,12 +87,19 @@ class TestAppConfig:
 
     def test_from_dict_round_trip(self):
         original = AppConfig(
-            backend=AIBackend.COPILOT, model="gpt-4o", prompt_version="v1"
+            backend=AIBackend.COPILOT, model="claude-sonnet-4-5", prompt_version="v1"
         )
         restored = AppConfig.from_dict(original.to_dict())
         assert restored.backend == original.backend
         assert restored.model == original.model
         assert restored.prompt_version == original.prompt_version
+
+    def test_from_dict_invalid_model_falls_back(self):
+        cfg = AppConfig.from_dict(
+            {"backend": "cursor", "model": "gpt-5.3"}  # stale, no longer in registry
+        )
+        assert cfg.backend == AIBackend.CURSOR
+        assert cfg.model == BACKENDS[AIBackend.CURSOR].default_model
 
     def test_from_dict_invalid_backend_falls_back(self):
         cfg = AppConfig.from_dict({"backend": "nonexistent"})
@@ -590,3 +601,42 @@ class TestBackendInfoDefaults:
     def test_all_backends_have_dict_mode_flags(self):
         for backend, info in BACKENDS.items():
             assert isinstance(info.mode_flags, dict), f"{backend}: mode_flags not dict"
+
+
+class TestEffortAndThinking:
+    """Effort + thinking_mode persistence and SDK kwargs translation."""
+
+    def test_invalid_effort_falls_back_to_default(self):
+        cfg = AppConfig.from_dict({"effort": "ludicrous"})
+        assert cfg.effort == "high"
+
+    def test_invalid_thinking_mode_falls_back_to_default(self):
+        cfg = AppConfig.from_dict({"thinking_mode": "telepathy"})
+        assert cfg.thinking_mode == "adaptive"
+
+    def test_valid_effort_and_thinking_round_trip(self):
+        original = AppConfig(effort="max", thinking_mode="disabled")
+        restored = AppConfig.from_dict(original.to_dict())
+        assert restored.effort == "max"
+        assert restored.thinking_mode == "disabled"
+
+    def test_sdk_kwargs_default_omits_effort(self):
+        # Default effort ("high") is implicit on the CLI/SDK side, so we
+        # must NOT pass it explicitly (avoids errors on models without it).
+        from skillnir.backends import build_claude_sdk_kwargs
+
+        kwargs = build_claude_sdk_kwargs(AppConfig())
+        assert "effort" not in kwargs
+        assert kwargs["thinking"] == {"type": "adaptive"}
+
+    def test_sdk_kwargs_custom_effort_passed_through(self):
+        from skillnir.backends import build_claude_sdk_kwargs
+
+        kwargs = build_claude_sdk_kwargs(AppConfig(effort="max"))
+        assert kwargs["effort"] == "max"
+
+    def test_sdk_kwargs_disabled_thinking(self):
+        from skillnir.backends import build_claude_sdk_kwargs
+
+        kwargs = build_claude_sdk_kwargs(AppConfig(thinking_mode="disabled"))
+        assert kwargs["thinking"] == {"type": "disabled"}
