@@ -5,6 +5,12 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2026-05-09
+
+### Added
+
+- **New skill scope `project-manager`** -- generates a PMBOK-7-grounded delivery management skill (project charters, RACI matrices, stakeholder + power/interest grids, risk registers with probability × impact scoring, sprint cadence, status reports with RAG, retrospectives, blameless post-mortems, OKRs, estimation techniques). Scope catalog is now 28 entries. New prompt template at [.data/promptsv1/generate-skill-project-manager.md](.data/promptsv1/generate-skill-project-manager.md) covers Phase 1-8 with required reference files, asset templates, anti-patterns, and a "PHASE 2.5: ADDITIONAL CRAFT" section grounded in current standards: PMBOK Guide 7th Edition (2021 — 12 principles + 8 performance domains, principles-based), PRINCE2 7th Edition (2023 — 7 principles / 7 practices / 7 processes), Scrum Guide 2020 (three accountabilities, commitments), Kanban / Scrumban / SAFe 6.0 / LeSS distinctions, hybrid tailoring decision matrix, OKRs (Doerr / Google practice — 0.7 = good, outcomes not outputs), risk management with quantified P×I scoring + Avoid/Mitigate/Transfer/Accept response strategies, AI-in-PM 2026 trends (status drafting, risk surfacing, meeting summarization, estimation assistants, retro facilitation — with explicit boundaries on what stays human), DORA Four Keys + SPACE framework, RACI rule "exactly one Accountable per row" + Mendelow stakeholder power/interest grid, distributed/async-first practices (ADRs, blameless post-mortems, psychological safety per Edmondson). Includes 3 read-only sub-agents (status-synthesizer, risk-scanner, retro-facilitator) since PMs should not mutate trackers without explicit human approval.
+
 ## [1.4.0] - 2026-04-26
 
 ### Added
