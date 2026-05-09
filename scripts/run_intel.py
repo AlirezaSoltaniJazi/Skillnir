@@ -21,6 +21,9 @@ AI_AGENT_RESEARCH_TOPICS      (optional) — comma-separated research topic keys
 AI_AGENT_TESTING_RESEARCH_TOPICS  (optional) — comma-separated testing-research topic keys.
                                    Empty or unset = all topics.
 AI_AGENT_TESTING_RESEARCH_DATE_RANGE  (optional) — date-range filter string.
+AI_AGENT_SOFTWARE_RESEARCH_TOPICS  (optional) — comma-separated software-research topic keys.
+                                    Empty or unset = all topics.
+AI_AGENT_SOFTWARE_RESEARCH_DATE_RANGE  (optional) — date-range filter string.
 AI_AGENT_SECURITY_CATEGORIES  (optional) — comma-separated security category keys.
                                Empty or unset = all categories.
 AI_AGENT_BENCHMARK_TOP_N      (optional, default "10") — how many top models to fetch.
@@ -32,8 +35,8 @@ Usage
 -----
     python scripts/run_intel.py <feature> [--notify-limit N]
 
-Where ``<feature>`` is one of ``research``, ``testing-research``, ``events``,
-``security``, ``benchmarks``, ``news``.
+Where ``<feature>`` is one of ``research``, ``testing-research``,
+``software-research``, ``events``, ``security``, ``benchmarks``, ``news``.
 
 Exit codes
 ----------
@@ -129,7 +132,7 @@ def _err(msg: str) -> None:
 # ---------------------------------------------------------------------------
 
 
-def _index_path_for(feature: str) -> Path:
+def _index_path_for(feature: str) -> Path:  # pylint: disable=too-many-return-statements
     """Resolve the on-disk ``<feature>-index.json`` path."""
     if feature == "research":
         from skillnir.researcher import _get_research_dir
@@ -139,6 +142,10 @@ def _index_path_for(feature: str) -> Path:
         from skillnir.testing_researcher import _get_testing_research_dir
 
         return _get_testing_research_dir() / "testing-research-index.json"
+    if feature == "software-research":
+        from skillnir.software_researcher import _get_software_research_dir
+
+        return _get_software_research_dir() / "software-research-index.json"
     if feature == "events":
         from skillnir.events import _get_events_dir
 
@@ -181,7 +188,9 @@ def _ids_of(items: list[dict]) -> set[str]:
 # ---------------------------------------------------------------------------
 
 
-async def _run_feature(feature: str, model: str | None, backend: AIBackend) -> Any:
+async def _run_feature(  # pylint: disable=too-many-return-statements
+    feature: str, model: str | None, backend: AIBackend
+) -> Any:
     """Invoke the matching Skillnir async entry point.
 
     All filter parameters are read from env vars at call time so the
@@ -219,6 +228,25 @@ async def _run_feature(feature: str, model: str | None, backend: AIBackend) -> A
         if date_range:
             _log(f"testing-research date range: {date_range}")
         return await testing_research(
+            on_progress=_emit_progress,
+            backend_override=backend,
+            model_override=model,
+            topics=topics,
+            date_range=date_range,
+        )
+
+    if feature == "software-research":
+        from skillnir.software_researcher import software_research
+
+        topics = _csv_env("AI_AGENT_SOFTWARE_RESEARCH_TOPICS")
+        if topics:
+            _log(f"software-research topics filter: {topics}")
+        date_range = (
+            os.environ.get("AI_AGENT_SOFTWARE_RESEARCH_DATE_RANGE") or ""
+        ).strip() or None
+        if date_range:
+            _log(f"software-research date range: {date_range}")
+        return await software_research(
             on_progress=_emit_progress,
             backend_override=backend,
             model_override=model,
@@ -526,6 +554,7 @@ def main() -> int:
         choices=[
             "research",
             "testing-research",
+            "software-research",
             "events",
             "security",
             "benchmarks",
