@@ -140,6 +140,20 @@ class TestManualTesterScope:
         assert "Manual Tester" in text or "manual tester" in text.lower()
 
 
+class TestProjectManagerScope:
+    def test_in_skill_scopes(self):
+        assert "project-manager" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "project-manager" in SCOPE_LABELS
+        assert "PMBOK" in SCOPE_LABELS["project-manager"]
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("project-manager", "v1")
+        assert "PMBOK" in text
+        assert "Project Manager" in text or "project manager" in text.lower()
+
+
 # ── _check_skill_outputs ─────────────────────────────────────
 
 
