@@ -70,6 +70,7 @@ SKILL_SCOPES: tuple[str, ...] = (
     "selenium",
     "appium",
     "manual-tester",
+    "project-manager",
 )
 
 SCOPE_LABELS: dict[str, str] = {
@@ -100,6 +101,7 @@ SCOPE_LABELS: dict[str, str] = {
     "selenium": "Selenium (Selenium 4+/Grid/multi-language/PageFactory/Actions API/waits)",
     "appium": "Appium (Appium 2.0/XCUITest/UiAutomator2/gestures/hybrid apps/cloud testing)",
     "manual-tester": "Manual Tester (ISTQB/test cases/boundary values/equivalence/exploratory/test plans)",
+    "project-manager": "Project Manager (PMBOK 7/PRINCE2 7/Scrum/Kanban/charters/RACI/risk register/OKRs/retros)",
 }
 
 
