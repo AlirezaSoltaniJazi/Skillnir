@@ -5,6 +5,7 @@
       "ai_context": "سياق الذكاء الاصطناعي",
       "templates": "القوالب",
       "ai_assistant": "مساعد الذكاء الاصطناعي",
+      "research": "البحث",
       "tools_data": "الأدوات والبيانات"
     },
     "items": {
@@ -24,11 +25,13 @@
       "skills_library": "مكتبة المهارات",
       "tools_registry": "سجل الأدوات",
       "usage": "الاستهلاك",
-      "research": "البحث",
+      "research": "البحث (هندسة الذكاء الاصطناعي)",
       "events": "الفعاليات",
       "benchmarks": "المعايير",
-      "security": "الأمان",
-      "settings": "الإعدادات"
+      "security": "البحث (الثغرات الأمنية)",
+      "settings": "الإعدادات",
+      "testing_research": "البحث (الاختبار والجودة)",
+      "software_research": "البحث (هندسة البرمجيات)"
     },
     "sort_modes": {
       "default": "الافتراضي",
@@ -451,6 +454,22 @@
           "_todo_translate": true
         }
       }
+    },
+    "software_research": {
+      "title": "Software Engineering Research",
+      "subtitle": "Search latest software-engineering / architecture / craft articles, deep-read them, and generate summaries",
+      "topics_to_search": "Topics to search:",
+      "filter_by_source": "Filter by source (optional):",
+      "articles_in_kb": "Articles in knowledge base",
+      "result_success_title": "Software Research Complete",
+      "result_fail_title": "Software Research Failed",
+      "grid_articles_found": "Articles found",
+      "grid_new_articles": "New articles",
+      "grid_skipped_dedup": "Skipped (dedup)",
+      "grid_duration": "Duration",
+      "select_at_least_one_topic": "Select at least one topic",
+      "generated_html_pages": "Generated {count} HTML article page(s)",
+      "all_articles_have_html": "All articles already have HTML pages"
     }
   },
   "buttons": {

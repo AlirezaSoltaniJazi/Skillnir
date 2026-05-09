@@ -5,6 +5,7 @@
       "ai_context": "AI-CONTEXT",
       "templates": "SJABLONEN",
       "ai_assistant": "AI-ASSISTENT",
+      "research": "ONDERZOEK",
       "tools_data": "TOOLS & GEGEVENS"
     },
     "items": {
@@ -24,11 +25,13 @@
       "skills_library": "Skillbibliotheek",
       "tools_registry": "Toolregister",
       "usage": "Gebruik",
-      "research": "Onderzoek",
+      "research": "Onderzoek (AI Engineering)",
       "events": "Evenementen",
       "benchmarks": "Benchmarks",
-      "security": "Beveiliging",
-      "settings": "Instellingen"
+      "security": "Onderzoek (Beveiligingslekken)",
+      "settings": "Instellingen",
+      "testing_research": "Onderzoek (Testen & QA)",
+      "software_research": "Onderzoek (Software Engineering)"
     },
     "sort_modes": {
       "default": "Standaard",
@@ -451,6 +454,22 @@
           "_todo_translate": true
         }
       }
+    },
+    "software_research": {
+      "title": "Software Engineering Research",
+      "subtitle": "Search latest software-engineering / architecture / craft articles, deep-read them, and generate summaries",
+      "topics_to_search": "Topics to search:",
+      "filter_by_source": "Filter by source (optional):",
+      "articles_in_kb": "Articles in knowledge base",
+      "result_success_title": "Software Research Complete",
+      "result_fail_title": "Software Research Failed",
+      "grid_articles_found": "Articles found",
+      "grid_new_articles": "New articles",
+      "grid_skipped_dedup": "Skipped (dedup)",
+      "grid_duration": "Duration",
+      "select_at_least_one_topic": "Select at least one topic",
+      "generated_html_pages": "Generated {count} HTML article page(s)",
+      "all_articles_have_html": "All articles already have HTML pages"
     }
   },
   "buttons": {

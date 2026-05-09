@@ -5,6 +5,7 @@
       "ai_context": "KONTEKST AI",
       "templates": "SZABLONY",
       "ai_assistant": "ASYSTENT AI",
+      "research": "BADANIA",
       "tools_data": "NARZĘDZIA I DANE"
     },
     "items": {
@@ -24,11 +25,13 @@
       "skills_library": "Biblioteka umiejętności",
       "tools_registry": "Rejestr narzędzi",
       "usage": "Użycie",
-      "research": "Badania",
+      "research": "Badania (Inżynieria AI)",
       "events": "Wydarzenia",
       "benchmarks": "Benchmarki",
-      "security": "Bezpieczeństwo",
-      "settings": "Ustawienia"
+      "security": "Badania (Luki bezpieczeństwa)",
+      "settings": "Ustawienia",
+      "testing_research": "Badania (Testowanie i QA)",
+      "software_research": "Badania (Inżynieria oprogramowania)"
     },
     "sort_modes": {
       "default": "Domyślnie",
@@ -451,6 +454,22 @@
           "_todo_translate": true
         }
       }
+    },
+    "software_research": {
+      "title": "Software Engineering Research",
+      "subtitle": "Search latest software-engineering / architecture / craft articles, deep-read them, and generate summaries",
+      "topics_to_search": "Topics to search:",
+      "filter_by_source": "Filter by source (optional):",
+      "articles_in_kb": "Articles in knowledge base",
+      "result_success_title": "Software Research Complete",
+      "result_fail_title": "Software Research Failed",
+      "grid_articles_found": "Articles found",
+      "grid_new_articles": "New articles",
+      "grid_skipped_dedup": "Skipped (dedup)",
+      "grid_duration": "Duration",
+      "select_at_least_one_topic": "Select at least one topic",
+      "generated_html_pages": "Generated {count} HTML article page(s)",
+      "all_articles_have_html": "All articles already have HTML pages"
     }
   },
   "buttons": {

@@ -5,6 +5,7 @@
       "ai_context": "CONTEXTE AI",
       "templates": "MODELES",
       "ai_assistant": "ASSISTANT AI",
+      "research": "RECHERCHE",
       "tools_data": "OUTILS & DONNEES"
     },
     "items": {
@@ -24,11 +25,13 @@
       "skills_library": "Bibliotheque de Skills",
       "tools_registry": "Registre des Outils",
       "usage": "Utilisation",
-      "research": "Recherche",
+      "research": "Recherche (Ingénierie IA)",
       "events": "Evenements",
       "benchmarks": "Benchmarks",
-      "security": "Sécurité",
-      "settings": "Parametres"
+      "security": "Recherche (Vulnérabilités de sécurité)",
+      "settings": "Parametres",
+      "testing_research": "Recherche (Tests & QA)",
+      "software_research": "Recherche (Ingénierie Logicielle)"
     },
     "sort_modes": {
       "default": "Par defaut",
@@ -451,6 +454,22 @@
           "_todo_translate": true
         }
       }
+    },
+    "software_research": {
+      "title": "Software Engineering Research",
+      "subtitle": "Search latest software-engineering / architecture / craft articles, deep-read them, and generate summaries",
+      "topics_to_search": "Topics to search:",
+      "filter_by_source": "Filter by source (optional):",
+      "articles_in_kb": "Articles in knowledge base",
+      "result_success_title": "Software Research Complete",
+      "result_fail_title": "Software Research Failed",
+      "grid_articles_found": "Articles found",
+      "grid_new_articles": "New articles",
+      "grid_skipped_dedup": "Skipped (dedup)",
+      "grid_duration": "Duration",
+      "select_at_least_one_topic": "Select at least one topic",
+      "generated_html_pages": "Generated {count} HTML article page(s)",
+      "all_articles_have_html": "All articles already have HTML pages"
     }
   },
   "buttons": {
