@@ -561,6 +561,10 @@ def build_skill_cards(container, state, stepper, tool_container) -> None:
 
         with ui.row().classes("mt-4 gap-2"):
 
+            ui.button(
+                "Back", on_click=stepper.previous, icon="arrow_back"
+            ).props("flat rounded")
+
             def next_skills():
                 if not state["selected_skills"]:
                     ui.notify("Select at least one skill.", type="warning")
