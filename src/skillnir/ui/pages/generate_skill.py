@@ -82,21 +82,44 @@ async def page_generate_skill():
 
             from skillnir.skill_generator import SCOPE_CATEGORIES, SCOPE_LABELS
 
-            grouped_options: dict[str, str] = {}
+            # Build a Quasar q-select option list: category headers are
+            # rendered as disabled (non-selectable) rows, items below are
+            # indented with leading non-breaking spaces. Using a list of
+            # dicts + option-label / option-value / option-disable props
+            # so the picker shows a tree-like structure instead of a
+            # flat "Category · Item" dropdown.
+            scope_options_list: list[dict] = []
             for category_label, scope_keys in SCOPE_CATEGORIES:
+                scope_options_list.append(
+                    {
+                        'label': category_label,
+                        'value': f'__cat__{category_label}',
+                        'disable': True,
+                    }
+                )
                 for key in scope_keys:
                     label = SCOPE_LABELS.get(key, key)
-                    grouped_options[key] = f'{category_label} · {label}'
+                    scope_options_list.append(
+                        {
+                            'label': f'    {label}',
+                            'value': key,
+                            'disable': False,
+                        }
+                    )
 
             with ui.row().classes('gap-4'):
                 scope_select = (
                     ui.select(
                         label=t('pages.generate_skill.skill_scope', lang),
-                        options=grouped_options,
+                        options=scope_options_list,
                         value='backend',
                     )
                     .classes('w-96')
-                    .props('outlined dense rounded')
+                    .props(
+                        'outlined dense rounded '
+                        'option-label=label option-value=value '
+                        'option-disable=disable emit-value map-options'
+                    )
                 )
 
                 skill_version_select = (

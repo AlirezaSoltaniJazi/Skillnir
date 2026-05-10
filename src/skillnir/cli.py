@@ -329,7 +329,7 @@ def _generate_skill() -> None:
         grouped_choices.append(questionary.Separator(f"── {category_label} ──"))
         for key in scope_keys:
             label = SCOPE_LABELS.get(key, key)
-            grouped_choices.append(questionary.Choice(title=label, value=key))
+            grouped_choices.append(questionary.Choice(title=f"    {label}", value=key))
 
     scope_answer = questionary.select(
         "Select skill scope:",
