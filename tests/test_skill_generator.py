@@ -7,8 +7,9 @@ import pytest
 
 from skillnir.backends import AIBackend, AppConfig
 from skillnir.skill_generator import (
-    SKILL_SCOPES,
+    SCOPE_CATEGORIES,
     SCOPE_LABELS,
+    SKILL_SCOPES,
     _build_user_prompt,
     _check_skill_outputs,
     _find_reference_skill,
@@ -152,6 +153,98 @@ class TestProjectManagerScope:
         text = load_skill_prompt("project-manager", "v1")
         assert "PMBOK" in text
         assert "Project Manager" in text or "project manager" in text.lower()
+
+
+class TestDevopsEngineerScope:
+    def test_in_skill_scopes(self):
+        assert "devops-engineer" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "devops-engineer" in SCOPE_LABELS
+        assert "DORA" in SCOPE_LABELS["devops-engineer"]
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("devops-engineer", "v1")
+        assert "DORA" in text
+        assert "DevOps" in text or "devops" in text.lower()
+
+
+class TestUiUxDesignerScope:
+    def test_in_skill_scopes(self):
+        assert "ui-ux-designer" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "ui-ux-designer" in SCOPE_LABELS
+        assert "WCAG" in SCOPE_LABELS["ui-ux-designer"]
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("ui-ux-designer", "v1")
+        assert "WCAG" in text
+        assert "Nielsen" in text or "NN/g" in text
+
+
+class TestFinancialManagerScope:
+    def test_in_skill_scopes(self):
+        assert "financial-manager" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "financial-manager" in SCOPE_LABELS
+        assert "P&L" in SCOPE_LABELS["financial-manager"]
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("financial-manager", "v1")
+        assert "ASC 606" in text or "IFRS 15" in text
+        assert "SaaS" in text
+
+
+class TestHrManagerScope:
+    def test_in_skill_scopes(self):
+        assert "hr-manager" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "hr-manager" in SCOPE_LABELS
+        assert "interview" in SCOPE_LABELS["hr-manager"].lower()
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("hr-manager", "v1")
+        assert "Schmidt" in text
+        assert "structured interview" in text.lower()
+
+
+class TestScopeCategories:
+    def test_every_scope_belongs_to_exactly_one_category(self):
+        """Every entry in SKILL_SCOPES must appear in exactly one SCOPE_CATEGORIES bucket."""
+        seen: dict[str, str] = {}
+        for category_label, scope_keys in SCOPE_CATEGORIES:
+            for key in scope_keys:
+                assert key not in seen, (
+                    f"scope {key!r} appears in both "
+                    f"{seen[key]!r} and {category_label!r}"
+                )
+                seen[key] = category_label
+
+        scopes_set = set(SKILL_SCOPES)
+        seen_set = set(seen.keys())
+        assert seen_set == scopes_set, (
+            f"category coverage mismatch — "
+            f"only-in-categories: {seen_set - scopes_set}, "
+            f"only-in-scopes: {scopes_set - seen_set}"
+        )
+
+    def test_categories_are_non_empty(self):
+        for category_label, scope_keys in SCOPE_CATEGORIES:
+            assert scope_keys, f"category {category_label!r} has no scopes"
+
+    def test_expected_categories_present(self):
+        labels = {c for c, _ in SCOPE_CATEGORIES}
+        for expected in (
+            "Engineering Roles",
+            "Quality & Testing",
+            "Architecture & Platform",
+            "Design",
+            "Business & People",
+        ):
+            assert expected in labels, f"missing category {expected!r}"
 
 
 # ── _check_skill_outputs ─────────────────────────────────────

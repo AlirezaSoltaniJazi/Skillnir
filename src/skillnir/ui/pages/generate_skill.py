@@ -80,16 +80,22 @@ async def page_generate_skill():
                 .props('outlined dense rounded')
             )
 
-            from skillnir.skill_generator import SCOPE_LABELS
+            from skillnir.skill_generator import SCOPE_CATEGORIES, SCOPE_LABELS
+
+            grouped_options: dict[str, str] = {}
+            for category_label, scope_keys in SCOPE_CATEGORIES:
+                for key in scope_keys:
+                    label = SCOPE_LABELS.get(key, key)
+                    grouped_options[key] = f'{category_label} · {label}'
 
             with ui.row().classes('gap-4'):
                 scope_select = (
                     ui.select(
                         label=t('pages.generate_skill.skill_scope', lang),
-                        options={k: v for k, v in SCOPE_LABELS.items()},
+                        options=grouped_options,
                         value='backend',
                     )
-                    .classes('w-64')
+                    .classes('w-96')
                     .props('outlined dense rounded')
                 )
 

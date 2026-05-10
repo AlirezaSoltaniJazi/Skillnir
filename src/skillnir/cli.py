@@ -322,14 +322,18 @@ def _generate_skill() -> None:
         sys.exit(0)
 
     # Step 2: Scope selection
-    from skillnir.skill_generator import SCOPE_LABELS
+    from skillnir.skill_generator import SCOPE_CATEGORIES, SCOPE_LABELS
+
+    grouped_choices: list = []
+    for category_label, scope_keys in SCOPE_CATEGORIES:
+        grouped_choices.append(questionary.Separator(f"── {category_label} ──"))
+        for key in scope_keys:
+            label = SCOPE_LABELS.get(key, key)
+            grouped_choices.append(questionary.Choice(title=label, value=key))
 
     scope_answer = questionary.select(
         "Select skill scope:",
-        choices=[
-            questionary.Choice(title=label, value=key)
-            for key, label in SCOPE_LABELS.items()
-        ],
+        choices=grouped_choices,
     ).ask()
     if scope_answer is None:
         sys.exit(0)
