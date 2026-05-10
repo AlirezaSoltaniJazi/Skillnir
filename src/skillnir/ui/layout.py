@@ -64,17 +64,23 @@ NAV_GROUPS = [
         ],
     ),
     (
+        'RESEARCH',
+        [
+            ('science', 'Research (AI Engineering)', '/research'),
+            ('biotech', 'Research (Testing & QA)', '/testing-research'),
+            ('architecture', 'Research (Software Engineering)', '/software-research'),
+            ('security', 'Research (Security Vulnerabilities)', '/security'),
+        ],
+    ),
+    (
         'TOOLS & DATA',
         [
             ('inventory_2', 'Skills Library', '/skills'),
             ('devices', 'Tools Registry', '/tools'),
             ('analytics', 'Usage', '/usage'),
-            ('science', 'Research', '/research'),
-            ('biotech', 'Testing Research', '/testing-research'),
             ('event', 'Events', '/events'),
             ('newspaper', 'News', '/news'),
             ('assessment', 'Benchmarks', '/benchmarks'),
-            ('security', 'Security', '/security'),
         ],
     ),
 ]
@@ -129,21 +135,31 @@ def get_nav_groups(lang: str | None = None) -> list:
             ],
         ),
         (
-            t("nav.groups.tools_data", lang),
+            t("nav.groups.research", lang),
             [
-                ("inventory_2", t("nav.items.skills_library", lang), "/skills"),
-                ("devices", t("nav.items.tools_registry", lang), "/tools"),
-                ("analytics", t("nav.items.usage", lang), "/usage"),
                 ("science", t("nav.items.research", lang), "/research"),
                 (
                     "biotech",
                     t("nav.items.testing_research", lang),
                     "/testing-research",
                 ),
+                (
+                    "architecture",
+                    t("nav.items.software_research", lang),
+                    "/software-research",
+                ),
+                ("security", t("nav.items.security", lang), "/security"),
+            ],
+        ),
+        (
+            t("nav.groups.tools_data", lang),
+            [
+                ("inventory_2", t("nav.items.skills_library", lang), "/skills"),
+                ("devices", t("nav.items.tools_registry", lang), "/tools"),
+                ("analytics", t("nav.items.usage", lang), "/usage"),
                 ("event", t("nav.items.events", lang), "/events"),
                 ("newspaper", t("nav.items.news", lang), "/news"),
                 ("assessment", t("nav.items.benchmarks", lang), "/benchmarks"),
-                ("security", t("nav.items.security", lang), "/security"),
             ],
         ),
     ]
@@ -224,7 +240,7 @@ def header() -> tuple:
     with (
         ui.left_drawer(value=True)
         .classes('py-4 px-0')
-        .props('width=240 show-if-above bordered') as drawer
+        .props('width=300 show-if-above bordered') as drawer
     ):
         # Brand
         with ui.row().classes('items-center gap-3 px-5 mb-6'):
@@ -560,6 +576,10 @@ def build_skill_cards(container, state, stepper, tool_container) -> None:
                         ui.label(skill.description).classes("text-secondary text-sm")
 
         with ui.row().classes("mt-4 gap-2"):
+
+            ui.button("Back", on_click=stepper.previous, icon="arrow_back").props(
+                "flat rounded"
+            )
 
             def next_skills():
                 if not state["selected_skills"]:

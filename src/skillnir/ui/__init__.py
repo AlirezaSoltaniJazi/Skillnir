@@ -101,6 +101,14 @@ def run_ui(port: int = 8080) -> None:
     _testing_research_dir.mkdir(parents=True, exist_ok=True)
     app.add_static_files("/testing-research-files", str(_testing_research_dir))
 
+    _software_research_dir = (
+        Path(__file__).resolve().parent.parent.parent.parent
+        / ".data"
+        / "software-research"
+    )
+    _software_research_dir.mkdir(parents=True, exist_ok=True)
+    app.add_static_files("/software-research-files", str(_software_research_dir))
+
     # ── Events files (landing page + event pages) ────────────
     _events_dir = (
         Path(__file__).resolve().parent.parent.parent.parent / ".data" / "events"
@@ -140,6 +148,7 @@ def run_ui(port: int = 8080) -> None:
         security_page,
         settings,
         skill,
+        software_research,
         supported,
         templates,
         testing_research,

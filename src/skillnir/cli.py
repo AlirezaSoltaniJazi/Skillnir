@@ -322,14 +322,18 @@ def _generate_skill() -> None:
         sys.exit(0)
 
     # Step 2: Scope selection
-    from skillnir.skill_generator import SCOPE_LABELS
+    from skillnir.skill_generator import SCOPE_CATEGORIES, SCOPE_LABELS
+
+    grouped_choices: list = []
+    for category_label, scope_keys in SCOPE_CATEGORIES:
+        grouped_choices.append(questionary.Separator(f"── {category_label} ──"))
+        for key in scope_keys:
+            label = SCOPE_LABELS.get(key, key)
+            grouped_choices.append(questionary.Choice(title=f"    {label}", value=key))
 
     scope_answer = questionary.select(
         "Select skill scope:",
-        choices=[
-            questionary.Choice(title=label, value=key)
-            for key, label in SCOPE_LABELS.items()
-        ],
+        choices=grouped_choices,
     ).ask()
     if scope_answer is None:
         sys.exit(0)
@@ -1348,6 +1352,83 @@ def _testing_research_cmd() -> None:
     print(f"{'─' * 50}\n")
 
 
+def _software_research_cmd() -> None:
+    """Search latest software-engineering articles, summarize them, and generate a landing page."""
+    import asyncio
+    import webbrowser
+
+    from skillnir.backends import BACKENDS, load_config
+    from skillnir.software_researcher import (
+        SOURCE_FILTERS,
+        TOPIC_LABELS,
+        software_research,
+    )
+
+    if "--regenerate" in sys.argv:
+        from skillnir.software_researcher import regenerate_landing
+
+        print("\n  Regenerating HTML article pages and landing page...")
+        count, index_path = regenerate_landing()
+        if count:
+            print(f"  Generated {count} HTML article page(s)")
+        else:
+            print("  All articles already have HTML pages")
+        if index_path:
+            print(f"  Landing page: {index_path}")
+            if questionary.confirm("Open landing page in browser?").ask():
+                webbrowser.open(str(index_path))
+        return
+
+    config = load_config()
+    backend_info = BACKENDS[config.backend]
+
+    print("\n  Software Engineering Research")
+    print(f"  Backend: {backend_info.name} ({config.model})")
+    print(f"\n  Topics to search:")
+    for key, label in TOPIC_LABELS.items():
+        print(f"    • {label}")
+
+    source_choices = questionary.checkbox(
+        "\n  Filter by source (leave blank for all):",
+        choices=[
+            questionary.Choice(label, value=key)
+            for key, label in SOURCE_FILTERS.items()
+        ],
+    ).ask()
+
+    if not questionary.confirm("\n  Search for latest articles?", default=True).ask():
+        sys.exit(0)
+
+    def on_progress(p) -> None:
+        if p.kind == "phase":
+            print(f"\n  >>> {p.content}")
+        elif p.kind == "status":
+            print(f"      {p.content}")
+        elif p.kind == "error":
+            print(f"  [ERROR] {p.content}")
+
+    print(f"\n{'─' * 50}\nSearching and summarizing...\n")
+
+    result = asyncio.run(
+        software_research(on_progress=on_progress, sources=source_choices or None)
+    )
+
+    print(f"\n{'─' * 50}")
+    if result.success:
+        print(f"  Articles found:   {result.articles_found}")
+        print(f"  New articles:     {result.articles_new}")
+        print(f"  Skipped (dedup):  {result.articles_skipped}")
+        if result.index_path:
+            print(f"  Landing page:     {result.index_path}")
+            if questionary.confirm(
+                "\n  Open landing page in browser?", default=True
+            ).ask():
+                webbrowser.open(result.index_path.as_uri())
+    else:
+        print(f"  Failed: {result.error}")
+    print(f"{'─' * 50}\n")
+
+
 def _news_cmd() -> None:
     """Search the latest AI news headlines by category and recency window."""
     import asyncio
@@ -1792,12 +1873,13 @@ def main() -> None:
             "plan",
             "research",
             "testing-research",
+            "software-research",
             "events",
             "news",
             "config",
             "sound",
         ],
-        help="install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. delete-wiki: remove project wiki (llms.txt + docs/) from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. generate-wiki: generate project wiki (llms.txt + docs/) with AI. compress-docs: rule-based + AI tone compression of all AI-related docs. optimize-docs: audit and optionally fix AI-doc inconsistencies/cross-references. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. testing-research: search latest testing/QA news, summarize articles, generate landing page. events: search upcoming AI events and conferences worldwide. news: search fresh AI news headlines by category and recency. config: manage backend/model. sound: manage Claude Code sound notifications.",
+        help="install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. delete-wiki: remove project wiki (llms.txt + docs/) from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. generate-wiki: generate project wiki (llms.txt + docs/) with AI. compress-docs: rule-based + AI tone compression of all AI-related docs. optimize-docs: audit and optionally fix AI-doc inconsistencies/cross-references. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. testing-research: search latest testing/QA news, summarize articles, generate landing page. software-research: search latest software-engineering / architecture / craft articles, summarize, generate landing page. events: search upcoming AI events and conferences worldwide. news: search fresh AI news headlines by category and recency. config: manage backend/model. sound: manage Claude Code sound notifications.",
     )
     args = parser.parse_args()
 
@@ -1831,6 +1913,8 @@ def main() -> None:
         _research_cmd()
     elif args.command == "testing-research":
         _testing_research_cmd()
+    elif args.command == "software-research":
+        _software_research_cmd()
     elif args.command == "events":
         _events_cmd()
     elif args.command == "news":

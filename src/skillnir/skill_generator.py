@@ -70,6 +70,11 @@ SKILL_SCOPES: tuple[str, ...] = (
     "selenium",
     "appium",
     "manual-tester",
+    "project-manager",
+    "devops-engineer",
+    "ui-ux-designer",
+    "financial-manager",
+    "hr-manager",
 )
 
 SCOPE_LABELS: dict[str, str] = {
@@ -100,7 +105,66 @@ SCOPE_LABELS: dict[str, str] = {
     "selenium": "Selenium (Selenium 4+/Grid/multi-language/PageFactory/Actions API/waits)",
     "appium": "Appium (Appium 2.0/XCUITest/UiAutomator2/gestures/hybrid apps/cloud testing)",
     "manual-tester": "Manual Tester (ISTQB/test cases/boundary values/equivalence/exploratory/test plans)",
+    "project-manager": "Project Manager (PMBOK 7/PRINCE2 7/Scrum/Kanban/charters/RACI/risk register/OKRs/retros)",
+    "devops-engineer": "DevOps Engineer (CI/CD, GitOps, IaC/Terraform, Kubernetes, SRE/DORA, on-call/incident response)",
+    "ui-ux-designer": "UI/UX Designer (design systems, Figma, NN/g, Material 3/HIG, WCAG 2.2, user research, usability testing)",
+    "financial-manager": "Financial Manager (budgets, P&L, FP&A, cash flow, runway, IFRS/GAAP, financial models, unit economics)",
+    "hr-manager": "HR Manager (hiring loops, JDs, interview rubrics, performance reviews, leveling, comp bands, employment law)",
 }
+
+
+# Category groupings for the scope picker — keeps the catalog scannable.
+# Order here is the order categories appear in the dropdown / CLI menu.
+SCOPE_CATEGORIES: tuple[tuple[str, tuple[str, ...]], ...] = (
+    (
+        "Engineering Roles",
+        (
+            "backend",
+            "frontend",
+            "js",
+            "python",
+            "go",
+            "android",
+            "ios",
+            "cross-platform-mobile",
+            "chrome-extension",
+            "data-science",
+        ),
+    ),
+    (
+        "Quality & Testing",
+        (
+            "testing",
+            "test-design",
+            "manual-tester",
+            "locator",
+            "playwright",
+            "wdio",
+            "selenium",
+            "appium",
+            "accessibility",
+        ),
+    ),
+    (
+        "Architecture & Platform",
+        (
+            "infra",
+            "devops-engineer",
+            "database",
+            "api-design",
+            "migration",
+            "performance",
+            "observability",
+            "security",
+            "general-system",
+        ),
+    ),
+    ("Design", ("ui-ux-designer",)),
+    (
+        "Business & People",
+        ("project-manager", "financial-manager", "hr-manager"),
+    ),
+)
 
 
 @dataclass
@@ -211,6 +275,42 @@ def _find_reference_skill(scope: str) -> Path | None:
         "wdio": ("wdio", "webdriverio", "webdriver-io"),
         "selenium": ("selenium", "webdriver", "grid", "pagefactory"),
         "appium": ("appium", "mobile-test", "xcuitest", "uiautomator", "espresso"),
+        "devops-engineer": (
+            "devops",
+            "infra",
+            "ci",
+            "cd",
+            "gitops",
+            "terraform",
+            "kubernetes",
+            "k8s",
+            "sre",
+        ),
+        "ui-ux-designer": (
+            "ui",
+            "ux",
+            "design",
+            "figma",
+            "wireframe",
+            "design-system",
+            "designer",
+        ),
+        "financial-manager": (
+            "finance",
+            "financial",
+            "budget",
+            "accounting",
+            "fpa",
+            "treasury",
+        ),
+        "hr-manager": (
+            "hr",
+            "people",
+            "recruiting",
+            "hiring",
+            "talent",
+            "human-resources",
+        ),
     }
 
     keywords = scope_keywords.get(scope, ())
