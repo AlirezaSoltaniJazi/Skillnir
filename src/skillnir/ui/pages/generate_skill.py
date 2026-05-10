@@ -82,45 +82,45 @@ async def page_generate_skill():
 
             from skillnir.skill_generator import SCOPE_CATEGORIES, SCOPE_LABELS
 
-            # Build a Quasar q-select option list: category headers are
-            # rendered as disabled (non-selectable) rows, items below are
-            # indented with leading non-breaking spaces. Using a list of
-            # dicts + option-label / option-value / option-disable props
-            # so the picker shows a tree-like structure instead of a
-            # flat "Category · Item" dropdown.
-            scope_options_list: list[dict] = []
+            # Render the picker as a tree: each category is a bold
+            # "header row" (━━ ... ━━); scopes under it are indented by
+            # 4 spaces. NiceGUI's ui.select only validates values that
+            # are dict keys (list-of-dicts with option-disable was
+            # rejected by ChoiceElement), so headers are real entries
+            # with synthetic `__cat__<name>` keys, and on_value_change
+            # below reverts if the user clicks one.
+            scope_options: dict[str, str] = {}
+            header_keys: set[str] = set()
             for category_label, scope_keys in SCOPE_CATEGORIES:
-                scope_options_list.append(
-                    {
-                        'label': category_label,
-                        'value': f'__cat__{category_label}',
-                        'disable': True,
-                    }
+                header_key = '__cat__' + category_label.replace(' ', '_').replace(
+                    '&', 'and'
                 )
+                scope_options[header_key] = f'━━ {category_label} ━━'
+                header_keys.add(header_key)
                 for key in scope_keys:
                     label = SCOPE_LABELS.get(key, key)
-                    scope_options_list.append(
-                        {
-                            'label': f'    {label}',
-                            'value': key,
-                            'disable': False,
-                        }
-                    )
+                    scope_options[key] = f'    {label}'
 
             with ui.row().classes('gap-4'):
                 scope_select = (
                     ui.select(
                         label=t('pages.generate_skill.skill_scope', lang),
-                        options=scope_options_list,
+                        options=scope_options,
                         value='backend',
                     )
                     .classes('w-96')
-                    .props(
-                        'outlined dense rounded '
-                        'option-label=label option-value=value '
-                        'option-disable=disable emit-value map-options'
-                    )
+                    .props('outlined dense rounded')
                 )
+
+                last_valid_scope = {'value': 'backend'}
+
+                def _block_header_pick(e):
+                    if e.value in header_keys:
+                        scope_select.set_value(last_valid_scope['value'])
+                    else:
+                        last_valid_scope['value'] = e.value
+
+                scope_select.on_value_change(_block_header_pick)
 
                 skill_version_select = (
                     ui.select(
