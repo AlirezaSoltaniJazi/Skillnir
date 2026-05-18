@@ -211,6 +211,64 @@ class TestHrManagerScope:
         assert "structured interview" in text.lower()
 
 
+class TestDjangoScope:
+    def test_in_skill_scopes(self):
+        assert "django" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "django" in SCOPE_LABELS
+        assert "Django" in SCOPE_LABELS["django"]
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("django", "v1")
+        assert "Django" in text
+        assert "DRF" in text or "Django REST Framework" in text
+        assert "migration" in text.lower()
+
+    def test_in_engineering_roles_category(self):
+        engineering = dict(SCOPE_CATEGORIES).get("Engineering Roles", ())
+        assert "django" in engineering
+
+
+class TestDeepResearcherScope:
+    def test_in_skill_scopes(self):
+        assert "deep-researcher" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "deep-researcher" in SCOPE_LABELS
+        assert "methodology" in SCOPE_LABELS["deep-researcher"].lower()
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("deep-researcher", "v1")
+        assert "SIFT" in text or "CRAAP" in text
+        assert "triangulation" in text.lower() or "independent sources" in text.lower()
+
+    def test_in_business_and_people_category(self):
+        business = dict(SCOPE_CATEGORIES).get("Business & People", ())
+        assert "deep-researcher" in business
+
+
+class TestTranslatorScope:
+    def test_in_skill_scopes(self):
+        assert "translator" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "translator" in SCOPE_LABELS
+        assert (
+            "ICU" in SCOPE_LABELS["translator"] or "i18n" in SCOPE_LABELS["translator"]
+        )
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("translator", "v1")
+        assert "CLDR" in text
+        assert "ICU" in text
+        assert "RTL" in text
+
+    def test_in_business_and_people_category(self):
+        business = dict(SCOPE_CATEGORIES).get("Business & People", ())
+        assert "translator" in business
+
+
 class TestScopeCategories:
     def test_every_scope_belongs_to_exactly_one_category(self):
         """Every entry in SKILL_SCOPES must appear in exactly one SCOPE_CATEGORIES bucket."""
