@@ -75,6 +75,9 @@ SKILL_SCOPES: tuple[str, ...] = (
     "ui-ux-designer",
     "financial-manager",
     "hr-manager",
+    "django",
+    "deep-researcher",
+    "translator",
 )
 
 SCOPE_LABELS: dict[str, str] = {
@@ -110,6 +113,9 @@ SCOPE_LABELS: dict[str, str] = {
     "ui-ux-designer": "UI/UX Designer (design systems, Figma, NN/g, Material 3/HIG, WCAG 2.2, user research, usability testing)",
     "financial-manager": "Financial Manager (budgets, P&L, FP&A, cash flow, runway, IFRS/GAAP, financial models, unit economics)",
     "hr-manager": "HR Manager (hiring loops, JDs, interview rubrics, performance reviews, leveling, comp bands, employment law)",
+    "django": "Django (models/ORM/DRF/migrations/Celery/Channels/admin/security)",
+    "deep-researcher": "Deep Researcher (methodology/source evaluation/synthesis/citations/fact-checking)",
+    "translator": "Translator (i18n/l10n/ICU plurals/RTL/terminology management/CAT tools)",
 }
 
 
@@ -123,6 +129,7 @@ SCOPE_CATEGORIES: tuple[tuple[str, tuple[str, ...]], ...] = (
             "frontend",
             "js",
             "python",
+            "django",
             "go",
             "android",
             "ios",
@@ -162,7 +169,13 @@ SCOPE_CATEGORIES: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("Design", ("ui-ux-designer",)),
     (
         "Business & People",
-        ("project-manager", "financial-manager", "hr-manager"),
+        (
+            "project-manager",
+            "financial-manager",
+            "hr-manager",
+            "deep-researcher",
+            "translator",
+        ),
     ),
 )
 
@@ -310,6 +323,44 @@ def _find_reference_skill(scope: str) -> Path | None:
             "hiring",
             "talent",
             "human-resources",
+        ),
+        "django": (
+            "django",
+            "drf",
+            "django-rest-framework",
+            "manage.py",
+            "settings.py",
+            "models.py",
+            "views.py",
+            "asgi",
+            "wsgi",
+            "celery",
+            "channels",
+        ),
+        "deep-researcher": (
+            "research",
+            "researcher",
+            "methodology",
+            "citation",
+            "source",
+            "synthesis",
+            "literature-review",
+            "intel",
+            "brief",
+        ),
+        "translator": (
+            "translator",
+            "translation",
+            "i18n",
+            "l10n",
+            "locale",
+            "localization",
+            "gettext",
+            "xliff",
+            "icu",
+            "crowdin",
+            "lokalise",
+            "phrase",
         ),
     }
 

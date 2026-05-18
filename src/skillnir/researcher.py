@@ -549,7 +549,8 @@ def _generate_landing_html(
 
     template = _load_template('landing.html')
     page_html = (
-        template.replace('<!-- SUBTITLE -->', subtitle)
+        template.replace('<!-- TITLE -->', 'AI Engineering Research')
+        .replace('<!-- SUBTITLE -->', subtitle)
         .replace('<!-- TOPIC_CHIPS -->', stats_chips)
         .replace('<!-- SOURCE_CHIPS -->', source_chips_html)
         .replace('<!-- TABLE_ROWS -->', rows_html)
