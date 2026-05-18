@@ -5,6 +5,12 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **Web UI auto-increments the port when the default is busy** -- `skillnir ui` previously crashed if another process was already listening on `127.0.0.1:8080`. The server now probes `8080`, `8081`, `8082`, ... (up to 20 candidates) and binds to the first free one, printing a one-line notice with the URL when it falls back. New `_find_free_port()` helper in [src/skillnir/ui/__init__.py](src/skillnir/ui/__init__.py); host stays loopback-only so the existing security rationale (no auth, webhook tokens on Settings page) is preserved.
+
 ## [1.5.0] - 2026-05-09
 
 ### Added
