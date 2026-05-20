@@ -78,6 +78,7 @@ SKILL_SCOPES: tuple[str, ...] = (
     "django",
     "deep-researcher",
     "translator",
+    "android-google",
 )
 
 SCOPE_LABELS: dict[str, str] = {
@@ -116,6 +117,7 @@ SCOPE_LABELS: dict[str, str] = {
     "django": "Django (models/ORM/DRF/migrations/Celery/Channels/admin/security)",
     "deep-researcher": "Deep Researcher (methodology/source evaluation/synthesis/citations/fact-checking)",
     "translator": "Translator (i18n/l10n/ICU plurals/RTL/terminology management/CAT tools)",
+    "android-google": "Android (Google Official Skills — Compose/Nav3/edge-to-edge/AGP9/Camera/Journeys/Glimmer XR)",
 }
 
 
@@ -132,6 +134,7 @@ SCOPE_CATEGORIES: tuple[tuple[str, tuple[str, ...]], ...] = (
             "django",
             "go",
             "android",
+            "android-google",
             "ios",
             "cross-platform-mobile",
             "chrome-extension",
@@ -361,6 +364,21 @@ def _find_reference_skill(scope: str) -> Path | None:
             "crowdin",
             "lokalise",
             "phrase",
+        ),
+        "android-google": (
+            "android",
+            "jetpack-compose",
+            "compose",
+            "navigation3",
+            "edge-to-edge",
+            "agp",
+            "camerax",
+            "appfunctions",
+            "glimmer",
+            "perfetto",
+            "journeys",
+            "agent-mode",
+            "android-skills",
         ),
     }
 
