@@ -269,6 +269,26 @@ class TestTranslatorScope:
         assert "translator" in business
 
 
+class TestAndroidGoogleScope:
+    def test_in_skill_scopes(self):
+        assert "android-google" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "android-google" in SCOPE_LABELS
+        assert "Google" in SCOPE_LABELS["android-google"]
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("android-google", "v1")
+        assert "github.com/android/skills" in text
+        assert "Journeys" in text
+        assert "Glimmer" in text
+        assert "Agent Mode" in text
+
+    def test_in_engineering_roles_category(self):
+        engineering = dict(SCOPE_CATEGORIES).get("Engineering Roles", ())
+        assert "android-google" in engineering
+
+
 class TestScopeCategories:
     def test_every_scope_belongs_to_exactly_one_category(self):
         """Every entry in SKILL_SCOPES must appear in exactly one SCOPE_CATEGORIES bucket."""
