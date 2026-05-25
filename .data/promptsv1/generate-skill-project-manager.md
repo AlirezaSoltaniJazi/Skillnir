@@ -91,20 +91,20 @@ The generated SKILL.md MUST encode the following modern standards in named sub-s
 
 PMBOK 7 replaced the process-group model with **12 principles + 8 performance domains**. Old PMBOK 6 process maps (49 processes across 5 groups × 10 knowledge areas) are obsolete for new certifications. Anchor every concept to the v7 structure:
 
-| 12 Principles                  | 8 Performance Domains                   |
-| ------------------------------ | --------------------------------------- |
-| 1. Stewardship                 | 1. Stakeholders                         |
-| 2. Team                        | 2. Team                                 |
-| 3. Stakeholders                | 3. Development Approach + Life Cycle    |
-| 4. Value                       | 4. Planning                             |
-| 5. Systems thinking            | 5. Project Work                         |
-| 6. Leadership                  | 6. Delivery                             |
-| 7. Tailoring                   | 7. Measurement                          |
-| 8. Quality                     | 8. Uncertainty                          |
-| 9. Complexity                  |                                         |
-| 10. Risk                       |                                         |
-| 11. Adaptability + Resiliency  |                                         |
-| 12. Change                     |                                         |
+| 12 Principles                 | 8 Performance Domains                |
+| ----------------------------- | ------------------------------------ |
+| 1. Stewardship                | 1. Stakeholders                      |
+| 2. Team                       | 2. Team                              |
+| 3. Stakeholders               | 3. Development Approach + Life Cycle |
+| 4. Value                      | 4. Planning                          |
+| 5. Systems thinking           | 5. Project Work                      |
+| 6. Leadership                 | 6. Delivery                          |
+| 7. Tailoring                  | 7. Measurement                       |
+| 8. Quality                    | 8. Uncertainty                       |
+| 9. Complexity                 |                                      |
+| 10. Risk                      |                                      |
+| 11. Adaptability + Resiliency |                                      |
+| 12. Change                    |                                      |
 
 PMBOK 7 is **principles-based**, not prescriptive. The skill MUST teach tailoring (Principle 7) — never force a process when context doesn't warrant it.
 
@@ -112,15 +112,15 @@ PMBOK 7 is **principles-based**, not prescriptive. The skill MUST teach tailorin
 
 PRINCE2 7 modernized the older 6th-edition material. Anchor on:
 
-| 7 Principles                | 7 Practices (renamed from "Themes")    | 7 Processes                        |
-| --------------------------- | -------------------------------------- | ---------------------------------- |
-| Continued business justification | Business Case                     | Starting Up a Project (SU)         |
-| Learn from experience       | Organizing                             | Directing a Project (DP)           |
-| Defined roles, responsibilities, relationships | Plans                | Initiating a Project (IP)          |
-| Manage by stages            | Quality                                | Controlling a Stage (CS)           |
-| Manage by exception         | Risk                                   | Managing Product Delivery (MP)     |
-| Focus on products           | Issues                                 | Managing a Stage Boundary (SB)     |
-| Tailor to suit the project  | Progress                               | Closing a Project (CP)             |
+| 7 Principles                                   | 7 Practices (renamed from "Themes") | 7 Processes                    |
+| ---------------------------------------------- | ----------------------------------- | ------------------------------ |
+| Continued business justification               | Business Case                       | Starting Up a Project (SU)     |
+| Learn from experience                          | Organizing                          | Directing a Project (DP)       |
+| Defined roles, responsibilities, relationships | Plans                               | Initiating a Project (IP)      |
+| Manage by stages                               | Quality                             | Controlling a Stage (CS)       |
+| Manage by exception                            | Risk                                | Managing Product Delivery (MP) |
+| Focus on products                              | Issues                              | Managing a Stage Boundary (SB) |
+| Tailor to suit the project                     | Progress                            | Closing a Project (CP)         |
 
 Key 7th-edition changes: **People** added as a focus area, sustainability + digital + data emphasized, "Themes" renamed to "Practices", stronger agile compatibility.
 
@@ -128,14 +128,14 @@ Key 7th-edition changes: **People** added as a focus area, sustainability + digi
 
 The generated SKILL.md MUST distinguish these clearly (developers and execs conflate them constantly):
 
-| Framework      | Cadence                | Roles                              | Artifacts                                                | When to use                                  |
-| -------------- | ---------------------- | ---------------------------------- | -------------------------------------------------------- | -------------------------------------------- |
-| **Scrum**      | Fixed sprint (1–4 wk)  | PO, Scrum Master, Developers       | Product Backlog, Sprint Backlog, Increment, Sprint Goal  | Discrete features, predictable cadence       |
-| **Kanban**     | Continuous flow        | No prescribed roles                | Board, WIP limits, cycle time, lead time                 | Support, ops, unpredictable arrival rate     |
-| **Scrumban**   | Hybrid                 | Inherits from Scrum                | Sprint goals + WIP limits                                | Teams transitioning Scrum → Kanban           |
-| **SAFe 6.0**   | PI (10–12 wk) + sprint | RTE, PO, PM, Architect, SM         | PI Objectives, Program Board, ART backlog                | Enterprise, 50+ engineers, multiple teams    |
-| **LeSS**       | Sprint                 | One PO, multiple Scrum teams       | Single product backlog                                   | Simpler than SAFe, up to ~8 teams            |
-| **Spotify model (deprecated)** | n/a    | Squads, tribes, chapters, guilds   | n/a                                                      | Often cargo-culted — Spotify themselves moved on. Avoid recommending |
+| Framework                      | Cadence                | Roles                            | Artifacts                                               | When to use                                                          |
+| ------------------------------ | ---------------------- | -------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------- |
+| **Scrum**                      | Fixed sprint (1–4 wk)  | PO, Scrum Master, Developers     | Product Backlog, Sprint Backlog, Increment, Sprint Goal | Discrete features, predictable cadence                               |
+| **Kanban**                     | Continuous flow        | No prescribed roles              | Board, WIP limits, cycle time, lead time                | Support, ops, unpredictable arrival rate                             |
+| **Scrumban**                   | Hybrid                 | Inherits from Scrum              | Sprint goals + WIP limits                               | Teams transitioning Scrum → Kanban                                   |
+| **SAFe 6.0**                   | PI (10–12 wk) + sprint | RTE, PO, PM, Architect, SM       | PI Objectives, Program Board, ART backlog               | Enterprise, 50+ engineers, multiple teams                            |
+| **LeSS**                       | Sprint                 | One PO, multiple Scrum teams     | Single product backlog                                  | Simpler than SAFe, up to ~8 teams                                    |
+| **Spotify model (deprecated)** | n/a                    | Squads, tribes, chapters, guilds | n/a                                                     | Often cargo-culted — Spotify themselves moved on. Avoid recommending |
 
 **Scrum Guide 2020 changes** the AI MUST know: Sprint Goal / Definition of Done / Product Goal are commitments, "Development Team" → "Developers", Scrum Master is a "true leader who serves", three accountabilities (not roles).
 
@@ -143,14 +143,14 @@ The generated SKILL.md MUST distinguish these clearly (developers and execs conf
 
 Most real teams in 2026 are hybrid. The skill MUST teach explicit tailoring rather than dogma:
 
-| Signal                                      | Lean toward predictive                   | Lean toward agile                              |
-| ------------------------------------------- | ---------------------------------------- | ---------------------------------------------- |
-| Requirements stability                      | High, fixed-scope contract               | High change rate, evolving customer needs      |
-| Regulatory environment                      | Heavy (FDA, FAA, banking)                | Light                                          |
-| Delivery cadence                            | Single big release / annual              | Continuous / weekly / monthly                  |
-| Team co-location                            | Distributed, async-first                 | Co-located or sync-friendly                    |
-| Risk of late discovery                      | Low — well-understood domain             | High — exploratory product / R&D               |
-| Customer involvement available              | Quarterly check-ins                      | Daily / weekly                                 |
+| Signal                         | Lean toward predictive       | Lean toward agile                         |
+| ------------------------------ | ---------------------------- | ----------------------------------------- |
+| Requirements stability         | High, fixed-scope contract   | High change rate, evolving customer needs |
+| Regulatory environment         | Heavy (FDA, FAA, banking)    | Light                                     |
+| Delivery cadence               | Single big release / annual  | Continuous / weekly / monthly             |
+| Team co-location               | Distributed, async-first     | Co-located or sync-friendly               |
+| Risk of late discovery         | Low — well-understood domain | High — exploratory product / R&D          |
+| Customer involvement available | Quarterly check-ins          | Daily / weekly                            |
 
 Hybrid pattern examples: predictive milestones with agile sprints inside, Kanban for ops + Scrum for features, SAFe at portfolio + Scrum at team.
 
@@ -173,21 +173,21 @@ The generated skill MUST teach OKRs the way Doerr / Google practice them, not th
 
 The skill MUST teach **risk register with probability × impact scoring**, not an unprioritized list:
 
-| Field           | Format                                                                                |
-| --------------- | ------------------------------------------------------------------------------------- |
-| ID              | `RISK-NNN` (zero-padded, monotonic)                                                   |
-| Title           | "If X happens, then Y impact" — conditional form                                       |
-| Category        | Technical / Schedule / Cost / Resource / External / Compliance / Reputational         |
-| Probability     | 1 (rare) – 5 (almost certain)                                                         |
-| Impact          | 1 (negligible) – 5 (catastrophic)                                                     |
-| Score           | Probability × Impact (1–25)                                                           |
-| Severity band   | Low (1–6) · Medium (7–12) · High (13–19) · Critical (20–25)                          |
-| Owner           | Single accountable name                                                               |
-| Response strategy | Avoid · Mitigate · Transfer · Accept (Negative); Exploit · Enhance · Share · Accept (Positive) |
-| Mitigation actions | Specific, dated tasks                                                              |
-| Contingency plan  | Trigger condition + response                                                       |
-| Status          | Open · Mitigating · Realized · Closed                                                 |
-| Last reviewed   | Date — risks re-scored at every milestone / sprint review                             |
+| Field              | Format                                                                                         |
+| ------------------ | ---------------------------------------------------------------------------------------------- |
+| ID                 | `RISK-NNN` (zero-padded, monotonic)                                                            |
+| Title              | "If X happens, then Y impact" — conditional form                                               |
+| Category           | Technical / Schedule / Cost / Resource / External / Compliance / Reputational                  |
+| Probability        | 1 (rare) – 5 (almost certain)                                                                  |
+| Impact             | 1 (negligible) – 5 (catastrophic)                                                              |
+| Score              | Probability × Impact (1–25)                                                                    |
+| Severity band      | Low (1–6) · Medium (7–12) · High (13–19) · Critical (20–25)                                    |
+| Owner              | Single accountable name                                                                        |
+| Response strategy  | Avoid · Mitigate · Transfer · Accept (Negative); Exploit · Enhance · Share · Accept (Positive) |
+| Mitigation actions | Specific, dated tasks                                                                          |
+| Contingency plan   | Trigger condition + response                                                                   |
+| Status             | Open · Mitigating · Realized · Closed                                                          |
+| Last reviewed      | Date — risks re-scored at every milestone / sprint review                                      |
 
 Include a **risk burndown** mental model: critical risks at project start should trend down over time; if not, escalate.
 
@@ -211,12 +211,12 @@ A 2026 PM MUST understand engineering metrics, not just project metrics:
 
 **DORA Four Keys** (deployment performance):
 
-| Metric                | Elite          | High           | Medium         | Low                |
-| --------------------- | -------------- | -------------- | -------------- | ------------------ |
-| Deployment frequency  | On demand      | Daily–weekly   | Weekly–monthly | < monthly          |
-| Lead time for changes | < 1 hour       | 1 day – 1 wk   | 1 wk – 1 mo    | > 1 month          |
-| Change failure rate   | 0–5%           | 5–10%          | 10–15%         | 15–30%+            |
-| MTTR                  | < 1 hour       | < 1 day        | 1 day – 1 wk   | > 1 week           |
+| Metric                | Elite     | High         | Medium         | Low       |
+| --------------------- | --------- | ------------ | -------------- | --------- |
+| Deployment frequency  | On demand | Daily–weekly | Weekly–monthly | < monthly |
+| Lead time for changes | < 1 hour  | 1 day – 1 wk | 1 wk – 1 mo    | > 1 month |
+| Change failure rate   | 0–5%      | 5–10%        | 10–15%         | 15–30%+   |
+| MTTR                  | < 1 hour  | < 1 day      | 1 day – 1 wk   | > 1 week  |
 
 **SPACE framework** (developer productivity, broader than DORA): **S**atisfaction · **P**erformance · **A**ctivity · **C**ommunication · **E**fficiency. The skill MUST warn against **single-metric optimization** (e.g., "ship more PRs" → quality collapse).
 
@@ -226,19 +226,19 @@ The generated SKILL.md MUST include both:
 
 **RACI matrix** (per deliverable, not per project):
 
-| Role | Meaning                                | Rule                          |
-| ---- | -------------------------------------- | ----------------------------- |
-| R    | Responsible (does the work)            | Multiple allowed              |
-| A    | Accountable (signs off, the buck)      | **Exactly one per row**       |
-| C    | Consulted (two-way input before)       | Used sparingly                |
-| I    | Informed (one-way notice after)        | Default for the long tail     |
+| Role | Meaning                           | Rule                      |
+| ---- | --------------------------------- | ------------------------- |
+| R    | Responsible (does the work)       | Multiple allowed          |
+| A    | Accountable (signs off, the buck) | **Exactly one per row**   |
+| C    | Consulted (two-way input before)  | Used sparingly            |
+| I    | Informed (one-way notice after)   | Default for the long tail |
 
 **Stakeholder power/interest grid** (Mendelow):
 
-| High interest, high power  | Manage closely (key players)         |
-| High interest, low power   | Keep informed                        |
-| Low interest, high power   | Keep satisfied                       |
-| Low interest, low power    | Monitor (minimum effort)             |
+| High interest, high power | Manage closely (key players) |
+| High interest, low power | Keep informed |
+| Low interest, high power | Keep satisfied |
+| Low interest, low power | Monitor (minimum effort) |
 
 ### 2.5j. Distributed + async team practices
 
@@ -276,23 +276,23 @@ The generated SKILL.md MUST encode these practices as numbered rule lists:
 
 ### 3b. PM techniques table (with when-to-use)
 
-| Technique                   | Use when                                                                     |
-| --------------------------- | ---------------------------------------------------------------------------- |
+| Technique                          | Use when                                                                             |
+| ---------------------------------- | ------------------------------------------------------------------------------------ |
 | **Work Breakdown Structure (WBS)** | Decomposing scope; rule of thumb — 8/80 (8 hours min, 80 hours max per work package) |
-| **Gantt chart / network diagram** | Predictive projects with sequenced dependencies                          |
-| **Critical Path Method (CPM)** | Schedule has hard deadlines; identify zero-slack activities                 |
-| **PERT (3-point estimation)** | Estimating with uncertainty; (Optimistic + 4×Most-likely + Pessimistic) / 6 |
-| **MoSCoW prioritization**   | Scope negotiation; Must / Should / Could / Won't (this release)              |
-| **RICE scoring**            | Backlog prioritization; (Reach × Impact × Confidence) / Effort               |
-| **Kano model**              | Feature classification — Basic / Performance / Excitement / Indifferent      |
-| **Story points**            | Agile estimation; Fibonacci (1, 2, 3, 5, 8, 13, 21); never convert to hours  |
-| **T-shirt sizing**          | Early-stage estimation when story-level detail is unavailable                |
-| **Planning Poker**          | Group estimation; reveals knowledge gaps via outliers                        |
-| **Velocity tracking**       | Forecasting in Scrum; rolling 3-sprint average                               |
-| **Cumulative Flow Diagram (CFD)** | Kanban / flow systems; detect WIP buildup + bottlenecks                |
-| **Cycle time + lead time**  | Flow systems; cycle = work-start to done; lead = request to done             |
-| **Burndown / burnup chart** | Sprint or release tracking; burnup is better (shows scope changes)           |
-| **EVM (Earned Value Mgmt)** | Predictive projects with cost + schedule baselines; CPI + SPI metrics        |
+| **Gantt chart / network diagram**  | Predictive projects with sequenced dependencies                                      |
+| **Critical Path Method (CPM)**     | Schedule has hard deadlines; identify zero-slack activities                          |
+| **PERT (3-point estimation)**      | Estimating with uncertainty; (Optimistic + 4×Most-likely + Pessimistic) / 6          |
+| **MoSCoW prioritization**          | Scope negotiation; Must / Should / Could / Won't (this release)                      |
+| **RICE scoring**                   | Backlog prioritization; (Reach × Impact × Confidence) / Effort                       |
+| **Kano model**                     | Feature classification — Basic / Performance / Excitement / Indifferent              |
+| **Story points**                   | Agile estimation; Fibonacci (1, 2, 3, 5, 8, 13, 21); never convert to hours          |
+| **T-shirt sizing**                 | Early-stage estimation when story-level detail is unavailable                        |
+| **Planning Poker**                 | Group estimation; reveals knowledge gaps via outliers                                |
+| **Velocity tracking**              | Forecasting in Scrum; rolling 3-sprint average                                       |
+| **Cumulative Flow Diagram (CFD)**  | Kanban / flow systems; detect WIP buildup + bottlenecks                              |
+| **Cycle time + lead time**         | Flow systems; cycle = work-start to done; lead = request to done                     |
+| **Burndown / burnup chart**        | Sprint or release tracking; burnup is better (shows scope changes)                   |
+| **EVM (Earned Value Mgmt)**        | Predictive projects with cost + schedule baselines; CPI + SPI metrics                |
 
 ### 3c. Project lifecycle phases (predictive)
 
@@ -304,13 +304,13 @@ The generated SKILL.md MUST encode these practices as numbered rule lists:
 
 ### 3d. Sprint cadence (Scrum) — required ceremonies
 
-| Ceremony            | Time-box (2-week sprint) | Output                                         |
-| ------------------- | ------------------------ | ---------------------------------------------- |
-| Sprint Planning     | ≤ 4 hours                | Sprint Goal + Sprint Backlog                   |
-| Daily Scrum         | 15 minutes               | Plan for next 24 hours; surface impediments    |
-| Sprint Review       | ≤ 2 hours                | Inspected Increment, updated Product Backlog   |
-| Sprint Retrospective | ≤ 90 minutes            | Improvement experiment for next sprint         |
-| Backlog Refinement  | Ongoing (≤ 10% capacity) | Ready stories for upcoming sprints             |
+| Ceremony             | Time-box (2-week sprint) | Output                                       |
+| -------------------- | ------------------------ | -------------------------------------------- |
+| Sprint Planning      | ≤ 4 hours                | Sprint Goal + Sprint Backlog                 |
+| Daily Scrum          | 15 minutes               | Plan for next 24 hours; surface impediments  |
+| Sprint Review        | ≤ 2 hours                | Inspected Increment, updated Product Backlog |
+| Sprint Retrospective | ≤ 90 minutes             | Improvement experiment for next sprint       |
+| Backlog Refinement   | Ongoing (≤ 10% capacity) | Ready stories for upcoming sprints           |
 
 ### 3e. Status report anatomy (weekly / bi-weekly)
 
@@ -359,18 +359,18 @@ The generated SKILL.md MUST encode these practices as numbered rule lists:
 
 In addition to the base required references (`code-style.md`, `security-checklist.md`, `patterns.md`, `common-issues.md`, `ai-interaction-guide.md`), the project-manager skill MUST also generate (note: `code-style.md` here is repurposed as **artifact-style.md** for PM artifacts):
 
-| File                                           | Content                                                                                              |
-| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `references/artifact-style.md`                 | Tone, structure, naming conventions for charters, status reports, retros, RFCs                       |
-| `references/charter-templates.md`              | Predictive + agile + hybrid charter templates the AI copies verbatim                                 |
-| `references/risk-register-template.md`         | Risk register with probability × impact scoring + response strategies                                |
-| `references/raci-and-stakeholder-templates.md` | RACI matrices + stakeholder register + power/interest grid                                            |
-| `references/status-report-templates.md`        | Weekly / monthly / executive status report templates with RAG                                         |
-| `references/retro-and-postmortem-templates.md` | Retro formats (Start/Stop/Continue, 4Ls, Sailboat, Mad-Sad-Glad) + blameless post-mortem template    |
-| `references/okr-templates.md`                  | OKR templates with good vs. bad examples (output-as-KR is bad)                                       |
-| `references/estimation-techniques.md`          | PERT, planning poker, T-shirt, RICE, MoSCoW with worked examples                                     |
-| `references/agile-vs-predictive-tailoring.md`  | Decision matrix + hybrid recipes for choosing the right approach                                     |
-| `references/ai-interaction-guide.md`           | What to delegate to AI vs. keep human; review checklist for AI-drafted artifacts                     |
+| File                                           | Content                                                                                           |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `references/artifact-style.md`                 | Tone, structure, naming conventions for charters, status reports, retros, RFCs                    |
+| `references/charter-templates.md`              | Predictive + agile + hybrid charter templates the AI copies verbatim                              |
+| `references/risk-register-template.md`         | Risk register with probability × impact scoring + response strategies                             |
+| `references/raci-and-stakeholder-templates.md` | RACI matrices + stakeholder register + power/interest grid                                        |
+| `references/status-report-templates.md`        | Weekly / monthly / executive status report templates with RAG                                     |
+| `references/retro-and-postmortem-templates.md` | Retro formats (Start/Stop/Continue, 4Ls, Sailboat, Mad-Sad-Glad) + blameless post-mortem template |
+| `references/okr-templates.md`                  | OKR templates with good vs. bad examples (output-as-KR is bad)                                    |
+| `references/estimation-techniques.md`          | PERT, planning poker, T-shirt, RICE, MoSCoW with worked examples                                  |
+| `references/agile-vs-predictive-tailoring.md`  | Decision matrix + hybrid recipes for choosing the right approach                                  |
+| `references/ai-interaction-guide.md`           | What to delegate to AI vs. keep human; review checklist for AI-drafted artifacts                  |
 
 ---
 
@@ -411,25 +411,25 @@ Generate at minimum:
 
 ## PHASE 7: ANTI-PATTERNS (the generated SKILL.md MUST list these in a "Never" table)
 
-| Don't                                                                  | Why                                                                                |
-| ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Write "improve communication" as a retro action                        | Vague, no owner, no metric — guaranteed to recur next sprint                       |
-| Set OKRs with output as the Key Result ("ship feature X")              | Outputs aren't outcomes; rewards motion over impact                                |
-| Assign multiple Accountable on a RACI row                              | Diffuses ownership; "everyone is responsible" = nobody is                          |
-| Convert story points to hours                                          | Defeats the purpose; story points are relative complexity, hours are absolute time |
-| Skip the "Out of Scope" section in a charter                            | 80% of scope creep starts here                                                     |
-| Go from RAG Green directly to Red                                      | Means you weren't tracking honestly; Amber is the warning                          |
-| Run blameful post-mortems                                              | Kills psychological safety; future incidents get hidden                            |
-| Use velocity to compare teams                                          | Velocity is calibrated per-team; cross-team comparison is meaningless              |
-| Estimate in hours during Scrum planning                                | Forces false precision; Fibonacci story points are the convention                  |
-| Treat AI-drafted status reports as final                                | AI misses political context, exec tone, real risk severity                         |
-| Cargo-cult the Spotify model                                           | Spotify themselves moved on; copying it without context is anti-pattern            |
-| Force Scrum on an ops / support team                                    | Kanban fits unpredictable arrival rates; Scrum forces artificial sprint boundaries |
-| Run a daily standup that's just status updates to the PM               | Daily Scrum is for the team to coordinate, not for the PM to extract status        |
-| Create a Gantt chart for an exploratory R&D project                    | False precision; use rolling-wave planning + adaptive forecasting                  |
-| Skip the Definition of Done in agile                                    | Without it, "done" drifts; quality erodes invisibly                                |
-| Plan capacity at 100% utilization                                      | Leaves zero room for incidents, sick days, focus work; 70–80% is realistic         |
-| Track risks once at project kickoff and never re-score                  | Risks evolve; stale registers are decorative                                       |
+| Don't                                                     | Why                                                                                |
+| --------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Write "improve communication" as a retro action           | Vague, no owner, no metric — guaranteed to recur next sprint                       |
+| Set OKRs with output as the Key Result ("ship feature X") | Outputs aren't outcomes; rewards motion over impact                                |
+| Assign multiple Accountable on a RACI row                 | Diffuses ownership; "everyone is responsible" = nobody is                          |
+| Convert story points to hours                             | Defeats the purpose; story points are relative complexity, hours are absolute time |
+| Skip the "Out of Scope" section in a charter              | 80% of scope creep starts here                                                     |
+| Go from RAG Green directly to Red                         | Means you weren't tracking honestly; Amber is the warning                          |
+| Run blameful post-mortems                                 | Kills psychological safety; future incidents get hidden                            |
+| Use velocity to compare teams                             | Velocity is calibrated per-team; cross-team comparison is meaningless              |
+| Estimate in hours during Scrum planning                   | Forces false precision; Fibonacci story points are the convention                  |
+| Treat AI-drafted status reports as final                  | AI misses political context, exec tone, real risk severity                         |
+| Cargo-cult the Spotify model                              | Spotify themselves moved on; copying it without context is anti-pattern            |
+| Force Scrum on an ops / support team                      | Kanban fits unpredictable arrival rates; Scrum forces artificial sprint boundaries |
+| Run a daily standup that's just status updates to the PM  | Daily Scrum is for the team to coordinate, not for the PM to extract status        |
+| Create a Gantt chart for an exploratory R&D project       | False precision; use rolling-wave planning + adaptive forecasting                  |
+| Skip the Definition of Done in agile                      | Without it, "done" drifts; quality erodes invisibly                                |
+| Plan capacity at 100% utilization                         | Leaves zero room for incidents, sick days, focus work; 70–80% is realistic         |
+| Track risks once at project kickoff and never re-score    | Risks evolve; stale registers are decorative                                       |
 
 ---
 
@@ -492,11 +492,11 @@ The generated skill MUST include the base "Communication Style" section. For pro
 
 When generating skills for this domain, evaluate whether sub-agent delegation adds value using the decision table in the base scaffold. If the project warrants delegation, include these recommended sub-agents (adjust names, tools, and triggers based on actual project patterns):
 
-| Agent              | Role                                                            | Tools                          | Spawn When                                                                       |
-| ------------------ | --------------------------------------------------------------- | ------------------------------ | -------------------------------------------------------------------------------- |
-| status-synthesizer | Read-only — scan commits / PRs / issues to draft status reports | Read Glob Grep Bash            | Weekly / monthly status report request                                           |
-| risk-scanner       | Read-only — surface risks from postmortems, code, dependencies  | Read Glob Grep                 | Risk-register refresh, milestone planning, audit prep                            |
-| retro-facilitator  | Read-only — cluster feedback, surface patterns, propose actions | Read Glob Grep                 | Sprint retrospective prep, post-mortem analysis                                  |
+| Agent              | Role                                                            | Tools               | Spawn When                                            |
+| ------------------ | --------------------------------------------------------------- | ------------------- | ----------------------------------------------------- |
+| status-synthesizer | Read-only — scan commits / PRs / issues to draft status reports | Read Glob Grep Bash | Weekly / monthly status report request                |
+| risk-scanner       | Read-only — surface risks from postmortems, code, dependencies  | Read Glob Grep      | Risk-register refresh, milestone planning, audit prep |
+| retro-facilitator  | Read-only — cluster feedback, surface patterns, propose actions | Read Glob Grep      | Sprint retrospective prep, post-mortem analysis       |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

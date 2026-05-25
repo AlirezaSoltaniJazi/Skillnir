@@ -1,5 +1,6 @@
 """NiceGUI web interface for skillnir."""
 
+import socket
 from pathlib import Path
 
 _GLOBAL_CSS = """
@@ -76,6 +77,20 @@ _GLOBAL_CSS = """
 .body--dark .text-secondary { color: #a5b4fc; }  /* indigo-300 for dark */
 </style>
 """
+
+
+def _find_free_port(start: int, host: str = "127.0.0.1", max_tries: int = 20) -> int:
+    """Return the first free TCP port at or above `start` on `host`."""
+    for offset in range(max_tries):
+        candidate = start + offset
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 0)
+            try:
+                sock.bind((host, candidate))
+                return candidate
+            except OSError:
+                continue
+    raise OSError(f"No free port found in range {start}-{start + max_tries - 1}")
 
 
 def run_ui(port: int = 8080) -> None:
@@ -162,10 +177,16 @@ def run_ui(port: int = 8080) -> None:
     # page, so binding to 0.0.0.0 (NiceGUI's default) would leak it to
     # anyone on the same LAN. Users who deliberately want remote access
     # should run this behind their own reverse proxy + auth.
+    actual_port = _find_free_port(port)
+    if actual_port != port:
+        print(
+            f"Port {port} is busy — using {actual_port} instead. "
+            f"Open http://127.0.0.1:{actual_port}"
+        )
     ui.run(
         title="Skillnir",
         host="127.0.0.1",
-        port=port,
+        port=actual_port,
         reload=False,
         show=True,
         storage_secret="skillnir-local",
