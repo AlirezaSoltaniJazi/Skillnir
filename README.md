@@ -9,7 +9,7 @@ Inject AI coding skills into any tool's dotdir.
 
 ## Overview
 
-Skillnir generates, manages, and injects domain-specific AI skills into the configuration directories of multiple AI coding tools. A single skill works across Claude Code, Cursor, GitHub Copilot, Gemini, Codex, Aider, Windsurf, and Cline.
+Skillnir generates, manages, and injects domain-specific AI skills into the configuration directories of multiple AI coding tools. A single skill works across Claude Code, Cursor, GitHub Copilot, Gemini, Codex, Windsurf, and Cline.
 
 Skills are structured markdown files that teach AI assistants project-specific patterns, conventions, and workflows. Skillnir scans your project, generates skills with AI, and symlinks them into each tool's expected location.
 
@@ -31,7 +31,7 @@ Skills are structured markdown files that teach AI assistants project-specific p
 ## Features
 
 - **Multi-backend skill generation** -- generate skills using Claude Code, Cursor, Gemini, or GitHub Copilot
-- **26 skill scopes** -- backend, frontend, android, ios, infra, testing, js, python, test-design, general-system, and more
+- **37 skill scopes** -- backend, frontend, android, ios, infra, testing, js, python, test-design, general-system, and more
 - **Cross-tool injection** -- one skill, symlinked into `.claude/`, `.cursor/`, `.github/`, `.gemini/`, `.codex/`, `.agents/`, and more
 - **Web UI** -- NiceGUI-based dashboard for all operations
 - **CLI** -- full command set for scripting and automation

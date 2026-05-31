@@ -727,6 +727,10 @@
     "empty_state": {
       "no_ai_requests": "No AI requests yet",
       "no_ai_requests_subtitle": "Token usage will appear here after you generate docs, skills, or ask AI questions."
+    },
+    "path_history": {
+      "recent": "Recent paths",
+      "remove": "Remove"
     }
   },
   "layout": {

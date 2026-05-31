@@ -622,6 +622,10 @@
     "empty_state": {
       "no_ai_requests": "Aucune requete AI pour le moment",
       "no_ai_requests_subtitle": "L'utilisation des tokens apparaitra ici apres avoir genere des docs, des skills ou pose des questions a l'AI."
+    },
+    "path_history": {
+      "recent": "Chemins récents",
+      "remove": "Supprimer"
     }
   },
   "layout": {

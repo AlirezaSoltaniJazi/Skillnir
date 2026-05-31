@@ -622,6 +622,10 @@
     "empty_state": {
       "no_ai_requests": "Ende pa kërkesa AI",
       "no_ai_requests_subtitle": "Përdorimi i tokenëve do të shfaqet këtu pasi të gjeneroni dokumentacion, aftësi ose t'i bëni pyetje AI."
+    },
+    "path_history": {
+      "recent": "Shtigjet e fundit",
+      "remove": "Hiqe"
     }
   },
   "layout": {

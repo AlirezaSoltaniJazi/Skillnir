@@ -8,6 +8,7 @@ from nicegui import ui
 from skillnir.i18n import t, get_current_language
 from skillnir.syncer import sync_skill
 from skillnir.ui.components.page_header import page_header
+from skillnir.ui.components.path_input import path_input_with_history
 from skillnir.ui.components.progress_panel import (
     format_duration,
     make_on_progress,
@@ -49,13 +50,10 @@ async def page_generate_skill():
 
         # ── Form ──
         with ui.card().classes('w-full p-6').props('flat bordered'):
-            target_input = (
-                ui.input(
-                    t('pages.generate_skill.target_project_root', lang),
-                    value=str(Path.cwd()),
-                )
-                .classes('w-full max-w-xl')
-                .props('outlined dense rounded')
+            target_input = path_input_with_history(
+                t('pages.generate_skill.target_project_root', lang),
+                value=str(Path.cwd()),
+                lang=lang,
             )
 
             add_to_current_cb = ui.checkbox(

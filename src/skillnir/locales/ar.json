@@ -622,6 +622,10 @@
     "empty_state": {
       "no_ai_requests": "لا توجد طلبات AI بعد",
       "no_ai_requests_subtitle": "سيظهر استهلاك التوكنات هنا بعد توليد المستندات أو المهارات أو طرح أسئلة على AI."
+    },
+    "path_history": {
+      "recent": "المسارات الأخيرة",
+      "remove": "إزالة"
     }
   },
   "layout": {

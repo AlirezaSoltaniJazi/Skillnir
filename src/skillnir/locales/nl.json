@@ -622,6 +622,10 @@
     "empty_state": {
       "no_ai_requests": "Nog geen AI-verzoeken",
       "no_ai_requests_subtitle": "Tokengebruik verschijnt hier nadat u docs, skills heeft gegenereerd of vragen aan AI heeft gesteld."
+    },
+    "path_history": {
+      "recent": "Recente paden",
+      "remove": "Verwijderen"
     }
   },
   "layout": {

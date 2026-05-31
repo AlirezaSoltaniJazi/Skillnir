@@ -8,6 +8,7 @@ from nicegui import ui
 
 from skillnir.i18n import t, get_current_language
 from skillnir.ui.components.page_header import page_header
+from skillnir.ui.components.path_input import path_input_with_history
 from skillnir.ui.components.progress_panel import (
     make_on_progress,
     progress_panel,
@@ -313,13 +314,10 @@ async def page_check_skill():
             ).classes('text-sm text-secondary')
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
-            target_input = (
-                ui.input(
-                    t('pages.check_skill.target_project_root', lang),
-                    value=str(Path.cwd()),
-                )
-                .classes('w-full max-w-xl')
-                .props('outlined dense rounded')
+            target_input = path_input_with_history(
+                t('pages.check_skill.target_project_root', lang),
+                value=str(Path.cwd()),
+                lang=lang,
             )
 
         progress_container = ui.column().classes('w-full')

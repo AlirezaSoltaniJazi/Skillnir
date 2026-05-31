@@ -622,6 +622,10 @@
     "empty_state": {
       "no_ai_requests": "Noch keine AI-Anfragen",
       "no_ai_requests_subtitle": "Token-Nutzung wird hier angezeigt, nachdem Sie Docs, Skills generiert oder AI-Fragen gestellt haben."
+    },
+    "path_history": {
+      "recent": "Zuletzt verwendete Pfade",
+      "remove": "Entfernen"
     }
   },
   "layout": {
