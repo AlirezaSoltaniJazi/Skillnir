@@ -184,7 +184,7 @@ def run_ui(port: int = 8080) -> None:
             f"Open http://127.0.0.1:{actual_port}"
         )
     ui.run(
-        title="Skillnir",
+        title=f"Skillnir (v{get_app_version()})" if get_app_version() else "Skillnir",
         host="127.0.0.1",
         port=actual_port,
         reload=False,

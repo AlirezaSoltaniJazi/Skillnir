@@ -272,6 +272,45 @@ def _find_data_dir() -> Path | None:
     return cwd_candidate if cwd_candidate.is_dir() else None
 
 
+def _find_pyproject() -> Path | None:
+    """Walk up from this file to find the project's pyproject.toml."""
+    current = Path(__file__).resolve().parent
+    for _ in range(6):
+        candidate = current / "pyproject.toml"
+        if candidate.is_file():
+            return candidate
+        current = current.parent
+    cwd_candidate = Path.cwd() / "pyproject.toml"
+    return cwd_candidate if cwd_candidate.is_file() else None
+
+
+@functools.lru_cache(maxsize=1)
+def get_app_version() -> str:
+    """Return Skillnir's version string from pyproject.toml.
+
+    Reads ``[project].version`` directly so the UI/CLI always reflect the
+    source of truth. Falls back to installed package metadata, then to an
+    empty string when neither is available (so callers can omit the badge).
+    """
+    pyproject = _find_pyproject()
+    if pyproject is not None:
+        try:
+            import tomllib
+
+            data = tomllib.loads(pyproject.read_text(encoding="utf-8"))
+            version = data.get("project", {}).get("version", "")
+            if version:
+                return str(version)
+        except (OSError, ValueError, KeyError):
+            pass
+    try:
+        from importlib.metadata import PackageNotFoundError, version
+
+        return version("skillnir")
+    except (PackageNotFoundError, ValueError):
+        return ""
+
+
 def _discover_prompt_versions() -> tuple[str, ...]:
     """Scan .data/promptsv* directories and return sorted version tuple."""
     data_dir = _find_data_dir()
