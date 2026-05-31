@@ -1181,7 +1181,7 @@ wheels = [
 
 [[package]]
 name = "skillnir"
-version = "1.5.0"
+version = "1.6.0"
 source = { editable = "." }
 dependencies = [
     { name = "claude-agent-sdk" },
