@@ -96,18 +96,18 @@ Write to `/tmp/skill_synthesis_automation-review.md`:
 
 The generated SKILL.md MUST encode a code-review checklist. Flag these **test smells**:
 
-| Smell                          | What to look for                                                              |
-| ------------------------------ | ----------------------------------------------------------------------------- |
-| Flaky / non-deterministic      | Passes/fails on same code; timing- or order-dependent                         |
-| Hard waits                     | `Thread.sleep`, `cy.wait(3000)`, `browser.pause`, `time.sleep` in tests       |
-| Hardcoded locators / data      | Inline selectors / credentials / IDs instead of page objects / factories      |
-| Conditional logic in tests     | `if/else` steering test flow → use parametrization instead                    |
-| Test interdependence           | Test B depends on Test A's side effects / ordering                            |
-| Shared mutable state           | Module/session-scoped mutable globals leaking between tests                   |
-| Over-mocking                   | Mocking own code / implementation details vs. external boundaries             |
-| Assertion roulette             | Many unlabeled assertions — unclear which failed                              |
-| Assertion-free tests           | "Tests" that exercise code but assert nothing                                 |
-| Missing negative cases         | Only happy path; no boundary / error / empty / null coverage                  |
+| Smell                      | What to look for                                                         |
+| -------------------------- | ------------------------------------------------------------------------ |
+| Flaky / non-deterministic  | Passes/fails on same code; timing- or order-dependent                    |
+| Hard waits                 | `Thread.sleep`, `cy.wait(3000)`, `browser.pause`, `time.sleep` in tests  |
+| Hardcoded locators / data  | Inline selectors / credentials / IDs instead of page objects / factories |
+| Conditional logic in tests | `if/else` steering test flow → use parametrization instead               |
+| Test interdependence       | Test B depends on Test A's side effects / ordering                       |
+| Shared mutable state       | Module/session-scoped mutable globals leaking between tests              |
+| Over-mocking               | Mocking own code / implementation details vs. external boundaries        |
+| Assertion roulette         | Many unlabeled assertions — unclear which failed                         |
+| Assertion-free tests       | "Tests" that exercise code but assert nothing                            |
+| Missing negative cases     | Only happy path; no boundary / error / empty / null coverage             |
 
 **Architecture review:** Page Object Model (single responsibility, no assertions in POs, return domain types not raw elements) vs **Screenplay** (actors/tasks/questions — better at scale) vs **App Actions** (bypass UI for setup). Flag logic/assertions inside page objects, god-objects, over-abstraction.
 
@@ -155,6 +155,8 @@ The generated SKILL.md MUST teach the AI to grow its own competence when it meet
 
 This is what makes the skill "extend more and more" — every review of a new stack leaves the skill permanently smarter.
 
+**`references/languages/` is a runtime-only directory.** It does NOT exist in the freshly generated skill. The skill creates it (together with the first `references/languages/<name>.md` file) only when self-extension first catalogs a language. Never ship it empty.
+
 ---
 
 ## PHASE 3: REVIEW OUTPUT CONTRACT
@@ -188,23 +190,23 @@ Report header: candidate name + role/seniority (if given) + review date + assign
 
 ## PHASE 4: REFERENCE FILES (must include — ≥12)
 
-| File                                       | Content                                                                                       |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------- |
-| `references/code-review-checklist.md`      | Full test-smell catalog + per-language lint expectations + good-vs-bad code examples          |
-| `references/framework-review/playwright.md` | Playwright review criteria + anti-patterns (with doc citations)                              |
-| `references/framework-review/selenium.md`  | Selenium 4+ review criteria + anti-patterns                                                   |
-| `references/framework-review/cypress.md`   | Cypress review criteria + anti-patterns                                                       |
-| `references/framework-review/wdio.md`      | WebdriverIO review criteria + anti-patterns                                                   |
-| `references/framework-review/appium.md`    | Appium 2.0 review criteria + anti-patterns                                                    |
-| `references/test-plan-review.md`           | IEEE 829 + ISO·IEC·IEEE 29119-3 plan-completeness checklist                                   |
-| `references/test-case-review.md`           | ISTQB CTFL v4.0 case criteria + RTM + risk-based prioritization                               |
-| `references/flakiness-and-determinism.md`  | Flaky-test taxonomy, isolation/idempotency rules, quarantine-with-owner, retries-as-bandaid    |
-| `references/engineering-principles.md`     | SOLID / DRY-vs-DAMP / YAGNI / KISS / AAA applied to TEST code, with good-vs-bad examples       |
-| `references/challenge-questions-bank.md`   | Categorized question bank (trade-offs, flakiness, scalability, design, stretch) to tailor      |
-| `references/self-extension-guide.md`       | How to research an unknown framework → LEARNED.md → new reference file with citations          |
-| `references/review-rubric.md`              | (repurposed code-style.md) severity definitions, scoring rubric, recommendation bands          |
-| `references/ai-interaction-guide.md`       | What to delegate to AI vs. human reviewer; how to surface assumptions; intake discipline       |
-| `references/common-issues.md`              | Common reviewer pitfalls (rubber-stamping, nitpicking, ignoring traceability, scope creep)     |
+| File                                        | Content                                                                                     |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `references/code-review-checklist.md`       | Full test-smell catalog + per-language lint expectations + good-vs-bad code examples        |
+| `references/framework-review/playwright.md` | Playwright review criteria + anti-patterns (with doc citations)                             |
+| `references/framework-review/selenium.md`   | Selenium 4+ review criteria + anti-patterns                                                 |
+| `references/framework-review/cypress.md`    | Cypress review criteria + anti-patterns                                                     |
+| `references/framework-review/wdio.md`       | WebdriverIO review criteria + anti-patterns                                                 |
+| `references/framework-review/appium.md`     | Appium 2.0 review criteria + anti-patterns                                                  |
+| `references/test-plan-review.md`            | IEEE 829 + ISO·IEC·IEEE 29119-3 plan-completeness checklist                                 |
+| `references/test-case-review.md`            | ISTQB CTFL v4.0 case criteria + RTM + risk-based prioritization                             |
+| `references/flakiness-and-determinism.md`   | Flaky-test taxonomy, isolation/idempotency rules, quarantine-with-owner, retries-as-bandaid |
+| `references/engineering-principles.md`      | SOLID / DRY-vs-DAMP / YAGNI / KISS / AAA applied to TEST code, with good-vs-bad examples    |
+| `references/challenge-questions-bank.md`    | Categorized question bank (trade-offs, flakiness, scalability, design, stretch) to tailor   |
+| `references/self-extension-guide.md`        | How to research an unknown framework → LEARNED.md → new reference file with citations       |
+| `references/review-rubric.md`               | (repurposed code-style.md) severity definitions, scoring rubric, recommendation bands       |
+| `references/ai-interaction-guide.md`        | What to delegate to AI vs. human reviewer; how to surface assumptions; intake discipline    |
+| `references/common-issues.md`               | Common reviewer pitfalls (rubber-stamping, nitpicking, ignoring traceability, scope creep)  |
 
 ---
 
@@ -232,27 +234,29 @@ Report header: candidate name + role/seniority (if given) + review date + assign
 - [ ] Test-plan review cites IEEE 829 / ISO·IEC·IEEE 29119-3; test-case review cites ISTQB CTFL v4.0
 - [ ] `allowed-tools` includes `WebSearch` + `WebFetch` (self-extension) and `Edit`/`Write` scoped to report + LEARNED.md + references only
 - [ ] At least 12 reference files + 7 assets generated
+- [ ] `references/framework-review/` is populated with playwright/selenium/cypress/wdio/appium `.md` files (NOT an empty directory)
+- [ ] No empty directories anywhere in the skill; `references/languages/` was NOT created at generation time (runtime-only)
 - [ ] "Never auto-fix code under review" stated explicitly
 
 ---
 
 ## PHASE 7: ANTI-PATTERNS (the generated SKILL.md MUST list these in a "Never" table)
 
-| Don't                                                       | Why                                                                                      |
-| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| Start reviewing before capturing the candidate's name       | Report can't be named/attributed; intake drives everything                               |
-| Auto-fix the code / plan / cases under review               | A reviewer produces findings; the candidate/author applies fixes                         |
-| Approve a test containing `Thread.sleep` / `cy.wait(ms)`     | Fixed waits are the #1 flakiness source; demand deterministic waits                      |
-| Sign off without checking requirement traceability (RTM)    | Coverage claims are unverifiable without traceability                                    |
-| Pass a suite with no negative / boundary cases              | Happy-path-only is incomplete; ISTQB techniques exist for this                           |
-| Invent review criteria for an unknown framework             | Self-extension requires citing official docs; uncited criteria mislead                   |
-| Over-DRY test code in the name of cleanliness               | Tests favor DAMP (readability) over DRY; hidden abstraction harms debuggability          |
-| Nitpick style while ignoring blockers                       | Severity discipline — lead with blockers/majors, not formatting nits                     |
-| Rubber-stamp ("looks good")                                 | A review with no findings + no questions adds no signal                                  |
-| Emit findings without a suggested fix                       | Every finding needs an actionable next step                                              |
-| Reward speculative abstraction (YAGNI violation)            | Over-engineering an assignment is a negative, not a positive                             |
-| Generate generic challenge questions                        | Questions must be tied to the candidate's actual code (`file:line`) to have signal       |
-| Treat AI-generated tests as trustworthy by default          | LLM tests hallucinate APIs + flaky waits; review them as critically as human code        |
+| Don't                                                    | Why                                                                                |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Start reviewing before capturing the candidate's name    | Report can't be named/attributed; intake drives everything                         |
+| Auto-fix the code / plan / cases under review            | A reviewer produces findings; the candidate/author applies fixes                   |
+| Approve a test containing `Thread.sleep` / `cy.wait(ms)` | Fixed waits are the #1 flakiness source; demand deterministic waits                |
+| Sign off without checking requirement traceability (RTM) | Coverage claims are unverifiable without traceability                              |
+| Pass a suite with no negative / boundary cases           | Happy-path-only is incomplete; ISTQB techniques exist for this                     |
+| Invent review criteria for an unknown framework          | Self-extension requires citing official docs; uncited criteria mislead             |
+| Over-DRY test code in the name of cleanliness            | Tests favor DAMP (readability) over DRY; hidden abstraction harms debuggability    |
+| Nitpick style while ignoring blockers                    | Severity discipline — lead with blockers/majors, not formatting nits               |
+| Rubber-stamp ("looks good")                              | A review with no findings + no questions adds no signal                            |
+| Emit findings without a suggested fix                    | Every finding needs an actionable next step                                        |
+| Reward speculative abstraction (YAGNI violation)         | Over-engineering an assignment is a negative, not a positive                       |
+| Generate generic challenge questions                     | Questions must be tied to the candidate's actual code (`file:line`) to have signal |
+| Treat AI-generated tests as trustworthy by default       | LLM tests hallucinate APIs + flaky waits; review them as critically as human code  |
 
 ---
 
@@ -301,12 +305,12 @@ For automation-review specifically, when producing a review the AI MUST:
 
 ## SUB-AGENT RECOMMENDATIONS
 
-| Agent               | Role                                                                       | Tools                          | Spawn When                                                       |
-| ------------------- | -------------------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------- |
-| code-review-scanner | Read-only — sweep test code for smells (sleeps, `.only`, no-assert, XPath) | Read Glob Grep                 | Large submission, multi-module suite, first review pass          |
-| flakiness-detector  | Read-only — find determinism/isolation/order-dependency risks              | Read Glob Grep Bash            | Suspected flaky suite, parallel-execution review                 |
-| traceability-auditor | Read-only — map test cases ↔ requirements, find RTM gaps                  | Read Glob Grep                 | Test plan / test case review, coverage-claim verification        |
-| framework-researcher | Read-only — research an unknown framework via official docs (self-extend) | WebSearch WebFetch Read        | Submission uses a framework/language with no reference checklist |
+| Agent                | Role                                                                       | Tools                   | Spawn When                                                       |
+| -------------------- | -------------------------------------------------------------------------- | ----------------------- | ---------------------------------------------------------------- |
+| code-review-scanner  | Read-only — sweep test code for smells (sleeps, `.only`, no-assert, XPath) | Read Glob Grep          | Large submission, multi-module suite, first review pass          |
+| flakiness-detector   | Read-only — find determinism/isolation/order-dependency risks              | Read Glob Grep Bash     | Suspected flaky suite, parallel-execution review                 |
+| traceability-auditor | Read-only — map test cases ↔ requirements, find RTM gaps                   | Read Glob Grep          | Test plan / test case review, coverage-claim verification        |
+| framework-researcher | Read-only — research an unknown framework via official docs (self-extend)  | WebSearch WebFetch Read | Submission uses a framework/language with no reference checklist |
 
 All recommended sub-agents are **read-only** on the submission; only the main skill writes the report / LEARNED.md / new references.
 
@@ -325,6 +329,17 @@ Add to suggested reference files:
 
 ---
 
+## DIRECTORY HYGIENE (generation-time — MUST follow)
+
+**Never create an empty directory.** Create a directory only at the moment you write the first file into it (`mkdir -p` immediately followed by writing the file). A skill shipped with empty folders is a generation defect (git won't even track them, and the user sees hollow scaffolding).
+
+- `references/framework-review/` — MUST be created **and populated** at generation time with the five up-front checklist files (`playwright.md`, `selenium.md`, `cypress.md`, `wdio.md`, `appium.md`). If you create the directory, you MUST write those files in the same pass. Do not `mkdir` it and move on.
+- `references/languages/` — do **NOT** create it at generation time. It is runtime-only; the self-extension protocol creates it together with its first file.
+- If you are running low on turns, **prioritize writing the framework-review files over the optional extras** (extra assets, extra agents). Finishing the five framework checklists matters more than scaffolding empty folders.
+- Before finishing, verify no directory under the skill is empty (`find <skill> -type d -empty` must return nothing except an intentionally-deferred runtime dir, which should not have been created at all).
+
+---
+
 ## EXECUTION ORDER
 
 ```
@@ -335,11 +350,11 @@ Add to suggested reference files:
 [ ] 5. Generate SKILL.md with the 3 review knowledge bases + self-extension + output contract
 [ ] 6. Generate INJECT.md (50-150 token quick ref — must include "ask candidate name first", "HTML report named after candidate", "never auto-fix code under review", "self-extend on unknown framework")
 [ ] 7. Generate LEARNED.md (empty template with section headers)
-[ ] 8. Generate the 12+ reference files (Phase 4), incl. framework-review/ + engineering-principles + challenge-questions-bank + self-extension-guide
+[ ] 8. Generate the 12+ reference files (Phase 4). MUST include framework-review/{playwright,selenium,cypress,wdio,appium}.md (write the files, never just mkdir the dir) + engineering-principles + challenge-questions-bank + self-extension-guide. Do NOT create references/languages/ (runtime-only).
 [ ] 9. Generate the 7+ assets (Phase 5), incl. review-report-template.html + best-practices-scorecard.csv
 [ ] 10. Generate scripts/validate-review.sh
 [ ] 11. Generate agents/ files (all read-only on the submission)
-[ ] 12. Run quality gates (Phase 6)
+[ ] 12. Run quality gates (Phase 6) — incl. "no empty directories" check from DIRECTORY HYGIENE
 [ ] 13. Verify all anti-patterns appear in SKILL.md "Never" table (Phase 7)
 ```
 
