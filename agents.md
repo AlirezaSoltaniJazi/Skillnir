@@ -237,7 +237,7 @@ No `.env` file used. Configuration stored in `~/.skillnir/config.json`:
 ```json
 {
   "backend": "claude",
-  "model": "claude-opus-4-6",
+  "model": "claude-opus-4-8",
   "prompt_version": "v1",
   "active_provider": "gchat",
   "notifications_enabled": true,
