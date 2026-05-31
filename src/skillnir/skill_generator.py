@@ -79,6 +79,7 @@ SKILL_SCOPES: tuple[str, ...] = (
     "deep-researcher",
     "translator",
     "android-google",
+    "automation-review",
 )
 
 SCOPE_LABELS: dict[str, str] = {
@@ -118,6 +119,7 @@ SCOPE_LABELS: dict[str, str] = {
     "deep-researcher": "Deep Researcher (methodology/source evaluation/synthesis/citations/fact-checking)",
     "translator": "Translator (i18n/l10n/ICU plurals/RTL/terminology management/CAT tools)",
     "android-google": "Android (Google Official Skills — Compose/Nav3/edge-to-edge/AGP9/Camera/Journeys/Glimmer XR)",
+    "automation-review": "Automation Review (code review / test-plan & test-case review across languages & frameworks, self-extending, HTML report)",
 }
 
 
@@ -153,6 +155,7 @@ SCOPE_CATEGORIES: tuple[tuple[str, tuple[str, ...]], ...] = (
             "selenium",
             "appium",
             "accessibility",
+            "automation-review",
         ),
     ),
     (
@@ -379,6 +382,17 @@ def _find_reference_skill(scope: str) -> Path | None:
             "journeys",
             "agent-mode",
             "android-skills",
+        ),
+        "automation-review": (
+            "review",
+            "audit",
+            "code-review",
+            "test-review",
+            "quality-gate",
+            "lint",
+            "flaky",
+            "test-automation",
+            "qa",
         ),
     }
 
