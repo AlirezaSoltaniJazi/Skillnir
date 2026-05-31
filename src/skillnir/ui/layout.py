@@ -194,7 +194,7 @@ def header() -> tuple:
     """Build the shared layout with drawer nav and return (audio_element, sound_state)."""
     from nicegui import app, ui
 
-    from skillnir.backends import load_config, save_config
+    from skillnir.backends import get_app_version, load_config, save_config
     from skillnir.ui import _GLOBAL_CSS
 
     is_dark = app.storage.user.get('dark_mode', True)
