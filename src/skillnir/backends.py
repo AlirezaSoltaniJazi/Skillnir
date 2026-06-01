@@ -301,13 +301,13 @@ def get_app_version() -> str:
             version = data.get("project", {}).get("version", "")
             if version:
                 return str(version)
-        except (OSError, ValueError, KeyError):
+        except OSError, ValueError, KeyError:
             pass
     try:
         from importlib.metadata import PackageNotFoundError, version
 
         return version("skillnir")
-    except (PackageNotFoundError, ValueError):
+    except PackageNotFoundError, ValueError:
         return ""
 
 

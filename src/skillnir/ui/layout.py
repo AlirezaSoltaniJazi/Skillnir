@@ -247,9 +247,7 @@ def header() -> tuple:
             ui.icon('auto_fix_high', color='primary').classes('text-2xl')
             _app_version = get_app_version()
             _brand = f'Skillnir (v{_app_version})' if _app_version else 'Skillnir'
-            ui.link(_brand, '/').classes(
-                'text-xl font-bold no-underline gradient-text'
-            )
+            ui.link(_brand, '/').classes('text-xl font-bold no-underline gradient-text')
 
         # Nav groups
         for group_label, items in nav_groups:

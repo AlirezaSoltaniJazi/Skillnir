@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 - **Dependency CVE scanning now actually runs** -- the `python-safety-dependencies-check` pre-commit hook matched `files: requirements*`, but the project ships no `requirements*.txt` (it uses `pyproject.toml` + `uv.lock`), so the hook never executed and supply-chain CVEs went unchecked. Replaced it with a local `uv-safety` hook that exports the locked dependency set (`uv export`) and pipes it into `safety check` whenever `pyproject.toml`/`uv.lock` change (keeps the existing brotli `--ignore=81038`). See [.pre-commit-config.yaml](.pre-commit-config.yaml).
+- **Upgraded five dependencies to clear the CVEs the new `uv-safety` hook flagged** -- `cryptography` 46.0.6 → 48.0.0 (CVE-2026-39892, buffer overflow), `lxml` 6.0.2 → 6.1.1 (CVE-2026-41066, XML external-entity injection), `nicegui` 3.9.0 → 3.12.1 (CVE-2026-39844, upload path traversal), `pytest` 9.0.2 → 9.0.3 (CVE-2025-71176, insecure `/tmp` directory), `python-multipart` 0.0.22 → 0.0.30 (CVE-2026-40347, denial of service). Direct-dependency floors in [pyproject.toml](pyproject.toml) raised to the fixed versions (`nicegui>=3.10.0`, `cryptography>=46.0.7`, `pytest>=9.0.3` — the latter in both the `generate`/`dev` extra and the `[dependency-groups].dev` set) so the resolver cannot drift back onto a vulnerable release. All 548 tests pass on the upgraded set and `uv-safety` reports clean.
 
 ## [1.6.0] - 2026-05-25
 
