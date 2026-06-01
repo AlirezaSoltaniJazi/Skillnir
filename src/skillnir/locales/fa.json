@@ -622,6 +622,10 @@
     "empty_state": {
       "no_ai_requests": "هنوز درخواست AI ثبت نشده",
       "no_ai_requests_subtitle": "مصرف توکن پس از تولید مستندات، مهارت‌ها یا پرسش از AI در اینجا نمایش داده می‌شود."
+    },
+    "path_history": {
+      "recent": "مسیرهای اخیر",
+      "remove": "حذف"
     }
   },
   "layout": {

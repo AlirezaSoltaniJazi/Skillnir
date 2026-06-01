@@ -320,6 +320,11 @@ class TestResolveModelId:
         result = resolve_model_id(AIBackend.CLAUDE, "sonnet")
         assert result == "claude-sonnet-4-6"
 
+    def test_default_opus_alias_resolves_to_latest(self):
+        # The "opus" alias is Claude's default_model; it must point at the flagship.
+        result = resolve_model_id(AIBackend.CLAUDE, "opus")
+        assert result == "claude-opus-4-8"
+
     def test_unknown_alias_passed_through(self):
         result = resolve_model_id(AIBackend.CLAUDE, "custom-model-xyz")
         assert result == "custom-model-xyz"

@@ -289,6 +289,31 @@ class TestAndroidGoogleScope:
         assert "android-google" in engineering
 
 
+class TestAutomationReviewScope:
+    def test_in_skill_scopes(self):
+        assert "automation-review" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "automation-review" in SCOPE_LABELS
+        assert "Review" in SCOPE_LABELS["automation-review"]
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("automation-review", "v1")
+        assert "ISTQB" in text
+        assert "IEEE 829" in text or "29119" in text
+        assert "SOLID" in text
+        assert "DRY" in text
+        assert "YAGNI" in text
+        assert "candidate" in text.lower()
+        assert ".html" in text or "HTML report" in text
+        assert "Challenge Question" in text or "challenge question" in text.lower()
+        assert "WebSearch" in text or "self-exten" in text.lower()
+
+    def test_in_quality_and_testing_category(self):
+        quality = dict(SCOPE_CATEGORIES).get("Quality & Testing", ())
+        assert "automation-review" in quality
+
+
 class TestScopeCategories:
     def test_every_scope_belongs_to_exactly_one_category(self):
         """Every entry in SKILL_SCOPES must appear in exactly one SCOPE_CATEGORIES bucket."""

@@ -622,6 +622,10 @@
     "empty_state": {
       "no_ai_requests": "Brak żądań AI",
       "no_ai_requests_subtitle": "Użycie tokenów pojawi się tutaj po wygenerowaniu dokumentacji, umiejętności lub zadaniu pytań AI."
+    },
+    "path_history": {
+      "recent": "Ostatnie ścieżki",
+      "remove": "Usuń"
     }
   },
   "layout": {

@@ -30,21 +30,21 @@ The generated skill must turn an AI assistant into an opinionated Android engine
 
 Check for each of the 13 official skills from [github.com/android/skills](https://github.com/android/skills) and note relevance:
 
-| Skill                                            | Fires when project has                                                  |
-| ------------------------------------------------ | ----------------------------------------------------------------------- |
-| `jetpack-compose`                                | `androidx.compose.*` imports, `@Composable` functions                   |
-| `navigation-3`                                   | `androidx.navigation3.*`, `NavBackStack`, `Scene` markers               |
-| `edge-to-edge`                                   | `enableEdgeToEdge()`, `WindowCompat`, Android 15+ targetSdk             |
-| `agp-9-upgrade`                                  | AGP < 9 in `gradle/libs.versions.toml` or `build.gradle.kts`            |
-| `camera1-to-camerax`                             | `android.hardware.Camera` imports (legacy Camera1)                      |
-| `appfunctions`                                   | `androidx.appfunctions.*`, `@AppFunction` annotations                   |
-| `android-cli`                                    | Always relevant in 2026+ Android projects                               |
-| `verified-email`                                 | Identity / sign-in flows using verified email                           |
-| `r8-analyzer`                                    | `minifyEnabled true`, R8 mapping files, ProGuard rules                  |
-| `play`                                           | `com.android.application` + Play submission, in-app purchases, reviews  |
-| `profilers`                                      | Performance work, ANR reports, jank investigations                      |
-| `testing-setup` (+ Journeys)                     | `androidx.test.*`, `JourneyTest`, end-to-end UI test suites             |
-| `display-glasses-with-jetpack-compose-glimmer`   | Android XR target, `androidx.xr.compose.*`, Glimmer dependencies        |
+| Skill                                          | Fires when project has                                                 |
+| ---------------------------------------------- | ---------------------------------------------------------------------- |
+| `jetpack-compose`                              | `androidx.compose.*` imports, `@Composable` functions                  |
+| `navigation-3`                                 | `androidx.navigation3.*`, `NavBackStack`, `Scene` markers              |
+| `edge-to-edge`                                 | `enableEdgeToEdge()`, `WindowCompat`, Android 15+ targetSdk            |
+| `agp-9-upgrade`                                | AGP < 9 in `gradle/libs.versions.toml` or `build.gradle.kts`           |
+| `camera1-to-camerax`                           | `android.hardware.Camera` imports (legacy Camera1)                     |
+| `appfunctions`                                 | `androidx.appfunctions.*`, `@AppFunction` annotations                  |
+| `android-cli`                                  | Always relevant in 2026+ Android projects                              |
+| `verified-email`                               | Identity / sign-in flows using verified email                          |
+| `r8-analyzer`                                  | `minifyEnabled true`, R8 mapping files, ProGuard rules                 |
+| `play`                                         | `com.android.application` + Play submission, in-app purchases, reviews |
+| `profilers`                                    | Performance work, ANR reports, jank investigations                     |
+| `testing-setup` (+ Journeys)                   | `androidx.test.*`, `JourneyTest`, end-to-end UI test suites            |
+| `display-glasses-with-jetpack-compose-glimmer` | Android XR target, `androidx.xr.compose.*`, Glimmer dependencies       |
 
 **Firebase Agent Skills surface**
 
@@ -112,30 +112,30 @@ Write to `/tmp/skill_synthesis_android-google.md`:
 
 Anchor every recommendation to the official catalog at [github.com/android/skills](https://github.com/android/skills). The 13 skills are not optional reading — they are the canonical guidance for their respective topics in Android Studio Agent Mode.
 
-| Topic                  | Google skill                                | When to delegate                                                    |
-| ---------------------- | ------------------------------------------- | ------------------------------------------------------------------- |
-| Compose UI             | `jetpack-compose`                           | Any `@Composable` work, state management, recomposition perf        |
-| Navigation             | `navigation-3`                              | New screens, deep links, type-safe routes, back stack               |
-| Edge-to-edge           | `edge-to-edge`                              | Android 15+ mandatory layout; `enableEdgeToEdge()`                  |
-| AGP migration          | `agp-9-upgrade`                             | AGP < 9 → 9 upgrade; Gradle 9, JDK 21 baseline                      |
-| Camera migration       | `camera1-to-camerax`                        | Any project still on `android.hardware.Camera`                      |
-| On-device AI           | `appfunctions`                              | Exposing app logic to Gemini Nano via App Functions                 |
-| CLI                    | `android-cli`                               | Headless builds, CI, agent automation                               |
-| Identity               | `verified-email`                            | Email-verified sign-in, Passkeys + email fallback                   |
-| Minification audit     | `r8-analyzer`                               | Diagnosing R8-shrunk crashes, mapping files                         |
-| Distribution           | `play`                                      | Play submission, in-app review, in-app updates                      |
-| Profiling              | `profilers`                                 | ANR / jank / startup investigation                                  |
-| E2E testing            | `testing-setup` + Journeys                  | UI test infrastructure, AI-driven Journey suites                    |
-| XR / glasses           | `display-glasses-with-jetpack-compose-glimmer` | XR target, Display Glasses, spatial UI                          |
+| Topic              | Google skill                                   | When to delegate                                             |
+| ------------------ | ---------------------------------------------- | ------------------------------------------------------------ |
+| Compose UI         | `jetpack-compose`                              | Any `@Composable` work, state management, recomposition perf |
+| Navigation         | `navigation-3`                                 | New screens, deep links, type-safe routes, back stack        |
+| Edge-to-edge       | `edge-to-edge`                                 | Android 15+ mandatory layout; `enableEdgeToEdge()`           |
+| AGP migration      | `agp-9-upgrade`                                | AGP < 9 → 9 upgrade; Gradle 9, JDK 21 baseline               |
+| Camera migration   | `camera1-to-camerax`                           | Any project still on `android.hardware.Camera`               |
+| On-device AI       | `appfunctions`                                 | Exposing app logic to Gemini Nano via App Functions          |
+| CLI                | `android-cli`                                  | Headless builds, CI, agent automation                        |
+| Identity           | `verified-email`                               | Email-verified sign-in, Passkeys + email fallback            |
+| Minification audit | `r8-analyzer`                                  | Diagnosing R8-shrunk crashes, mapping files                  |
+| Distribution       | `play`                                         | Play submission, in-app review, in-app updates               |
+| Profiling          | `profilers`                                    | ANR / jank / startup investigation                           |
+| E2E testing        | `testing-setup` + Journeys                     | UI test infrastructure, AI-driven Journey suites             |
+| XR / glasses       | `display-glasses-with-jetpack-compose-glimmer` | XR target, Display Glasses, spatial UI                       |
 
 ### 2.5b. Firebase Agent Skills (May 2026)
 
 Firebase shipped its own agent-skill catalog at I/O 2026 — these run in Android Studio Agent Mode alongside the official Android skills.
 
-| Skill                  | Source                                                                                       | Use for                                                |
-| ---------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| `firebase-agent-auth`     | [firebase.google.com/docs/ai-assistance/agent-skills](https://firebase.google.com/docs/ai-assistance/agent-skills) | Adding sign-in, password reset, email verification     |
-| `firebase-agent-firestore` | same                                                                                       | Schema design, security-rule writing, query patterns   |
+| Skill                      | Source                                                                                                             | Use for                                              |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- |
+| `firebase-agent-auth`      | [firebase.google.com/docs/ai-assistance/agent-skills](https://firebase.google.com/docs/ai-assistance/agent-skills) | Adding sign-in, password reset, email verification   |
+| `firebase-agent-firestore` | same                                                                                                               | Schema design, security-rule writing, query patterns |
 
 Both are model-agnostic — they work with Gemini, Claude, GPT, or Gemma 4 inside Agent Mode.
 
@@ -143,10 +143,10 @@ Both are model-agnostic — they work with Gemini, Claude, GPT, or Gemma 4 insid
 
 Two performance-focused skills released alongside the catalog:
 
-| Skill                | Purpose                                                                              |
-| -------------------- | ------------------------------------------------------------------------------------ |
-| `perfetto-sql`       | Write Perfetto SQL queries against trace data                                        |
-| `perfetto-analysis`  | Investigate startup delays, jank, ANRs by analyzing Perfetto traces with AI guidance |
+| Skill               | Purpose                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------ |
+| `perfetto-sql`      | Write Perfetto SQL queries against trace data                                        |
+| `perfetto-analysis` | Investigate startup delays, jank, ANRs by analyzing Perfetto traces with AI guidance |
 
 Use these instead of hand-rolling Perfetto SQL — the agent already knows the schema.
 
@@ -195,19 +195,19 @@ The skill MUST teach:
 
 The generated skill MUST encode the 2026 baseline as defaults:
 
-| Concern             | 2026 default                                                                   |
-| ------------------- | ------------------------------------------------------------------------------ |
-| Language            | Kotlin only — no new Java                                                      |
-| UI                  | Jetpack Compose only — XML for legacy migration only                           |
-| Navigation          | Navigation 3 with type-safe routes                                             |
-| DI                  | Hilt (preferred) or Koin                                                       |
-| Async               | Kotlin Coroutines + Flow; never `AsyncTask` or `RxJava` in new code            |
-| Build               | AGP 9+, Gradle 9+, JDK 21, KSP (never kapt)                                    |
-| SDK                 | Compile + Target SDK = latest stable (Android 16); Min SDK ≥ 24                |
-| Edge-to-edge        | Always on for Android 15+                                                      |
-| Predictive back     | Always handled                                                                 |
-| Baseline profiles   | Generated for every release variant                                            |
-| Testing             | Journeys + Macrobenchmark; Robolectric for unit, Compose UI tests for screens  |
+| Concern           | 2026 default                                                                  |
+| ----------------- | ----------------------------------------------------------------------------- |
+| Language          | Kotlin only — no new Java                                                     |
+| UI                | Jetpack Compose only — XML for legacy migration only                          |
+| Navigation        | Navigation 3 with type-safe routes                                            |
+| DI                | Hilt (preferred) or Koin                                                      |
+| Async             | Kotlin Coroutines + Flow; never `AsyncTask` or `RxJava` in new code           |
+| Build             | AGP 9+, Gradle 9+, JDK 21, KSP (never kapt)                                   |
+| SDK               | Compile + Target SDK = latest stable (Android 16); Min SDK ≥ 24               |
+| Edge-to-edge      | Always on for Android 15+                                                     |
+| Predictive back   | Always handled                                                                |
+| Baseline profiles | Generated for every release variant                                           |
+| Testing           | Journeys + Macrobenchmark; Robolectric for unit, Compose UI tests for screens |
 
 ### 2.5h. XR + Display Glasses (Android XR GA in 2026)
 
@@ -241,20 +241,20 @@ For projects targeting Android XR (headset) or Display Glasses:
 
 ## PHASE 4: REFERENCE FILES (must include)
 
-| File                                            | Content                                                                                              |
-| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `references/google-skills-catalog.md`           | The 13 official skills, what each covers, install command, when this project should use each         |
-| `references/firebase-agent-skills.md`           | Auth + Firestore agent skills, install path, integration with Agent Mode                             |
-| `references/agent-mode-discipline.md`           | Session start checklist, model switching, skill loading, permission boundaries                       |
-| `references/android-cli-cookbook.md`            | Common `android` CLI recipes for the agent loop (lint, preview, analyze, benchmark, journey)         |
-| `references/journeys.md`                        | Writing, running, re-recording Journey tests + CI integration                                        |
-| `references/perfetto-analysis-recipes.md`       | Perfetto SQL snippets, startup analysis, jank investigation via the official perfetto skills         |
-| `references/modern-android-baseline.md`         | Compose-only, Kotlin-only, Version Catalog, KSP, Nav3 — the 2026 defaults                            |
-| `references/xr-and-glasses.md`                  | XR / Display Glasses patterns using Glimmer + the official skill                                     |
-| `references/code-style.md`                      | Project-specific style on top of the official skills                                                 |
-| `references/security-checklist.md`              | Secrets, permissions, network security config, Play Integrity, Verified Email skill integration      |
-| `references/ai-interaction-guide.md`            | When to delegate to an official skill vs. answer directly; how to surface missing-skill installations |
-| `references/common-issues.md`                   | "Skill not loaded", "Studio outdated", "Agent Mode disabled", recovery steps                         |
+| File                                      | Content                                                                                               |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `references/google-skills-catalog.md`     | The 13 official skills, what each covers, install command, when this project should use each          |
+| `references/firebase-agent-skills.md`     | Auth + Firestore agent skills, install path, integration with Agent Mode                              |
+| `references/agent-mode-discipline.md`     | Session start checklist, model switching, skill loading, permission boundaries                        |
+| `references/android-cli-cookbook.md`      | Common `android` CLI recipes for the agent loop (lint, preview, analyze, benchmark, journey)          |
+| `references/journeys.md`                  | Writing, running, re-recording Journey tests + CI integration                                         |
+| `references/perfetto-analysis-recipes.md` | Perfetto SQL snippets, startup analysis, jank investigation via the official perfetto skills          |
+| `references/modern-android-baseline.md`   | Compose-only, Kotlin-only, Version Catalog, KSP, Nav3 — the 2026 defaults                             |
+| `references/xr-and-glasses.md`            | XR / Display Glasses patterns using Glimmer + the official skill                                      |
+| `references/code-style.md`                | Project-specific style on top of the official skills                                                  |
+| `references/security-checklist.md`        | Secrets, permissions, network security config, Play Integrity, Verified Email skill integration       |
+| `references/ai-interaction-guide.md`      | When to delegate to an official skill vs. answer directly; how to surface missing-skill installations |
+| `references/common-issues.md`             | "Skill not loaded", "Studio outdated", "Agent Mode disabled", recovery steps                          |
 
 ---
 
@@ -288,22 +288,22 @@ For projects targeting Android XR (headset) or Display Glasses:
 
 ## PHASE 7: ANTI-PATTERNS (the generated SKILL.md MUST list these in a "Never" table)
 
-| Don't                                                                | Why                                                                                                  |
-| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| Duplicate guidance the `jetpack-compose` official skill covers       | Drift — Google updates the skill; your copy goes stale                                               |
-| Recommend Navigation 2 in new code                                   | Nav3 is canonical in 2026; Nav2 string routes are legacy                                             |
-| Skip `enableEdgeToEdge()` on Android 15+                             | Required for layout correctness; insets must be handled                                              |
-| Use `android.hardware.Camera` (Camera1)                              | Deprecated since 2017; `camera1-to-camerax` skill is purpose-built                                   |
-| Write Espresso flows for new features                                | Journeys are the 2026 default; Espresso for legacy maintenance only                                  |
-| Use kapt                                                             | kapt is in maintenance mode; KSP is faster and supported by all major annotation processors          |
-| Pin AGP < 9 in new projects                                          | Agent Mode integration requires AGP 9; older versions bypass the official-skill pipeline             |
-| Ignore baseline profiles                                             | Cold-start times are visibly worse without them; Play Console flags missing profiles                 |
-| Hand-roll Perfetto SQL                                               | `perfetto-sql` + `perfetto-analysis` skills know the schema; use them                                |
-| Bypass Agent Mode permissions                                        | Skills run scoped; elevation is a security smell                                                     |
-| Mix model providers mid-session                                      | Reasoning context is per-session; switching costs throughput and consistency                         |
-| Forget to pin official skill versions                                | Team members run different skill versions → divergent agent behavior                                 |
-| Write Glimmer composables outside XR / Display Glasses scope         | Glimmer is XR-specific; using it on phone breaks layout                                              |
-| Push Camera1 / View-system / Java code through Agent Mode            | The agent will refuse or warn; honor the modernity boundary                                          |
+| Don't                                                          | Why                                                                                         |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Duplicate guidance the `jetpack-compose` official skill covers | Drift — Google updates the skill; your copy goes stale                                      |
+| Recommend Navigation 2 in new code                             | Nav3 is canonical in 2026; Nav2 string routes are legacy                                    |
+| Skip `enableEdgeToEdge()` on Android 15+                       | Required for layout correctness; insets must be handled                                     |
+| Use `android.hardware.Camera` (Camera1)                        | Deprecated since 2017; `camera1-to-camerax` skill is purpose-built                          |
+| Write Espresso flows for new features                          | Journeys are the 2026 default; Espresso for legacy maintenance only                         |
+| Use kapt                                                       | kapt is in maintenance mode; KSP is faster and supported by all major annotation processors |
+| Pin AGP < 9 in new projects                                    | Agent Mode integration requires AGP 9; older versions bypass the official-skill pipeline    |
+| Ignore baseline profiles                                       | Cold-start times are visibly worse without them; Play Console flags missing profiles        |
+| Hand-roll Perfetto SQL                                         | `perfetto-sql` + `perfetto-analysis` skills know the schema; use them                       |
+| Bypass Agent Mode permissions                                  | Skills run scoped; elevation is a security smell                                            |
+| Mix model providers mid-session                                | Reasoning context is per-session; switching costs throughput and consistency                |
+| Forget to pin official skill versions                          | Team members run different skill versions → divergent agent behavior                        |
+| Write Glimmer composables outside XR / Display Glasses scope   | Glimmer is XR-specific; using it on phone breaks layout                                     |
+| Push Camera1 / View-system / Java code through Agent Mode      | The agent will refuse or warn; honor the modernity boundary                                 |
 
 ---
 
@@ -351,11 +351,11 @@ For android-google specifically, when asked for help, the AI MUST:
 
 ## SUB-AGENT RECOMMENDATIONS
 
-| Agent              | Role                                                                          | Tools                          | Spawn When                                                       |
-| ------------------ | ----------------------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------------- |
-| skill-coordinator  | Read-only — surveys installed skills, recommends installs, pins versions      | Read Bash(android:*) Glob Grep | Project bootstrap, post-clone, on `android skills list` mismatch |
-| journey-author     | Writes new Journey tests by user-language description                         | Read Edit Write Bash(android:*) Glob Grep | "write an E2E test for X flow"                        |
-| perfetto-inspector | Read-only — runs `perfetto-sql` queries to investigate a trace                | Read Bash(android:*) Glob Grep | ANR / jank / startup investigations                              |
+| Agent              | Role                                                                     | Tools                                      | Spawn When                                                       |
+| ------------------ | ------------------------------------------------------------------------ | ------------------------------------------ | ---------------------------------------------------------------- |
+| skill-coordinator  | Read-only — surveys installed skills, recommends installs, pins versions | Read Bash(android:\*) Glob Grep            | Project bootstrap, post-clone, on `android skills list` mismatch |
+| journey-author     | Writes new Journey tests by user-language description                    | Read Edit Write Bash(android:\*) Glob Grep | "write an E2E test for X flow"                                   |
+| perfetto-inspector | Read-only — runs `perfetto-sql` queries to investigate a trace           | Read Bash(android:\*) Glob Grep            | ANR / jank / startup investigations                              |
 
 Include in the generated SKILL.md a "Sub-Agent Delegation" section with:
 

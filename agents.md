@@ -22,32 +22,38 @@ CLI + Web UI tool that generates, manages, and injects domain-specific AI skills
 
 ```
 src/skillnir/              # Core package (all modules)
-├── cli.py                 # CLI entry point — 18 commands, argparse + questionary
+├── cli.py                 # CLI entry point — 25 commands, argparse + questionary
 ├── backends.py            # Backend registry (Claude, Cursor, Gemini, Copilot)
 ├── benchmarks.py          # AI model benchmarks search pipeline
 ├── compressor.py          # Rule-based prompt compression (30-50% token reduction)
 ├── crypto.py              # Fernet encryption for at-rest credential storage
+├── docs_compressor.py     # Rule-based + AI compression of AI-context docs
+├── docs_optimizer.py      # AI-driven audit/fix of AI-context docs
 ├── events.py              # AI events search pipeline (per-country)
 ├── generator.py           # AI docs (agents.md) generation
 ├── hooks.py               # Claude Code sound notification hooks
 ├── i18n.py                # Internationalization (9 languages, t() function)
 ├── injector.py            # Symlink injection into tool dotdirs
+├── news.py                # Short-form AI news headlines pipeline
 ├── notifications/         # Multi-provider webhook package (providers, senders)
 ├── notifier.py            # Back-compat notification shim → notifications/
 ├── remover.py             # Skill and docs removal
-├── researcher.py          # AI news research and summarization
+├── researcher.py          # AI-engineering research and summarization
 ├── rule_generator.py      # Cursor rule (.mdc) generation
 ├── scaffold.py            # Skill scaffolding and templates
 ├── security.py            # Security vulnerability search pipeline
 ├── skill_generator.py     # Multi-backend skill generation (async SDK + subprocess)
 ├── skills.py              # Skill discovery and YAML frontmatter parsing
+├── software_researcher.py # Software-engineering research pipeline
 ├── syncer.py              # Version-aware skill synchronization
+├── testing_researcher.py  # Testing & QA research pipeline
 ├── tools.py               # AI tool registry (38 tools)
 ├── usage.py               # Usage statistics tracking
+├── wiki_generator.py      # llms.txt + docs/ wiki generation
 ├── locales/               # Translation files (en, de, nl, pl, fa, uk, sq, fr, ar)
 ├── ui/                    # NiceGUI web interface
 │   ├── layout.py          # Navigation structure (get_nav_groups + i18n)
-│   ├── pages/             # 15 page modules (one per feature)
+│   ├── pages/             # 20 page modules (one per feature)
 │   └── components/        # 12 reusable UI components
 └── resources/             # HTML templates and static assets
 scripts/                   # CI runner scripts (run_intel.py)
@@ -60,10 +66,10 @@ scripts/                   # CI runner scripts (run_intel.py)
 │       ├── references/    # Detailed docs and code samples
 │       ├── scripts/       # Validation scripts
 │       └── agents/        # Sub-agent definitions
-├── promptsv1/             # 32 skill generation prompt templates
+├── promptsv1/             # 44 prompt templates (38 skill generators + 6 utility prompts)
 ├── research/articles/     # 500+ research articles (organized by topic)
 └── events/                # AI events data (organized by topic)
-tests/                     # 18 test files (pytest, class-based)
+tests/                     # 24 test files (pytest, class-based)
 ```
 
 ## How To Run
@@ -92,7 +98,7 @@ uv run pre-commit run --all-files
 
 ### Code Style
 
-- **Formatter**: Black with `-S` flag (no single quotes — double quotes only)
+- **Formatter**: Black with `-S` flag (skip string normalization — respect existing quote style)
 - **Line length**: 100 characters (enforced by .pylintrc)
 - **Type hints**: Required on all function signatures. Use modern syntax: `str | None`, `tuple[str, ...]`, `list[X]`
 - **Docstrings**: Triple-quoted, single-line for simple functions. No enforced style (Google/NumPy)
@@ -145,7 +151,7 @@ OS/file errors caught with specific exceptions (`OSError`, `FileNotFoundError`, 
 
 | File                          | Purpose                                                                                           |
 | ----------------------------- | ------------------------------------------------------------------------------------------------- |
-| `src/skillnir/cli.py`         | CLI entry point — `main()` at bottom, 18 commands                                                 |
+| `src/skillnir/cli.py`         | CLI entry point — `main()` at bottom, 25 commands                                                 |
 | `src/skillnir/tools.py`       | AI tool registry — `TOOLS` tuple, `AITool` dataclass, `SOURCE_DOTDIR` constant                    |
 | `src/skillnir/backends.py`    | Backend configs — `BACKENDS` dict, `BackendInfo`, model lists                                     |
 | `src/skillnir/skills.py`      | Skill discovery — `Skill` dataclass, `parse_frontmatter()`, `discover_skills()`                   |
@@ -237,7 +243,7 @@ No `.env` file used. Configuration stored in `~/.skillnir/config.json`:
 ```json
 {
   "backend": "claude",
-  "model": "claude-opus-4-6",
+  "model": "claude-opus-4-8",
   "prompt_version": "v1",
   "active_provider": "gchat",
   "notifications_enabled": true,
@@ -295,11 +301,12 @@ uv run pytest -k "test_creates_symlink"  # single test
 - **Prompt versions** auto-discovered from `.data/promptsv{N}/` directory names — cached with `@functools.lru_cache`
 - **NiceGUI imports** only inside UI modules — never at package top level
 - **Thread-safe usage tracker** uses `threading.Lock()` — don't bypass the `SessionUsageTracker` interface
-- **Black `-S` flag** means NO single quotes — formatter enforces double quotes throughout
+- **Black `-S` flag** skips string-quote normalization — respect the existing quote style, don't mass-convert
 - **`.data/` excluded from autoflake and pylint** — prompt templates contain Python-like syntax that triggers false positives
 - **Encrypted credentials are machine-bound** — copying `config.json` to another machine breaks decryption. Rotate webhook URLs after migration.
 - **Notification providers require HTTPS + host-allowlist** — custom/self-hosted endpoints blocked by design (SSRF hardening)
 - **`notifier.py` is a shim** — new code should import from `skillnir.notifications`, not `skillnir.notifier`
+- **`except A, B:` (parenthesis-free multi-exception) is valid here** — the project requires Python 3.14+ (PEP 758). It would be a SyntaxError on ≤3.13, which is out of the supported range.
 
 ## Freedom Levels
 
@@ -310,8 +317,8 @@ uv run pytest -k "test_creates_symlink"  # single test
 | camelCase skill directory names       | questionary for CLI interaction | Backend model lists                   |
 | Relative symlinks for injection       | `frozen=True` for config models | Research article organization         |
 | Type hints on all function signatures | Single-line docstrings          | Tool metadata (website, icon, ignore) |
-| Black -S formatting (double quotes)   | `tmp_path` fixture in tests     | CLI argument names                    |
-| `.data/skills/` as source of truth    | Streaming via callback pattern  | UI component styling                  |
+| Black -S formatting                   | `tmp_path` fixture in tests     | UI component styling                  |
+| `.data/skills/` as source of truth    | Streaming via callback pattern  | CLI argument names                    |
 
 ## AI Interaction Guidelines
 
@@ -324,7 +331,7 @@ uv run pytest -k "test_creates_symlink"  # single test
 ## Skills Reference
 
 > Project-specific conventions live in `.data/skills/`. Check before making architectural decisions.
-> Skills available: backendEngineer, devopsEngineer, frontendEngineer, promptCompressor, pythonDeveloper, securityEngineer, skillnir
+> Skills available: backendEngineer, devopsEngineer, frontendEngineer, promptCompressor, securityEngineer, skillnir
 
 ## Sub-Agent Capabilities
 

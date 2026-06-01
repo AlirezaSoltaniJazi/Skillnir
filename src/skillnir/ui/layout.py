@@ -194,7 +194,7 @@ def header() -> tuple:
     """Build the shared layout with drawer nav and return (audio_element, sound_state)."""
     from nicegui import app, ui
 
-    from skillnir.backends import load_config, save_config
+    from skillnir.backends import get_app_version, load_config, save_config
     from skillnir.ui import _GLOBAL_CSS
 
     is_dark = app.storage.user.get('dark_mode', True)
@@ -245,9 +245,9 @@ def header() -> tuple:
         # Brand
         with ui.row().classes('items-center gap-3 px-5 mb-6'):
             ui.icon('auto_fix_high', color='primary').classes('text-2xl')
-            ui.link('Skillnir', '/').classes(
-                'text-xl font-bold no-underline gradient-text'
-            )
+            _app_version = get_app_version()
+            _brand = f'Skillnir (v{_app_version})' if _app_version else 'Skillnir'
+            ui.link(_brand, '/').classes('text-xl font-bold no-underline gradient-text')
 
         # Nav groups
         for group_label, items in nav_groups:

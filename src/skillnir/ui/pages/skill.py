@@ -10,6 +10,7 @@ from skillnir.skills import discover_skills_from_dir
 from skillnir.syncer import get_source_skills_dir, sync_skill, sync_skills
 from skillnir.tools import AUTO_INJECT_TOOL
 from skillnir.ui.components.page_header import page_header
+from skillnir.ui.components.path_input import path_input_with_history
 from skillnir.ui.layout import (
     SORT_MODES,
     _count_skill_files,
@@ -53,13 +54,10 @@ def page_install():
                 ui.label(t('pages.install.target_project_help', lang)).classes(
                     'text-secondary mb-2'
                 )
-                target_input = (
-                    ui.input(
-                        t('pages.install.project_root', lang),
-                        value=state['target_root'],
-                    )
-                    .classes('w-full max-w-xl')
-                    .props('outlined dense rounded')
+                target_input = path_input_with_history(
+                    t('pages.install.project_root', lang),
+                    value=state['target_root'],
+                    lang=lang,
                 )
                 ui.label(t('pages.install.source_skills_help', lang)).classes(
                     'text-secondary mb-2 mt-4'
@@ -292,10 +290,10 @@ def page_update():
         )
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
-            target_input = (
-                ui.input(t('pages.install.project_root', lang), value=str(Path.cwd()))
-                .classes('w-full max-w-xl')
-                .props('outlined dense rounded')
+            target_input = path_input_with_history(
+                t('pages.install.project_root', lang),
+                value=str(Path.cwd()),
+                lang=lang,
             )
 
         update_progress_container = ui.column().classes('w-full')

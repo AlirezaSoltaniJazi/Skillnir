@@ -97,6 +97,8 @@ def run_ui(port: int = 8080) -> None:
     """Start the NiceGUI web server."""
     from nicegui import app, ui
 
+    from skillnir.backends import get_app_version
+
     # ── Static assets (notification sound) ────────────────────
     _assets_dir = Path(__file__).resolve().parent.parent / "assets"
     app.add_static_files("/static", str(_assets_dir))
@@ -184,7 +186,7 @@ def run_ui(port: int = 8080) -> None:
             f"Open http://127.0.0.1:{actual_port}"
         )
     ui.run(
-        title="Skillnir",
+        title=f"Skillnir (v{get_app_version()})" if get_app_version() else "Skillnir",
         host="127.0.0.1",
         port=actual_port,
         reload=False,

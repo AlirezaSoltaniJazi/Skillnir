@@ -8,6 +8,7 @@ from skillnir.i18n import get_current_language, t
 from skillnir.remover import delete_skill, find_skill_installations
 from skillnir.skills import discover_skills
 from skillnir.ui.components.page_header import page_header
+from skillnir.ui.components.path_input import path_input_with_history
 from skillnir.ui.layout import header
 
 
@@ -24,13 +25,10 @@ def page_delete_skill():
         )
 
         with ui.card().classes('w-full p-6').props('flat bordered'):
-            target_input = (
-                ui.input(
-                    t('pages.delete_skill.target_project_root', lang),
-                    value=str(Path.cwd()),
-                )
-                .classes('w-full max-w-xl')
-                .props('outlined dense rounded')
+            target_input = path_input_with_history(
+                t('pages.delete_skill.target_project_root', lang),
+                value=str(Path.cwd()),
+                lang=lang,
             )
 
         skill_container = ui.column().classes('w-full')

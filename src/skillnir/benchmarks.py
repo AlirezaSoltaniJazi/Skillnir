@@ -322,7 +322,7 @@ for the top {model_count} AI language models from multiple authoritative sources
 
 1. First, WebFetch the **Chatbot Arena Code leaderboard** at https://arena.ai/leaderboard/code \
 and extract the top {model_count} models listed there. Use the **EXACT model names** as shown \
-on the leaderboard (e.g., "GPT-5.3-Codex", "Claude Opus 4.6", "Gemini 3.1 Pro"). \
+on the leaderboard (e.g., "GPT-5.5", "Claude Opus 4.8", "Gemini 3.5 Flash"). \
 Do NOT rename, abbreviate, or modify model names in any way.
 
 2. Then WebFetch **Artificial Analysis** at https://artificialanalysis.ai/leaderboards/models \

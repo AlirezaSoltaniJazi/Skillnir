@@ -13,16 +13,20 @@ repos:
       - id: check-ast # check .py files are valid python files
         exclude: ^(\.data/|\..*skills/)
       - id: check-merge-conflict
-  # A pre-commit hook to check your Python dependencies against safety-db.
-  - repo: https://github.com/Lucas-C/pre-commit-hooks-safety
-    rev: v1.4.2
+  # Scan the uv-locked dependency set for known CVEs. This project uses
+  # pyproject.toml + uv.lock (no requirements*.txt), so the previous
+  # Lucas-C hook — which only matched `files: requirements*` — never
+  # actually ran. We now export the locked deps and pipe them into
+  # `safety check`. Same tool, same ignore-id; just a real input.
+  # Runs only when the dependency manifest changes (needs network then).
+  - repo: local
     hooks:
-      - id: python-safety-dependencies-check
-        name: Check dependencies for vulnerability
-        files: requirements*
-        args:
-          # Ignore brotli CVE-2025-6176 (no fix available yet, 1.1.0 is latest)
-          - --ignore=81038
+      - id: uv-safety
+        name: Check dependencies for vulnerability (uv.lock)
+        entry: bash -c 'uv export --frozen --no-hashes --no-emit-project --format requirements-txt | uvx safety check --stdin --ignore=81038'
+        language: system
+        pass_filenames: false
+        files: ^(pyproject\.toml|uv\.lock)$
   # A security linter from PyCQA
   - repo: https://github.com/PyCQA/bandit
     rev: 1.9.2
