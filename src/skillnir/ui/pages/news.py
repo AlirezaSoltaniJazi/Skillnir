@@ -10,6 +10,7 @@ from skillnir.ui.components.progress_panel import (
     format_duration,
     progress_panel,
     start_elapsed_timer,
+    survive_disconnect,
 )
 from skillnir.ui.components.result_card import result_card
 from skillnir.ui.components.stat_card import stat_card
@@ -201,6 +202,7 @@ async def page_news():
         progress_container = ui.column().classes('w-full')
         results_container = ui.column().classes('w-full')
 
+        @survive_disconnect
         async def do_search():
             start_time = time.time()
             if not selected_categories:

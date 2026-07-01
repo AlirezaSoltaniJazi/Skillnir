@@ -1,9 +1,34 @@
 """Shared async progress panel component used by generation and research pages."""
 
 import asyncio
+import functools
 import time
 
 from nicegui import ui
+
+
+def survive_disconnect(handler):
+    """Wrap an async page handler so a mid-run client disconnect bails out quietly.
+
+    NiceGUI deletes a client and every element it owns ``reconnect_timeout``
+    seconds after the browser disconnects — e.g. when the OS locks the screen
+    and suspends the tab. A long-running handler (skill generation, research,
+    docs optimization, ...) that mutates the UI after its ``await`` then raises
+    ``RuntimeError: ... has been deleted``, which surfaces as an unhandled
+    background-task traceback and looks like the operation "crashed". Swallow
+    that specific error so the work finishes silently instead.
+    """
+
+    @functools.wraps(handler)
+    async def wrapper(*args, **kwargs):
+        try:
+            return await handler(*args, **kwargs)
+        except RuntimeError as exc:
+            if 'has been deleted' in str(exc):
+                return None
+            raise
+
+    return wrapper
 
 
 def progress_panel(container, max_log_lines: int = 300) -> dict:
@@ -103,25 +128,33 @@ def make_on_progress(refs: dict, counters: dict) -> callable:
     from skillnir.generator import GenerationProgress
 
     def on_progress(p: GenerationProgress) -> None:
-        if p.kind == 'phase':
-            refs['phase'].text = p.content
-            refs['status'].text = ''
-            refs['log'].push(f'--- {p.content} ---')
-        elif p.kind == 'status':
-            refs['status'].text = p.content
-            refs['log'].push(f'[info] {p.content}')
-        elif p.kind == 'tool_use':
-            counters['tools'] += 1
-            refs['tools'].text = str(counters['tools'])
-            refs['status'].text = p.content
-            refs['log'].push(f'[tool] {p.content}')
-        elif p.kind == 'text':
-            for text_line in p.content.splitlines():
-                counters['lines'] += 1
-                refs['log'].push(text_line)
-            refs['lines'].text = str(counters['lines'])
-        elif p.kind == 'error':
-            refs['log'].push(f'[ERROR] {p.content}')
+        try:
+            if p.kind == 'phase':
+                refs['phase'].text = p.content
+                refs['status'].text = ''
+                refs['log'].push(f'--- {p.content} ---')
+            elif p.kind == 'status':
+                refs['status'].text = p.content
+                refs['log'].push(f'[info] {p.content}')
+            elif p.kind == 'tool_use':
+                counters['tools'] += 1
+                refs['tools'].text = str(counters['tools'])
+                refs['status'].text = p.content
+                refs['log'].push(f'[tool] {p.content}')
+            elif p.kind == 'text':
+                for text_line in p.content.splitlines():
+                    counters['lines'] += 1
+                    refs['log'].push(text_line)
+                refs['lines'].text = str(counters['lines'])
+            elif p.kind == 'error':
+                refs['log'].push(f'[ERROR] {p.content}')
+        except RuntimeError as exc:
+            # Browser disconnected mid-run (e.g. screen lock) and NiceGUI
+            # deleted the elements. Counters above are still updated; we only
+            # drop the UI write so the long-running task keeps going and still
+            # writes its output to disk.
+            if 'has been deleted' not in str(exc):
+                raise
 
     return on_progress
 

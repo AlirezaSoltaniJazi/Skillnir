@@ -14,6 +14,7 @@ from skillnir.ui.components.progress_panel import (
     make_on_progress,
     progress_panel,
     start_elapsed_timer,
+    survive_disconnect,
 )
 from skillnir.ui.components.result_card import result_card
 from skillnir.ui.layout import header, play_notification
@@ -158,6 +159,7 @@ async def page_generate_skill():
         progress_container = ui.column().classes('w-full')
         results_container = ui.column().classes('w-full')
 
+        @survive_disconnect
         async def do_generate():
             target = Path(target_input.value).resolve()
             if not target.is_dir():

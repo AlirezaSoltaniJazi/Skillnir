@@ -169,6 +169,7 @@ OS/file errors caught with specific exceptions (`OSError`, `FileNotFoundError`, 
 | `pyproject.toml`              | Build config, deps, entry point                                                                   |
 | `.pylintrc`                   | Linting rules (100 char, snake_case)                                                              |
 | `.pre-commit-config.yaml`     | 12 pre-commit hooks                                                                               |
+| `INJECT.md`                   | Always-loaded quick-reference (50–150 tokens) — stack / entry points / patterns at a glance       |
 
 ## Files To Never Touch
 
@@ -336,5 +337,11 @@ uv run pytest -k "test_creates_symlink"  # single test
 ## Sub-Agent Capabilities
 
 > Some skills support sub-agent delegation for complex workflows.
-> Skills with sub-agents: skillnir (has `agents/` subdirectory)
+> Skills with sub-agents (file in `.data/skills/<skill>/agents/`):
+>
+> - **backendEngineer** — `code-reviewer`, `dependency-auditor`, `test-writer`
+> - **devopsEngineer** — `hook-debugger`, `pipeline-reviewer`, `security-scanner`
+> - **frontendEngineer** — `component-auditor`, `style-enforcer`, `test-writer`
+> - **securityEngineer** — `config-auditor`, `dependency-auditor`, `pentest-reviewer`, `vulnerability-scanner`
+>
 > Ensure `Agent` is in allowed-tools when using these skills.

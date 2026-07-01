@@ -318,7 +318,15 @@ class TestPromptVersionDiscovery:
 class TestResolveModelId:
     def test_alias_resolves_to_id(self):
         result = resolve_model_id(AIBackend.CLAUDE, "sonnet")
+        assert result == "claude-sonnet-5"
+
+    def test_versioned_sonnet_alias_resolves_to_id(self):
+        result = resolve_model_id(AIBackend.CLAUDE, "sonnet-4.6")
         assert result == "claude-sonnet-4-6"
+
+    def test_fable_alias_resolves_to_id(self):
+        result = resolve_model_id(AIBackend.CLAUDE, "fable")
+        assert result == "claude-fable-5"
 
     def test_default_opus_alias_resolves_to_latest(self):
         # The "opus" alias is Claude's default_model; it must point at the flagship.
@@ -380,7 +388,7 @@ class TestBuildSubprocessCommand:
         assert "--output-format" in cmd
         assert "stream-json" in cmd
         assert "--model" in cmd
-        assert "claude-sonnet-4-6" in cmd
+        assert "claude-sonnet-5" in cmd
         assert "--max-turns" in cmd
 
     def test_cursor_command(self):

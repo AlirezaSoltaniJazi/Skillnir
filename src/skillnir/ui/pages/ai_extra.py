@@ -13,10 +13,12 @@ from skillnir.ui.components.progress_panel import (
     make_on_progress,
     progress_panel,
     start_elapsed_timer,
+    survive_disconnect,
 )
 from skillnir.ui.layout import header, play_notification
 
 
+@survive_disconnect
 async def _run_subprocess_page(
     *,
     audio_el,
