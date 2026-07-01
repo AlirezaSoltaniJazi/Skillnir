@@ -12,6 +12,7 @@ from skillnir.ui.components.progress_panel import (
     make_on_progress,
     progress_panel,
     start_elapsed_timer,
+    survive_disconnect,
 )
 from skillnir.ui.components.result_card import result_card
 from skillnir.ui.layout import header, play_notification
@@ -122,6 +123,7 @@ async def page_compress_docs():
             'unelevated rounded'
         )
 
+        @survive_disconnect
         async def do_apply():
             if not state.get('dry'):
                 ui.notify(t('pages.compress_docs.scan_first', lang), type='warning')
@@ -276,6 +278,7 @@ async def page_optimize_docs():
         progress_container = ui.column().classes('w-full')
         results_container = ui.column().classes('w-full')
 
+        @survive_disconnect
         async def do_run():
             target = Path(target_input.value).resolve()
             if not target.is_dir():

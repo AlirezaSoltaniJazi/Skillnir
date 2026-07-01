@@ -19,6 +19,18 @@ dev = ["pytest>=9.0.3", "pytest-asyncio>=1.4.0"]
 [project.scripts]
 skillnir = "skillnir.cli:main"
 
+[tool.uv]
+# Security floors for transitively-pulled packages (CVE remediation, 2026-06-13).
+# aiohttp arrives via nicegui + python-socketio; pyjwt via mcp[crypto]; starlette
+# via fastapi/nicegui/mcp. These `>=` floors keep each at or above its patched
+# release so a future re-resolve cannot regress below the fix. uv.lock already
+# pins the resolved (possibly higher) versions; the floors document the boundary.
+constraint-dependencies = [
+    "aiohttp>=3.14.0",   # CVE-2026-34993, CVE-2026-47265
+    "pyjwt>=2.13.0",     # PYSEC-2026-175/177/178/179
+    "starlette>=1.0.1",  # PYSEC-2026-161 (BadHost)
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"

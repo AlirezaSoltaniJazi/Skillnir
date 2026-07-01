@@ -192,4 +192,10 @@ def run_ui(port: int = 8080) -> None:
         reload=False,
         show=True,
         storage_secret="skillnir-local",
+        # Default is 3s: when the OS locks the screen it suspends the browser
+        # tab, the WebSocket heartbeat stops, and NiceGUI deletes the client
+        # (and all its UI elements) after this timeout — crashing any in-flight
+        # generation/research task on its next UI update. 10 minutes lets the
+        # tab survive a typical lock and restore the running job on unlock.
+        reconnect_timeout=600.0,
     )

@@ -2,7 +2,7 @@
 
 ## What This Is
 
-CLI + Web UI tool that generates, manages, and injects domain-specific AI skills into 38 AI coding tool directories (.claude/, .cursor/, .github/, .windsurf/, etc.). Skills are structured markdown directories symlinked from a central `.data/skills/` store into each tool's dotdir. Python 3.14+, built with NiceGUI, questionary, and claude-agent-sdk.
+CLI + Web UI tool that generates, manages, and injects domain-specific AI skills into 37 AI coding tool directories (.claude/, .cursor/, .github/, .windsurf/, etc.). Skills are structured markdown directories symlinked from a central `.data/skills/` store into each tool's dotdir. Python 3.14+, built with NiceGUI, questionary, and claude-agent-sdk.
 
 ## Stack
 
@@ -47,14 +47,14 @@ src/skillnir/              # Core package (all modules)
 ├── software_researcher.py # Software-engineering research pipeline
 ├── syncer.py              # Version-aware skill synchronization
 ├── testing_researcher.py  # Testing & QA research pipeline
-├── tools.py               # AI tool registry (38 tools)
+├── tools.py               # AI tool registry (37 tools)
 ├── usage.py               # Usage statistics tracking
 ├── wiki_generator.py      # llms.txt + docs/ wiki generation
 ├── locales/               # Translation files (en, de, nl, pl, fa, uk, sq, fr, ar)
 ├── ui/                    # NiceGUI web interface
 │   ├── layout.py          # Navigation structure (get_nav_groups + i18n)
 │   ├── pages/             # 20 page modules (one per feature)
-│   └── components/        # 12 reusable UI components
+│   └── components/        # 13 reusable UI components
 └── resources/             # HTML templates and static assets
 scripts/                   # CI runner scripts (run_intel.py)
 .data/                     # Central skill storage (SOURCE OF TRUTH)
@@ -69,7 +69,7 @@ scripts/                   # CI runner scripts (run_intel.py)
 ├── promptsv1/             # 44 prompt templates (38 skill generators + 6 utility prompts)
 ├── research/articles/     # 500+ research articles (organized by topic)
 └── events/                # AI events data (organized by topic)
-tests/                     # 24 test files (pytest, class-based)
+tests/                     # 25 test files (pytest, class-based)
 ```
 
 ## How To Run
@@ -169,6 +169,7 @@ OS/file errors caught with specific exceptions (`OSError`, `FileNotFoundError`, 
 | `pyproject.toml`              | Build config, deps, entry point                                                                   |
 | `.pylintrc`                   | Linting rules (100 char, snake_case)                                                              |
 | `.pre-commit-config.yaml`     | 12 pre-commit hooks                                                                               |
+| `INJECT.md`                   | Always-loaded quick-reference (50–150 tokens) — stack / entry points / patterns at a glance       |
 
 ## Files To Never Touch
 
@@ -199,19 +200,17 @@ AITool(
 
 ```python
 # In src/skillnir/cli.py
-# 1. Add subparser in build_parser()
-sub = subparsers.add_parser("my-command", help="Does something")
-sub.add_argument("--flag", help="A flag")
+# 1. Add "my-command" to the choices=[...] list of the positional
+#    "command" argument in main(), and extend its help string
 
-# 2. Add handler function
-def cmd_my_command(args):
+# 2. Add handler function (module-level, underscore-prefixed, no args)
+def _my_command() -> None:
     """Handle my-command."""
     # Implementation using questionary for interactive prompts
-    pass
 
 # 3. Wire in main() dispatch
 elif args.command == "my-command":
-    cmd_my_command(args)
+    _my_command()
 ```
 
 ### Creating a result dataclass
@@ -336,5 +335,11 @@ uv run pytest -k "test_creates_symlink"  # single test
 ## Sub-Agent Capabilities
 
 > Some skills support sub-agent delegation for complex workflows.
-> Skills with sub-agents: skillnir (has `agents/` subdirectory)
+> Skills with sub-agents (file in `.data/skills/<skill>/agents/`):
+>
+> - **backendEngineer** — `code-reviewer`, `dependency-auditor`, `test-writer`
+> - **devopsEngineer** — `hook-debugger`, `pipeline-reviewer`, `security-scanner`
+> - **frontendEngineer** — `component-auditor`, `style-enforcer`, `test-writer`
+> - **securityEngineer** — `config-auditor`, `dependency-auditor`, `pentest-reviewer`, `vulnerability-scanner`
+>
 > Ensure `Agent` is in allowed-tools when using these skills.

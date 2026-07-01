@@ -60,12 +60,14 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         cli_command="claude",
         supports_stream_json=True,
         models=(
+            ModelInfo("claude-fable-5", "fable", "Claude Fable 5", tier=1),
             ModelInfo(
                 "claude-opus-4-8", "opus", "Claude Opus 4.8", is_default=True, tier=1
             ),
             ModelInfo("claude-opus-4-7", "opus-4.7", "Claude Opus 4.7", tier=1),
             ModelInfo("claude-opus-4-6", "opus-4.6", "Claude Opus 4.6", tier=1),
-            ModelInfo("claude-sonnet-4-6", "sonnet", "Claude Sonnet 4.6", tier=2),
+            ModelInfo("claude-sonnet-5", "sonnet", "Claude Sonnet 5", tier=2),
+            ModelInfo("claude-sonnet-4-6", "sonnet-4.6", "Claude Sonnet 4.6", tier=2),
             ModelInfo("claude-haiku-4-5", "haiku", "Claude Haiku 4.5", tier=3),
             ModelInfo("claude-opus-4-5", "opus-4.5", "Claude Opus 4.5", tier=1),
             ModelInfo("claude-opus-4-1", "opus-4.1", "Claude Opus 4.1", tier=1),
@@ -373,7 +375,7 @@ _CIPHER_FIELD_TO_KEY: dict[str, str] = {
 _VALID_PROVIDER_IDS: frozenset[str] = frozenset(_CIPHER_FIELD_MAP.keys()) | {""}
 
 # ── Effort + thinking config (Claude SDK only) ──
-EFFORT_LEVELS: tuple[str, ...] = ("low", "medium", "high", "max")
+EFFORT_LEVELS: tuple[str, ...] = ("low", "medium", "high", "xhigh", "max")
 THINKING_MODES: tuple[str, ...] = ("adaptive", "disabled")
 DEFAULT_EFFORT = "high"
 DEFAULT_THINKING_MODE = "adaptive"
