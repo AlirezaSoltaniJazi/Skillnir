@@ -1,4 +1,4 @@
-name: Bump Version & Tag
+name: Bump Version & Release
 
 on:
     workflow_dispatch:
@@ -19,6 +19,7 @@ jobs:
     bump:
         name: Bump ${{ inputs.bump }}
         runs-on: ubuntu-latest
+        timeout-minutes: 5
         if: github.ref == 'refs/heads/main'
 
         steps:
@@ -53,11 +54,22 @@ jobs:
                   echo "Updated pyproject.toml:"
                   grep '^version' pyproject.toml
 
+            - name: Roll changelog Unreleased section
+              run: |
+                  VERSION="${{ steps.next.outputs.version }}"
+                  TODAY=$(date -u +%Y-%m-%d)
+                  if grep -q '^## \[Unreleased\]' CHANGELOG.md; then
+                      sed -i "s/^## \[Unreleased\]/## [${VERSION}] - ${TODAY}/" CHANGELOG.md
+                      echo "Renamed [Unreleased] to [${VERSION}] - ${TODAY}"
+                  else
+                      echo "No [Unreleased] section — CHANGELOG.md left untouched"
+                  fi
+
             - name: Commit version bump
               run: |
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
-                  git add pyproject.toml
+                  git add pyproject.toml CHANGELOG.md
                   git commit -m "chore: bump version to ${{ steps.next.outputs.version }}"
                   git push
 
@@ -66,6 +78,30 @@ jobs:
                   git tag "v${{ steps.next.outputs.version }}"
                   git push origin "v${{ steps.next.outputs.version }}"
                   echo "Tagged: v${{ steps.next.outputs.version }}"
+
+            - name: Create GitHub Release
+              id: release
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  VERSION="${{ steps.next.outputs.version }}"
+                  # Extract this version's CHANGELOG section (between its heading
+                  # and the next "## [" heading), dropping leading blank lines.
+                  awk -v ver="$VERSION" '
+                      BEGIN { gsub(/\./, "\\.", ver) }
+                      $0 ~ "^## \\[" ver "\\]" { found=1; next }
+                      found && /^## \[/ { exit }
+                      found { print }
+                  ' CHANGELOG.md | sed -e '/./,$!d' > "$RUNNER_TEMP/release-notes.md"
+                  if [ -s "$RUNNER_TEMP/release-notes.md" ]; then
+                      URL=$(gh release create "v${VERSION}" --title "v${VERSION}" \
+                          --notes-file "$RUNNER_TEMP/release-notes.md")
+                  else
+                      echo "No CHANGELOG section for ${VERSION} — using generated notes"
+                      URL=$(gh release create "v${VERSION}" --title "v${VERSION}" --generate-notes)
+                  fi
+                  echo "url=$URL" >> "$GITHUB_OUTPUT"
+                  echo "Released: $URL"
 
             - name: Summary
               run: |
@@ -77,3 +113,4 @@ jobs:
                   echo "| **Previous** | ${{ steps.current.outputs.version }} |" >> "$GITHUB_STEP_SUMMARY"
                   echo "| **New** | ${{ steps.next.outputs.version }} |" >> "$GITHUB_STEP_SUMMARY"
                   echo "| **Tag** | v${{ steps.next.outputs.version }} |" >> "$GITHUB_STEP_SUMMARY"
+                  echo "| **Release** | ${{ steps.release.outputs.url }} |" >> "$GITHUB_STEP_SUMMARY"
