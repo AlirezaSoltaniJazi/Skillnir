@@ -3,8 +3,7 @@
 import asyncio
 import re
 import shutil
-import subprocess
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
 
@@ -14,9 +13,16 @@ from skillnir.backends import (
     build_claude_sdk_kwargs,
     build_subprocess_command,
     load_config,
-    parse_stream_line,
+    maybe_compress_prompt,
+    run_streaming_command,
 )
-from skillnir.generator import GenerationProgress, _emit, get_prompts_dir
+from skillnir.generator import (
+    GenerationProgress,
+    _emit,
+    build_context_pack,
+    get_prompts_dir,
+)
+from skillnir.skill_validator import validate_skill_dir
 from skillnir.skills import parse_frontmatter
 from skillnir.syncer import get_source_skills_dir
 
@@ -194,6 +200,10 @@ class SkillGenerationResult:
     source_skill_path: Path | None = None
     error: str | None = None
     backend_used: AIBackend | None = None
+    # Contract-gate failures (SKILL.md exists but violates the base-template
+    # contract) — distinguishes repairable output from infrastructure errors.
+    violations: list[str] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
 
 
 def load_skill_prompt(scope: str, version: str = "") -> str:
@@ -222,11 +232,27 @@ def load_skill_prompt(scope: str, version: str = "") -> str:
     return prompt_text
 
 
-def _find_reference_skill(scope: str) -> Path | None:
-    """Find an existing skill to use as format reference for the AI."""
+def _name_tokens(name: str) -> set[str]:
+    """Split a camelCase/kebab/snake name into lowercase word tokens."""
+    tokens: set[str] = set()
+    for part in re.split(r"[\s\-_.]+", name):
+        for word in re.findall(r"[A-Z]?[a-z]+|[A-Z]+(?![a-z])|\d+", part):
+            tokens.add(word.lower())
+    return tokens
+
+
+def _find_reference_skill(scope: str) -> tuple[Path | None, bool]:
+    """Find an existing skill to use as format reference for the AI.
+
+    Returns ``(path, same_scope)``. Keywords match whole tokens of the
+    skill directory name and its frontmatter description — substring
+    matching made scope 'go' pick any 'django*' skill. When nothing
+    matches, falls back to the first skill of ANY scope with
+    ``same_scope=False`` so the prompt can mark it structure-only.
+    """
     source_dir = get_source_skills_dir()
     if not source_dir.is_dir():
-        return None
+        return None, False
 
     scope_keywords = {
         "backend": ("server", "backend", "django", "api"),
@@ -401,18 +427,49 @@ def _find_reference_skill(scope: str) -> Path | None:
     }
 
     keywords = scope_keywords.get(scope, ())
-    for entry in sorted(source_dir.iterdir()):
-        if entry.is_dir() and (entry / "SKILL.md").exists():
-            name_lower = entry.name.lower()
-            if any(kw in name_lower for kw in keywords):
-                return entry
+    candidates = [
+        entry
+        for entry in sorted(source_dir.iterdir())
+        if entry.is_dir() and (entry / "SKILL.md").exists()
+    ]
 
-    # Fallback: return the first skill found (any scope is better than none)
-    for entry in sorted(source_dir.iterdir()):
-        if entry.is_dir() and (entry / "SKILL.md").exists():
-            return entry
+    for entry in candidates:
+        tokens = _name_tokens(entry.name)
+        try:
+            description = str(
+                parse_frontmatter(entry / "SKILL.md").get("description", "")
+            )
+        except Exception:
+            description = ""
+        tokens |= _name_tokens(description)
+        for kw in keywords:
+            if _name_tokens(kw) <= tokens:
+                return entry, True
 
-    return None
+    # Fallback: the first skill of any scope — usable for structure only.
+    if candidates:
+        return candidates[0], False
+
+    return None, False
+
+
+def _learned_feedback_section(output_dir: Path) -> str:
+    """Inline an existing LEARNED.md so regeneration keeps its corrections."""
+    learned_file = output_dir / "LEARNED.md"
+    if not learned_file.is_file():
+        return ""
+    try:
+        learned_text = learned_file.read_text(encoding="utf-8")
+    except OSError, UnicodeDecodeError:
+        return ""
+    if not any(line.lstrip().startswith("- ") for line in learned_text.splitlines()):
+        return ""
+    return (
+        "\n\nEXISTING LEARNED.md — corrections and preferences accumulated in "
+        "prior sessions. These rules OVERRIDE any conflicting defaults: bake "
+        "every entry into the regenerated skill content. Do NOT overwrite, "
+        "truncate, or regenerate LEARNED.md itself.\n\n" + learned_text[:4000]
+    )
 
 
 def _build_user_prompt(
@@ -420,6 +477,7 @@ def _build_user_prompt(
     project_name: str,
     scope: str,
     pure: bool = False,
+    extra_instructions: str = "",
 ) -> str:
     """Construct the runtime user prompt with project-specific details.
 
@@ -429,18 +487,31 @@ def _build_user_prompt(
     directory still lives under ``target_project/.data/skills/`` so the
     user can install the skill into a real project, but the skill body
     references no project-specific paths.
+
+    ``extra_instructions`` is appended verbatim — used by the validation
+    repair pass to feed concrete contract violations back to the AI.
     """
     skill_name = to_camel_case(project_name)
     output_dir = target_project / ".data" / "skills" / skill_name
     output_file = output_dir / "SKILL.md"
 
-    ref_skill = _find_reference_skill(scope)
+    ref_skill, same_scope = _find_reference_skill(scope)
     ref_section = ""
     if ref_skill:
         ref_section = (
             f"\n\nReference skill for format guidance: {ref_skill}\n"
             f"Read {ref_skill / 'SKILL.md'} before generating to match the style."
         )
+        if not same_scope:
+            ref_section += (
+                "\nNOTE: this reference is from a DIFFERENT domain — copy its "
+                "structure and formatting only, never its content or terminology."
+            )
+
+    learned_section = _learned_feedback_section(output_dir)
+    tail = f"{ref_section}{learned_section}"
+    if extra_instructions:
+        tail += f"\n\n{extra_instructions}"
 
     if pure:
         return (
@@ -457,10 +528,10 @@ def _build_user_prompt(
             f"Use \"{skill_name}\" as the 'name' field in YAML frontmatter.\n"
             f"Create the output directory if needed: mkdir -p {output_dir}\n"
             f"Write the final SKILL.md to: {output_file}"
-            f"{ref_section}"
+            f"{tail}"
         )
 
-    return (
+    prompt = (
         f"Generate a {scope} skill for the project at {target_project}.\n"
         f"The project name is \"{project_name}\".\n"
         f"The skill name is \"{skill_name}\".\n"
@@ -468,8 +539,12 @@ def _build_user_prompt(
         f"\nFollow all phases in the system prompt.\n"
         f"Create the output directory if needed: mkdir -p {output_dir}\n"
         f"Write the final SKILL.md to: {output_file}"
-        f"{ref_section}"
+        f"{tail}"
     )
+    pack = build_context_pack(target_project)
+    if pack:
+        prompt += "\n\n" + pack
+    return prompt
 
 
 async def generate_skill_sdk(
@@ -479,6 +554,7 @@ async def generate_skill_sdk(
     prompt_text: str,
     on_progress: Callable[[GenerationProgress], None] | None = None,
     pure: bool = False,
+    extra_instructions: str = "",
 ) -> SkillGenerationResult:
     """Generate skill using claude-agent-sdk (async, streaming). Claude only."""
     from claude_agent_sdk import (
@@ -496,15 +572,21 @@ async def generate_skill_sdk(
     _emit(on_progress, "phase", "Connecting to Claude SDK...")
 
     options = ClaudeAgentOptions(
-        system_prompt=prompt_text,
+        system_prompt=maybe_compress_prompt(prompt_text),
         max_turns=20,
-        allowed_tools=["Read", "Glob", "Grep", "Bash", "Write"],
+        allowed_tools=["Read", "Glob", "Grep", "Bash", "Edit", "Write"],
         permission_mode="acceptEdits",
         cwd=str(target_project),
         **build_claude_sdk_kwargs(),
     )
 
-    user_prompt = _build_user_prompt(target_project, project_name, scope, pure=pure)
+    user_prompt = _build_user_prompt(
+        target_project,
+        project_name,
+        scope,
+        pure=pure,
+        extra_instructions=extra_instructions,
+    )
 
     try:
         async for message in query(prompt=user_prompt, options=options):
@@ -546,71 +628,54 @@ def generate_skill_subprocess(
     model: str,
     on_progress: Callable[[GenerationProgress], None] | None = None,
     pure: bool = False,
+    extra_instructions: str = "",
 ) -> SkillGenerationResult:
     """Generate skill using any backend CLI subprocess with real-time streaming."""
     skill_name = to_camel_case(project_name)
     info = BACKENDS[backend]
     _emit(on_progress, "phase", f"Starting {info.name}...")
 
-    user_prompt = _build_user_prompt(target_project, project_name, scope, pure=pure)
+    user_prompt = _build_user_prompt(
+        target_project,
+        project_name,
+        scope,
+        pure=pure,
+        extra_instructions=extra_instructions,
+    )
     full_prompt = prompt_text + "\n\n---\n\n" + user_prompt
     cmd = build_subprocess_command(backend, full_prompt, model=model, max_turns=20)
 
+    phase_label = (
+        f"Generating generic ({scope}) skill..."
+        if pure
+        else f"Scanning project ({scope})..."
+    )
+    _emit(on_progress, "phase", phase_label)
+
     try:
-        phase_label = (
-            f"Generating generic ({scope}) skill..."
-            if pure
-            else f"Scanning project ({scope})..."
-        )
-        _emit(on_progress, "phase", phase_label)
-
-        proc = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            cwd=str(target_project),
-        )
-
-        import threading
-
-        stderr_chunks: list[str] = []
-
-        def _drain_stderr() -> None:
-            for err_line in proc.stderr:
-                stderr_chunks.append(err_line)
-
-        stderr_thread = threading.Thread(target=_drain_stderr, daemon=True)
-        stderr_thread.start()
-
-        for line in proc.stdout:
-            parse_stream_line(backend, line, on_progress)
-
-        proc.wait(timeout=600)
-        stderr_thread.join(timeout=5)
-        stderr = ''.join(stderr_chunks)
-
-        if proc.returncode != 0:
-            return SkillGenerationResult(
-                success=False,
-                skill_name=skill_name,
-                error=f"{info.name} exited with code {proc.returncode}: {stderr}",
-                backend_used=backend,
-            )
-
-    except subprocess.TimeoutExpired:
-        proc.kill()
-        return SkillGenerationResult(
-            success=False,
-            skill_name=skill_name,
-            error=f"{info.name} timed out after 10 minutes.",
-            backend_used=backend,
+        run = run_streaming_command(
+            cmd, backend, target_project, on_progress, timeout=600
         )
     except FileNotFoundError:
         return SkillGenerationResult(
             success=False,
             skill_name=skill_name,
             error=f"{info.cli_command} CLI not found in PATH.",
+            backend_used=backend,
+        )
+
+    if run.timed_out:
+        return SkillGenerationResult(
+            success=False,
+            skill_name=skill_name,
+            error=f"{info.name} timed out after 10 minutes.",
+            backend_used=backend,
+        )
+    if run.returncode != 0:
+        return SkillGenerationResult(
+            success=False,
+            skill_name=skill_name,
+            error=f"{info.name} exited with code {run.returncode}: {run.stderr}",
             backend_used=backend,
         )
 
@@ -623,7 +688,7 @@ def _check_skill_outputs(
     skill_name: str,
     backend: AIBackend,
 ) -> SkillGenerationResult:
-    """Verify that SKILL.md was created and has valid frontmatter."""
+    """Validate the generated skill against the base-template contract."""
     skill_dir = target_project / ".data" / "skills" / skill_name
     skill_md = skill_dir / "SKILL.md"
 
@@ -638,18 +703,18 @@ def _check_skill_outputs(
             backend_used=backend,
         )
 
-    # Validate frontmatter
-    try:
-        meta = parse_frontmatter(skill_md)
-        if not meta.get("name"):
-            return SkillGenerationResult(
-                success=False,
-                skill_name=skill_name,
-                error="SKILL.md was created but has no 'name' in frontmatter.",
-                backend_used=backend,
-            )
-    except Exception:
-        pass  # Don't fail on frontmatter issues — the file exists
+    report = validate_skill_dir(skill_dir, expected_name=skill_name)
+    if not report.ok:
+        return SkillGenerationResult(
+            success=False,
+            skill_name=skill_name,
+            target_skill_path=skill_md,
+            source_skill_path=skill_md,
+            error="Generated skill violates the contract:\n" + report.summary(),
+            backend_used=backend,
+            violations=report.violations,
+            warnings=report.warnings,
+        )
 
     return SkillGenerationResult(
         success=True,
@@ -657,6 +722,7 @@ def _check_skill_outputs(
         target_skill_path=skill_md,
         source_skill_path=skill_md,
         backend_used=backend,
+        warnings=report.warnings,
     )
 
 
@@ -704,19 +770,8 @@ async def generate_skill(
     # Check CLI availability
     cli_available = bool(shutil.which(info.cli_command))
 
-    # For Claude, try SDK first if available
-    if backend == AIBackend.CLAUDE and _claude_sdk_available():
-        _emit(on_progress, "status", "Using Claude SDK")
-        return await generate_skill_sdk(
-            target_project,
-            project_name,
-            scope,
-            prompt_text,
-            on_progress,
-            pure=pure,
-        )
-
-    if not cli_available:
+    use_sdk = backend == AIBackend.CLAUDE and _claude_sdk_available()
+    if not use_sdk and not cli_available:
         return SkillGenerationResult(
             success=False,
             skill_name=skill_name,
@@ -724,18 +779,52 @@ async def generate_skill(
             backend_used=backend,
         )
 
-    _emit(on_progress, "status", f"Using {info.name} ({model})")
+    async def _run(extra_instructions: str = "") -> SkillGenerationResult:
+        if use_sdk:
+            _emit(on_progress, "status", "Using Claude SDK")
+            return await generate_skill_sdk(
+                target_project,
+                project_name,
+                scope,
+                prompt_text,
+                on_progress,
+                pure=pure,
+                extra_instructions=extra_instructions,
+            )
+        _emit(on_progress, "status", f"Using {info.name} ({model})")
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(
+            None,
+            generate_skill_subprocess,
+            target_project,
+            project_name,
+            scope,
+            prompt_text,
+            backend,
+            model,
+            on_progress,
+            pure,
+            extra_instructions,
+        )
 
-    loop = asyncio.get_event_loop()
-    return await loop.run_in_executor(
-        None,
-        generate_skill_subprocess,
-        target_project,
-        project_name,
-        scope,
-        prompt_text,
-        backend,
-        model,
-        on_progress,
-        pure,
-    )
+    result = await _run()
+
+    # One bounded repair pass: the skill exists but violates contract gates,
+    # so re-invoke with the concrete violations instead of failing outright.
+    if not result.success and result.violations:
+        _emit(
+            on_progress,
+            "phase",
+            "Repairing contract violations: " + "; ".join(result.violations),
+        )
+        repair_instructions = (
+            "REPAIR PASS — a previous run already generated this skill at "
+            f"{target_project / '.data' / 'skills' / skill_name}, but it "
+            "violates these contract gates:\n"
+            + "\n".join(f"- {v}" for v in result.violations)
+            + "\nFix ONLY these violations by editing the existing files in "
+            "place. Do not regenerate unaffected files from scratch."
+        )
+        result = await _run(extra_instructions=repair_instructions)
+
+    return result

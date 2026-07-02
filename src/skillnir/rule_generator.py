@@ -2,7 +2,6 @@
 
 import asyncio
 import shutil
-import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
@@ -13,7 +12,8 @@ from skillnir.backends import (
     build_claude_sdk_kwargs,
     build_subprocess_command,
     load_config,
-    parse_stream_line,
+    maybe_compress_prompt,
+    run_streaming_command,
 )
 from skillnir.generator import GenerationProgress, _emit, get_prompts_dir
 
@@ -49,19 +49,26 @@ def _build_rule_user_prompt(target_project: Path, rule_topic: str) -> str:
     )
 
 
-def _snapshot_rules(target_project: Path) -> set[Path]:
-    """Return current set of .mdc files in .cursor/rules/."""
+def _snapshot_rules(target_project: Path) -> dict[Path, tuple[int, int]]:
+    """Map each .mdc file to (mtime_ns, size) so in-place updates are detected."""
     rules_dir = target_project / ".cursor" / "rules"
     if not rules_dir.is_dir():
-        return set()
-    return {p for p in rules_dir.glob("*.mdc")}
+        return {}
+    snapshot: dict[Path, tuple[int, int]] = {}
+    for p in rules_dir.glob("*.mdc"):
+        try:
+            st = p.stat()
+        except OSError:
+            continue
+        snapshot[p] = (st.st_mtime_ns, st.st_size)
+    return snapshot
 
 
 async def generate_rule_sdk(
     target_project: Path,
     rule_topic: str,
     prompt_text: str,
-    before_files: set[Path],
+    before_files: dict[Path, tuple[int, int]],
     on_progress: Callable[[GenerationProgress], None] | None = None,
 ) -> RuleGenerationResult:
     """Generate rule using claude-agent-sdk (async, streaming). Claude only."""
@@ -79,9 +86,9 @@ async def generate_rule_sdk(
     _emit(on_progress, "phase", "Connecting to Claude SDK...")
 
     options = ClaudeAgentOptions(
-        system_prompt=prompt_text,
+        system_prompt=maybe_compress_prompt(prompt_text),
         max_turns=10,
-        allowed_tools=["Read", "Glob", "Grep", "Bash", "Write"],
+        allowed_tools=["Read", "Glob", "Grep", "Bash", "Edit", "Write"],
         permission_mode="acceptEdits",
         cwd=str(target_project),
         **build_claude_sdk_kwargs(),
@@ -123,7 +130,7 @@ def generate_rule_subprocess(
     target_project: Path,
     rule_topic: str,
     prompt_text: str,
-    before_files: set[Path],
+    before_files: dict[Path, tuple[int, int]],
     backend: AIBackend,
     model: str,
     on_progress: Callable[[GenerationProgress], None] | None = None,
@@ -136,53 +143,29 @@ def generate_rule_subprocess(
     full_prompt = prompt_text + "\n\n---\n\n" + user_prompt
     cmd = build_subprocess_command(backend, full_prompt, model=model, max_turns=10)
 
+    _emit(on_progress, "phase", "Generating rule...")
+
     try:
-        _emit(on_progress, "phase", "Generating rule...")
-
-        proc = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            cwd=str(target_project),
-        )
-
-        import threading
-
-        stderr_chunks: list[str] = []
-
-        def _drain_stderr() -> None:
-            for err_line in proc.stderr:
-                stderr_chunks.append(err_line)
-
-        stderr_thread = threading.Thread(target=_drain_stderr, daemon=True)
-        stderr_thread.start()
-
-        for line in proc.stdout:
-            parse_stream_line(backend, line, on_progress)
-
-        proc.wait(timeout=300)
-        stderr_thread.join(timeout=5)
-        stderr = ''.join(stderr_chunks)
-
-        if proc.returncode != 0:
-            return RuleGenerationResult(
-                success=False,
-                error=f"{info.name} exited with code {proc.returncode}: {stderr}",
-                backend_used=backend,
-            )
-
-    except subprocess.TimeoutExpired:
-        proc.kill()
-        return RuleGenerationResult(
-            success=False,
-            error=f"{info.name} timed out after 5 minutes.",
-            backend_used=backend,
+        run = run_streaming_command(
+            cmd, backend, target_project, on_progress, timeout=300
         )
     except FileNotFoundError:
         return RuleGenerationResult(
             success=False,
             error=f"{info.cli_command} CLI not found in PATH.",
+            backend_used=backend,
+        )
+
+    if run.timed_out:
+        return RuleGenerationResult(
+            success=False,
+            error=f"{info.name} timed out after 5 minutes.",
+            backend_used=backend,
+        )
+    if run.returncode != 0:
+        return RuleGenerationResult(
+            success=False,
+            error=f"{info.name} exited with code {run.returncode}: {run.stderr}",
             backend_used=backend,
         )
 
@@ -192,18 +175,27 @@ def generate_rule_subprocess(
 
 def _check_rule_outputs(
     target_project: Path,
-    before_files: set[Path],
+    before_files: dict[Path, tuple[int, int]],
     backend: AIBackend,
 ) -> RuleGenerationResult:
-    """Verify that at least one new .mdc file was created."""
-    after_files = _snapshot_rules(target_project)
-    new_files = sorted(after_files - before_files)
+    """Verify that at least one .mdc file was created or updated.
 
-    if not new_files:
+    Updating an existing rule (re-running a topic that already has a file)
+    is a legitimate success — a pure new-path diff pushed the AI toward
+    creating duplicate near-identical rule files.
+    """
+    after_files = _snapshot_rules(target_project)
+    touched = sorted(
+        path
+        for path, signature in after_files.items()
+        if before_files.get(path) != signature
+    )
+
+    if not touched:
         return RuleGenerationResult(
             success=False,
             error=(
-                "No new .mdc files were created in .cursor/rules/. "
+                "No .mdc files were created or updated in .cursor/rules/. "
                 "The AI may need more turns or the topic may be too broad."
             ),
             backend_used=backend,
@@ -211,7 +203,7 @@ def _check_rule_outputs(
 
     return RuleGenerationResult(
         success=True,
-        rule_files=new_files,
+        rule_files=touched,
         backend_used=backend,
     )
 

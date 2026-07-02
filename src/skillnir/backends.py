@@ -794,6 +794,20 @@ def _apply_mode(
     return prompt, []
 
 
+def maybe_compress_prompt(prompt: str, config: "AppConfig | None" = None) -> str:
+    """Compress a prompt if the user enabled ``compress_prompts``.
+
+    Shared by the subprocess command builder and the SDK call sites so the
+    setting behaves identically on both execution paths.
+    """
+    cfg = config if config is not None else load_config()
+    if not cfg.compress_prompts:
+        return prompt
+    from skillnir.compressor import compress_prompt
+
+    return compress_prompt(prompt).compressed
+
+
 def build_subprocess_command(
     backend: AIBackend,
     prompt: str,
@@ -828,7 +842,7 @@ def build_subprocess_command(
             "--model",
             model_id,
             "--allowedTools",
-            "Read,Glob,Grep,Bash,Write",
+            "Read,Glob,Grep,Bash,Edit,Write",
             "--max-turns",
             str(max_turns),
             "--verbose",
@@ -879,6 +893,77 @@ def build_subprocess_command(
     # Positional prompt goes after "--" to prevent content starting with
     # dashes from being misinterpreted as CLI flags.
     return cmd + extra_flags + ["--", prompt]
+
+
+# ---------------------------------------------------------------------------
+# Streaming subprocess runner
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class StreamedRunResult:
+    """Outcome of a streamed backend-CLI run."""
+
+    returncode: int | None
+    stderr: str
+    timed_out: bool = False
+
+
+def run_streaming_command(
+    cmd: list[str],
+    backend: AIBackend,
+    cwd: Path | str,
+    on_progress: Callable | None = None,
+    timeout: float = 600,
+) -> StreamedRunResult:
+    """Run a backend CLI, streaming stdout lines through ``parse_stream_line``.
+
+    Both pipes are drained on daemon threads so ``timeout`` is a real
+    wall-clock deadline: a CLI that hangs while keeping stdout open gets
+    killed instead of blocking the reader loop forever. Raises
+    ``FileNotFoundError`` when the executable is missing.
+    """
+    import threading
+
+    proc = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        cwd=str(cwd),
+    )
+
+    stderr_chunks: list[str] = []
+
+    def _drain_stderr() -> None:
+        for err_line in proc.stderr:
+            stderr_chunks.append(err_line)
+
+    def _drain_stdout() -> None:
+        for line in proc.stdout:
+            parse_stream_line(backend, line, on_progress)
+
+    stderr_thread = threading.Thread(target=_drain_stderr, daemon=True)
+    stdout_thread = threading.Thread(target=_drain_stdout, daemon=True)
+    stderr_thread.start()
+    stdout_thread.start()
+
+    timed_out = False
+    try:
+        proc.wait(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        proc.wait()
+        timed_out = True
+
+    stdout_thread.join(timeout=5)
+    stderr_thread.join(timeout=5)
+
+    return StreamedRunResult(
+        returncode=proc.returncode,
+        stderr="".join(stderr_chunks),
+        timed_out=timed_out,
+    )
 
 
 # ---------------------------------------------------------------------------

@@ -139,6 +139,17 @@ _JSON_TEMPLATE_RE = re.compile(r"\{{2,}[\s\S]*?\}{2,}")
 _URL_RE = re.compile(r"https?://\S+")
 _FILE_PATH_RE = re.compile(r"(?<!\w)[/~][\w./-]+(?:\.\w+)")
 _MD_HEADER_RE = re.compile(r"^#+\s.*$", re.MULTILINE)
+# YAML frontmatter at document start — skill descriptions drive activation
+# matching, so a single dropped word there breaks skill triggering. Tolerate
+# a UTF-8 BOM (Windows-edited files) and leading blank lines before ---.
+_FRONTMATTER_RE = re.compile(
+    r"\A﻿?(?:[ \t]*\n)*---[ \t]*\n[\s\S]*?\n---[ \t]*(?=\n|\Z)"
+)
+# Any line containing a pipe — markdown table rows lose column alignment
+# (and cell content) under word removal.
+_TABLE_ROW_RE = re.compile(r"^[^\n]*\|[^\n]*$", re.MULTILINE)
+# Indented code blocks (4-space / tab) — as structural as fenced ones.
+_INDENTED_CODE_RE = re.compile(r"(?:^(?:[ ]{4}|\t)[^\n]*\n?)+", re.MULTILINE)
 
 
 def _find_protected_zones(text: str) -> list[tuple[int, int]]:
@@ -151,6 +162,9 @@ def _find_protected_zones(text: str) -> list[tuple[int, int]]:
         _URL_RE,
         _FILE_PATH_RE,
         _MD_HEADER_RE,
+        _FRONTMATTER_RE,
+        _TABLE_ROW_RE,
+        _INDENTED_CODE_RE,
     ):
         for m in pattern.finditer(text):
             zones.append((m.start(), m.end()))
@@ -191,34 +205,59 @@ def _compress_phrases(text: str) -> str:
     return text
 
 
+# Word removal keeps words glued to these characters ("A/B", "the-flag",
+# "a.out") — dropping half of a compound identifier changes its meaning.
+_GLUE_CHARS = "/-_."
+
+
 def _compress_words(text: str) -> str:
     """Remove articles, auxiliaries, intensifiers, and fillers."""
 
     def _replace(m: re.Match) -> str:
-        word = m.group(0)
+        word = m.group(1)
         lower = word.lower()
-        if lower in _KEEP_WORDS:
-            return word
-        if lower in _REMOVABLE:
-            return ""
-        return word
+        if lower in _KEEP_WORDS or lower not in _REMOVABLE:
+            return m.group(0)
+        source = m.string
+        before = source[m.start() - 1] if m.start() > 0 else ""
+        after = source[m.end(1)] if m.end(1) < len(source) else ""
+        if (before and before in _GLUE_CHARS) or (after and after in _GLUE_CHARS):
+            return m.group(0)
+        # "have/has/had to" expresses necessity — removal inverts intent.
+        if lower in ("have", "has", "had") and re.match(
+            r"\s*to\b", source[m.end(1) :], re.IGNORECASE
+        ):
+            return m.group(0)
+        return ""
 
-    # Match whole words only.
-    result = re.sub(r"\b[A-Za-z]+\b", _replace, text)
+    # Match whole words plus one trailing space so removals don't leave gaps.
+    result = re.sub(r"\b([A-Za-z]+)\b ?", _replace, text)
     return result
 
 
-def _collapse_whitespace(text: str) -> str:
-    """Normalize excess whitespace while preserving structure."""
-    # Collapse multiple spaces (but not newlines) into one.
-    text = re.sub(r"[^\S\n]+", " ", text)
+def _collapse_whitespace(text: str, strip_final: bool = True) -> str:
+    """Normalize excess whitespace while preserving line structure.
+
+    Leading indentation is never touched — it is structural in markdown
+    (nested lists) and in code. Only interior runs, trailing whitespace,
+    and blank-line stacks are collapsed.
+
+    ``strip_final=False`` keeps whitespace at the very end of the text.
+    Segments feeding ``compress_prompt`` need it: a segment's final space
+    is usually the separator before an inline protected zone (URL, `code`,
+    path), and stripping it glues the preceding word onto the zone.
+    """
+    # Collapse interior runs of spaces/tabs (never leading indentation).
+    text = re.sub(r"(?<=\S)[^\S\n]+(?=\S)", " ", text)
+    # Remove trailing whitespace before each newline. Anchoring on the
+    # newline instead of `$` matters: under MULTILINE, `$` also matches
+    # end-of-string, which is a segment boundary — not a line end.
+    text = re.sub(r"[^\S\n]+(?=\n)", "", text)
+    if strip_final:
+        text = re.sub(r"[^\S\n]+\Z", "", text)
     # Collapse 3+ consecutive newlines into 2.
     text = re.sub(r"\n{3,}", "\n\n", text)
-    # Remove trailing whitespace on each line.
-    text = re.sub(r" +$", "", text, flags=re.MULTILINE)
-    # Remove leading whitespace on each line (but keep bullet indentation).
-    text = re.sub(r"^[ \t]+(?=[^\s*\-\d])", "", text, flags=re.MULTILINE)
-    return text.strip()
+    return text
 
 
 # ---------------------------------------------------------------------------
@@ -230,10 +269,11 @@ def compress_prompt(text: str) -> CompressionResult:
     """Compress a prompt using rule-based caveman compression.
 
     Applies, in order:
-    1. Detect protected zones (code, JSON templates, URLs, paths, headers)
+    1. Detect protected zones (code, JSON templates, URLs, paths, headers,
+       YAML frontmatter, table rows, indented code)
     2. Replace verbose phrases with concise equivalents
     3. Remove articles, auxiliaries, intensifiers, fillers
-    4. Collapse excess whitespace
+    4. Collapse excess whitespace (per unprotected segment only)
 
     Returns a CompressionResult with the original and compressed text plus metrics.
     """
@@ -249,17 +289,22 @@ def compress_prompt(text: str) -> CompressionResult:
     zones = _find_protected_zones(text)
     parts = _split_by_zones(text, zones)
 
+    # Every transform — including whitespace collapse — runs per unprotected
+    # segment. Running any pass over the joined text would strip indentation
+    # inside protected code blocks and flatten nested lists. Segment-final
+    # whitespace is stripped only on the document's last segment: elsewhere
+    # it is the separator before an inline protected zone.
     compressed_parts: list[str] = []
-    for segment, is_protected in parts:
+    for index, (segment, is_protected) in enumerate(parts):
         if is_protected:
             compressed_parts.append(segment)
         else:
             segment = _compress_phrases(segment)
             segment = _compress_words(segment)
+            segment = _collapse_whitespace(segment, strip_final=index == len(parts) - 1)
             compressed_parts.append(segment)
 
     compressed = "".join(compressed_parts)
-    compressed = _collapse_whitespace(compressed)
 
     original_chars = len(text)
     compressed_chars = len(compressed)

@@ -13,8 +13,15 @@ from skillnir.backends import (
     build_claude_sdk_kwargs,
     build_subprocess_command,
     load_config,
-    parse_stream_line,
+    maybe_compress_prompt,
+    run_streaming_command,
 )
+
+# Canonical output filenames. The industry standard is uppercase AGENTS.md,
+# but this pipeline historically wrote lowercase — accept either casing on
+# lookup so runs on case-sensitive filesystems don't report false failures.
+AGENTS_MD_NAMES: tuple[str, ...] = ("agents.md", "AGENTS.md")
+CLAUDE_MD_NAMES: tuple[str, ...] = (".claude/claude.md", ".claude/CLAUDE.md")
 
 
 @dataclass
@@ -79,6 +86,149 @@ def _emit(
         on_progress(GenerationProgress(kind=kind, content=content, tool_name=tool_name))
 
 
+# ---------------------------------------------------------------------------
+# Context pack — deterministic project inventory for user prompts
+# ---------------------------------------------------------------------------
+
+_PACK_SKIP_DIRS = frozenset(
+    {
+        ".git",
+        ".hg",
+        ".svn",
+        ".idea",
+        ".vscode",
+        ".venv",
+        "venv",
+        "node_modules",
+        "__pycache__",
+        ".nicegui",
+        "dist",
+        "build",
+        "target",
+        ".next",
+        ".tox",
+        ".mypy_cache",
+        ".pytest_cache",
+    }
+)
+_PACK_MANIFESTS = (
+    "pyproject.toml",
+    "package.json",
+    "go.mod",
+    "Cargo.toml",
+    "requirements.txt",
+    "Gemfile",
+    "pom.xml",
+    "build.gradle",
+)
+_PACK_MAX_FILES = 200
+_PACK_MAX_CHARS = 4000
+_PACK_HEAD_LINES = 30
+
+
+def _list_project_files(target_project: Path) -> list[str]:
+    """Repo-relative file list — git ls-files when available, walk otherwise."""
+    try:
+        proc = subprocess.run(
+            ["git", "ls-files"],
+            cwd=str(target_project),
+            capture_output=True,
+            text=True,
+            timeout=5,
+            check=False,
+        )
+        if proc.returncode == 0 and proc.stdout.strip():
+            return proc.stdout.splitlines()[: _PACK_MAX_FILES * 2]
+    except OSError, subprocess.SubprocessError:
+        pass
+
+    files: list[str] = []
+    root_depth = len(target_project.parts)
+    for current, dirnames, filenames in target_project.walk():
+        dirnames[:] = sorted(d for d in dirnames if d not in _PACK_SKIP_DIRS)
+        if len(current.parts) - root_depth >= 4:
+            dirnames[:] = []
+            continue
+        for filename in sorted(filenames):
+            files.append(str((current / filename).relative_to(target_project)))
+            if len(files) >= _PACK_MAX_FILES * 2:
+                return files
+    return files
+
+
+def _head_of(path: Path) -> str:
+    try:
+        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return ""
+    return "\n".join(lines[:_PACK_HEAD_LINES])
+
+
+def build_context_pack(target_project: Path) -> str:
+    """Deterministic project inventory appended to generation user prompts.
+
+    Hands the agent a file listing, language histogram, manifest heads,
+    and README head up front so its capped turns go to targeted reads
+    instead of blind Glob/Read discovery. Capped at ~4KB; returns "" if
+    the project is unreadable.
+    """
+    try:
+        files = _list_project_files(target_project)
+    except OSError:
+        return ""
+    if not files:
+        return ""
+
+    ext_counts: dict[str, int] = {}
+    for f in files:
+        ext = Path(f).suffix or "(none)"
+        ext_counts[ext] = ext_counts.get(ext, 0) + 1
+    top_exts = sorted(ext_counts.items(), key=lambda kv: -kv[1])[:5]
+
+    sections = [
+        "PROJECT INVENTORY (auto-generated — use it to target your reads, "
+        "verify anything you rely on):",
+        "Languages by file count: "
+        + ", ".join(f"{ext} ({count})" for ext, count in top_exts),
+        "Files:\n" + "\n".join(files[:_PACK_MAX_FILES]),
+    ]
+    if len(files) > _PACK_MAX_FILES:
+        sections.append(f"... and {len(files) - _PACK_MAX_FILES} more files")
+
+    for manifest in _PACK_MANIFESTS:
+        manifest_path = target_project / manifest
+        if manifest_path.is_file():
+            head = _head_of(manifest_path)
+            if head:
+                sections.append(f"--- {manifest} (head) ---\n{head}")
+            if len(sections) >= 6:
+                break
+
+    readme = target_project / "README.md"
+    if readme.is_file():
+        head = _head_of(readme)
+        if head:
+            sections.append(f"--- README.md (head) ---\n{head}")
+
+    pack = "\n\n".join(sections)
+    if len(pack) > _PACK_MAX_CHARS:
+        pack = pack[:_PACK_MAX_CHARS] + "\n...(truncated)"
+    return pack
+
+
+def _build_user_prompt(target_project: Path) -> str:
+    """Runtime user prompt for docs generation, with the project inventory."""
+    prompt = (
+        f"Generate AI documentation for the project at {target_project}. "
+        "Follow all phases in the system prompt. "
+        "Write agents.md to the project root and create the .claude/claude.md symlink."
+    )
+    pack = build_context_pack(target_project)
+    if pack:
+        prompt += "\n\n" + pack
+    return prompt
+
+
 async def generate_docs_sdk(
     target_project: Path,
     prompt_text: str,
@@ -99,7 +249,7 @@ async def generate_docs_sdk(
     _emit(on_progress, "phase", "Connecting to Claude SDK...")
 
     options = ClaudeAgentOptions(
-        system_prompt=prompt_text,
+        system_prompt=maybe_compress_prompt(prompt_text),
         max_turns=15,
         allowed_tools=["Read", "Glob", "Grep", "Bash", "Write"],
         permission_mode="acceptEdits",
@@ -107,11 +257,7 @@ async def generate_docs_sdk(
         **build_claude_sdk_kwargs(),
     )
 
-    user_prompt = (
-        f"Generate AI documentation for the project at {target_project}. "
-        "Follow all phases in the system prompt. "
-        "Write agents.md to the project root and create the .claude/claude.md symlink."
-    )
+    user_prompt = _build_user_prompt(target_project)
 
     try:
         async for message in query(prompt=user_prompt, options=options):
@@ -154,57 +300,16 @@ def generate_docs_subprocess(
     info = BACKENDS[backend]
     _emit(on_progress, "phase", f"Starting {info.name}...")
 
-    user_prompt = (
-        f"Generate AI documentation for the project at {target_project}. "
-        "Follow all phases in the system prompt. "
-        "Write agents.md to the project root and create the .claude/claude.md symlink."
-    )
+    user_prompt = _build_user_prompt(target_project)
 
     full_prompt = prompt_text + "\n\n---\n\n" + user_prompt
     cmd = build_subprocess_command(backend, full_prompt, model=model)
 
+    _emit(on_progress, "phase", "Scanning project...")
+
     try:
-        _emit(on_progress, "phase", "Scanning project...")
-
-        proc = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            cwd=str(target_project),
-        )
-
-        import threading
-
-        stderr_chunks: list[str] = []
-
-        def _drain_stderr() -> None:
-            for err_line in proc.stderr:
-                stderr_chunks.append(err_line)
-
-        stderr_thread = threading.Thread(target=_drain_stderr, daemon=True)
-        stderr_thread.start()
-
-        for line in proc.stdout:
-            parse_stream_line(backend, line, on_progress)
-
-        proc.wait(timeout=300)
-        stderr_thread.join(timeout=5)
-        stderr = ''.join(stderr_chunks)
-
-        if proc.returncode != 0:
-            return GenerationResult(
-                success=False,
-                error=f"{info.name} exited with code {proc.returncode}: {stderr}",
-                backend_used=backend,
-            )
-
-    except subprocess.TimeoutExpired:
-        proc.kill()
-        return GenerationResult(
-            success=False,
-            error=f"{info.name} timed out after 5 minutes.",
-            backend_used=backend,
+        run = run_streaming_command(
+            cmd, backend, target_project, on_progress, timeout=300
         )
     except FileNotFoundError:
         return GenerationResult(
@@ -213,16 +318,43 @@ def generate_docs_subprocess(
             backend_used=backend,
         )
 
+    if run.timed_out:
+        return GenerationResult(
+            success=False,
+            error=f"{info.name} timed out after 5 minutes.",
+            backend_used=backend,
+        )
+    if run.returncode != 0:
+        return GenerationResult(
+            success=False,
+            error=f"{info.name} exited with code {run.returncode}: {run.stderr}",
+            backend_used=backend,
+        )
+
     _emit(on_progress, "phase", "Verifying outputs...")
     return _check_outputs(target_project, backend)
 
 
 def _check_outputs(target_project: Path, backend: AIBackend) -> GenerationResult:
-    """Verify that expected output files were created."""
-    agents_md = target_project / "agents.md"
-    claude_md = target_project / ".claude" / "claude.md"
+    """Verify that expected output files were created (either casing)."""
+    agents_md = next(
+        (
+            target_project / name
+            for name in AGENTS_MD_NAMES
+            if (target_project / name).exists()
+        ),
+        None,
+    )
+    claude_md = next(
+        (
+            target_project / name
+            for name in CLAUDE_MD_NAMES
+            if (target_project / name).exists() or (target_project / name).is_symlink()
+        ),
+        None,
+    )
 
-    if not agents_md.exists():
+    if agents_md is None:
         return GenerationResult(
             success=False,
             error="agents.md was not created. The AI may need more turns or the project may be too complex.",
@@ -232,9 +364,7 @@ def _check_outputs(target_project: Path, backend: AIBackend) -> GenerationResult
     return GenerationResult(
         success=True,
         agents_md_path=agents_md,
-        claude_md_path=(
-            claude_md if claude_md.exists() or claude_md.is_symlink() else None
-        ),
+        claude_md_path=claude_md,
         backend_used=backend,
     )
 

@@ -15,7 +15,6 @@ generators (``generator.py``, ``rule_generator.py``, ``wiki_generator.py``).
 
 import asyncio
 import shutil
-import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
@@ -26,7 +25,8 @@ from skillnir.backends import (
     build_claude_sdk_kwargs,
     build_subprocess_command,
     load_config,
-    parse_stream_line,
+    maybe_compress_prompt,
+    run_streaming_command,
 )
 from skillnir.generator import GenerationProgress, _emit, get_prompts_dir
 
@@ -74,14 +74,26 @@ def _build_user_prompt(target_project: Path, mode: str) -> str:
     )
 
 
-def _snapshot_docs(target_project: Path) -> set[Path]:
-    """Capture current AI doc paths so we can diff what changed in apply mode."""
+def _snapshot_docs(target_project: Path) -> dict[Path, tuple[int, int]]:
+    """Map each AI doc to (mtime_ns, size) so apply-mode in-place edits show up.
+
+    A pure path-set diff only detected NEW files — files edited in place
+    (the whole point of apply mode) were subtracted away and never reported.
+    """
     from skillnir.docs_compressor import find_ai_docs
 
-    snapshot: set[Path] = set(find_ai_docs(target_project))
+    paths: list[Path] = list(find_ai_docs(target_project))
     report = target_project / "docs" / REPORT_FILENAME
     if report.exists():
-        snapshot.add(report.resolve())
+        paths.append(report.resolve())
+
+    snapshot: dict[Path, tuple[int, int]] = {}
+    for p in paths:
+        try:
+            st = p.stat()
+        except OSError:
+            continue
+        snapshot[p] = (st.st_mtime_ns, st.st_size)
     return snapshot
 
 
@@ -89,7 +101,7 @@ async def optimize_docs_sdk(
     target_project: Path,
     mode: str,
     prompt_text: str,
-    before_files: set[Path],
+    before_files: dict[Path, tuple[int, int]],
     on_progress: Callable[[GenerationProgress], None] | None = None,
 ) -> OptimizeDocsResult:
     """Optimize via claude-agent-sdk (async, streaming). Claude only."""
@@ -114,7 +126,7 @@ async def optimize_docs_sdk(
     )
 
     options = ClaudeAgentOptions(
-        system_prompt=prompt_text,
+        system_prompt=maybe_compress_prompt(prompt_text),
         max_turns=30 if mode == "apply" else 20,
         allowed_tools=tools,
         permission_mode="acceptEdits",
@@ -159,7 +171,7 @@ def optimize_docs_subprocess(
     target_project: Path,
     mode: str,
     prompt_text: str,
-    before_files: set[Path],
+    before_files: dict[Path, tuple[int, int]],
     backend: AIBackend,
     model: str,
     on_progress: Callable[[GenerationProgress], None] | None = None,
@@ -173,47 +185,8 @@ def optimize_docs_subprocess(
     cmd = build_subprocess_command(backend, full_prompt, model=model)
 
     try:
-        proc = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            cwd=str(target_project),
-        )
-
-        import threading
-
-        stderr_chunks: list[str] = []
-
-        def _drain_stderr() -> None:
-            for err_line in proc.stderr:
-                stderr_chunks.append(err_line)
-
-        stderr_thread = threading.Thread(target=_drain_stderr, daemon=True)
-        stderr_thread.start()
-
-        for line in proc.stdout:
-            parse_stream_line(backend, line, on_progress)
-
-        proc.wait(timeout=600)
-        stderr_thread.join(timeout=5)
-        stderr = ''.join(stderr_chunks)
-
-        if proc.returncode != 0:
-            return OptimizeDocsResult(
-                success=False,
-                mode=mode,
-                error=f"{info.name} exited with code {proc.returncode}: {stderr}",
-                backend_used=backend,
-            )
-
-    except subprocess.TimeoutExpired:
-        proc.kill()
-        return OptimizeDocsResult(
-            success=False,
-            mode=mode,
-            error=f"{info.name} timed out after 10 minutes.",
-            backend_used=backend,
+        run = run_streaming_command(
+            cmd, backend, target_project, on_progress, timeout=600
         )
     except FileNotFoundError:
         return OptimizeDocsResult(
@@ -223,13 +196,28 @@ def optimize_docs_subprocess(
             backend_used=backend,
         )
 
+    if run.timed_out:
+        return OptimizeDocsResult(
+            success=False,
+            mode=mode,
+            error=f"{info.name} timed out after 10 minutes.",
+            backend_used=backend,
+        )
+    if run.returncode != 0:
+        return OptimizeDocsResult(
+            success=False,
+            mode=mode,
+            error=f"{info.name} exited with code {run.returncode}: {run.stderr}",
+            backend_used=backend,
+        )
+
     return _check_outputs(target_project, mode, before_files, backend)
 
 
 def _check_outputs(
     target_project: Path,
     mode: str,
-    before_files: set[Path],
+    before_files: dict[Path, tuple[int, int]],
     backend: AIBackend,
 ) -> OptimizeDocsResult:
     """Verify expected outputs exist (report mode: report only; apply: any diff)."""
@@ -247,7 +235,11 @@ def _check_outputs(
         )
 
     after_files = _snapshot_docs(target_project)
-    new_or_modified = sorted(after_files - before_files)
+    new_or_modified = sorted(
+        path
+        for path, signature in after_files.items()
+        if before_files.get(path) != signature
+    )
 
     return OptimizeDocsResult(
         success=True,

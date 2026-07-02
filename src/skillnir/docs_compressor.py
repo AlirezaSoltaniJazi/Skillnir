@@ -12,7 +12,6 @@ once (mirrors the approach in ``injector.py``).
 
 import asyncio
 import shutil
-import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
@@ -23,10 +22,15 @@ from skillnir.backends import (
     build_claude_sdk_kwargs,
     build_subprocess_command,
     load_config,
-    parse_stream_line,
+    maybe_compress_prompt,
+    run_streaming_command,
 )
-from skillnir.compressor import compress_prompt
+from skillnir.compressor import CompressionResult, compress_prompt
 from skillnir.generator import GenerationProgress, _emit, get_prompts_dir
+
+# Apply mode copies each file here (mirroring its relative path) before
+# rewriting it in place, so a bad compression pass is recoverable.
+BACKUP_DIR_NAME = ".skillnir-backup"
 
 
 @dataclass
@@ -71,6 +75,7 @@ _AI_DOC_GLOBS: tuple[str, ...] = (
     "llms.txt",
     # Tool dotdir originals (NOT symlinks — those resolve to the same files)
     ".claude/CLAUDE.md",
+    ".claude/claude.md",
     # Cursor rules
     ".cursor/rules/*.mdc",
     # Wiki pages (the canonical 6 from generate-wiki)
@@ -125,26 +130,49 @@ def find_ai_docs(project_root: Path) -> list[Path]:
     return sorted(found_by_inode.values())
 
 
-def _compress_file_rule_based(path: Path) -> FileCompressionReport:
-    """Run rule-based compression on one file. Pure read; never writes here."""
+def _compress_file_rule_based(
+    path: Path,
+) -> tuple[FileCompressionReport, CompressionResult | None]:
+    """Run rule-based compression on one file. Pure read; never writes here.
+
+    Returns the report plus the full compression result (None on read
+    error) so apply mode can write and identity-check without compressing
+    a second time.
+    """
     try:
         original = path.read_text(encoding="utf-8")
     except (OSError, UnicodeDecodeError) as exc:
-        return FileCompressionReport(
-            path=path,
-            original_chars=0,
-            compressed_chars=0,
-            reduction_pct=0.0,
-            error=str(exc),
+        return (
+            FileCompressionReport(
+                path=path,
+                original_chars=0,
+                compressed_chars=0,
+                reduction_pct=0.0,
+                error=str(exc),
+            ),
+            None,
         )
 
     result = compress_prompt(original)
-    return FileCompressionReport(
+    report = FileCompressionReport(
         path=path,
         original_chars=result.original_chars,
         compressed_chars=result.compressed_chars,
         reduction_pct=result.reduction_pct,
     )
+    return report, result
+
+
+def _backup_file(project_root: Path, path: Path) -> None:
+    """Copy ``path`` into the project's backup mirror before rewriting it."""
+    root = project_root.resolve()
+    try:
+        rel = path.resolve().relative_to(root)
+    except ValueError:
+        rel = Path(path.name)
+    backup_path = root / BACKUP_DIR_NAME / rel
+    backup_path.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(path, backup_path)
 
 
 def _aggregate(reports: list[FileCompressionReport]) -> tuple[int, int, float]:
@@ -160,7 +188,7 @@ def _aggregate(reports: list[FileCompressionReport]) -> tuple[int, int, float]:
 def compress_docs_dry_run(project_root: Path) -> CompressDocsResult:
     """Scan AI docs, return per-file compression stats. **Writes nothing.**"""
     docs = find_ai_docs(project_root)
-    reports = [_compress_file_rule_based(d) for d in docs]
+    reports = [_compress_file_rule_based(d)[0] for d in docs]
     total_o, total_c, total_pct = _aggregate(reports)
     return CompressDocsResult(
         files=reports,
@@ -172,19 +200,26 @@ def compress_docs_dry_run(project_root: Path) -> CompressDocsResult:
 
 
 def compress_docs_apply_rule_based(project_root: Path) -> CompressDocsResult:
-    """Apply rule-based compression in place. AI tone pass is separate."""
+    """Apply rule-based compression in place. AI tone pass is separate.
+
+    Each rewritten file is first copied to ``.skillnir-backup/`` (relative
+    path preserved). Files the compressor leaves byte-identical are skipped
+    entirely — no backup, no write, no mtime churn.
+    """
     docs = find_ai_docs(project_root)
     reports: list[FileCompressionReport] = []
     for path in docs:
-        report = _compress_file_rule_based(path)
-        if report.error is None:
-            try:
-                original = path.read_text(encoding="utf-8")
-                compressed = compress_prompt(original).compressed
-                path.write_text(compressed, encoding="utf-8")
-                report.written = True
-            except OSError as exc:
-                report.error = str(exc)
+        report, result = _compress_file_rule_based(path)
+        if report.error is None and result is not None:
+            if result.compressed == result.original:
+                pass  # nothing changed — leave the file untouched
+            else:
+                try:
+                    _backup_file(project_root, path)
+                    path.write_text(result.compressed, encoding="utf-8")
+                    report.written = True
+                except OSError as exc:
+                    report.error = str(exc)
         reports.append(report)
 
     total_o, total_c, total_pct = _aggregate(reports)
@@ -247,7 +282,7 @@ async def _ai_tone_pass_sdk(
         return str(exc)
 
     options = ClaudeAgentOptions(
-        system_prompt=prompt_text,
+        system_prompt=maybe_compress_prompt(prompt_text),
         max_turns=max(20, len(doc_paths) * 2),
         allowed_tools=["Read", "Edit", "Write"],
         permission_mode="acceptEdits",
@@ -303,40 +338,16 @@ def _ai_tone_pass_subprocess(
     cmd = build_subprocess_command(backend, full_prompt, model=model)
 
     try:
-        proc = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            cwd=str(target_project),
+        run = run_streaming_command(
+            cmd, backend, target_project, on_progress, timeout=600
         )
-
-        import threading
-
-        stderr_chunks: list[str] = []
-
-        def _drain_stderr() -> None:
-            for err_line in proc.stderr:
-                stderr_chunks.append(err_line)
-
-        stderr_thread = threading.Thread(target=_drain_stderr, daemon=True)
-        stderr_thread.start()
-
-        for line in proc.stdout:
-            parse_stream_line(backend, line, on_progress)
-
-        proc.wait(timeout=600)
-        stderr_thread.join(timeout=5)
-
-        if proc.returncode != 0:
-            return f"{info.name} exited with code {proc.returncode}: " + ''.join(
-                stderr_chunks
-            )
-    except subprocess.TimeoutExpired:
-        proc.kill()
-        return f"{info.name} timed out after 10 minutes."
     except FileNotFoundError:
         return f"{info.cli_command} CLI not found in PATH."
+
+    if run.timed_out:
+        return f"{info.name} timed out after 10 minutes."
+    if run.returncode != 0:
+        return f"{info.name} exited with code {run.returncode}: {run.stderr}"
     return None
 
 
