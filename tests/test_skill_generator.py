@@ -64,9 +64,50 @@ class TestFindReferenceSkill:
         with patch(
             "skillnir.skill_generator.get_source_skills_dir", return_value=tmp_path
         ):
-            result = _find_reference_skill("backend")
+            result, same_scope = _find_reference_skill("backend")
             assert result is not None
+            assert same_scope is True
             assert "server" in result.name.lower() or "backend" in result.name.lower()
+
+    def test_matches_camel_case_tokens(self, tmp_path: Path):
+        skill_dir = tmp_path / "djangoBackend"
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "SKILL.md").write_text("---\nname: ref\n---\n")
+
+        with patch(
+            "skillnir.skill_generator.get_source_skills_dir", return_value=tmp_path
+        ):
+            result, same_scope = _find_reference_skill("django")
+            assert result == skill_dir
+            assert same_scope is True
+
+    def test_go_scope_does_not_match_django(self, tmp_path: Path):
+        """Substring matching let 'go' pick any 'django*' skill."""
+        skill_dir = tmp_path / "djangoBackend"
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "SKILL.md").write_text("---\nname: ref\n---\n")
+
+        with patch(
+            "skillnir.skill_generator.get_source_skills_dir", return_value=tmp_path
+        ):
+            result, same_scope = _find_reference_skill("go")
+            # Only the any-scope fallback remains — flagged as such.
+            assert result == skill_dir
+            assert same_scope is False
+
+    def test_matches_frontmatter_description(self, tmp_path: Path):
+        skill_dir = tmp_path / "gopherHelper"
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "SKILL.md").write_text(
+            "---\nname: ref\ndescription: Golang goroutine patterns\n---\n"
+        )
+
+        with patch(
+            "skillnir.skill_generator.get_source_skills_dir", return_value=tmp_path
+        ):
+            result, same_scope = _find_reference_skill("go")
+            assert result == skill_dir
+            assert same_scope is True
 
     def test_falls_back_to_first_skill(self, tmp_path: Path):
         skill_dir = tmp_path / "unrelated-skill"
@@ -76,14 +117,15 @@ class TestFindReferenceSkill:
         with patch(
             "skillnir.skill_generator.get_source_skills_dir", return_value=tmp_path
         ):
-            result = _find_reference_skill("ios")
+            result, same_scope = _find_reference_skill("ios")
             assert result is not None
+            assert same_scope is False
 
     def test_returns_none_when_no_skills(self, tmp_path: Path):
         with patch(
             "skillnir.skill_generator.get_source_skills_dir", return_value=tmp_path
         ):
-            assert _find_reference_skill("backend") is None
+            assert _find_reference_skill("backend") == (None, False)
 
 
 # ── _build_user_prompt ───────────────────────────────────────
@@ -91,17 +133,26 @@ class TestFindReferenceSkill:
 
 class TestBuildUserPrompt:
     def test_contains_project_path(self, tmp_path: Path):
-        with patch("skillnir.skill_generator._find_reference_skill", return_value=None):
+        with patch(
+            "skillnir.skill_generator._find_reference_skill",
+            return_value=(None, False),
+        ):
             prompt = _build_user_prompt(tmp_path, "myproj", "backend")
             assert str(tmp_path) in prompt
 
     def test_contains_project_name(self, tmp_path: Path):
-        with patch("skillnir.skill_generator._find_reference_skill", return_value=None):
+        with patch(
+            "skillnir.skill_generator._find_reference_skill",
+            return_value=(None, False),
+        ):
             prompt = _build_user_prompt(tmp_path, "myproj", "backend")
             assert "myproj" in prompt
 
     def test_contains_scope(self, tmp_path: Path):
-        with patch("skillnir.skill_generator._find_reference_skill", return_value=None):
+        with patch(
+            "skillnir.skill_generator._find_reference_skill",
+            return_value=(None, False),
+        ):
             prompt = _build_user_prompt(tmp_path, "myproj", "frontend")
             assert "frontend" in prompt
 
@@ -109,22 +160,84 @@ class TestBuildUserPrompt:
         ref = tmp_path / "ref-skill"
         ref.mkdir()
         (ref / "SKILL.md").write_text("---\nname: ref\n---\n")
-        with patch("skillnir.skill_generator._find_reference_skill", return_value=ref):
+        with patch(
+            "skillnir.skill_generator._find_reference_skill",
+            return_value=(ref, True),
+        ):
             prompt = _build_user_prompt(tmp_path, "myproj", "backend")
             assert "ref-skill" in prompt
+            assert "DIFFERENT domain" not in prompt
+
+    def test_fallback_reference_is_marked_structure_only(self, tmp_path: Path):
+        ref = tmp_path / "other-domain-skill"
+        ref.mkdir()
+        (ref / "SKILL.md").write_text("---\nname: ref\n---\n")
+        with patch(
+            "skillnir.skill_generator._find_reference_skill",
+            return_value=(ref, False),
+        ):
+            prompt = _build_user_prompt(tmp_path, "myproj", "backend")
+            assert "DIFFERENT domain" in prompt
 
     def test_pure_mode_marker_present(self, tmp_path: Path):
         """Pure mode must include explicit instructions to skip the scan."""
-        with patch("skillnir.skill_generator._find_reference_skill", return_value=None):
+        with patch(
+            "skillnir.skill_generator._find_reference_skill",
+            return_value=(None, False),
+        ):
             prompt = _build_user_prompt(tmp_path, "myproj", "backend", pure=True)
             assert "PURE MODE" in prompt
             assert "Do NOT scan" in prompt
             assert "YOUR_PROJECT" in prompt
 
     def test_default_mode_has_no_pure_marker(self, tmp_path: Path):
-        with patch("skillnir.skill_generator._find_reference_skill", return_value=None):
+        with patch(
+            "skillnir.skill_generator._find_reference_skill",
+            return_value=(None, False),
+        ):
             prompt = _build_user_prompt(tmp_path, "myproj", "backend")
             assert "PURE MODE" not in prompt
+
+    def test_inlines_existing_learned_md(self, tmp_path: Path):
+        """Regeneration must carry accumulated corrections forward."""
+        skill_dir = tmp_path / ".data" / "skills" / "myproj"
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "LEARNED.md").write_text(
+            "# Learned\n\n## Corrections\n\n- 2026-06-01: always use httpx\n"
+        )
+        with patch(
+            "skillnir.skill_generator._find_reference_skill",
+            return_value=(None, False),
+        ):
+            prompt = _build_user_prompt(tmp_path, "myproj", "backend")
+            assert "EXISTING LEARNED.md" in prompt
+            assert "always use httpx" in prompt
+
+    def test_empty_learned_template_not_inlined(self, tmp_path: Path):
+        skill_dir = tmp_path / ".data" / "skills" / "myproj"
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "LEARNED.md").write_text(
+            "# Learned\n\n## Corrections\n\n## Preferences\n"
+        )
+        with patch(
+            "skillnir.skill_generator._find_reference_skill",
+            return_value=(None, False),
+        ):
+            prompt = _build_user_prompt(tmp_path, "myproj", "backend")
+            assert "EXISTING LEARNED.md" not in prompt
+
+    def test_extra_instructions_appended(self, tmp_path: Path):
+        with patch(
+            "skillnir.skill_generator._find_reference_skill",
+            return_value=(None, False),
+        ):
+            prompt = _build_user_prompt(
+                tmp_path,
+                "myproj",
+                "backend",
+                extra_instructions="REPAIR PASS — fix INJECT.md",
+            )
+            assert "REPAIR PASS — fix INJECT.md" in prompt
 
 
 class TestManualTesterScope:
@@ -353,29 +466,87 @@ class TestScopeCategories:
 # ── _check_skill_outputs ─────────────────────────────────────
 
 
+def _make_valid_skill(tmp_path: Path, skill_name: str) -> Path:
+    """Create a minimal skill directory that satisfies the contract gates."""
+    skill_dir = tmp_path / ".data" / "skills" / skill_name
+    (skill_dir / "references").mkdir(parents=True)
+    (skill_dir / "SKILL.md").write_text(
+        f"---\nname: {skill_name}\ndescription: Test skill for unit tests\n---\n"
+        "# Skill\n\nBody.\n"
+    )
+    (skill_dir / "INJECT.md").write_text(
+        "# Quick Reference\n\n"
+        "- **Stack**: Python 3.14 plus pytest and questionary for prompts\n"
+        "- **Entry points**: src/main.py and the cli module\n"
+        "- **Patterns**: result dataclasses, absolute imports, pathlib only\n"
+        "- **Never**: edit generated SKILL.md files manually\n"
+        "- **FIRST**: read LEARNED.md before generating any code\n"
+    )
+    (skill_dir / "LEARNED.md").write_text(
+        "# Learned\n\n## Corrections\n\n## Preferences\n\n"
+        "## Discovered Conventions\n"
+    )
+    (skill_dir / "references" / "patterns.md").write_text("# Patterns\n")
+    return skill_dir
+
+
 class TestCheckSkillOutputs:
-    def test_success_when_skill_md_exists_with_name(self, tmp_path: Path):
-        skill_dir = tmp_path / ".data" / "skills" / "proj-backend"
-        skill_dir.mkdir(parents=True)
-        (skill_dir / "SKILL.md").write_text("---\nname: proj-backend\n---\n")
+    def test_success_for_contract_conforming_skill(self, tmp_path: Path):
+        skill_dir = _make_valid_skill(tmp_path, "proj-backend")
 
         result = _check_skill_outputs(tmp_path, "proj-backend", AIBackend.CLAUDE)
         assert result.success is True
         assert result.target_skill_path == skill_dir / "SKILL.md"
+        assert result.violations == []
 
     def test_failure_when_skill_md_missing(self, tmp_path: Path):
         result = _check_skill_outputs(tmp_path, "proj-backend", AIBackend.CLAUDE)
         assert result.success is False
         assert "SKILL.md" in result.error
+        assert result.violations == []  # infra failure, not a repairable one
 
     def test_failure_when_no_name_in_frontmatter(self, tmp_path: Path):
+        _make_valid_skill(tmp_path, "proj-backend")
         skill_dir = tmp_path / ".data" / "skills" / "proj-backend"
-        skill_dir.mkdir(parents=True)
         (skill_dir / "SKILL.md").write_text("---\ndescription: no name\n---\n")
 
         result = _check_skill_outputs(tmp_path, "proj-backend", AIBackend.CLAUDE)
         assert result.success is False
         assert "name" in result.error
+        assert result.violations
+
+    def test_bare_skill_md_no_longer_passes(self, tmp_path: Path):
+        """Existence-only validation let a lone SKILL.md report success."""
+        skill_dir = tmp_path / ".data" / "skills" / "proj-backend"
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "SKILL.md").write_text(
+            "---\nname: proj-backend\ndescription: d\n---\n"
+        )
+
+        result = _check_skill_outputs(tmp_path, "proj-backend", AIBackend.CLAUDE)
+        assert result.success is False
+        assert any("INJECT.md" in v for v in result.violations)
+        assert any("LEARNED.md" in v for v in result.violations)
+        assert any("references/" in v for v in result.violations)
+
+
+class TestScopeTemplateBijection:
+    def test_every_scope_has_template_and_every_template_has_scope(self):
+        """generate-skill-*.md files and SKILL_SCOPES must stay in lockstep."""
+        from skillnir.backends import get_prompt_versions
+        from skillnir.generator import get_prompts_dir
+
+        for version in get_prompt_versions():
+            prompts_dir = get_prompts_dir(version)
+            template_scopes = {
+                p.stem.removeprefix("generate-skill-")
+                for p in prompts_dir.glob("generate-skill-*.md")
+            }
+            assert template_scopes == set(SKILL_SCOPES), (
+                f"{prompts_dir.name}: templates and SKILL_SCOPES drifted — "
+                f"templates without scope: {template_scopes - set(SKILL_SCOPES)}, "
+                f"scopes without template: {set(SKILL_SCOPES) - template_scopes}"
+            )
 
 
 # ── generate_skill (mocked orchestration) ────────────────────
@@ -420,3 +591,60 @@ class TestGenerateSkill:
             result = await generate_skill(tmp_path, "proj", "backend")
             assert result.success is False
             assert "not found" in result.error
+
+    @pytest.mark.asyncio
+    async def test_retries_once_on_contract_violations(self, tmp_path: Path):
+        """A violating first attempt triggers exactly one repair pass."""
+        from skillnir.skill_generator import SkillGenerationResult
+
+        cfg = AppConfig(backend=AIBackend.CLAUDE, prompt_version="v1")
+        calls: list[str] = []
+
+        async def fake_sdk(*args, **kwargs):
+            calls.append(kwargs.get("extra_instructions", ""))
+            if len(calls) == 1:
+                return SkillGenerationResult(
+                    success=False,
+                    skill_name="proj",
+                    error="violations",
+                    violations=["INJECT.md is missing (always-loaded summary)"],
+                )
+            return SkillGenerationResult(success=True, skill_name="proj")
+
+        with (
+            patch("skillnir.skill_generator.load_config", return_value=cfg),
+            patch("skillnir.skill_generator.load_skill_prompt", return_value="p"),
+            patch("skillnir.skill_generator._claude_sdk_available", return_value=True),
+            patch("skillnir.skill_generator.generate_skill_sdk", side_effect=fake_sdk),
+        ):
+            result = await generate_skill(tmp_path, "proj", "backend")
+
+        assert result.success is True
+        assert len(calls) == 2
+        assert calls[0] == ""
+        assert "REPAIR PASS" in calls[1]
+        assert "INJECT.md" in calls[1]
+
+    @pytest.mark.asyncio
+    async def test_no_retry_on_infrastructure_error(self, tmp_path: Path):
+        from skillnir.skill_generator import SkillGenerationResult
+
+        cfg = AppConfig(backend=AIBackend.CLAUDE, prompt_version="v1")
+        calls: list[int] = []
+
+        async def fake_sdk(*args, **kwargs):
+            calls.append(1)
+            return SkillGenerationResult(
+                success=False, skill_name="proj", error="CLI exploded"
+            )
+
+        with (
+            patch("skillnir.skill_generator.load_config", return_value=cfg),
+            patch("skillnir.skill_generator.load_skill_prompt", return_value="p"),
+            patch("skillnir.skill_generator._claude_sdk_available", return_value=True),
+            patch("skillnir.skill_generator.generate_skill_sdk", side_effect=fake_sdk),
+        ):
+            result = await generate_skill(tmp_path, "proj", "backend")
+
+        assert result.success is False
+        assert len(calls) == 1

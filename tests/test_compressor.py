@@ -200,6 +200,101 @@ class TestCompressPrompt:
         assert "return x * 2" in result.compressed
 
 
+class TestCompressionSafety:
+    """Regression tests for content the compressor used to corrupt."""
+
+    def test_code_fence_indentation_survives(self):
+        text = (
+            "Intro text that is very verbose.\n"
+            "```python\ndef foo():\n    if x:\n        return 1\n```\n"
+            "Outro.\n"
+        )
+        result = compress_prompt(text)
+        assert "def foo():\n    if x:\n        return 1" in result.compressed
+
+    def test_nested_list_indentation_survives(self):
+        text = "- top level\n  - nested item that is very simple\n"
+        result = compress_prompt(text)
+        assert "\n  - nested" in result.compressed
+
+    def test_yaml_frontmatter_untouched(self):
+        text = (
+            "---\nname: mySkill\n"
+            "description: This is a skill that is used for testing\n---\n"
+            "The body is a very simple text.\n"
+        )
+        result = compress_prompt(text)
+        assert (
+            "description: This is a skill that is used for testing" in result.compressed
+        )
+
+    def test_markdown_table_untouched(self):
+        text = (
+            "Prose that is very long.\n"
+            "| Column A | Column B |\n| --- | --- |\n| a value | the thing |\n"
+        )
+        result = compress_prompt(text)
+        assert "| Column A | Column B |" in result.compressed
+        assert "| a value | the thing |" in result.compressed
+
+    def test_slash_compounds_survive(self):
+        result = compress_prompt("We use A/B testing here and it is very good.")
+        assert "A/B testing" in result.compressed
+
+    def test_have_to_survives(self):
+        result = compress_prompt("You have to run the tests.")
+        assert "have to run" in result.compressed
+
+    def test_indented_code_block_untouched(self):
+        text = "Steps:\n\n    the_result = do_the_thing()\n    print(the_result)\n"
+        result = compress_prompt(text)
+        assert "    the_result = do_the_thing()" in result.compressed
+
+    def test_space_before_inline_zone_preserved(self):
+        """Segment-final spaces are separators, not trailing whitespace."""
+        result = compress_prompt("Visit https://example.com for docs.")
+        assert "Visit https://example.com" in result.compressed
+        result = compress_prompt("See the `foo` command now.")
+        assert "See `foo`" in result.compressed
+        result = compress_prompt("Edit the /etc/hosts.txt file now.")
+        assert "Edit /etc/hosts.txt" in result.compressed
+
+    def test_space_between_adjacent_zones_preserved(self):
+        result = compress_prompt("`a` `b`")
+        assert "`a` `b`" in result.compressed
+
+    def test_trailing_whitespace_at_document_end_still_stripped(self):
+        result = compress_prompt("some verbose text that is very long   ")
+        assert not result.compressed.endswith(" ")
+
+    def test_have_to_guard_is_case_insensitive(self):
+        result = compress_prompt("You HAVE TO run uv sync first.")
+        assert "HAVE TO run" in result.compressed
+
+    def test_frontmatter_with_bom_still_protected(self):
+        text = (
+            "﻿---\n"
+            "description: The skill is for the backend of a service.\n"
+            "---\nBody that is very verbose.\n"
+        )
+        result = compress_prompt(text)
+        assert (
+            "description: The skill is for the backend of a service."
+            in result.compressed
+        )
+
+    def test_compression_is_idempotent(self):
+        text = (
+            "The system is very essentially a basically simple tool in order "
+            "to help.\n\n\n\nMore text here.\n"
+            "```python\ndef foo():\n    return 1\n```\n"
+            "| a | b |\n"
+        )
+        once = compress_prompt(text).compressed
+        twice = compress_prompt(once).compressed
+        assert once == twice
+
+
 class TestIntegrationWithPipelinePrompts:
     """Test compress_prompt on actual pipeline prompt patterns."""
 

@@ -653,3 +653,62 @@ class TestEffortAndThinking:
 
         kwargs = build_claude_sdk_kwargs(AppConfig(thinking_mode="disabled"))
         assert kwargs["thinking"] == {"type": "disabled"}
+
+
+class TestMaybeCompressPrompt:
+    def test_passthrough_when_disabled(self):
+        from skillnir.backends import maybe_compress_prompt
+
+        text = "The system is basically a very simple tool."
+        assert maybe_compress_prompt(text, AppConfig()) == text
+
+    def test_compresses_when_enabled(self):
+        from skillnir.backends import maybe_compress_prompt
+
+        text = "The system is basically a very simple tool."
+        result = maybe_compress_prompt(text, AppConfig(compress_prompts=True))
+        assert len(result) < len(text)
+        assert "system" in result
+
+
+class TestRunStreamingCommand:
+    def test_captures_exit_code_and_stderr(self, tmp_path: Path):
+        from skillnir.backends import run_streaming_command
+
+        cmd = [
+            sys.executable,
+            "-c",
+            "import sys; sys.stderr.write('boom'); sys.exit(3)",
+        ]
+        run = run_streaming_command(cmd, AIBackend.CLAUDE, tmp_path, None, timeout=30)
+        assert run.returncode == 3
+        assert "boom" in run.stderr
+        assert run.timed_out is False
+
+    def test_zero_exit_success(self, tmp_path: Path):
+        from skillnir.backends import run_streaming_command
+
+        cmd = [sys.executable, "-c", "print('not json but harmless')"]
+        run = run_streaming_command(cmd, AIBackend.CLAUDE, tmp_path, None, timeout=30)
+        assert run.returncode == 0
+        assert run.timed_out is False
+
+    def test_wall_clock_timeout_kills_hung_process(self, tmp_path: Path):
+        """A CLI that hangs with stdout open must be killed at the deadline.
+
+        The old per-module loops read stdout to EOF before ever calling
+        wait(timeout=...), so this exact scenario blocked forever.
+        """
+        from skillnir.backends import run_streaming_command
+
+        cmd = [sys.executable, "-c", "import time; time.sleep(60)"]
+        run = run_streaming_command(cmd, AIBackend.CLAUDE, tmp_path, None, timeout=1)
+        assert run.timed_out is True
+
+    def test_missing_executable_raises(self, tmp_path: Path):
+        from skillnir.backends import run_streaming_command
+
+        with pytest.raises(FileNotFoundError):
+            run_streaming_command(
+                ["definitely-not-a-real-cli-xyz"], AIBackend.CLAUDE, tmp_path, None
+            )

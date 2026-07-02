@@ -28,7 +28,7 @@ class TestLoadOptimizePrompt:
 
 class TestSnapshotDocs:
     def test_empty_for_empty_project(self, tmp_path: Path):
-        assert _snapshot_docs(tmp_path) == set()
+        assert _snapshot_docs(tmp_path) == {}
 
     def test_includes_existing_report(self, tmp_path: Path):
         docs = tmp_path / "docs"
@@ -41,7 +41,7 @@ class TestSnapshotDocs:
 
 class TestCheckOutputs:
     def test_fails_when_report_missing(self, tmp_path: Path):
-        result = _check_outputs(tmp_path, "report", set(), AIBackend.CLAUDE)
+        result = _check_outputs(tmp_path, "report", {}, AIBackend.CLAUDE)
         assert result.success is False
         assert REPORT_FILENAME in (result.error or "")
 
@@ -51,17 +51,17 @@ class TestCheckOutputs:
         report = docs / REPORT_FILENAME
         report.write_text("# Report\n", encoding="utf-8")
 
-        result = _check_outputs(tmp_path, "report", set(), AIBackend.CLAUDE)
+        result = _check_outputs(tmp_path, "report", {}, AIBackend.CLAUDE)
         assert result.success is True
         assert result.report_path == report
         assert result.mode == "report"
         assert result.backend_used == AIBackend.CLAUDE
 
-    def test_files_touched_diff_against_before_set(self, tmp_path: Path):
+    def test_files_touched_diff_against_before_snapshot(self, tmp_path: Path):
         # Pre-existing agents.md
         agents = tmp_path / "agents.md"
         agents.write_text("# A\n", encoding="utf-8")
-        before = {agents.resolve()}
+        before = _snapshot_docs(tmp_path)
 
         # AI added a new file + the report
         new_file = tmp_path / "INJECT.md"
@@ -76,3 +76,21 @@ class TestCheckOutputs:
         assert new_file.resolve() in result.files_touched
         assert report.resolve() in result.files_touched
         assert agents.resolve() not in result.files_touched
+
+    def test_files_touched_includes_in_place_edits(self, tmp_path: Path):
+        """Apply mode edits files in place — those edits must be reported."""
+        agents = tmp_path / "agents.md"
+        agents.write_text("# A\n\nStale skill list.\n", encoding="utf-8")
+        untouched = tmp_path / "INJECT.md"
+        untouched.write_text("# I\n", encoding="utf-8")
+        before = _snapshot_docs(tmp_path)
+
+        agents.write_text("# A\n\nSynced skill list with more entries.\n")
+        docs = tmp_path / "docs"
+        docs.mkdir()
+        (docs / REPORT_FILENAME).write_text("# Report\n", encoding="utf-8")
+
+        result = _check_outputs(tmp_path, "apply", before, AIBackend.CLAUDE)
+        assert result.success is True
+        assert agents.resolve() in result.files_touched
+        assert untouched.resolve() not in result.files_touched

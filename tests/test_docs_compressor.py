@@ -6,6 +6,7 @@ from unittest.mock import patch
 import pytest
 
 from skillnir.docs_compressor import (
+    BACKUP_DIR_NAME,
     compress_docs_apply_rule_based,
     compress_docs_dry_run,
     find_ai_docs,
@@ -143,8 +144,39 @@ class TestCompressDocsApplyRuleBased:
         new = (tmp_path / "agents.md").read_text()
         assert new != original
         assert len(new) < len(original)
-        assert all(r.written for r in result.files if r.error is None)
+        # Every file that shrank was written; unchanged files were skipped.
+        for r in result.files:
+            if r.error is None:
+                assert r.written == (r.compressed_chars < r.original_chars)
         assert result.applied is True
+
+    def test_backs_up_files_before_rewriting(self, tmp_path: Path):
+        _seed_ai_docs(tmp_path)
+        original = (tmp_path / "agents.md").read_text()
+        compress_docs_apply_rule_based(tmp_path)
+        backup = tmp_path / BACKUP_DIR_NAME / "agents.md"
+        assert backup.is_file()
+        assert backup.read_text() == original
+
+    def test_unchanged_files_not_rewritten(self, tmp_path: Path):
+        # Header-only content is fully protected — compression is a no-op.
+        target = tmp_path / "agents.md"
+        target.write_text("# Agents\n", encoding="utf-8")
+        st_before = target.stat().st_mtime_ns
+        result = compress_docs_apply_rule_based(tmp_path)
+        report = next(r for r in result.files if r.path.name == "agents.md")
+        assert report.written is False
+        assert target.stat().st_mtime_ns == st_before
+        assert not (tmp_path / BACKUP_DIR_NAME).exists()
+
+    def test_length_preserving_change_still_written(self, tmp_path: Path):
+        """A tab→space swap changes content without changing length."""
+        target = tmp_path / "agents.md"
+        target.write_text("alpha\tbeta gamma", encoding="utf-8")
+        result = compress_docs_apply_rule_based(tmp_path)
+        report = next(r for r in result.files if r.path.name == "agents.md")
+        assert report.written is True
+        assert target.read_text() == "alpha beta gamma"
 
     def test_no_files_no_writes(self, tmp_path: Path):
         result = compress_docs_apply_rule_based(tmp_path)
