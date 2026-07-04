@@ -31,7 +31,8 @@
       "security": "Дослідження (Вразливості безпеки)",
       "settings": "Налаштування",
       "testing_research": "Дослідження (Тестування та QA)",
-      "software_research": "Дослідження (Інженерія ПЗ)"
+      "software_research": "Дослідження (Інженерія ПЗ)",
+      "cleanup_articles": "Очищення статей"
     },
     "sort_modes": {
       "default": "За замовчуванням",
@@ -470,6 +471,25 @@
       "select_at_least_one_topic": "Select at least one topic",
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "cleanup_articles": {
+      "title": "Очищення статей",
+      "subtitle": "ШІ-класифікація застарілих дослідницьких статей і перенесення в outdated/ — ніколи не видаляє",
+      "store_label": "Сховище статей",
+      "mode_label": "Режим",
+      "mode_report": "Звіт — лише класифікація (пробний запуск)",
+      "mode_apply": "Застосувати — перенести застарілі + оновити індекс",
+      "topics_label": "Теми (порожньо = всі)",
+      "older_than_label": "Лише статті, старші за",
+      "older_all": "Увесь час",
+      "older_6m": "6 місяців",
+      "older_12m": "12 місяців",
+      "older_18m": "18 місяців",
+      "max_articles_label": "Макс. статей за запуск",
+      "result_success_title": "Очищення завершено",
+      "result_fail_title": "Очищення не вдалося",
+      "no_candidates": "Застарілих статей не знайдено — архів актуальний.",
+      "start_button": "Почати очищення"
     }
   },
   "buttons": {

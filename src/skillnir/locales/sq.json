@@ -31,7 +31,8 @@
       "security": "Kërkim (Cenueshmëritë e Sigurisë)",
       "settings": "Cilësimet",
       "testing_research": "Kërkim (Testimi & QA)",
-      "software_research": "Kërkim (Inxhinieria e Softuerit)"
+      "software_research": "Kërkim (Inxhinieria e Softuerit)",
+      "cleanup_articles": "Pastrimi i artikujve"
     },
     "sort_modes": {
       "default": "E parazgjedhur",
@@ -470,6 +471,25 @@
       "select_at_least_one_topic": "Select at least one topic",
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "cleanup_articles": {
+      "title": "Pastrimi i artikujve",
+      "subtitle": "Klasifiko me AI artikujt kërkimorë të vjetruar dhe zhvendosi në outdated/ — kurrë nuk fshin",
+      "store_label": "Arkivi i artikujve",
+      "mode_label": "Mënyra",
+      "mode_report": "Raport — vetëm klasifikim (provë)",
+      "mode_apply": "Apliko — zhvendos të vjetruarit + përditëso indeksin",
+      "topics_label": "Temat (bosh = të gjitha)",
+      "older_than_label": "Vetëm artikuj më të vjetër se",
+      "older_all": "Gjithë koha",
+      "older_6m": "6 muaj",
+      "older_12m": "12 muaj",
+      "older_18m": "18 muaj",
+      "max_articles_label": "Maks. artikuj për ekzekutim",
+      "result_success_title": "Pastrimi përfundoi",
+      "result_fail_title": "Pastrimi dështoi",
+      "no_candidates": "Nuk u gjetën artikuj të vjetruar — arkivi është i përditësuar.",
+      "start_button": "Nis pastrimin"
     }
   },
   "buttons": {

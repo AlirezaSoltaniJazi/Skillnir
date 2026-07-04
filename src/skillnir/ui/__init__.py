@@ -154,6 +154,7 @@ def run_ui(port: int = 8080) -> None:
         ai_context,
         ai_extra,
         benchmarks,
+        cleanup_articles,
         delete_skill,
         events,
         generate_skill,

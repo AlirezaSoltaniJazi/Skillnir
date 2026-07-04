@@ -31,7 +31,8 @@
       "security": "Onderzoek (Beveiligingslekken)",
       "settings": "Instellingen",
       "testing_research": "Onderzoek (Testen & QA)",
-      "software_research": "Onderzoek (Software Engineering)"
+      "software_research": "Onderzoek (Software Engineering)",
+      "cleanup_articles": "Artikelen opschonen"
     },
     "sort_modes": {
       "default": "Standaard",
@@ -470,6 +471,25 @@
       "select_at_least_one_topic": "Select at least one topic",
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "cleanup_articles": {
+      "title": "Artikelen opschonen",
+      "subtitle": "Verouderde onderzoeksartikelen met AI herkennen en naar outdated/ verplaatsen — nooit verwijderen",
+      "store_label": "Artikelarchief",
+      "mode_label": "Modus",
+      "mode_report": "Rapport — alleen classificeren (proefrun)",
+      "mode_apply": "Toepassen — verouderde verplaatsen + index bijwerken",
+      "topics_label": "Onderwerpen (leeg = alle)",
+      "older_than_label": "Alleen artikelen ouder dan",
+      "older_all": "Alle periodes",
+      "older_6m": "6 maanden",
+      "older_12m": "12 maanden",
+      "older_18m": "18 maanden",
+      "max_articles_label": "Max. artikelen per run",
+      "result_success_title": "Opschonen voltooid",
+      "result_fail_title": "Opschonen mislukt",
+      "no_candidates": "Geen verouderde artikelen gevonden — het archief is actueel.",
+      "start_button": "Opschonen starten"
     }
   },
   "buttons": {

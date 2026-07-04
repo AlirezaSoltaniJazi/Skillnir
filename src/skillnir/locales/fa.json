@@ -31,7 +31,8 @@
       "security": "پژوهش (آسیب‌پذیری‌های امنیتی)",
       "settings": "تنظیمات",
       "testing_research": "پژوهش (تست و کیفیت)",
-      "software_research": "پژوهش (مهندسی نرم‌افزار)"
+      "software_research": "پژوهش (مهندسی نرم‌افزار)",
+      "cleanup_articles": "پاک‌سازی مقاله‌ها"
     },
     "sort_modes": {
       "default": "پیش‌فرض",
@@ -470,6 +471,25 @@
       "select_at_least_one_topic": "Select at least one topic",
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "cleanup_articles": {
+      "title": "پاک‌سازی مقاله‌ها",
+      "subtitle": "شناسایی مقاله‌های منسوخ پژوهشی با هوش مصنوعی و انتقال به outdated/ — هرگز حذف نمی‌شود",
+      "store_label": "مخزن مقاله‌ها",
+      "mode_label": "حالت",
+      "mode_report": "گزارش — فقط دسته‌بندی (اجرای آزمایشی)",
+      "mode_apply": "اعمال — انتقال منسوخ‌ها + به‌روزرسانی نمایه",
+      "topics_label": "موضوع‌ها (خالی = همه)",
+      "older_than_label": "فقط مقاله‌های قدیمی‌تر از",
+      "older_all": "همهٔ زمان‌ها",
+      "older_6m": "۶ ماه",
+      "older_12m": "۱۲ ماه",
+      "older_18m": "۱۸ ماه",
+      "max_articles_label": "حداکثر مقاله در هر اجرا",
+      "result_success_title": "پاک‌سازی انجام شد",
+      "result_fail_title": "پاک‌سازی ناموفق بود",
+      "no_candidates": "مقالهٔ منسوخی یافت نشد — بایگانی به‌روز است.",
+      "start_button": "شروع پاک‌سازی"
     }
   },
   "buttons": {

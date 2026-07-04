@@ -198,12 +198,23 @@ async def page_software_research():
         existing = _load_index(research_dir)
         if existing:
             with ui.row().classes('gap-4 flex-wrap'):
+                from skillnir.article_status import is_outdated
+
+                active_count = sum(1 for a in existing.values() if not is_outdated(a))
+                outdated_count = len(existing) - active_count
                 stat_card(
-                    str(len(existing)),
+                    str(active_count),
                     t('pages.software_research.articles_in_kb', lang),
                     icon='article',
                     color='info',
                 )
+                if outdated_count:
+                    stat_card(
+                        str(outdated_count),
+                        'Outdated (archived)',
+                        icon='cleaning_services',
+                        color='warning',
+                    )
 
             index_path = research_dir / 'index.html'
             if index_path.exists():

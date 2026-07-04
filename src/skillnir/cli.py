@@ -1429,6 +1429,134 @@ def _software_research_cmd() -> None:
     print(f"{'─' * 50}\n")
 
 
+def _cleanup_articles_cmd() -> None:
+    """AI-classify outdated research articles and move them to outdated/."""
+    import asyncio
+    import webbrowser
+    from datetime import date, timedelta
+
+    from skillnir.article_cleanup import (
+        DEFAULT_MAX_ARTICLES,
+        STORE_SPECS,
+        cleanup_articles,
+    )
+    from skillnir.backends import BACKENDS, load_config
+
+    config = load_config()
+    backend_info = BACKENDS[config.backend]
+
+    store = questionary.select(
+        "Which article store?",
+        choices=[
+            questionary.Choice(spec.label, value=key)
+            for key, spec in STORE_SPECS.items()
+        ],
+    ).ask()
+    if store is None:
+        sys.exit(0)
+    spec = STORE_SPECS[store]
+
+    mode = questionary.select(
+        "Mode:",
+        choices=[
+            questionary.Choice(
+                "Report — classify only, write cleanup-report.md (dry-run)",
+                value="report",
+            ),
+            questionary.Choice(
+                "Apply — move outdated articles + update index + landing page",
+                value="apply",
+            ),
+        ],
+    ).ask()
+    if mode is None:
+        sys.exit(0)
+
+    topic_choices = questionary.checkbox(
+        "Topics (empty = all):",
+        choices=[
+            questionary.Choice(label, value=key)
+            for key, label in spec.topic_labels.items()
+        ],
+    ).ask()
+    if topic_choices is None:
+        sys.exit(0)
+
+    age = questionary.select(
+        "Only consider articles older than:",
+        choices=[
+            questionary.Choice("All time", value=0),
+            questionary.Choice("6 months", value=182),
+            questionary.Choice("12 months", value=365),
+            questionary.Choice("18 months", value=548),
+        ],
+    ).ask()
+    if age is None:
+        sys.exit(0)
+    older_than = (date.today() - timedelta(days=age)).isoformat() if age else None
+
+    max_raw = questionary.text(
+        "Max articles this run:", default=str(DEFAULT_MAX_ARTICLES)
+    ).ask()
+    if max_raw is None:
+        sys.exit(0)
+    try:
+        max_articles = max(1, int(max_raw))
+    except ValueError:
+        max_articles = DEFAULT_MAX_ARTICLES
+
+    print(f"\n  Store:   {spec.label}")
+    print(f"  Backend: {backend_info.name} ({config.model})")
+    print(f"  Mode:    {mode}")
+    print(f"  Topics:  {', '.join(topic_choices) if topic_choices else 'all'}")
+    print(f"  Older:   {older_than or 'any date'}  |  Max: {max_articles}\n")
+
+    if not questionary.confirm("Proceed?", default=True).ask():
+        sys.exit(0)
+
+    def on_progress(p) -> None:
+        if p.kind == "phase":
+            print(f"\n  >>> {p.content}")
+        elif p.kind == "status":
+            print(f"      {p.content}")
+        elif p.kind == "error":
+            print(f"  [ERROR] {p.content}")
+
+    print(f"\n{'─' * 50}\nClassifying articles (conservative — never deletes)...\n")
+
+    result = asyncio.run(
+        cleanup_articles(
+            store,
+            mode=mode,
+            topics=topic_choices or None,
+            older_than=older_than,
+            max_articles=max_articles,
+            on_progress=on_progress,
+        )
+    )
+
+    print(f"\n{'─' * 50}")
+    if result.success:
+        print(
+            f"  Scanned:          {result.scanned} articles ({result.batches} batches)"
+        )
+        print(f"  Outdated:         {len(result.candidates)}")
+        print(f"  Low confidence:   {len(result.low_confidence)} (flagged, not moved)")
+        if mode == "apply":
+            print(f"  Files moved:      {result.moved}")
+        if result.report_md_path:
+            print(f"  Report:           {result.report_md_path}")
+        if result.landing_path:
+            print(f"  Landing page:     {result.landing_path}")
+            if questionary.confirm(
+                "\n  Open landing page in browser?", default=True
+            ).ask():
+                webbrowser.open(result.landing_path.as_uri())
+    else:
+        print(f"  Failed: {result.error}")
+    print(f"{'─' * 50}\n")
+
+
 def _news_cmd() -> None:
     """Search the latest AI news headlines by category and recency window."""
     import asyncio
@@ -1874,12 +2002,13 @@ def main() -> None:
             "research",
             "testing-research",
             "software-research",
+            "cleanup-articles",
             "events",
             "news",
             "config",
             "sound",
         ],
-        help="install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. delete-wiki: remove project wiki (llms.txt + docs/) from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. generate-wiki: generate project wiki (llms.txt + docs/) with AI. compress-docs: rule-based + AI tone compression of all AI-related docs. optimize-docs: audit and optionally fix AI-doc inconsistencies/cross-references. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. testing-research: search latest testing/QA news, summarize articles, generate landing page. software-research: search latest software-engineering / architecture / craft articles, summarize, generate landing page. events: search upcoming AI events and conferences worldwide. news: search fresh AI news headlines by category and recency. config: manage backend/model. sound: manage Claude Code sound notifications.",
+        help="install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. delete-wiki: remove project wiki (llms.txt + docs/) from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. generate-wiki: generate project wiki (llms.txt + docs/) with AI. compress-docs: rule-based + AI tone compression of all AI-related docs. optimize-docs: audit and optionally fix AI-doc inconsistencies/cross-references. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. testing-research: search latest testing/QA news, summarize articles, generate landing page. software-research: search latest software-engineering / architecture / craft articles, summarize, generate landing page. cleanup-articles: AI-classify outdated research articles and move them to outdated/ (report or apply, never deletes). events: search upcoming AI events and conferences worldwide. news: search fresh AI news headlines by category and recency. config: manage backend/model. sound: manage Claude Code sound notifications.",
     )
     args = parser.parse_args()
 
@@ -1915,6 +2044,8 @@ def main() -> None:
         _testing_research_cmd()
     elif args.command == "software-research":
         _software_research_cmd()
+    elif args.command == "cleanup-articles":
+        _cleanup_articles_cmd()
     elif args.command == "events":
         _events_cmd()
     elif args.command == "news":

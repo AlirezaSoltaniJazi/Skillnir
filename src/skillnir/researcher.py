@@ -6,10 +6,15 @@ import json
 import re
 import shutil
 import subprocess
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, fields
 from pathlib import Path
 from typing import Callable
 
+from skillnir.article_status import (
+    article_dir,
+    build_outdated_section_html,
+    split_by_status,
+)
 from skillnir.backends import (
     BACKENDS,
     AIBackend,
@@ -36,6 +41,11 @@ class Article:
     topic: str  # prompt-engineering, mcp, rag, etc.
     key_insights: list[str] = field(default_factory=list)
     summary: str = ""
+    # Cleanup metadata: outdated entries stay in the index (dedup skip-list
+    # keeps working) while their files live in articles/<topic>/outdated/.
+    status: str = "active"  # "active" | "outdated"
+    outdated_reason: str = ""
+    outdated_at: str = ""  # YYYY-MM-DD
 
 
 @dataclass
@@ -295,14 +305,26 @@ def _get_research_dir() -> Path:
     return fallback
 
 
+_ARTICLE_FIELDS = frozenset(f.name for f in fields(Article))
+
+
 def _load_index(research_dir: Path) -> dict[str, Article]:
-    """Load existing research-index.json for dedup."""
+    """Load existing research-index.json for dedup.
+
+    Field-filtered construction: entries missing new fields load via
+    defaults, and unknown future keys can't nuke the whole index.
+    """
     index_file = research_dir / "research-index.json"
     if not index_file.exists():
         return {}
     try:
         data = json.loads(index_file.read_text(encoding="utf-8"))
-        return {item["id"]: Article(**item) for item in data}
+        return {
+            item["id"]: Article(
+                **{k: v for k, v in item.items() if k in _ARTICLE_FIELDS}
+            )
+            for item in data
+        }
     except json.JSONDecodeError, KeyError, TypeError:
         return {}
 
@@ -356,12 +378,14 @@ def _migrate_articles_to_topic_dirs(research_dir: Path) -> int:
 
     moved = 0
     for article_id, topic in id_to_topic.items():
-        topic_dir = articles_dir / topic
+        entry = articles.get(article_id)
+        status = entry.status if entry else "active"
+        topic_dir = article_dir(articles_dir, topic, status)
         for ext in (".md", ".html"):
             old_path = articles_dir / f"{article_id}{ext}"
             new_path = topic_dir / f"{article_id}{ext}"
             if old_path.exists() and not new_path.exists():
-                topic_dir.mkdir(exist_ok=True)
+                topic_dir.mkdir(parents=True, exist_ok=True)
                 old_path.rename(new_path)
                 moved += 1
     return moved
@@ -374,8 +398,8 @@ def _migrate_articles_to_topic_dirs(research_dir: Path) -> int:
 
 def _write_article_md(article: Article, articles_dir: Path) -> Path:
     """Write individual article summary as markdown."""
-    topic_dir = articles_dir / article.topic
-    topic_dir.mkdir(exist_ok=True)
+    topic_dir = article_dir(articles_dir, article.topic, article.status)
+    topic_dir.mkdir(parents=True, exist_ok=True)
     md_path = topic_dir / f"{article.id}.md"
     insights = "\n".join(
         f"{i + 1}. {ins}" for i, ins in enumerate(article.key_insights)
@@ -450,8 +474,8 @@ def _generate_article_html(article: Article) -> str:
 
 def _write_article_html(article: Article, articles_dir: Path) -> Path:
     """Write individual article as styled HTML page."""
-    topic_dir = articles_dir / article.topic
-    topic_dir.mkdir(exist_ok=True)
+    topic_dir = article_dir(articles_dir, article.topic, article.status)
+    topic_dir.mkdir(parents=True, exist_ok=True)
     html_path = topic_dir / f"{article.id}.html"
     html_path.write_text(_generate_article_html(article), encoding="utf-8")
     return html_path
@@ -465,10 +489,12 @@ def _write_article_html(article: Article, articles_dir: Path) -> Path:
 def _generate_landing_html(
     articles: dict[str, Article], research_dir: Path, new_ids: set[str] | None = None
 ) -> Path:
-    """Generate index.html landing page sorted by date."""
-    sorted_articles = sorted(
-        articles.values(), key=lambda a: a.published_date, reverse=True
-    )
+    """Generate index.html landing page sorted by date.
+
+    Active articles drive the table, chips, and counts; outdated ones
+    render in their own collapsible section at the bottom.
+    """
+    sorted_articles, outdated_articles = split_by_status(articles)
     new_ids = new_ids or set()
 
     topic_colors = {
@@ -554,6 +580,10 @@ def _generate_landing_html(
         .replace('<!-- TOPIC_CHIPS -->', stats_chips)
         .replace('<!-- SOURCE_CHIPS -->', source_chips_html)
         .replace('<!-- TABLE_ROWS -->', rows_html)
+        .replace(
+            '<!-- OUTDATED_SECTION -->',
+            build_outdated_section_html(outdated_articles, TOPIC_LABELS),
+        )
         .replace('<!-- TOTAL_ARTICLES -->', str(total))
     )
 
@@ -857,7 +887,7 @@ def backfill_article_html(research_dir: Path | None = None) -> int:
     articles_dir = research_dir / "articles"
     count = 0
     for article in articles.values():
-        topic_dir = articles_dir / article.topic
+        topic_dir = article_dir(articles_dir, article.topic, article.status)
         html_path = topic_dir / f"{article.id}.html"
         md_path = topic_dir / f"{article.id}.md"
         if md_path.exists() and not html_path.exists():

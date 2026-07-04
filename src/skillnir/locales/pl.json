@@ -31,7 +31,8 @@
       "security": "Badania (Luki bezpieczeństwa)",
       "settings": "Ustawienia",
       "testing_research": "Badania (Testowanie i QA)",
-      "software_research": "Badania (Inżynieria oprogramowania)"
+      "software_research": "Badania (Inżynieria oprogramowania)",
+      "cleanup_articles": "Porządkowanie artykułów"
     },
     "sort_modes": {
       "default": "Domyślnie",
@@ -470,6 +471,25 @@
       "select_at_least_one_topic": "Select at least one topic",
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "cleanup_articles": {
+      "title": "Porządkowanie artykułów",
+      "subtitle": "Klasyfikuj przestarzałe artykuły badawcze przez AI i przenoś do outdated/ — nigdy nie usuwa",
+      "store_label": "Magazyn artykułów",
+      "mode_label": "Tryb",
+      "mode_report": "Raport — tylko klasyfikacja (na sucho)",
+      "mode_apply": "Zastosuj — przenieś przestarzałe + zaktualizuj indeks",
+      "topics_label": "Tematy (puste = wszystkie)",
+      "older_than_label": "Tylko artykuły starsze niż",
+      "older_all": "Cały okres",
+      "older_6m": "6 miesięcy",
+      "older_12m": "12 miesięcy",
+      "older_18m": "18 miesięcy",
+      "max_articles_label": "Maks. artykułów na uruchomienie",
+      "result_success_title": "Porządkowanie zakończone",
+      "result_fail_title": "Porządkowanie nie powiodło się",
+      "no_candidates": "Nie znaleziono przestarzałych artykułów — archiwum jest aktualne.",
+      "start_button": "Rozpocznij porządkowanie"
     }
   },
   "buttons": {

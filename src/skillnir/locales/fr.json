@@ -31,7 +31,8 @@
       "security": "Recherche (Vulnérabilités de sécurité)",
       "settings": "Parametres",
       "testing_research": "Recherche (Tests & QA)",
-      "software_research": "Recherche (Ingénierie Logicielle)"
+      "software_research": "Recherche (Ingénierie Logicielle)",
+      "cleanup_articles": "Nettoyage des articles"
     },
     "sort_modes": {
       "default": "Par defaut",
@@ -470,6 +471,25 @@
       "select_at_least_one_topic": "Select at least one topic",
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "cleanup_articles": {
+      "title": "Nettoyage des articles",
+      "subtitle": "Classer par IA les articles de recherche obsolètes et les déplacer vers outdated/ — jamais de suppression",
+      "store_label": "Dépôt d'articles",
+      "mode_label": "Mode",
+      "mode_report": "Rapport — classification seule (essai)",
+      "mode_apply": "Appliquer — déplacer les obsolètes + mettre à jour l'index",
+      "topics_label": "Sujets (vide = tous)",
+      "older_than_label": "Seulement les articles plus vieux que",
+      "older_all": "Toutes périodes",
+      "older_6m": "6 mois",
+      "older_12m": "12 mois",
+      "older_18m": "18 mois",
+      "max_articles_label": "Max. d'articles par exécution",
+      "result_success_title": "Nettoyage terminé",
+      "result_fail_title": "Échec du nettoyage",
+      "no_candidates": "Aucun article obsolète trouvé — l'archive est à jour.",
+      "start_button": "Lancer le nettoyage"
     }
   },
   "buttons": {

@@ -31,7 +31,8 @@
       "security": "Forschung (Sicherheits-Schwachstellen)",
       "settings": "Einstellungen",
       "testing_research": "Forschung (Testing & QA)",
-      "software_research": "Forschung (Software-Engineering)"
+      "software_research": "Forschung (Software-Engineering)",
+      "cleanup_articles": "Artikel aufräumen"
     },
     "sort_modes": {
       "default": "Standard",
@@ -470,6 +471,25 @@
       "select_at_least_one_topic": "Select at least one topic",
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "cleanup_articles": {
+      "title": "Artikel aufräumen",
+      "subtitle": "Veraltete Forschungsartikel per KI erkennen und nach outdated/ verschieben — nie löschen",
+      "store_label": "Artikelbestand",
+      "mode_label": "Modus",
+      "mode_report": "Bericht — nur klassifizieren (Testlauf)",
+      "mode_apply": "Anwenden — veraltete verschieben + Index aktualisieren",
+      "topics_label": "Themen (leer = alle)",
+      "older_than_label": "Nur Artikel älter als",
+      "older_all": "Alle Zeiträume",
+      "older_6m": "6 Monate",
+      "older_12m": "12 Monate",
+      "older_18m": "18 Monate",
+      "max_articles_label": "Max. Artikel pro Lauf",
+      "result_success_title": "Aufräumen abgeschlossen",
+      "result_fail_title": "Aufräumen fehlgeschlagen",
+      "no_candidates": "Keine veralteten Artikel gefunden — das Archiv ist auf dem Stand.",
+      "start_button": "Aufräumen starten"
     }
   },
   "buttons": {

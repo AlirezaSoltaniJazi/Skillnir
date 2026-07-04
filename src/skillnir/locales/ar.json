@@ -31,7 +31,8 @@
       "security": "البحث (الثغرات الأمنية)",
       "settings": "الإعدادات",
       "testing_research": "البحث (الاختبار والجودة)",
-      "software_research": "البحث (هندسة البرمجيات)"
+      "software_research": "البحث (هندسة البرمجيات)",
+      "cleanup_articles": "تنظيف المقالات"
     },
     "sort_modes": {
       "default": "الافتراضي",
@@ -470,6 +471,25 @@
       "select_at_least_one_topic": "Select at least one topic",
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "cleanup_articles": {
+      "title": "تنظيف المقالات",
+      "subtitle": "تصنيف المقالات البحثية المتقادمة بالذكاء الاصطناعي ونقلها إلى outdated/ — لا حذف أبدًا",
+      "store_label": "مخزن المقالات",
+      "mode_label": "الوضع",
+      "mode_report": "تقرير — تصنيف فقط (تجريبي)",
+      "mode_apply": "تطبيق — نقل المتقادمة + تحديث الفهرس",
+      "topics_label": "المواضيع (فارغ = الكل)",
+      "older_than_label": "فقط المقالات الأقدم من",
+      "older_all": "كل الفترات",
+      "older_6m": "٦ أشهر",
+      "older_12m": "١٢ شهرًا",
+      "older_18m": "١٨ شهرًا",
+      "max_articles_label": "أقصى عدد مقالات لكل تشغيل",
+      "result_success_title": "اكتمل التنظيف",
+      "result_fail_title": "فشل التنظيف",
+      "no_candidates": "لم يُعثر على مقالات متقادمة — الأرشيف محدث.",
+      "start_button": "بدء التنظيف"
     }
   },
   "buttons": {

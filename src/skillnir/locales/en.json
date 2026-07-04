@@ -36,7 +36,8 @@
       "benchmarks": "Benchmarks",
       "security": "Research (Security Vulnerabilities)",
       "settings": "Settings",
-      "software_research": "Research (Software Engineering)"
+      "software_research": "Research (Software Engineering)",
+      "cleanup_articles": "Cleanup Articles"
     },
     "sort_modes": {
       "default": "Default",
@@ -569,6 +570,25 @@
       "select_at_least_one_topic": "Select at least one topic",
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "cleanup_articles": {
+      "title": "Cleanup Articles",
+      "subtitle": "AI-classify outdated research articles and move them to outdated/ — never deletes",
+      "store_label": "Article store",
+      "mode_label": "Mode",
+      "mode_report": "Report — classify only (dry-run)",
+      "mode_apply": "Apply — move outdated + update index",
+      "topics_label": "Topics (empty = all)",
+      "older_than_label": "Only articles older than",
+      "older_all": "All time",
+      "older_6m": "6 months",
+      "older_12m": "12 months",
+      "older_18m": "18 months",
+      "max_articles_label": "Max articles per run",
+      "result_success_title": "Cleanup finished",
+      "result_fail_title": "Cleanup failed",
+      "no_candidates": "No outdated articles found — the archive looks healthy.",
+      "start_button": "Start Cleanup"
     }
   },
   "buttons": {
