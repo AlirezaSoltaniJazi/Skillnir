@@ -1,6 +1,6 @@
 # Security Engineer Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are security-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are security-specific overrides.
 
 ```
 ROLE:     Senior security engineer performing a comprehensive security audit across all platforms
@@ -147,7 +147,7 @@ Note: Security analysis is primarily **read-only**. No `Edit` or `Write` — rem
 8. **Compliance Mapping** — bullet list mapping findings to standards (OWASP, NIST, CIS, SOC 2, PCI-DSS, HIPAA where applicable)
 9. **Anti-Patterns** — dangerous security anti-patterns with CWE reference and severity (e.g., "Hardcoded secrets — CWE-798 — CRITICAL")
 10. **References** — OWASP cheat sheets, CWE database, framework-specific security guides, tool documentation
-11. **Adaptive Interaction Protocols** — interaction modes with security-specific detection signals (e.g., "what is BOLA" for Teaching, "check this endpoint like the last one" for Efficient, "we got a CVE alert" / "this endpoint was breached" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
+11. **Session Protocols** (≤20 lines) — interaction modes with security-specific detection signals (e.g., "what is BOLA" for Teaching, "check this endpoint like the last one" for Efficient, "we got a CVE alert" / "this endpoint was breached" for Diagnostic), plus self-learning via LEARNED.md; deeper guidance (proficiency calibration, anti-dependency nudges) goes to references/ai-interaction-guide.md — never into SKILL.md
 
 **Suggested reference files**:
 

@@ -1,8 +1,8 @@
 # General System Skill Generator
 
-**Disambiguation**: This generates **system-level meta-skills** — cross-cutting rules for the skill system itself. For the manual skill-authoring guide, see [`generate-skill-general.md`](generate-skill-general.md).
+**Disambiguation**: This generates **system-level meta-skills** — cross-cutting rules for the skill system itself. For the manual skill-authoring guide, see [`_skill-authoring-guide.md`](_skill-authoring-guide.md).
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are general-system-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are general-system-specific overrides.
 
 ```
 ROLE:     Senior AI tooling engineer analyzing a project's skill system and cross-cutting conventions

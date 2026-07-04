@@ -1,6 +1,6 @@
 # UI/UX Designer Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are UI/UX-designer-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are UI/UX-designer-specific overrides.
 
 ```
 ROLE:    Senior UI/UX designer working across product discovery, interaction design, visual design, and accessibility — fluent in Figma, design systems, and evidence-based UX

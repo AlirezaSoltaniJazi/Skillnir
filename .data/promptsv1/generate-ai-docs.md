@@ -103,83 +103,72 @@ If `.data/skills/*/LEARNED.md` files exist with non-empty content, extract corre
 ### OUTPUT 1: `agents.md`
 
 **Tone**: Direct, specific, zero fluff. No "This project is..." intros.
-**Length**: 150-400 lines. Useful enough for productivity, short enough for context windows.
+**Length**: **≤150 lines target, 250 lines absolute max.** Empirical studies (ETH Zurich AGENTbench, 2026) show long LLM-generated context files REDUCE agent task success while raising cost 20%+ — the fastest way to improve a context file is to delete from it.
 **Format**: GitHub-flavored Markdown.
+
+**The one test every line must pass**: could a competent agent infer this by reading the code for 30 seconds? If yes, OMIT it. Context files earn their tokens with NON-INFERABLE knowledge only: exact commands, boundaries, cross-file coupling, don't-touch zones, and conventions no amount of code-reading reveals.
+
+**Ordering is load-bearing**: models weight the start and end of context most (lost-in-the-middle). Commands, boundaries, and gotchas go FIRST; reference material goes last; nothing critical sits in the middle.
 
 ```markdown
 # {{Project Name}} — AI Agent Context
 
 ## What This Is
 
-{{1-3 direct sentences: what it does, who uses it, core technology. No preamble.}}
-
-## Stack
-
-{{Concise table or list: language, framework, DB, cache, queue, key libraries}}
-
-## Project Structure
-
-{{Only directories/files that matter — annotated}}
-src/
-├── api/ # Route handlers — one file per resource
-├── models/ # ORM models
-├── services/ # Business logic — keep fat, views thin
-├── tasks/ # Async tasks
-└── core/ # Shared utilities, base classes, constants
+{{1-2 direct sentences: what it does, core technology. No preamble.}}
 
 ## How To Run
 
-{{Exact commands. No ambiguity.}}
+{{Exact commands with flags — install, dev server, tests, single-test, lint.
+No ambiguity, no alternatives. This is the #1 thing agents get wrong without help.}}
 
-# Install
+## Boundaries
 
-make install
+| Always do                               | Ask first                            | Never do                        |
+| --------------------------------------- | ------------------------------------ | ------------------------------- |
+| {{e.g. run make lint before finishing}} | {{e.g. schema migrations, new deps}} | {{e.g. edit migrations/, push}} |
 
-# Dev server
+## Known Gotchas
 
-make dev
+{{The AI-trap list from Phase 2d — the highest-value section in this file.
+At least 3 real, project-specific traps with file paths. Each one is something
+that WILL cause a wrong edit if unknown:}}
 
-# Tests
+- "X.py and Y.py must always be updated together"
+- "Never import from internal/ — use the public API in **init**.py"
+- "SKILL.md files are generated — never edit manually"
 
-make test
+## Stack
 
-# Lint
+{{One line or a compact table: language + framework + DB + the 2-3 libraries
+whose choice isn't obvious from the manifest.}}
 
-make lint
+## Project Structure
+
+{{ONLY directories an agent would misjudge — annotated with the non-obvious
+purpose. Skip anything a directory listing already explains.}}
 
 ## Development Conventions
 
-### Code Style
-
-{{Exact rules: type hints required? docstring format? line length? formatter?}}
-
-### Naming Conventions
-
-{{Specific: models = PascalCase, services = snake_case, etc.}}
-
-### Import Order
-
-{{If non-standard or enforced}}
-
-### Error Handling
-
-{{How errors propagate: custom exceptions? middleware? result types?}}
+{{ONLY enforced or non-obvious rules: formatter + exact flags, import style if
+policed, naming where it deviates from language defaults, error-handling
+pattern if the codebase has a strong one. State the WHY in one clause when a
+rule would surprise ("Black -S — respect existing quote style, don't mass-convert").
+Skip anything the linter config already encodes unless agents keep violating it.}}
 
 ## Architecture Rules
 
-{{3-7 most important architectural decisions an AI must respect}}
+{{3-5 decisions an agent must respect, each with its one-clause WHY:}}
 
-- "Never put business logic in views. Services layer only."
-- "All DB queries through repository pattern."
-- "Celery tasks must be idempotent."
+- "Never put business logic in views — services layer only (views are tested shallowly)."
+- "All DB access through the repository pattern (raw queries break the audit hooks)."
 
 ## Files To Know
 
-| File               | Purpose                       |
-| ------------------ | ----------------------------- |
-| config/settings.py | All env-driven config         |
-| src/api/router.py  | Register new endpoints here   |
-| src/models/base.py | Base model all others inherit |
+| File               | Purpose                     |
+| ------------------ | --------------------------- |
+| config/settings.py | All env-driven config       |
+| src/api/router.py  | Register new endpoints here |
 
 ## Files To Never Touch
 
@@ -188,44 +177,24 @@ make lint
 
 ## Common Patterns
 
-{{2-5 recurring patterns with minimal copy-paste examples}}
+{{1-2 recurring patterns MAX, minimal copy-paste examples, ONLY where the
+project's idiom differs from the framework default. Generic framework usage
+does not belong here.}}
 
-### Adding a new API endpoint
+## Environment & External Services
 
-{{code snippet using project's actual conventions}}
-
-### Adding a new model
-
-{{code snippet}}
-
-## Environment Variables
-
-{{Key vars from .env.example with descriptions}}
-
-## External Services
-
-{{What the app connects to, local mock/stub strategy}}
+{{Key env vars from .env.example with one-line descriptions; what the app
+connects to and the local mock/stub strategy. Compact — merge into one section.}}
 
 ## Testing
 
-{{Organization, what to run, factories/fixtures}}
+{{Organization, how to run one test, factories/fixtures location. Commands only
+if they differ from How To Run.}}
 
 ## Security
 
-{{Summary of critical security rules from project skills and code analysis}}
-
-- Authentication/authorization patterns
-- Input validation rules
-- Secrets management approach
-- Dependency audit status
-
-## Known Gotchas
-
-{{AI-trap list from Phase 2d — non-obvious things causing mistakes}}
-
-- "X.py and Y.py must always be updated together"
-- "Never import from internal/ — use public API in **init**.py"
-- "User model is in auth service — don't add fields here"
+{{ONLY project-specific rules: secrets management approach, input-validation
+choke points, auth pattern. No generic OWASP advice.}}
 
 ## Freedom Levels
 
@@ -235,12 +204,11 @@ make lint
 
 ## AI Interaction Guidelines
 
-{{If the project has skills with adaptive protocols, summarize the key interaction patterns here}}
+{{Only if the project has skills with Session Protocols — 3 compact bullets:}}
 
-- **Interaction modes**: Teaching (conceptual questions, first encounters) · Efficient (repeated patterns, "just generate") · Diagnostic (errors, failures, tracebacks)
-- **On correction**: AI restates as rule, applies consistently for the session, suggests persisting to CLAUDE.md
-- **On ambiguity**: Check project files first, ask ONE question, apply consistently
-- **Adaptive**: Proficiency calibration (silent depth adjustment) · Convention surfacing · Memory bridge (persist learnings)
+- **Modes**: Teaching (conceptual, first encounters) · Efficient (repeated patterns) · Diagnostic (errors, tracebacks)
+- **On correction**: restate as a rule, apply for the session, write to the skill's LEARNED.md
+- **On ambiguity**: check LEARNED.md, then project files, then ask ONE question
 
 ## Skills Reference
 
@@ -253,7 +221,6 @@ make lint
 
 {{If any installed skills define sub-agents in agents/ directories}}
 
-> Some skills support sub-agent delegation for complex workflows.
 > Skills with sub-agents: {{list skill names that have agents/ subdirectories}}
 > Ensure `Agent` is in allowed-tools when using these skills.
 ```
@@ -300,17 +267,19 @@ If symlinks unsupported (Windows, certain CI), create copies with header:
 
 ## PHASE 4: QUALITY CHECKS
 
-- [ ] `agents.md` is 150-400 lines (not a wall, not a stub)
+- [ ] `agents.md` is ≤150 lines (250 absolute max) — if over, DELETE inferable content before anything else
+- [ ] How To Run, Boundaries, and Known Gotchas are the first three content sections — nothing critical buried mid-file
+- [ ] "Known Gotchas" has at least 3 real project-specific traps with file paths
+- [ ] Zero lines an agent could infer by reading the code — no restated directory listings, no generic conventions, no framework tutorials
+- [ ] Every surprising MUST/Never rule carries its one-clause WHY
 - [ ] Every code snippet is correct for this project's language/framework
-- [ ] "Known Gotchas" has at least 3 real project-specific items
-- [ ] Common Patterns section has working, copy-pasteable examples
 - [ ] `INJECT.md` is under 150 tokens
 - [ ] Symlinks created and verified (`cat .claude/claude.md`)
 - [ ] No generic filler ("follows best practices") — everything is specific
 - [ ] Skills directory referenced if it exists
 - [ ] Freedom levels section populated
 - [ ] `.github/copilot-instructions.md` symlink created
-- [ ] AI Interaction Guidelines section present (if project has adaptive skills)
+- [ ] AI Interaction Guidelines section present (if project has skills with Session Protocols)
 - [ ] Sub-Agent Capabilities section present if any skills have `agents/` subdirectories
 
 ---

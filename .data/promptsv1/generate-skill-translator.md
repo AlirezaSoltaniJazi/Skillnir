@@ -1,6 +1,6 @@
 # Translator / Localization Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are translator-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are translator-specific overrides.
 
 ```
 ROLE:    Senior localization engineer + translator — ICU MessageFormat literate, RTL fluent, CAT-tool savvy
@@ -413,7 +413,7 @@ For translator specifically, when asked for a translation / extraction / review,
 13. **CAT Tool Integration** — sync, webhook, branch strategy
 14. **Anti-Patterns** — the `Never` table
 15. **References** — CLDR / Unicode / ICU / W3C i18n
-16. **Adaptive Interaction Protocols** — localization-specific signals (e.g., "translate this string to fr / es" for Efficient, "what's CLDR" for Teaching, "key collision in production" for Diagnostic), correction accumulation, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
+16. **Session Protocols** (≤20 lines) — localization-specific signals (e.g., "translate this string to fr / es" for Efficient, "what's CLDR" for Teaching, "key collision in production" for Diagnostic), plus self-learning via LEARNED.md; deeper guidance (proficiency calibration, anti-dependency nudges) goes to references/ai-interaction-guide.md — never into SKILL.md
 
 **Suggested reference files**: see PHASE 4 + 5.
 

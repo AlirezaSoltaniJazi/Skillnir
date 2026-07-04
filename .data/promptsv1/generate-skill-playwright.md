@@ -1,6 +1,6 @@
 # Playwright Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are Playwright-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are Playwright-specific overrides.
 
 ```
 ROLE:     Senior Playwright test automation engineer analyzing a production Playwright test suite
@@ -165,7 +165,7 @@ Integrate for the detected Playwright configuration and project setup:
 9. **Security** — summary + link to references/security-checklist.md for test data handling, credential management
 10. **Anti-Patterns** — what NOT to do (with why)
 11. **References** — key files, Playwright docs
-12. **Adaptive Interaction Protocols** — interaction modes with Playwright-specific detection signals (e.g., "fixture error" for Diagnostic, "another test like X" for Efficient, "how does test.extend work" for Teaching), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
+12. **Session Protocols** (≤20 lines) — interaction modes with Playwright-specific detection signals (e.g., "fixture error" for Diagnostic, "another test like X" for Efficient, "how does test.extend work" for Teaching), plus self-learning via LEARNED.md; deeper guidance (proficiency calibration, anti-dependency nudges) goes to references/ai-interaction-guide.md — never into SKILL.md
 
 **Suggested reference files**:
 

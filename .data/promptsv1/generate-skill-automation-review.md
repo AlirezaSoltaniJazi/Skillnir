@@ -1,6 +1,6 @@
 # Automation Review Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are automation-review-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are automation-review-specific overrides.
 
 ```
 ROLE:    Senior QA automation reviewer / test architect auditing a CANDIDATE's automation submission
@@ -295,7 +295,7 @@ For automation-review specifically, when producing a review the AI MUST:
 11. **Challenge Questions** — how to tailor them from the submission
 12. **Anti-Patterns** — the "Never" table from Phase 7
 13. **References** — checklists, standards (ISTQB, IEEE 829, ISO·IEC·IEEE 29119), framework docs
-14. **Adaptive Interaction Protocols** — review-specific signals (e.g., "review this PR" / "assess this take-home" for Efficient, "what's DAMP vs DRY" for Teaching, "this test is flaky" for Diagnostic), correction accumulation, proficiency calibration (junior vs senior candidate), anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
+14. **Session Protocols** (≤20 lines) — review-specific signals (e.g., "review this PR" / "assess this take-home" for Efficient, "what's DAMP vs DRY" for Teaching, "this test is flaky" for Diagnostic), plus self-learning via LEARNED.md; deeper guidance (proficiency calibration incl. junior vs senior candidate signals, anti-dependency nudges) goes to references/ai-interaction-guide.md — never into SKILL.md
 
 **Suggested reference files**: see PHASE 4 + 5.
 

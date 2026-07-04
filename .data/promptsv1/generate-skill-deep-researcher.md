@@ -1,6 +1,6 @@
 # Deep Researcher Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are deep-researcher-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are deep-researcher-specific overrides.
 
 ```
 ROLE:    Senior research analyst — librarian + journalist + intelligence analyst hybrid
@@ -347,7 +347,7 @@ For deep-researcher specifically, when asked for a brief / synthesis / fact-chec
 12. **Stop Conditions** — diminishing returns, triangulation achieved, time budget
 13. **Anti-Patterns** — the `Never` table
 14. **References** — methodology books, citation guides, IC publications
-15. **Adaptive Interaction Protocols** — research-specific signals (e.g., "give me a brief on X" for Efficient, "what does SIFT mean" for Teaching, "this claim feels wrong" for Diagnostic), correction accumulation, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
+15. **Session Protocols** (≤20 lines) — research-specific signals (e.g., "give me a brief on X" for Efficient, "what does SIFT mean" for Teaching, "this claim feels wrong" for Diagnostic), plus self-learning via LEARNED.md; deeper guidance (proficiency calibration, anti-dependency nudges) goes to references/ai-interaction-guide.md — never into SKILL.md
 
 **Suggested reference files**: see PHASE 4 + 5 above.
 

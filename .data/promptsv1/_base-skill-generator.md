@@ -48,37 +48,33 @@ SKILL.md links to references/ with relative paths: `[architecture guide](referen
 
 ```yaml
 ---
-name: { { provided-by-user } }
+name: <provided-by-user>
 description: >-
-  {{domain-prompt supplies this — must trigger for ANY task in this domain}}
-compatibility: "{{detected stack + versions}}"
+  <domain-prompt supplies this — must trigger for ANY task in this domain.
+  Third person. Be a little pushy — models under-trigger skills, so name
+  the domain, the concrete tasks, AND the trigger terms users actually type.>
+compatibility: "<detected stack + versions>"
 metadata:
   author: skillnir
   version: "1.0.0"
-  sdlc-phase: { { development|testing|deployment } }
-allowed-tools:
-  {
-    {
-      domain-prompt supplies — e.g.,
-      Read Edit Write Bash(python:*) Glob Grep Agent,
-    },
-  }
+  sdlc-phase: <development|testing|deployment>
+allowed-tools: <domain-prompt supplies — e.g. Read Edit Write Bash(python:*) Glob Grep Agent>
 # sub-agents:                    # Optional — only when delegation is warranted
-#   - name: {{agent-name}}
-#     file: agents/{{agent-name}}.md
+#   - name: <agent-name>
+#     file: agents/<agent-name>.md
 ---
 ```
 
-| Field                 | Required | Notes                                                                                                                          |
-| --------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `name`                | Yes      | Max 64 chars, lowercase, hyphens only                                                                                          |
-| `description`         | Yes      | Max 1024 chars. Third person. Include WHAT + WHEN + trigger terms                                                              |
-| `compatibility`       | Yes      | Detected language, framework, key library versions                                                                             |
-| `metadata.author`     | Yes      | Always `skillnir`                                                                                                              |
-| `metadata.version`    | Yes      | Semver string                                                                                                                  |
-| `metadata.sdlc-phase` | Yes      | Which SDLC phase this skill covers                                                                                             |
-| `allowed-tools`       | Yes      | Space-separated tool list. Use platform-specific scoping where possible. **Include `Agent` only when `sub-agents` is defined** |
-| `sub-agents`          | No       | List of sub-agent definitions. When present, `Agent` MUST be in `allowed-tools`                                                |
+| Field                 | Required | Notes                                                                                                                                                              |
+| --------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `name`                | Yes      | Max 64 chars, lowercase, hyphens only                                                                                                                              |
+| `description`         | Yes      | Max 1024 chars. Third person. Include WHAT + WHEN + trigger terms. Err pushy — models under-trigger skills, so a timid description means the skill never activates |
+| `compatibility`       | Yes      | Detected language, framework, key library versions                                                                                                                 |
+| `metadata.author`     | Yes      | Always `skillnir`                                                                                                                                                  |
+| `metadata.version`    | Yes      | Semver string                                                                                                                                                      |
+| `metadata.sdlc-phase` | Yes      | Which SDLC phase this skill covers                                                                                                                                 |
+| `allowed-tools`       | Yes      | Space-separated tool list. Use platform-specific scoping where possible. **Include `Agent` only when `sub-agents` is defined**                                     |
+| `sub-agents`          | No       | List of sub-agent definitions. When present, `Agent` MUST be in `allowed-tools`                                                                                    |
 
 ---
 
@@ -106,16 +102,20 @@ Template:
 
 ## QUALITY GATES
 
+> These gates are **machine-validated** after generation, with ONE automatic
+> repair pass. A violation costs a full extra AI run — comply the first time.
+
 - Every code example must reference an actual file path from the project (CONFIRMED) or be explicitly marked INFERRED
 - Concrete and project-specific — zero generic advice ("write clean code", "follow best practices")
 - Opinionated — make clear decisions, don't hedge with "you could also..."
+- Every MUST / Never rule carries its WHY in one clause ("Field injection breaks testability because the field can't be mocked without the container") — the rationale is what lets the consuming AI generalize the rule to cases this skill doesn't spell out
 - Written as if from a senior engineer who works in this codebase daily
 - Phase 3 best practices SHOULD be **numbered by priority** (1 = highest) — this communicates trade-off ordering to the consuming AI when resources or time are limited
 - SKILL.md **≤300 lines and <3,500 tokens** — no code blocks >5 lines
 - At least **5 reference files** generated (must include: code-style, security-checklist, patterns, common-issues)
 - Generated SKILL.md MUST include an announcement rule in "Before You Start": **Always say "Using: {{Skill Name}} skill" at the very start of the response before doing any work.**
 - Generated SKILL.md MUST include a "Communication Style" section enforcing concise, caveman-style responses (see COMMUNICATION STYLE section below)
-- Generated skill MUST include an "Adaptive Interaction Protocols" section with self-learning via LEARNED.md
+- Generated skill MUST include a compact "Session Protocols" section (≤20 lines — see SESSION PROTOCOLS below) with self-learning via LEARNED.md; deeper interaction guidance goes to references/ai-interaction-guide.md, never into SKILL.md
 - Generated skill MUST include a LEARNED.md template with Corrections, Preferences, and Discovered Conventions sections
 - If `agents/` exists, each agent file MUST follow the agent definition template (Role, When to Spawn, Tools, Context Template, Result Format, Weaknesses)
 - `Agent` is in `allowed-tools` if and only if `agents/` is non-empty
@@ -189,81 +189,39 @@ SKILL.md is a **decision guide** — it tells the AI WHAT to do and WHEN. Refere
 
 In the generated SKILL.md, include a section declaring:
 
-| Level             | Scope                                                                                                                                                                                      | Examples                                                                                                                      |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| **MUST** follow   | File structure, naming conventions, error patterns, imports, adaptive interaction protocols (all 7 subsections), correction accumulation, sub-agent delegation rules (when agents/ exists) | "Models MUST extend BaseModel", "MUST include Correction Accumulation protocol", "MUST pass context explicitly to sub-agents" |
-| **SHOULD** follow | Preferred patterns with acceptable variation, domain-specific detection signals for interaction modes, sub-agent spawn triggers                                                            | "SHOULD use repository pattern", "SHOULD delegate security scans to security-scanner sub-agent"                               |
-| **CAN** customize | Implementation details, library choices, adaptive protocol thresholds, proficiency calibration sensitivity, sub-agent tool sets                                                            | "CAN choose caching strategy", "CAN adjust anti-dependency threshold (default: 3)", "CAN add domain-specific sub-agents"      |
+| Level             | Scope                                                                                                                                                              | Examples                                                                                                             |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| **MUST** follow   | File structure, naming conventions, error patterns, imports, Session Protocols (modes table + LEARNED.md writes), sub-agent delegation rules (when agents/ exists) | "Models MUST extend BaseModel", "MUST write corrections to LEARNED.md", "MUST pass context explicitly to sub-agents" |
+| **SHOULD** follow | Preferred patterns with acceptable variation, domain-specific detection signals for interaction modes, sub-agent spawn triggers                                    | "SHOULD use repository pattern", "SHOULD delegate security scans to security-scanner sub-agent"                      |
+| **CAN** customize | Implementation details, library choices, interaction-guide depth in references/, sub-agent tool sets                                                               | "CAN choose caching strategy", "CAN expand ai-interaction-guide.md", "CAN add domain-specific sub-agents"            |
 
 ---
 
-## ADAPTIVE INTERACTION PROTOCOLS
+## SESSION PROTOCOLS
 
-The generated SKILL.md MUST include an "Adaptive Interaction Protocols" section. This section teaches the AI consuming the skill how to adapt its behavior during a session. All tracking operates within the context window — no persistent state required.
+The generated SKILL.md MUST include ONE compact "Session Protocols" section, **≤20 lines total**. Benchmark research on agent skills (SkillsBench, 2026) shows always-loaded generic content measurably degrades task performance — every boilerplate line here is a line of domain knowledge cut from the 300-line budget, so this section stays small and identical protocols are never expanded into subsections.
 
-Include ALL of the following subsections:
+It MUST contain exactly two parts:
 
-### 1. Interaction Modes (required)
+### Part 1 — Interaction Modes (a 3-row table)
 
-Generate a table with three modes: **Teaching**, **Efficient**, **Diagnostic**. Each mode MUST have:
+| Mode       | Detection signals (observable, never vague)               | Behavior                         |
+| ---------- | --------------------------------------------------------- | -------------------------------- |
+| Teaching   | "what is...", "how does...", first encounter with pattern | Explain first, then generate     |
+| Efficient  | "another one like X", Nth repetition of a known pattern   | Generate directly, minimal prose |
+| Diagnostic | tracebacks, error messages, "why is this failing"         | Diagnose before touching code    |
 
-- **Concrete detection signals** — not vague triggers like "select based on context". Use observable signals: "what is...", "how does..." for Teaching; "another one like X", Nth instance for Efficient; tracebacks, error messages for Diagnostic.
-- **Specific behavior** — explain first vs. generate directly vs. diagnose first.
-- Default to Teaching when uncertain. Allow explicit developer override.
+Default to Teaching when uncertain. Developer override always wins.
 
-### 2. Correction Accumulation (required)
+### Part 2 — Self-Learning via LEARNED.md (non-negotiable)
 
-Instruct the AI to follow this protocol when the developer corrects generated output:
+- **Read LEARNED.md first** — before generating any code.
+- **On correction**: acknowledge, restate as a rule, apply for the rest of the session, and WRITE it to LEARNED.md under `## Corrections`.
+- **On an undocumented convention**: check LEARNED.md, then project files (`CLAUDE.md`, `agents.md`, existing code); ask ONE targeted question; WRITE the answer under `## Preferences`.
+- **On discovering an implicit convention**: state it explicitly before using it; WRITE it under `## Discovered Conventions`.
+- Entry format: `- YYYY-MM-DD: rule description`. Learnings are **written**, never merely suggested.
 
-1. Acknowledge the specific mistake
-2. Restate the correction as a rule (e.g., "Understood: always use X not Y in this project")
-3. Apply the correction to ALL subsequent outputs in the session
-4. **Write the correction to LEARNED.md** under `## Corrections` with today's date (format: `- YYYY-MM-DD: rule`)
-
-### 3. Preference Elicitation (required)
-
-When encountering an undocumented convention for the first time:
-
-1. Check LEARNED.md first, then project files (`CLAUDE.md`, `agents.md`, existing code)
-2. Ask ONE targeted question — not a list of options
-3. Apply the answer consistently for the session remainder
-4. **Write the preference to LEARNED.md** under `## Preferences` with today's date
-
-### 4. Proficiency Calibration (required)
-
-Generate a two-row table with signal types **Senior** and **Learning**:
-
-- **Senior indicators**: modifies generated code, asks architectural questions, references framework internals, questions trade-offs → Reduce boilerplate explanations, lead with code, rationale on non-obvious only
-- **Learning indicators**: asks "what is...", copies code unchanged, pastes errors without analysis → Use Teaching mode more often, add context for why not just how, link to docs
-
-Never announce the calibration or be condescending. Adjust silently.
-
-### 5. Anti-Dependency Guardrails (required)
-
-Prevent over-reliance on generation:
-
-- After 3+ similar generations in a session, suggest creating a project template or snippet
-- In Teaching mode, offer "try writing it yourself first — I'll review" before generating
-- Reference official documentation for deeper learning when explaining patterns
-
-### 6. Convention Surfacing (required)
-
-When discovering an implicit project convention through code analysis:
-
-1. State the convention explicitly before using it
-2. If uncertain, ask for confirmation before applying
-3. **Write confirmed conventions to LEARNED.md** under `## Discovered Conventions` with today's date
-
-### 7. Self-Learning via LEARNED.md (required)
-
-All learnings are **written** to LEARNED.md — not suggested, written:
-
-- Corrections -> `## Corrections` section
-- Preferences -> `## Preferences` section
-- Discovered conventions -> `## Discovered Conventions` section
-- Format: `- YYYY-MM-DD: rule description`
-- The SKILL.md must instruct: "Read LEARNED.md first before generating code"
-- LEARNED.md starts with a header template and empty sections — the AI fills them over time
+Deeper interaction guidance — proficiency calibration (senior vs. learning signals, silent depth adjustment), anti-dependency nudges (suggest templates after 3+ similar generations, "try it yourself first" offers) — belongs in `references/ai-interaction-guide.md`, loaded on demand. It MUST NOT appear in SKILL.md.
 
 ---
 
@@ -389,12 +347,12 @@ When agents/ exists, the generated SKILL.md MUST include a "Sub-Agent Delegation
 
 ## CROSS-TOOL OUTPUT
 
-When the user prompt specifies cross-tool compatibility, also generate:
+Generate the skill ONLY at the output path given in the user prompt (canonically `<target>/.data/skills/{{skill-name}}/`). Skillnir's injector symlinks that single source of truth into every tool dotdir (`.cursor/`, `.claude/`, `.github/`, ...) — duplicate copies drift and are never generated here.
+
+Only when the user prompt EXPLICITLY asks for standalone cross-tool copies, also generate:
 
 - `.agents/skills/{{skill-name}}/SKILL.md` — universal format (Cursor, Claude Code, Codex, Copilot, Aider, Windsurf, Cline)
 - Cursor-native: `.cursor/skills/{{skill-name}}/SKILL.md`
-
-Default to Cursor-native unless instructed otherwise.
 
 ---
 

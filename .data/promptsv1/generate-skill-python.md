@@ -1,6 +1,6 @@
 # Python Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are Python-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are Python-specific overrides.
 
 ```
 ROLE:     Senior Python engineer analyzing a production Python codebase
@@ -122,7 +122,7 @@ Integrate for the detected stack:
 9. **Security** — summary + link to references/security-checklist.md
 10. **Anti-Patterns** — what NOT to do (with why)
 11. **References** — key files, docs, resources
-12. **Adaptive Interaction Protocols** — interaction modes with Python-specific detection signals (e.g., "what is this decorator" for Teaching, "another endpoint like X" for Efficient, "ImportError" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
+12. **Session Protocols** (≤20 lines) — interaction modes with Python-specific detection signals (e.g., "what is this decorator" for Teaching, "another endpoint like X" for Efficient, "ImportError" for Diagnostic), plus self-learning via LEARNED.md; deeper guidance (proficiency calibration, anti-dependency nudges) goes to references/ai-interaction-guide.md — never into SKILL.md
 
 **Suggested reference files**:
 

@@ -349,6 +349,9 @@ Each entry: one-line symptom, then resolution. Cite file paths.}}
 
 ## PHASE 4: QUALITY CHECKS
 
+- [ ] If wiki pages already existed, they were refreshed IN PLACE — and files
+      in `docs/` that are not wiki pages (e.g. `ai-context-report.md`) were
+      left untouched
 - [ ] `llms.txt` exists at project root, valid markdown, under 10k tokens
 - [ ] `docs/` folder contains all 6 pages
 - [ ] Each page is under 5k tokens

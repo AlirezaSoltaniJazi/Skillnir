@@ -1,6 +1,6 @@
 # Infrastructure Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are infrastructure-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are infrastructure-specific overrides.
 
 ```
 ROLE:     Senior DevOps/platform engineer analyzing production infrastructure
@@ -127,7 +127,7 @@ Integrate for the detected stack:
 9. **Disaster Recovery** — backup, restore, rollback procedures
 10. **Anti-Patterns** — what NOT to do (with why)
 11. **References** — config files, runbooks, cloud docs
-12. **Adaptive Interaction Protocols** — interaction modes with infra-specific detection signals (e.g., "what is this Terraform resource" for Teaching, "same module as X" for Efficient, "terraform plan failed" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
+12. **Session Protocols** (≤20 lines) — interaction modes with infra-specific detection signals (e.g., "what is this Terraform resource" for Teaching, "same module as X" for Efficient, "terraform plan failed" for Diagnostic), plus self-learning via LEARNED.md; deeper guidance (proficiency calibration, anti-dependency nudges) goes to references/ai-interaction-guide.md — never into SKILL.md
 
 **Suggested reference files**:
 
