@@ -234,3 +234,4 @@ __marimo__/
 # macOS
 .DS_Store
 /docs/ai-context-report.md
+/.data/package-vulns/
