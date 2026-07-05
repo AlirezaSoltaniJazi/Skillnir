@@ -32,7 +32,8 @@
       "settings": "الإعدادات",
       "testing_research": "البحث (الاختبار والجودة)",
       "software_research": "البحث (هندسة البرمجيات)",
-      "cleanup_articles": "تنظيف المقالات"
+      "cleanup_articles": "تنظيف المقالات",
+      "package_vulns": "ثغرات الحزم"
     },
     "sort_modes": {
       "default": "الافتراضي",
@@ -490,6 +491,20 @@
       "result_fail_title": "فشل التنظيف",
       "no_candidates": "لم يُعثر على مقالات متقادمة — الأرشيف محدث.",
       "start_button": "بدء التنظيف"
+    },
+    "package_vulns": {
+      "title": "ثغرات الحزم",
+      "subtitle": "اعثر على الحزم المعرّضة للخطر عبر الأنظمة البيئية — أي حزمة والإصدارات المتأثرة والإصدار الذي يصلحها",
+      "ecosystems_label": "الأنظمة البيئية",
+      "vulns_in_kb": "إرشادات في قاعدة المعرفة",
+      "regenerated_landing": "تم تجديد صفحة الهبوط ({count} إرشاد)",
+      "result_success_title": "اكتمل فحص الحزم",
+      "result_fail_title": "فشل فحص الحزم",
+      "grid_vulns_found": "الإرشادات المكتشفة",
+      "grid_new_vulns": "إرشادات جديدة",
+      "grid_updated": "محدّثة",
+      "grid_duration": "المدة",
+      "select_at_least_one_ecosystem": "اختر نظامًا بيئيًا واحدًا على الأقل"
     }
   },
   "buttons": {
@@ -540,7 +555,8 @@
     "ask": "اسأل",
     "hide_log": "إخفاء السجل",
     "show_log": "إظهار السجل",
-    "got_it": "فهمت"
+    "got_it": "فهمت",
+    "search_package_vulns": "فحص الحزم"
   },
   "messages": {
     "using_backend": "قيد الاستخدام: {name} ({model})",

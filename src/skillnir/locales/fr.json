@@ -32,7 +32,8 @@
       "settings": "Parametres",
       "testing_research": "Recherche (Tests & QA)",
       "software_research": "Recherche (Ingénierie Logicielle)",
-      "cleanup_articles": "Nettoyage des articles"
+      "cleanup_articles": "Nettoyage des articles",
+      "package_vulns": "Vulnérabilités des paquets"
     },
     "sort_modes": {
       "default": "Par defaut",
@@ -490,6 +491,20 @@
       "result_fail_title": "Échec du nettoyage",
       "no_candidates": "Aucun article obsolète trouvé — l'archive est à jour.",
       "start_button": "Lancer le nettoyage"
+    },
+    "package_vulns": {
+      "title": "Vulnérabilités des paquets",
+      "subtitle": "Trouver les paquets vulnérables par écosystème — quel paquet, versions affectées et version qui corrige",
+      "ecosystems_label": "Écosystèmes",
+      "vulns_in_kb": "avis dans la base de connaissances",
+      "regenerated_landing": "Page régénérée ({count} avis)",
+      "result_success_title": "Analyse des paquets terminée",
+      "result_fail_title": "Échec de l'analyse des paquets",
+      "grid_vulns_found": "Avis trouvés",
+      "grid_new_vulns": "Nouveaux avis",
+      "grid_updated": "Mis à jour",
+      "grid_duration": "Durée",
+      "select_at_least_one_ecosystem": "Sélectionnez au moins un écosystème"
     }
   },
   "buttons": {
@@ -540,7 +555,8 @@
     "ask": "Demander",
     "hide_log": "Masquer le log",
     "show_log": "Afficher le log",
-    "got_it": "Compris"
+    "got_it": "Compris",
+    "search_package_vulns": "Analyser les paquets"
   },
   "messages": {
     "using_backend": "Utilisation : {name} ({model})",

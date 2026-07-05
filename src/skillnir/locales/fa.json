@@ -32,7 +32,8 @@
       "settings": "تنظیمات",
       "testing_research": "پژوهش (تست و کیفیت)",
       "software_research": "پژوهش (مهندسی نرم‌افزار)",
-      "cleanup_articles": "پاک‌سازی مقاله‌ها"
+      "cleanup_articles": "پاک‌سازی مقاله‌ها",
+      "package_vulns": "آسیب‌پذیری بسته‌ها"
     },
     "sort_modes": {
       "default": "پیش‌فرض",
@@ -490,6 +491,20 @@
       "result_fail_title": "پاک‌سازی ناموفق بود",
       "no_candidates": "مقالهٔ منسوخی یافت نشد — بایگانی به‌روز است.",
       "start_button": "شروع پاک‌سازی"
+    },
+    "package_vulns": {
+      "title": "آسیب‌پذیری بسته‌ها",
+      "subtitle": "یافتن بسته‌های آسیب‌پذیر در اکوسیستم‌ها — کدام بسته، نسخه‌های آسیب‌دیده و نسخه‌ای که آن را رفع می‌کند",
+      "ecosystems_label": "اکوسیستم‌ها",
+      "vulns_in_kb": "هشدار در پایگاه دانش",
+      "regenerated_landing": "صفحه فرود بازتولید شد ({count} هشدار)",
+      "result_success_title": "اسکن بسته‌ها کامل شد",
+      "result_fail_title": "اسکن بسته‌ها ناموفق بود",
+      "grid_vulns_found": "هشدارهای یافت‌شده",
+      "grid_new_vulns": "هشدارهای جدید",
+      "grid_updated": "به‌روزشده",
+      "grid_duration": "مدت",
+      "select_at_least_one_ecosystem": "حداقل یک اکوسیستم انتخاب کنید"
     }
   },
   "buttons": {
@@ -540,7 +555,8 @@
     "ask": "پرسش",
     "hide_log": "پنهان کردن گزارش",
     "show_log": "نمایش گزارش",
-    "got_it": "متوجه شدم"
+    "got_it": "متوجه شدم",
+    "search_package_vulns": "اسکن بسته‌ها"
   },
   "messages": {
     "using_backend": "در حال استفاده: {name} ({model})",

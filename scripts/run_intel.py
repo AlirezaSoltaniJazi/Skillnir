@@ -26,6 +26,8 @@ AI_AGENT_SOFTWARE_RESEARCH_TOPICS  (optional) — comma-separated software-resea
 AI_AGENT_SOFTWARE_RESEARCH_DATE_RANGE  (optional) — date-range filter string.
 AI_AGENT_SECURITY_CATEGORIES  (optional) — comma-separated security category keys.
                                Empty or unset = all categories.
+AI_AGENT_PACKAGE_VULNS_ECOSYSTEMS  (optional) — comma-separated ecosystem keys
+                                    (e.g. "npm,pypi,maven"). Empty or unset = all.
 AI_AGENT_BENCHMARK_TOP_N      (optional, default "10") — how many top models to fetch.
 AI_AGENT_NEWS_CATEGORIES      (optional) — comma-separated news category keys.
                                Empty or unset = all categories.
@@ -36,7 +38,8 @@ Usage
     python scripts/run_intel.py <feature> [--notify-limit N]
 
 Where ``<feature>`` is one of ``research``, ``testing-research``,
-``software-research``, ``events``, ``security``, ``benchmarks``, ``news``.
+``software-research``, ``events``, ``security``, ``package-vulns``,
+``benchmarks``, ``news``.
 
 Exit codes
 ----------
@@ -154,6 +157,10 @@ def _index_path_for(feature: str) -> Path:  # pylint: disable=too-many-return-st
         from skillnir.security import _get_security_dir
 
         return _get_security_dir() / "security-index.json"
+    if feature == "package-vulns":
+        from skillnir.package_vulns import _get_package_vulns_dir
+
+        return _get_package_vulns_dir() / "package-vulns-index.json"
     if feature == "benchmarks":
         from skillnir.benchmarks import _get_benchmarks_dir
 
@@ -280,6 +287,19 @@ async def _run_feature(  # pylint: disable=too-many-return-statements
             categories=categories,
         )
 
+    if feature == "package-vulns":
+        from skillnir.package_vulns import search_package_vulns
+
+        ecosystems = _csv_env("AI_AGENT_PACKAGE_VULNS_ECOSYSTEMS")
+        if ecosystems:
+            _log(f"package-vulns ecosystems filter: {ecosystems}")
+        return await search_package_vulns(
+            on_progress=_emit_progress,
+            backend_override=backend,
+            model_override=model,
+            ecosystems=ecosystems,
+        )
+
     if feature == "benchmarks":
         from skillnir.benchmarks import search_benchmarks
 
@@ -403,6 +423,28 @@ def _extract_fields(
         else:
             desc = raw_desc
         url = str(item.get("source_url") or "").strip()
+    elif feature == "package-vulns":
+        package = str(item.get("package_name") or "").strip()
+        ecosystem = str(item.get("ecosystem") or "").strip()
+        adv_title = str(item.get("title") or "").strip()
+        if package:
+            title = f"{package} ({ecosystem}): {adv_title}" if ecosystem else package
+        severity = str(item.get("severity") or "").strip()
+        cvss = item.get("cvss_score")
+        affected = str(item.get("affected_versions") or "").strip()
+        fixed = str(item.get("fixed_version") or "").strip()
+        sev_tag = (
+            f"[{severity.upper()} - {cvss}] "
+            if severity and cvss
+            else (f"[{severity.upper()}] " if severity else "")
+        )
+        parts = []
+        if affected:
+            parts.append(f"affected {affected}")
+        if fixed:
+            parts.append(f"fixed in {fixed}")
+        desc = sev_tag + (", ".join(parts) if parts else "")
+        url = str(item.get("advisory_url") or "").strip()
     elif feature == "news":
         category = str(item.get("category") or "").strip()
         pub_date = str(item.get("published_date") or "").strip()
@@ -557,6 +599,7 @@ def main() -> int:
             "software-research",
             "events",
             "security",
+            "package-vulns",
             "benchmarks",
             "news",
         ],

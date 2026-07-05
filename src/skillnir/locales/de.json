@@ -32,7 +32,8 @@
       "settings": "Einstellungen",
       "testing_research": "Forschung (Testing & QA)",
       "software_research": "Forschung (Software-Engineering)",
-      "cleanup_articles": "Artikel aufräumen"
+      "cleanup_articles": "Artikel aufräumen",
+      "package_vulns": "Paket-Schwachstellen"
     },
     "sort_modes": {
       "default": "Standard",
@@ -490,6 +491,20 @@
       "result_fail_title": "Aufräumen fehlgeschlagen",
       "no_candidates": "Keine veralteten Artikel gefunden — das Archiv ist auf dem Stand.",
       "start_button": "Aufräumen starten"
+    },
+    "package_vulns": {
+      "title": "Paket-Schwachstellen",
+      "subtitle": "Verwundbare Pakete über Ökosysteme hinweg finden — welches Paket, betroffene Versionen und die behebende Version",
+      "ecosystems_label": "Ökosysteme",
+      "vulns_in_kb": "Hinweise in der Wissensdatenbank",
+      "regenerated_landing": "Landing-Seite neu erzeugt ({count} Hinweise)",
+      "result_success_title": "Paket-Scan abgeschlossen",
+      "result_fail_title": "Paket-Scan fehlgeschlagen",
+      "grid_vulns_found": "Gefundene Hinweise",
+      "grid_new_vulns": "Neue Hinweise",
+      "grid_updated": "Aktualisiert",
+      "grid_duration": "Dauer",
+      "select_at_least_one_ecosystem": "Mindestens ein Ökosystem wählen"
     }
   },
   "buttons": {
@@ -540,7 +555,8 @@
     "ask": "Fragen",
     "hide_log": "Log ausblenden",
     "show_log": "Log anzeigen",
-    "got_it": "Verstanden"
+    "got_it": "Verstanden",
+    "search_package_vulns": "Pakete scannen"
   },
   "messages": {
     "using_backend": "Verwendet: {name} ({model})",

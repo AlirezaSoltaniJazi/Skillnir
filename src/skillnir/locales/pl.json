@@ -32,7 +32,8 @@
       "settings": "Ustawienia",
       "testing_research": "Badania (Testowanie i QA)",
       "software_research": "Badania (Inżynieria oprogramowania)",
-      "cleanup_articles": "Porządkowanie artykułów"
+      "cleanup_articles": "Porządkowanie artykułów",
+      "package_vulns": "Podatności pakietów"
     },
     "sort_modes": {
       "default": "Domyślnie",
@@ -490,6 +491,20 @@
       "result_fail_title": "Porządkowanie nie powiodło się",
       "no_candidates": "Nie znaleziono przestarzałych artykułów — archiwum jest aktualne.",
       "start_button": "Rozpocznij porządkowanie"
+    },
+    "package_vulns": {
+      "title": "Podatności pakietów",
+      "subtitle": "Znajdź podatne pakiety w różnych ekosystemach — który pakiet, których wersji dotyczy i która wersja to naprawia",
+      "ecosystems_label": "Ekosystemy",
+      "vulns_in_kb": "poradników w bazie wiedzy",
+      "regenerated_landing": "Odświeżono stronę ({count} poradników)",
+      "result_success_title": "Skan pakietów zakończony",
+      "result_fail_title": "Skan pakietów nie powiódł się",
+      "grid_vulns_found": "Znalezione poradniki",
+      "grid_new_vulns": "Nowe poradniki",
+      "grid_updated": "Zaktualizowane",
+      "grid_duration": "Czas",
+      "select_at_least_one_ecosystem": "Wybierz co najmniej jeden ekosystem"
     }
   },
   "buttons": {
@@ -540,7 +555,8 @@
     "ask": "Zapytaj",
     "hide_log": "Ukryj dziennik",
     "show_log": "Pokaż dziennik",
-    "got_it": "Rozumiem"
+    "got_it": "Rozumiem",
+    "search_package_vulns": "Skanuj pakiety"
   },
   "messages": {
     "using_backend": "Używany: {name} ({model})",

@@ -32,7 +32,8 @@
       "settings": "Instellingen",
       "testing_research": "Onderzoek (Testen & QA)",
       "software_research": "Onderzoek (Software Engineering)",
-      "cleanup_articles": "Artikelen opschonen"
+      "cleanup_articles": "Artikelen opschonen",
+      "package_vulns": "Pakketkwetsbaarheden"
     },
     "sort_modes": {
       "default": "Standaard",
@@ -490,6 +491,20 @@
       "result_fail_title": "Opschonen mislukt",
       "no_candidates": "Geen verouderde artikelen gevonden — het archief is actueel.",
       "start_button": "Opschonen starten"
+    },
+    "package_vulns": {
+      "title": "Pakketkwetsbaarheden",
+      "subtitle": "Kwetsbare pakketten vinden over ecosystemen — welk pakket, getroffen versies en de versie die het oplost",
+      "ecosystems_label": "Ecosystemen",
+      "vulns_in_kb": "adviezen in kennisbank",
+      "regenerated_landing": "Landingspagina opnieuw gegenereerd ({count} adviezen)",
+      "result_success_title": "Pakketscan voltooid",
+      "result_fail_title": "Pakketscan mislukt",
+      "grid_vulns_found": "Adviezen gevonden",
+      "grid_new_vulns": "Nieuwe adviezen",
+      "grid_updated": "Bijgewerkt",
+      "grid_duration": "Duur",
+      "select_at_least_one_ecosystem": "Kies minstens één ecosysteem"
     }
   },
   "buttons": {
@@ -540,7 +555,8 @@
     "ask": "Vragen",
     "hide_log": "Log verbergen",
     "show_log": "Log tonen",
-    "got_it": "Begrepen"
+    "got_it": "Begrepen",
+    "search_package_vulns": "Pakketten scannen"
   },
   "messages": {
     "using_backend": "In gebruik: {name} ({model})",

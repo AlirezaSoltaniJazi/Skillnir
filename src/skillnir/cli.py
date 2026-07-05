@@ -1650,6 +1650,77 @@ def _news_cmd() -> None:
     print(f"{'─' * 50}\n")
 
 
+def _package_vulns_cmd() -> None:
+    """Search package advisory DBs for vulnerable packages across ecosystems."""
+    import asyncio
+    import webbrowser
+
+    from skillnir.backends import BACKENDS, load_config
+    from skillnir.package_vulns import ECOSYSTEMS, search_package_vulns
+
+    if "--regenerate" in sys.argv:
+        from skillnir.package_vulns import regenerate_landing
+
+        print("\n  Regenerating package-vulnerability landing page...")
+        count, index_path = regenerate_landing()
+        if index_path:
+            print(f"  Landing page ({count} advisories): {index_path}")
+            if questionary.confirm("Open landing page in browser?").ask():
+                webbrowser.open(str(index_path))
+        else:
+            print("  No advisories in the index yet.")
+        return
+
+    config = load_config()
+    backend_info = BACKENDS[config.backend]
+
+    print("\n  Package Vulnerabilities Search")
+    print(f"  Backend: {backend_info.name} ({config.model})")
+
+    ecosystem_choices = questionary.checkbox(
+        "\n  Select ecosystems to search (leave blank for all):",
+        choices=[
+            questionary.Choice(name, value=key) for key, name in ECOSYSTEMS.items()
+        ],
+    ).ask()
+
+    if not questionary.confirm(
+        "\n  Search for package vulnerabilities?", default=True
+    ).ask():
+        sys.exit(0)
+
+    def on_progress(p) -> None:
+        if p.kind == "phase":
+            print(f"\n  >>> {p.content}")
+        elif p.kind == "status":
+            print(f"      {p.content}")
+        elif p.kind == "error":
+            print(f"  [ERROR] {p.content}")
+
+    print(f"\n{'─' * 50}\nSearching package advisory databases...\n")
+
+    result = asyncio.run(
+        search_package_vulns(
+            on_progress=on_progress, ecosystems=ecosystem_choices or None
+        )
+    )
+
+    print(f"\n{'─' * 50}")
+    if result.success:
+        print(f"  Advisories found: {result.vulns_found}")
+        print(f"  New advisories:   {result.vulns_new}")
+        print(f"  Updated (dedup):  {result.vulns_skipped}")
+        if result.index_path:
+            print(f"  Landing page:     {result.index_path}")
+            if questionary.confirm(
+                "\n  Open landing page in browser?", default=True
+            ).ask():
+                webbrowser.open(result.index_path.as_uri())
+    else:
+        print(f"  Failed: {result.error}")
+    print(f"{'─' * 50}\n")
+
+
 def _events_cmd() -> None:
     """Search for upcoming AI events, conferences, and meetups worldwide."""
     import asyncio
@@ -2003,12 +2074,13 @@ def main() -> None:
             "testing-research",
             "software-research",
             "cleanup-articles",
+            "package-vulns",
             "events",
             "news",
             "config",
             "sound",
         ],
-        help="install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. delete-wiki: remove project wiki (llms.txt + docs/) from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. generate-wiki: generate project wiki (llms.txt + docs/) with AI. compress-docs: rule-based + AI tone compression of all AI-related docs. optimize-docs: audit and optionally fix AI-doc inconsistencies/cross-references. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. testing-research: search latest testing/QA news, summarize articles, generate landing page. software-research: search latest software-engineering / architecture / craft articles, summarize, generate landing page. cleanup-articles: AI-classify outdated research articles and move them to outdated/ (report or apply, never deletes). events: search upcoming AI events and conferences worldwide. news: search fresh AI news headlines by category and recency. config: manage backend/model. sound: manage Claude Code sound notifications.",
+        help="install (default): sync skills + inject into tools. update: sync skills only. delete-skill: remove skill(s) from a project. delete-docs: remove AI docs from a project. delete-wiki: remove project wiki (llms.txt + docs/) from a project. init-skill: create a default skill scaffold. init-docs: create a default AI docs template. ui: launch web interface. generate-docs: generate agents.md with AI. generate-skill: generate a SKILL.md with AI. generate-rule: generate Cursor rule (.mdc) with AI. generate-wiki: generate project wiki (llms.txt + docs/) with AI. compress-docs: rule-based + AI tone compression of all AI-related docs. optimize-docs: audit and optionally fix AI-doc inconsistencies/cross-references. check-skill: run /skills via AI backend. ask: ask AI a question. plan: get an implementation plan. research: search latest AI engineering news and generate summaries. testing-research: search latest testing/QA news, summarize articles, generate landing page. software-research: search latest software-engineering / architecture / craft articles, summarize, generate landing page. cleanup-articles: AI-classify outdated research articles and move them to outdated/ (report or apply, never deletes). package-vulns: search package advisory DBs for vulnerable packages across ecosystems (which package, affected versions, fixed version). events: search upcoming AI events and conferences worldwide. news: search fresh AI news headlines by category and recency. config: manage backend/model. sound: manage Claude Code sound notifications.",
     )
     args = parser.parse_args()
 
@@ -2046,6 +2118,8 @@ def main() -> None:
         _software_research_cmd()
     elif args.command == "cleanup-articles":
         _cleanup_articles_cmd()
+    elif args.command == "package-vulns":
+        _package_vulns_cmd()
     elif args.command == "events":
         _events_cmd()
     elif args.command == "news":

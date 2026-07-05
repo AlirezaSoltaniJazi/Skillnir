@@ -32,7 +32,8 @@
       "settings": "Cilësimet",
       "testing_research": "Kërkim (Testimi & QA)",
       "software_research": "Kërkim (Inxhinieria e Softuerit)",
-      "cleanup_articles": "Pastrimi i artikujve"
+      "cleanup_articles": "Pastrimi i artikujve",
+      "package_vulns": "Cenueshmëritë e paketave"
     },
     "sort_modes": {
       "default": "E parazgjedhur",
@@ -490,6 +491,20 @@
       "result_fail_title": "Pastrimi dështoi",
       "no_candidates": "Nuk u gjetën artikuj të vjetruar — arkivi është i përditësuar.",
       "start_button": "Nis pastrimin"
+    },
+    "package_vulns": {
+      "title": "Cenueshmëritë e paketave",
+      "subtitle": "Gjej paketa të cenueshme nëpër ekosisteme — cila paketë, cilat versione preken dhe versioni që e rregullon",
+      "ecosystems_label": "Ekosistemet",
+      "vulns_in_kb": "këshilla në bazën e njohurive",
+      "regenerated_landing": "Faqja u rigjenerua ({count} këshilla)",
+      "result_success_title": "Skanimi i paketave përfundoi",
+      "result_fail_title": "Skanimi i paketave dështoi",
+      "grid_vulns_found": "Këshilla të gjetura",
+      "grid_new_vulns": "Këshilla të reja",
+      "grid_updated": "Të përditësuara",
+      "grid_duration": "Kohëzgjatja",
+      "select_at_least_one_ecosystem": "Zgjidh të paktën një ekosistem"
     }
   },
   "buttons": {
@@ -540,7 +555,8 @@
     "ask": "Pyet",
     "hide_log": "Fshih regjistrin",
     "show_log": "Shfaq regjistrin",
-    "got_it": "E kuptova"
+    "got_it": "E kuptova",
+    "search_package_vulns": "Skano paketat"
   },
   "messages": {
     "using_backend": "Po përdoret: {name} ({model})",

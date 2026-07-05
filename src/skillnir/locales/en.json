@@ -37,7 +37,8 @@
       "security": "Research (Security Vulnerabilities)",
       "settings": "Settings",
       "software_research": "Research (Software Engineering)",
-      "cleanup_articles": "Cleanup Articles"
+      "cleanup_articles": "Cleanup Articles",
+      "package_vulns": "Package Vulnerabilities"
     },
     "sort_modes": {
       "default": "Default",
@@ -589,6 +590,20 @@
       "result_fail_title": "Cleanup failed",
       "no_candidates": "No outdated articles found — the archive looks healthy.",
       "start_button": "Start Cleanup"
+    },
+    "package_vulns": {
+      "title": "Package Vulnerabilities",
+      "subtitle": "Find vulnerable packages across ecosystems — which package, affected versions, and the version that fixes it",
+      "ecosystems_label": "Ecosystems",
+      "vulns_in_kb": "advisories in knowledge base",
+      "regenerated_landing": "Regenerated landing page ({count} advisories)",
+      "result_success_title": "Package scan complete",
+      "result_fail_title": "Package scan failed",
+      "grid_vulns_found": "Advisories found",
+      "grid_new_vulns": "New advisories",
+      "grid_updated": "Updated",
+      "grid_duration": "Duration",
+      "select_at_least_one_ecosystem": "Select at least one ecosystem"
     }
   },
   "buttons": {
@@ -645,7 +660,8 @@
     "update_all_skills": "Update All Skills",
     "usage": "Usage",
     "view_landing_page": "View Landing Page",
-    "view_skill_md": "View SKILL.md"
+    "view_skill_md": "View SKILL.md",
+    "search_package_vulns": "Scan Packages"
   },
   "messages": {
     "using_backend": "Using: {name} ({model})",

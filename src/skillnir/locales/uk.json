@@ -32,7 +32,8 @@
       "settings": "Налаштування",
       "testing_research": "Дослідження (Тестування та QA)",
       "software_research": "Дослідження (Інженерія ПЗ)",
-      "cleanup_articles": "Очищення статей"
+      "cleanup_articles": "Очищення статей",
+      "package_vulns": "Вразливості пакетів"
     },
     "sort_modes": {
       "default": "За замовчуванням",
@@ -490,6 +491,20 @@
       "result_fail_title": "Очищення не вдалося",
       "no_candidates": "Застарілих статей не знайдено — архів актуальний.",
       "start_button": "Почати очищення"
+    },
+    "package_vulns": {
+      "title": "Вразливості пакетів",
+      "subtitle": "Пошук вразливих пакетів у різних екосистемах — який пакет, які версії вражені та яка версія це виправляє",
+      "ecosystems_label": "Екосистеми",
+      "vulns_in_kb": "порад у базі знань",
+      "regenerated_landing": "Сторінку оновлено ({count} порад)",
+      "result_success_title": "Сканування пакетів завершено",
+      "result_fail_title": "Сканування пакетів не вдалося",
+      "grid_vulns_found": "Знайдено порад",
+      "grid_new_vulns": "Нові поради",
+      "grid_updated": "Оновлено",
+      "grid_duration": "Тривалість",
+      "select_at_least_one_ecosystem": "Оберіть щонайменше одну екосистему"
     }
   },
   "buttons": {
@@ -540,7 +555,8 @@
     "ask": "Запитати",
     "hide_log": "Сховати журнал",
     "show_log": "Показати журнал",
-    "got_it": "Зрозуміло"
+    "got_it": "Зрозуміло",
+    "search_package_vulns": "Сканувати пакети"
   },
   "messages": {
     "using_backend": "Використовується: {name} ({model})",
