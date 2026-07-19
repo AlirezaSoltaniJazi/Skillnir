@@ -764,6 +764,8 @@ def _optimize_docs() -> None:
                 print(f"      - {p}")
         if result.backend_used:
             print(f"    Backend:     {result.backend_used.value}")
+        if result.warning:
+            print(f"    Note:        {result.warning}")
     else:
         print(f"  Optimize failed: {result.error}")
     print(f"{'─' * 50}\n")

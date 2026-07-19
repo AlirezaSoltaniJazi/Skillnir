@@ -344,6 +344,12 @@ async def page_optimize_docs():
                     error=result.error,
                 )
 
+            if result.warning:
+                with results_container:
+                    ui.label(f'Note: {result.warning}').classes(
+                        'text-warning text-sm mt-2'
+                    )
+
             with results_container:
                 with ui.row().classes('gap-3 mt-4'):
                     ui.button(

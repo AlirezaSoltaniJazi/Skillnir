@@ -38,10 +38,31 @@ class OptimizeDocsResult:
     report_path: Path | None = None
     files_touched: list[Path] = field(default_factory=list)
     error: str | None = None
+    warning: str | None = None
     backend_used: AIBackend | None = None
 
 
 REPORT_FILENAME = "ai-context-report.md"
+
+
+def _max_turns_for(mode: str, doc_count: int) -> int:
+    """Scale the agent turn budget to the number of AI docs in the project.
+
+    A fixed budget starved large projects: apply mode edits each doc in its
+    own turn (on top of the scan and the final report), so a project with N
+    docs needs roughly 3*N turns, while the read-only report mode needs ~2*N.
+    Mirrors the size-scaling ``docs_compressor`` already uses. Floors keep
+    tiny projects from getting a budget too small to finish the scan.
+    """
+    if mode == "apply":
+        return max(40, doc_count * 3)
+    return max(20, doc_count * 2)
+
+
+def _is_max_turns_error(text: str) -> bool:
+    """True when a backend error string reports the turn limit was reached."""
+    lowered = text.lower()
+    return "maximum number of turns" in lowered or "max turns" in lowered
 
 
 def load_optimize_prompt(version: str = "") -> str:
@@ -97,11 +118,65 @@ def _snapshot_docs(target_project: Path) -> dict[Path, tuple[int, int]]:
     return snapshot
 
 
+def _partial_outputs(
+    target_project: Path,
+    mode: str,
+    before_files: dict[Path, tuple[int, int]],
+    backend: AIBackend,
+    turn_limit: int,
+) -> OptimizeDocsResult:
+    """Salvage a run that stopped at the turn limit.
+
+    When the agent runs out of turns it may already have written the report
+    and/or edited docs in place — that work is on disk and must not be thrown
+    away as a total failure. If anything was produced *this run*, report
+    success with a warning that the audit is likely incomplete; otherwise fail
+    with an actionable message that names the limit.
+
+    Salvage is keyed on what changed against ``before_files``, never on the
+    report merely existing: a stale report left by a prior run would otherwise
+    fake success even when this run produced nothing.
+    """
+    report_path = target_project / "docs" / REPORT_FILENAME
+    after_files = _snapshot_docs(target_project)
+    changed = sorted(
+        path
+        for path, signature in after_files.items()
+        if before_files.get(path) != signature
+    )
+
+    if changed:
+        report_written = report_path.resolve() in changed
+        return OptimizeDocsResult(
+            success=True,
+            mode=mode,
+            report_path=report_path if report_written else None,
+            files_touched=changed,
+            warning=(
+                f"AI stopped after reaching the {turn_limit}-turn limit; the "
+                "audit is likely incomplete. Review the changes and re-run to "
+                "continue."
+            ),
+            backend_used=backend,
+        )
+
+    return OptimizeDocsResult(
+        success=False,
+        mode=mode,
+        error=(
+            f"AI reached the {turn_limit}-turn limit before producing any "
+            "output. Try 'report' mode first, or run on a smaller doc set."
+        ),
+        backend_used=backend,
+    )
+
+
 async def optimize_docs_sdk(
     target_project: Path,
     mode: str,
     prompt_text: str,
     before_files: dict[Path, tuple[int, int]],
+    max_turns: int,
     on_progress: Callable[[GenerationProgress], None] | None = None,
 ) -> OptimizeDocsResult:
     """Optimize via claude-agent-sdk (async, streaming). Claude only."""
@@ -127,7 +202,7 @@ async def optimize_docs_sdk(
 
     options = ClaudeAgentOptions(
         system_prompt=maybe_compress_prompt(prompt_text),
-        max_turns=30 if mode == "apply" else 20,
+        max_turns=max_turns,
         allowed_tools=tools,
         permission_mode="acceptEdits",
         cwd=str(target_project),
@@ -135,6 +210,11 @@ async def optimize_docs_sdk(
     )
 
     user_prompt = _build_user_prompt(target_project, mode)
+
+    # The SDK yields the ResultMessage (subtype "error_max_turns") just before
+    # the CLI's non-zero exit re-raises as a ProcessError, so a flag set here
+    # survives into the except/normal-exit branches below.
+    hit_max_turns = False
 
     try:
         async for message in query(prompt=user_prompt, options=options):
@@ -156,7 +236,13 @@ async def optimize_docs_sdk(
                         message.usage,
                         getattr(message, 'total_cost_usd', None),
                     )
+                if getattr(message, 'subtype', '') == 'error_max_turns':
+                    hit_max_turns = True
     except Exception as exc:
+        if hit_max_turns or _is_max_turns_error(str(exc)):
+            return _partial_outputs(
+                target_project, mode, before_files, AIBackend.CLAUDE, max_turns
+            )
         return OptimizeDocsResult(
             success=False,
             mode=mode,
@@ -164,6 +250,10 @@ async def optimize_docs_sdk(
             backend_used=AIBackend.CLAUDE,
         )
 
+    if hit_max_turns:
+        return _partial_outputs(
+            target_project, mode, before_files, AIBackend.CLAUDE, max_turns
+        )
     return _check_outputs(target_project, mode, before_files, AIBackend.CLAUDE)
 
 
@@ -174,6 +264,7 @@ def optimize_docs_subprocess(
     before_files: dict[Path, tuple[int, int]],
     backend: AIBackend,
     model: str,
+    max_turns: int,
     on_progress: Callable[[GenerationProgress], None] | None = None,
 ) -> OptimizeDocsResult:
     """Optimize via backend CLI subprocess with real-time streaming."""
@@ -182,7 +273,9 @@ def optimize_docs_subprocess(
 
     user_prompt = _build_user_prompt(target_project, mode)
     full_prompt = prompt_text + "\n\n---\n\n" + user_prompt
-    cmd = build_subprocess_command(backend, full_prompt, model=model)
+    cmd = build_subprocess_command(
+        backend, full_prompt, model=model, max_turns=max_turns
+    )
 
     try:
         run = run_streaming_command(
@@ -204,6 +297,12 @@ def optimize_docs_subprocess(
             backend_used=backend,
         )
     if run.returncode != 0:
+        # A max-turns exit is non-zero too — salvage whatever was produced
+        # instead of discarding it, matching the SDK path.
+        if _is_max_turns_error(run.stderr):
+            return _partial_outputs(
+                target_project, mode, before_files, backend, max_turns
+            )
         return OptimizeDocsResult(
             success=False,
             mode=mode,
@@ -290,12 +389,15 @@ async def optimize_docs(
     _emit(on_progress, "phase", f"Using {info.name}...")
 
     before_files = _snapshot_docs(target_project)
+    # Budget turns to project size — a fixed cap starved large doc sets and
+    # surfaced as an opaque "reached maximum number of turns" failure.
+    max_turns = _max_turns_for(mode, len(before_files))
     cli_available = bool(shutil.which(info.cli_command))
 
     if backend == AIBackend.CLAUDE and _claude_sdk_available():
         _emit(on_progress, "status", "Using Claude SDK")
         return await optimize_docs_sdk(
-            target_project, mode, prompt_text, before_files, on_progress
+            target_project, mode, prompt_text, before_files, max_turns, on_progress
         )
 
     if not cli_available:
@@ -318,5 +420,6 @@ async def optimize_docs(
         before_files,
         backend,
         model,
+        max_turns,
         on_progress,
     )
