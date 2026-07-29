@@ -135,7 +135,10 @@ def _partial_outputs(
 
     Salvage is keyed on what changed against ``before_files``, never on the
     report merely existing: a stale report left by a prior run would otherwise
-    fake success even when this run produced nothing.
+    fake success even when this run produced nothing. Report mode's *only*
+    deliverable is the report, so a stray edit to some other doc must not mark
+    a report-less dry-run "complete" — there, success requires the report
+    itself (matching ``_check_outputs``). Apply mode counts any in-place edit.
     """
     report_path = target_project / "docs" / REPORT_FILENAME
     after_files = _snapshot_docs(target_project)
@@ -144,9 +147,10 @@ def _partial_outputs(
         for path, signature in after_files.items()
         if before_files.get(path) != signature
     )
+    report_written = report_path.resolve() in changed
+    salvageable = report_written if mode == "report" else bool(changed)
 
-    if changed:
-        report_written = report_path.resolve() in changed
+    if salvageable:
         return OptimizeDocsResult(
             success=True,
             mode=mode,
@@ -298,8 +302,9 @@ def optimize_docs_subprocess(
         )
     if run.returncode != 0:
         # A max-turns exit is non-zero too — salvage whatever was produced
-        # instead of discarding it, matching the SDK path.
-        if _is_max_turns_error(run.stderr):
+        # instead of discarding it, matching the SDK path. The signal rides
+        # stdout (run.max_turns_hit); stderr is only a secondary fallback.
+        if run.max_turns_hit or _is_max_turns_error(run.stderr):
             return _partial_outputs(
                 target_project, mode, before_files, backend, max_turns
             )

@@ -907,6 +907,22 @@ class StreamedRunResult:
     returncode: int | None
     stderr: str
     timed_out: bool = False
+    # The CLI reports a hit turn limit as a stream-json result on *stdout*
+    # (subtype "error_max_turns"), not stderr — captured here so callers can
+    # salvage partial output instead of treating the non-zero exit as a total
+    # failure.
+    max_turns_hit: bool = False
+
+
+def _line_signals_max_turns(line: str) -> bool:
+    """True when a stdout stream-json line reports the turn limit was reached.
+
+    Matches both the machine subtype (``error_max_turns``) and the human text
+    the CLI/SDK builds from it. A cheap substring check on the raw line avoids
+    parsing every stream event just to look for this one signal.
+    """
+    lowered = line.lower()
+    return "error_max_turns" in lowered or "maximum number of turns" in lowered
 
 
 def run_streaming_command(
@@ -934,6 +950,8 @@ def run_streaming_command(
     )
 
     stderr_chunks: list[str] = []
+    # Written only by the stdout thread; read after join() (happens-before).
+    max_turns_flag = {"hit": False}
 
     def _drain_stderr() -> None:
         for err_line in proc.stderr:
@@ -941,6 +959,8 @@ def run_streaming_command(
 
     def _drain_stdout() -> None:
         for line in proc.stdout:
+            if not max_turns_flag["hit"] and _line_signals_max_turns(line):
+                max_turns_flag["hit"] = True
             parse_stream_line(backend, line, on_progress)
 
     stderr_thread = threading.Thread(target=_drain_stderr, daemon=True)
@@ -963,6 +983,7 @@ def run_streaming_command(
         returncode=proc.returncode,
         stderr="".join(stderr_chunks),
         timed_out=timed_out,
+        max_turns_hit=max_turns_flag["hit"],
     )
 
 

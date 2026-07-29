@@ -67,6 +67,7 @@ NAV_GROUPS = [
         'RESEARCH',
         [
             ('science', 'Research (AI Engineering)', '/research'),
+            ('hub', 'Research (Harness Engineering)', '/harness-research'),
             ('biotech', 'Research (Testing & QA)', '/testing-research'),
             ('architecture', 'Research (Software Engineering)', '/software-research'),
             ('security', 'Research (Security Vulnerabilities)', '/security'),
@@ -140,6 +141,11 @@ def get_nav_groups(lang: str | None = None) -> list:
             t("nav.groups.research", lang),
             [
                 ("science", t("nav.items.research", lang), "/research"),
+                (
+                    "hub",
+                    t("nav.items.harness_research", lang),
+                    "/harness-research",
+                ),
                 (
                     "biotech",
                     t("nav.items.testing_research", lang),

@@ -126,6 +126,14 @@ def run_ui(port: int = 8080) -> None:
     _software_research_dir.mkdir(parents=True, exist_ok=True)
     app.add_static_files("/software-research-files", str(_software_research_dir))
 
+    _harness_research_dir = (
+        Path(__file__).resolve().parent.parent.parent.parent
+        / ".data"
+        / "harness-research"
+    )
+    _harness_research_dir.mkdir(parents=True, exist_ok=True)
+    app.add_static_files("/harness-research-files", str(_harness_research_dir))
+
     # ── Events files (landing page + event pages) ────────────
     _events_dir = (
         Path(__file__).resolve().parent.parent.parent.parent / ".data" / "events"
@@ -164,6 +172,7 @@ def run_ui(port: int = 8080) -> None:
         delete_skill,
         events,
         generate_skill,
+        harness_research,
         home,
         ignore,
         news,

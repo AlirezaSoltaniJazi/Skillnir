@@ -712,3 +712,39 @@ class TestRunStreamingCommand:
             run_streaming_command(
                 ["definitely-not-a-real-cli-xyz"], AIBackend.CLAUDE, tmp_path, None
             )
+
+    def test_max_turns_hit_detected_from_stdout(self, tmp_path: Path):
+        """The turn-limit signal rides stdout (subtype error_max_turns), not
+        stderr — run_streaming_command must surface it via max_turns_hit."""
+        from skillnir.backends import run_streaming_command
+
+        line = json.dumps({"type": "result", "subtype": "error_max_turns"})
+        cmd = [sys.executable, "-c", f"print({line!r}); exit(1)"]
+        run = run_streaming_command(cmd, AIBackend.CLAUDE, tmp_path, None, timeout=30)
+        assert run.returncode == 1
+        assert run.max_turns_hit is True
+
+    def test_max_turns_hit_false_on_normal_output(self, tmp_path: Path):
+        from skillnir.backends import run_streaming_command
+
+        cmd = [sys.executable, "-c", "print('all good')"]
+        run = run_streaming_command(cmd, AIBackend.CLAUDE, tmp_path, None, timeout=30)
+        assert run.max_turns_hit is False
+
+
+class TestLineSignalsMaxTurns:
+    def test_matches_subtype(self):
+        from skillnir.backends import _line_signals_max_turns
+
+        assert _line_signals_max_turns('{"subtype": "error_max_turns"}')
+
+    def test_matches_human_text(self):
+        from skillnir.backends import _line_signals_max_turns
+
+        assert _line_signals_max_turns("Reached maximum number of turns (30)")
+
+    def test_ignores_normal_lines(self):
+        from skillnir.backends import _line_signals_max_turns
+
+        assert not _line_signals_max_turns('{"type": "assistant"}')
+        assert not _line_signals_max_turns("")
