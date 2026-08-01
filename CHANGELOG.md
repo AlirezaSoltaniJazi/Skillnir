@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2026-08-01
+
 ### Added
 
 - Added **Claude Opus 5** to the model picker and made it the new default. Opus 4.8 and the other Claude models are still available.
