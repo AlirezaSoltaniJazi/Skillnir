@@ -331,11 +331,37 @@ class TestResolveModelId:
     def test_default_opus_alias_resolves_to_latest(self):
         # The "opus" alias is Claude's default_model; it must point at the flagship.
         result = resolve_model_id(AIBackend.CLAUDE, "opus")
+        assert result == "claude-opus-5"
+
+    def test_prior_opus_alias_still_resolves(self):
+        # Opus 4.8 stays selectable under its own alias after Opus 5 took "opus".
+        result = resolve_model_id(AIBackend.CLAUDE, "opus-4.8")
+        assert result == "claude-opus-4-8"
+
+    def test_full_opus_48_id_passes_through(self):
+        result = resolve_model_id(AIBackend.CLAUDE, "claude-opus-4-8")
         assert result == "claude-opus-4-8"
 
     def test_unknown_alias_passed_through(self):
         result = resolve_model_id(AIBackend.CLAUDE, "custom-model-xyz")
         assert result == "custom-model-xyz"
+
+
+class TestClaudeModelCatalog:
+    def test_opus_5_present_and_is_the_single_default(self):
+        claude_models = BACKENDS[AIBackend.CLAUDE].models
+        defaults = [m for m in claude_models if m.is_default]
+        assert len(defaults) == 1
+        assert defaults[0].id == "claude-opus-5"
+        assert defaults[0].alias == "opus"
+
+    def test_default_model_alias_resolves(self):
+        info = BACKENDS[AIBackend.CLAUDE]
+        assert resolve_model_id(AIBackend.CLAUDE, info.default_model) == "claude-opus-5"
+
+    def test_aliases_are_unique(self):
+        aliases = [m.alias for m in BACKENDS[AIBackend.CLAUDE].models]
+        assert len(aliases) == len(set(aliases)), "duplicate model alias"
 
 
 # ── _apply_mode ──────────────────────────────────────────────
