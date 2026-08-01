@@ -62,8 +62,9 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         models=(
             ModelInfo("claude-fable-5", "fable", "Claude Fable 5", tier=1),
             ModelInfo(
-                "claude-opus-4-8", "opus", "Claude Opus 4.8", is_default=True, tier=1
+                "claude-opus-5", "opus", "Claude Opus 5", is_default=True, tier=1
             ),
+            ModelInfo("claude-opus-4-8", "opus-4.8", "Claude Opus 4.8", tier=1),
             ModelInfo("claude-opus-4-7", "opus-4.7", "Claude Opus 4.7", tier=1),
             ModelInfo("claude-opus-4-6", "opus-4.6", "Claude Opus 4.6", tier=1),
             ModelInfo("claude-sonnet-5", "sonnet", "Claude Sonnet 5", tier=2),
