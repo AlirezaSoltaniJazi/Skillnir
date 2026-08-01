@@ -7,8 +7,10 @@ import pytest
 
 from skillnir.backends import AIBackend, AppConfig
 from skillnir.generator import (
+    _build_user_prompt,
     _check_outputs,
     _emit,
+    build_context_pack,
     get_prompts_dir,
     generate_docs,
     load_prompt,
@@ -100,6 +102,57 @@ class TestCheckOutputs:
         (tmp_path / "agents.md").write_text("# Agents")
         result = _check_outputs(tmp_path, AIBackend.CLAUDE)
         assert result.claude_md_path is None
+
+    def test_accepts_uppercase_agents_md(self, tmp_path: Path):
+        """A model writing the industry-standard AGENTS.md is a success."""
+        (tmp_path / "AGENTS.md").write_text("# Agents")
+        result = _check_outputs(tmp_path, AIBackend.CLAUDE)
+        assert result.success is True
+        assert result.agents_md_path is not None
+        assert result.agents_md_path.name.lower() == "agents.md"
+
+
+# ── build_context_pack ───────────────────────────────────────
+
+
+class TestBuildContextPack:
+    def test_empty_project_returns_empty(self, tmp_path: Path):
+        assert build_context_pack(tmp_path) == ""
+
+    def test_lists_files_and_manifest(self, tmp_path: Path):
+        (tmp_path / "src").mkdir()
+        (tmp_path / "src" / "main.py").write_text("print('hi')\n")
+        (tmp_path / "pyproject.toml").write_text("[project]\nname = 'demo'\n")
+        (tmp_path / "README.md").write_text("# Demo\n\nA demo project.\n")
+
+        pack = build_context_pack(tmp_path)
+        assert "PROJECT INVENTORY" in pack
+        assert "main.py" in pack
+        assert "name = 'demo'" in pack
+        assert "A demo project." in pack
+
+    def test_skips_noise_directories(self, tmp_path: Path):
+        (tmp_path / "src").mkdir()
+        (tmp_path / "src" / "app.py").write_text("x = 1\n")
+        junk = tmp_path / "node_modules" / "pkg"
+        junk.mkdir(parents=True)
+        (junk / "index.js").write_text("//\n")
+
+        pack = build_context_pack(tmp_path)
+        assert "app.py" in pack
+        assert "node_modules" not in pack
+
+    def test_capped_size(self, tmp_path: Path):
+        for i in range(500):
+            (tmp_path / f"file-with-a-fairly-long-name-{i:04d}.py").write_text("x\n")
+        pack = build_context_pack(tmp_path)
+        assert len(pack) < 4200
+
+    def test_user_prompt_includes_pack(self, tmp_path: Path):
+        (tmp_path / "main.py").write_text("x = 1\n")
+        prompt = _build_user_prompt(tmp_path)
+        assert str(tmp_path) in prompt
+        assert "PROJECT INVENTORY" in prompt
 
 
 # ── generate_docs (mocked orchestration) ─────────────────────

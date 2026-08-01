@@ -101,6 +101,26 @@ Look for these specific drift / consistency problems:
   files or commands, flag them. **Do not regenerate** in apply mode — that
   is the user's call. Just record in the report that regeneration is needed.
 
+### 2g. Effectiveness (content quality, not just consistency)
+
+Empirical studies (ETH Zurich AGENTbench, 2026) show bloated context files
+REDUCE agent task success while raising inference cost 20%+ — audit for value
+per token, not just correctness:
+
+- **Generic filler** — flag lines like "follow best practices", "write clean
+  code", "ensure quality" in any AI doc body. Agents already know these; every
+  such line is pure token waste.
+- **Inferable-content bloat** — flag sections that restate what reading the
+  code shows: unannotated directory listings, framework-default conventions,
+  dependency lists duplicating the manifest.
+- **Length budgets** — `agents.md`/`CLAUDE.md` over 250 lines is a finding;
+  over 400 is severe. Wiki pages (`docs/*.md`) over ~300 lines should be split.
+- **Ordering** — How To Run / Boundaries / Known Gotchas belong in the first
+  screen of `agents.md`; flag critical rules buried mid-file
+  (lost-in-the-middle: models weight the start and end of context most).
+- **Rules without a WHY** — surprising MUST/Never rules with no rationale
+  clause generalize poorly; flag the worst offenders.
+
 ---
 
 ## PHASE 3: WRITE THE REPORT
@@ -146,6 +166,10 @@ Mode: {report | apply}
 
 - ...
 
+### Effectiveness
+
+- ...
+
 ## Fixes Applied (apply mode only)
 
 - ...
@@ -156,6 +180,12 @@ Mode: {report | apply}
 ```
 
 If a section has no findings, write `- (none)` under it.
+
+Prefix every finding with a severity tag — `[High]` (breaks agent behavior:
+contradictions, invalid frontmatter, stale commands), `[Medium]` (wastes
+budget or misleads: drift, bloat, buried critical rules), `[Low]` (cosmetic:
+missing cross-references, filler lines). Order findings within each section
+by severity.
 
 ---
 
@@ -177,6 +207,10 @@ content", apply the smallest possible fix:
 - **Contradictions**: Pick the **most specific source** as truth (skill >
   agents.md > wiki > rule files). Edit the others to match. Mention which
   source you chose in the report.
+- **Generic filler (2g)**: Delete the individual filler lines — smallest
+  possible deletion, never rewrite the surrounding section. All OTHER
+  effectiveness findings (inferable bloat, ordering, length budgets) are
+  REPORT-ONLY: restructuring is the user's call via the dedicated generator.
 
 Use the `Edit` tool with exact `old_string` / `new_string` matches —
 smallest possible change per edit.

@@ -1,6 +1,6 @@
 # Accessibility Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are accessibility-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are accessibility-specific overrides.
 
 ```
 ROLE:     Senior accessibility engineer auditing a codebase for WCAG compliance
@@ -131,7 +131,7 @@ Integrate for the detected platform(s) and framework(s):
 9. **Screen Reader Compatibility** — summary + link to references/screen-reader-checklist.md for per-component verification
 10. **Anti-Patterns** — what NOT to do (with WCAG violation reference and why)
 11. **References** — key files, docs, resources (WCAG spec, APG, platform guidelines)
-12. **Adaptive Interaction Protocols** — interaction modes with accessibility-specific detection signals (e.g., "failing audit" for Diagnostic, "check this component" for Efficient, "what does aria-live do" for Teaching), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
+12. **Session Protocols** (≤20 lines) — interaction modes with accessibility-specific detection signals (e.g., "failing audit" for Diagnostic, "check this component" for Efficient, "what does aria-live do" for Teaching), plus self-learning via LEARNED.md; deeper guidance (proficiency calibration, anti-dependency nudges) goes to references/ai-interaction-guide.md — never into SKILL.md
 
 **Suggested reference files**:
 

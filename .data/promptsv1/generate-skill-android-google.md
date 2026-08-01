@@ -1,6 +1,6 @@
 # Android (Google Official Skills) Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are Android-Google-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are Android-Google-specific overrides.
 
 ```
 ROLE:     Senior Android engineer specialized in Google's official Agent Skills catalog (I/O 2026 release)
@@ -341,7 +341,7 @@ For android-google specifically, when asked for help, the AI MUST:
 11. **Skill Version Pinning** — `.android/skills.lock.toml`
 12. **Anti-Patterns** — the `Never` table
 13. **References** — official catalog, Firebase agent skills, Agent Mode docs
-14. **Adaptive Interaction Protocols** — Google-skills-specific signals (e.g., "agent says skill not loaded" for Diagnostic, "another Compose screen like X" for Efficient, "what is Glimmer" for Teaching), correction accumulation, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
+14. **Session Protocols** (≤20 lines) — Google-skills-specific signals (e.g., "agent says skill not loaded" for Diagnostic, "another Compose screen like X" for Efficient, "what is Glimmer" for Teaching), plus self-learning via LEARNED.md; deeper guidance (proficiency calibration, anti-dependency nudges) goes to references/ai-interaction-guide.md — never into SKILL.md
 
 **Suggested reference files**: see PHASE 4 + 5.
 

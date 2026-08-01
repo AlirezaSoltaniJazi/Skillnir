@@ -5,6 +5,32 @@ All notable changes to Skillnir will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Added **Claude Opus 5** to the model picker and made it the new default. Opus 4.8 and the other Claude models are still available.
+- New **Harness Engineering** research section — finds the latest articles on building AI agents (agent loops, tool use, context, memory, evals, guardrails, and more), alongside the existing research sections.
+- New ready-to-use **Jira, GitHub, and GitLab skills** for the ticket → branch → pull/merge-request workflow, usable in any repository.
+- Every generated landing and report page now has a **Home button** to jump back to the app.
+- New **Package Vulnerabilities** tracker — browse known vulnerable packages across 10 ecosystems, with the affected and fixed versions.
+- New **Cleanup Articles** tool — archives outdated research articles to keep your library current (it never deletes anything).
+- **Generated skills are now quality-checked** and automatically repaired when something is off.
+- **Skill and docs generation are more accurate** — they now look over your project before writing.
+- **Regenerating a skill keeps the corrections you've taught it** instead of discarding them.
+- **Compress Docs now backs up your files** before changing them.
+
+### Fixed
+
+- **Compress Docs** no longer garbles code blocks, tables, or front-matter.
+- **Optimize Docs** now lists the files it changed, no longer fails on large projects, and keeps partial results when a run is cut short.
+- Re-running **rule generation** on a topic that already exists no longer reports a false failure.
+- AI tools that hang are now properly stopped at the timeout.
+- The **compress-prompts** setting now applies no matter which AI tool you use.
+- **Skill generation** no longer bases a new skill on an unrelated example, and now handles both `AGENTS.md` and `agents.md` filenames.
+- Refreshed the built-in generation prompts for leaner, higher-quality AI docs and skills.
+- New releases are now published automatically when the version is bumped.
+
 ## [1.7.1] - 2026-07-01
 
 ### Changed
@@ -14,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **AI-context docs re-synced with the code** (`optimize-docs` audit) -- [agents.md](agents.md) (and its `.claude/CLAUDE.md` / `.github/copilot-instructions.md` symlinks) had drifted again: tool registry `38 → 37` (two mentions; `TOOLS` in [src/skillnir/tools.py](src/skillnir/tools.py) has 37 entries), UI components `12 → 13`, test files `24 → 25`, and the "Adding a new CLI command" pattern showed a `build_parser()`/`subparsers.add_parser()`/`cmd_my_command(args)` shape that doesn't match [cli.py](src/skillnir/cli.py) — replaced with the real pattern (add to `choices=[...]` in `main()`, define a zero-arg `_my_command()` handler, dispatch via `elif`). Two discovered conventions recorded in [backendEngineer/LEARNED.md](.data/skills/backendEngineer/LEARNED.md) to override stale generated skill guidance until regeneration: strings are double-quoted in this codebase (Black `-S` preserves quotes rather than enforcing single quotes, contra that SKILL.md), and `cli.py` uses no argparse subparsers. Remaining regeneration-only items (skillnir `Python 3.13+` compatibility line, backendEngineer quote/subparser/pytest-floor rows, missing `llms.txt`) are listed in [docs/ai-context-report.md](docs/ai-context-report.md).
-- **Web UI no longer crashes a running generation when the screen locks** -- locking the OS suspends the browser tab, the WebSocket heartbeat stops, and NiceGUI's default 3-second `reconnect_timeout` deletes the client and every UI element it owns ([client.py](https://github.com/zauberzeug/nicegui) `handle_disconnect`). Any of the 12 long-running pages (generate-skill, research, security, events, benchmarks, news, wiki, optimize-docs, ai-context, ask/plan/check, software/testing research) was still running its `await` as a background task, so the next UI update — e.g. `progress_container.clear()` in [generate_skill.py](src/skillnir/ui/pages/generate_skill.py) — raised `RuntimeError: ... has been deleted`, which surfaced as an unhandled-task traceback and looked like the operation "got terminated". Three centralized fixes in [src/skillnir/ui/__init__.py](src/skillnir/ui/__init__.py) and [src/skillnir/ui/components/progress_panel.py](src/skillnir/ui/components/progress_panel.py): (1) raised `reconnect_timeout` to **600s** so a typical lock keeps the client (and its in-flight job) alive and restores it on unlock; (2) guarded the shared `make_on_progress` callback so a mid-run UI write that lands on a deleted element is dropped instead of aborting the generation — the work still completes and writes to disk; (3) a new `survive_disconnect` decorator wraps all 14 long-running handlers so, if a lock outlasts the timeout and the client is gone, the task finishes silently rather than dumping a traceback. All 548 tests pass; changed files lint clean (Black -S, pylint 10/10).
+- **Web UI no longer crashes a running generation when the screen locks** -- locking the OS suspends the browser tab, the WebSocket heartbeat stops, and NiceGUI's default 3-second `reconnect_timeout` deletes the client and every UI element it owns ([client.py](https://github.com/zauberzeug/nicegui) `handle_disconnect`). Any of the 12 long-running pages (generate-skill, research, security, events, benchmarks, news, wiki, optimize-docs, ai-context, ask/plan/check, software/testing research) was still running its `await` as a background task, so the next UI update — e.g. `progress_container.clear()` in [generate_skill.py](src/skillnir/ui/pages/generate_skill.py) — raised `RuntimeError: ... has been deleted`, which surfaced as an unhandled-task traceback and looked like the operation "got terminated". Three centralized fixes in [src/skillnir/ui/**init**.py](src/skillnir/ui/__init__.py) and [src/skillnir/ui/components/progress_panel.py](src/skillnir/ui/components/progress_panel.py): (1) raised `reconnect_timeout` to **600s** so a typical lock keeps the client (and its in-flight job) alive and restores it on unlock; (2) guarded the shared `make_on_progress` callback so a mid-run UI write that lands on a deleted element is dropped instead of aborting the generation — the work still completes and writes to disk; (3) a new `survive_disconnect` decorator wraps all 14 long-running handlers so, if a lock outlasts the timeout and the client is gone, the task finishes silently rather than dumping a traceback. All 548 tests pass; changed files lint clean (Black -S, pylint 10/10).
 
 ### Security
 

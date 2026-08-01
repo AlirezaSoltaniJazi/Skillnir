@@ -67,9 +67,12 @@ NAV_GROUPS = [
         'RESEARCH',
         [
             ('science', 'Research (AI Engineering)', '/research'),
+            ('hub', 'Research (Harness Engineering)', '/harness-research'),
             ('biotech', 'Research (Testing & QA)', '/testing-research'),
             ('architecture', 'Research (Software Engineering)', '/software-research'),
             ('security', 'Research (Security Vulnerabilities)', '/security'),
+            ('inventory_2', 'Package Vulnerabilities', '/package-vulns'),
+            ('cleaning_services', 'Cleanup Articles', '/cleanup-articles'),
         ],
     ),
     (
@@ -139,6 +142,11 @@ def get_nav_groups(lang: str | None = None) -> list:
             [
                 ("science", t("nav.items.research", lang), "/research"),
                 (
+                    "hub",
+                    t("nav.items.harness_research", lang),
+                    "/harness-research",
+                ),
+                (
                     "biotech",
                     t("nav.items.testing_research", lang),
                     "/testing-research",
@@ -149,6 +157,16 @@ def get_nav_groups(lang: str | None = None) -> list:
                     "/software-research",
                 ),
                 ("security", t("nav.items.security", lang), "/security"),
+                (
+                    "inventory_2",
+                    t("nav.items.package_vulns", lang),
+                    "/package-vulns",
+                ),
+                (
+                    "cleaning_services",
+                    t("nav.items.cleanup_articles", lang),
+                    "/cleanup-articles",
+                ),
             ],
         ),
         (

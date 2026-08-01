@@ -66,7 +66,7 @@ scripts/                   # CI runner scripts (run_intel.py)
 │       ├── references/    # Detailed docs and code samples
 │       ├── scripts/       # Validation scripts
 │       └── agents/        # Sub-agent definitions
-├── promptsv1/             # 44 prompt templates (38 skill generators + 6 utility prompts)
+├── promptsv1/             # 44 prompt templates (37 skill generators + 7 utility prompts)
 ├── research/articles/     # 500+ research articles (organized by topic)
 └── events/                # AI events data (organized by topic)
 tests/                     # 25 test files (pytest, class-based)
@@ -330,7 +330,7 @@ uv run pytest -k "test_creates_symlink"  # single test
 ## Skills Reference
 
 > Project-specific conventions live in `.data/skills/`. Check before making architectural decisions.
-> Skills available: backendEngineer, devopsEngineer, frontendEngineer, promptCompressor, securityEngineer, skillnir
+> Skills available: backendEngineer, devopsEngineer, frontendEngineer, github, gitlab, jira, promptCompressor, securityEngineer, skillnir
 
 ## Sub-Agent Capabilities
 

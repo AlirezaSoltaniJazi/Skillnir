@@ -1,6 +1,6 @@
 # Test Automation Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are testing-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are testing-specific overrides.
 
 ```
 ROLE:     Senior test automation engineer analyzing a production test suite
@@ -138,7 +138,7 @@ Write to `/tmp/skill_synthesis_testing.md`:
 9. **CI/CD Integration** — summary + link to references/ for pipeline config examples
 10. **Anti-Patterns** — what NOT to do (with why)
 11. **References** — config files, framework docs, test utilities
-12. **Adaptive Interaction Protocols** — interaction modes with testing-specific detection signals (e.g., "how does this fixture work" for Teaching, "another test like X" for Efficient, "flaky test failure" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
+12. **Session Protocols** (≤20 lines) — interaction modes with testing-specific detection signals (e.g., "how does this fixture work" for Teaching, "another test like X" for Efficient, "flaky test failure" for Diagnostic), plus self-learning via LEARNED.md; deeper guidance (proficiency calibration, anti-dependency nudges) goes to references/ai-interaction-guide.md — never into SKILL.md
 
 **Suggested reference files**:
 

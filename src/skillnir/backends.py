@@ -62,8 +62,9 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         models=(
             ModelInfo("claude-fable-5", "fable", "Claude Fable 5", tier=1),
             ModelInfo(
-                "claude-opus-4-8", "opus", "Claude Opus 4.8", is_default=True, tier=1
+                "claude-opus-5", "opus", "Claude Opus 5", is_default=True, tier=1
             ),
+            ModelInfo("claude-opus-4-8", "opus-4.8", "Claude Opus 4.8", tier=1),
             ModelInfo("claude-opus-4-7", "opus-4.7", "Claude Opus 4.7", tier=1),
             ModelInfo("claude-opus-4-6", "opus-4.6", "Claude Opus 4.6", tier=1),
             ModelInfo("claude-sonnet-5", "sonnet", "Claude Sonnet 5", tier=2),
@@ -794,6 +795,20 @@ def _apply_mode(
     return prompt, []
 
 
+def maybe_compress_prompt(prompt: str, config: "AppConfig | None" = None) -> str:
+    """Compress a prompt if the user enabled ``compress_prompts``.
+
+    Shared by the subprocess command builder and the SDK call sites so the
+    setting behaves identically on both execution paths.
+    """
+    cfg = config if config is not None else load_config()
+    if not cfg.compress_prompts:
+        return prompt
+    from skillnir.compressor import compress_prompt
+
+    return compress_prompt(prompt).compressed
+
+
 def build_subprocess_command(
     backend: AIBackend,
     prompt: str,
@@ -828,7 +843,7 @@ def build_subprocess_command(
             "--model",
             model_id,
             "--allowedTools",
-            "Read,Glob,Grep,Bash,Write",
+            "Read,Glob,Grep,Bash,Edit,Write",
             "--max-turns",
             str(max_turns),
             "--verbose",
@@ -879,6 +894,98 @@ def build_subprocess_command(
     # Positional prompt goes after "--" to prevent content starting with
     # dashes from being misinterpreted as CLI flags.
     return cmd + extra_flags + ["--", prompt]
+
+
+# ---------------------------------------------------------------------------
+# Streaming subprocess runner
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class StreamedRunResult:
+    """Outcome of a streamed backend-CLI run."""
+
+    returncode: int | None
+    stderr: str
+    timed_out: bool = False
+    # The CLI reports a hit turn limit as a stream-json result on *stdout*
+    # (subtype "error_max_turns"), not stderr — captured here so callers can
+    # salvage partial output instead of treating the non-zero exit as a total
+    # failure.
+    max_turns_hit: bool = False
+
+
+def _line_signals_max_turns(line: str) -> bool:
+    """True when a stdout stream-json line reports the turn limit was reached.
+
+    Matches both the machine subtype (``error_max_turns``) and the human text
+    the CLI/SDK builds from it. A cheap substring check on the raw line avoids
+    parsing every stream event just to look for this one signal.
+    """
+    lowered = line.lower()
+    return "error_max_turns" in lowered or "maximum number of turns" in lowered
+
+
+def run_streaming_command(
+    cmd: list[str],
+    backend: AIBackend,
+    cwd: Path | str,
+    on_progress: Callable | None = None,
+    timeout: float = 600,
+) -> StreamedRunResult:
+    """Run a backend CLI, streaming stdout lines through ``parse_stream_line``.
+
+    Both pipes are drained on daemon threads so ``timeout`` is a real
+    wall-clock deadline: a CLI that hangs while keeping stdout open gets
+    killed instead of blocking the reader loop forever. Raises
+    ``FileNotFoundError`` when the executable is missing.
+    """
+    import threading
+
+    proc = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        cwd=str(cwd),
+    )
+
+    stderr_chunks: list[str] = []
+    # Written only by the stdout thread; read after join() (happens-before).
+    max_turns_flag = {"hit": False}
+
+    def _drain_stderr() -> None:
+        for err_line in proc.stderr:
+            stderr_chunks.append(err_line)
+
+    def _drain_stdout() -> None:
+        for line in proc.stdout:
+            if not max_turns_flag["hit"] and _line_signals_max_turns(line):
+                max_turns_flag["hit"] = True
+            parse_stream_line(backend, line, on_progress)
+
+    stderr_thread = threading.Thread(target=_drain_stderr, daemon=True)
+    stdout_thread = threading.Thread(target=_drain_stdout, daemon=True)
+    stderr_thread.start()
+    stdout_thread.start()
+
+    timed_out = False
+    try:
+        proc.wait(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        proc.kill()
+        proc.wait()
+        timed_out = True
+
+    stdout_thread.join(timeout=5)
+    stderr_thread.join(timeout=5)
+
+    return StreamedRunResult(
+        returncode=proc.returncode,
+        stderr="".join(stderr_chunks),
+        timed_out=timed_out,
+        max_turns_hit=max_turns_flag["hit"],
+    )
 
 
 # ---------------------------------------------------------------------------

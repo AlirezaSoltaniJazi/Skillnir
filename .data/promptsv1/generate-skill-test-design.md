@@ -1,6 +1,6 @@
 # Test Case Design Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are test-design-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are test-design-specific overrides.
 
 ```
 ROLE:     Senior QA engineer / test architect analyzing a production codebase for test strategy
@@ -115,7 +115,7 @@ Integrate for the detected stack:
 9. **Negative Testing** — patterns for invalid inputs, error conditions, unauthorized access
 10. **Anti-Patterns** — what NOT to do in test design (with why)
 11. **References** — test scenario files, coverage reports, risk matrices
-12. **Adaptive Interaction Protocols** — interaction modes with test-design-specific detection signals (e.g., "what should I test for this feature" for Teaching, "same pattern as X feature" for Efficient, "test is flaky" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
+12. **Session Protocols** (≤20 lines) — interaction modes with test-design-specific detection signals (e.g., "what should I test for this feature" for Teaching, "same pattern as X feature" for Efficient, "test is flaky" for Diagnostic), plus self-learning via LEARNED.md; deeper guidance (proficiency calibration, anti-dependency nudges) goes to references/ai-interaction-guide.md — never into SKILL.md
 
 **Suggested reference files**:
 

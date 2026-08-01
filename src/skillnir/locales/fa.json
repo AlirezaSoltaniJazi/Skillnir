@@ -26,12 +26,15 @@
       "tools_registry": "فهرست ابزارها",
       "usage": "مصرف",
       "research": "پژوهش (مهندسی هوش مصنوعی)",
+      "harness_research": "پژوهش (مهندسی هارنس)",
       "events": "رویدادها",
       "benchmarks": "معیارها",
       "security": "پژوهش (آسیب‌پذیری‌های امنیتی)",
       "settings": "تنظیمات",
       "testing_research": "پژوهش (تست و کیفیت)",
-      "software_research": "پژوهش (مهندسی نرم‌افزار)"
+      "software_research": "پژوهش (مهندسی نرم‌افزار)",
+      "cleanup_articles": "پاک‌سازی مقاله‌ها",
+      "package_vulns": "آسیب‌پذیری بسته‌ها"
     },
     "sort_modes": {
       "default": "پیش‌فرض",
@@ -470,6 +473,55 @@
       "select_at_least_one_topic": "Select at least one topic",
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "harness_research": {
+      "title": "پژوهش مهندسی هارنس",
+      "subtitle": "جستجوی آخرین مقالات مهندسی هارنس عامل هوش مصنوعی / LLM (حلقه‌های عامل، استفاده از ابزار، مهندسی زمینه، evals، guardrails)، مطالعه عمیق آن‌ها و تولید خلاصه‌ها",
+      "topics_to_search": "Topics to search:",
+      "filter_by_source": "Filter by source (optional):",
+      "articles_in_kb": "Articles in knowledge base",
+      "result_success_title": "پژوهش هارنس کامل شد",
+      "result_fail_title": "پژوهش هارنس ناموفق بود",
+      "grid_articles_found": "Articles found",
+      "grid_new_articles": "New articles",
+      "grid_skipped_dedup": "Skipped (dedup)",
+      "grid_duration": "Duration",
+      "select_at_least_one_topic": "Select at least one topic",
+      "generated_html_pages": "Generated {count} HTML article page(s)",
+      "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "cleanup_articles": {
+      "title": "پاک‌سازی مقاله‌ها",
+      "subtitle": "شناسایی مقاله‌های منسوخ پژوهشی با هوش مصنوعی و انتقال به outdated/ — هرگز حذف نمی‌شود",
+      "store_label": "مخزن مقاله‌ها",
+      "mode_label": "حالت",
+      "mode_report": "گزارش — فقط دسته‌بندی (اجرای آزمایشی)",
+      "mode_apply": "اعمال — انتقال منسوخ‌ها + به‌روزرسانی نمایه",
+      "topics_label": "موضوع‌ها (خالی = همه)",
+      "older_than_label": "فقط مقاله‌های قدیمی‌تر از",
+      "older_all": "همهٔ زمان‌ها",
+      "older_6m": "۶ ماه",
+      "older_12m": "۱۲ ماه",
+      "older_18m": "۱۸ ماه",
+      "max_articles_label": "حداکثر مقاله در هر اجرا",
+      "result_success_title": "پاک‌سازی انجام شد",
+      "result_fail_title": "پاک‌سازی ناموفق بود",
+      "no_candidates": "مقالهٔ منسوخی یافت نشد — بایگانی به‌روز است.",
+      "start_button": "شروع پاک‌سازی"
+    },
+    "package_vulns": {
+      "title": "آسیب‌پذیری بسته‌ها",
+      "subtitle": "یافتن بسته‌های آسیب‌پذیر در اکوسیستم‌ها — کدام بسته، نسخه‌های آسیب‌دیده و نسخه‌ای که آن را رفع می‌کند",
+      "ecosystems_label": "اکوسیستم‌ها",
+      "vulns_in_kb": "هشدار در پایگاه دانش",
+      "regenerated_landing": "صفحه فرود بازتولید شد ({count} هشدار)",
+      "result_success_title": "اسکن بسته‌ها کامل شد",
+      "result_fail_title": "اسکن بسته‌ها ناموفق بود",
+      "grid_vulns_found": "هشدارهای یافت‌شده",
+      "grid_new_vulns": "هشدارهای جدید",
+      "grid_updated": "به‌روزشده",
+      "grid_duration": "مدت",
+      "select_at_least_one_ecosystem": "حداقل یک اکوسیستم انتخاب کنید"
     }
   },
   "buttons": {
@@ -520,7 +572,8 @@
     "ask": "پرسش",
     "hide_log": "پنهان کردن گزارش",
     "show_log": "نمایش گزارش",
-    "got_it": "متوجه شدم"
+    "got_it": "متوجه شدم",
+    "search_package_vulns": "اسکن بسته‌ها"
   },
   "messages": {
     "using_backend": "در حال استفاده: {name} ({model})",

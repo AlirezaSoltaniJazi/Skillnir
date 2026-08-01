@@ -69,12 +69,12 @@ class TestSnapshotRules:
         assert "not-a-rule.txt" not in names
 
     def test_returns_empty_when_dir_missing(self, tmp_path: Path):
-        assert _snapshot_rules(tmp_path) == set()
+        assert _snapshot_rules(tmp_path) == {}
 
     def test_returns_empty_when_no_mdc_files(self, tmp_path: Path):
         rules_dir = tmp_path / ".cursor" / "rules"
         rules_dir.mkdir(parents=True)
-        assert _snapshot_rules(tmp_path) == set()
+        assert _snapshot_rules(tmp_path) == {}
 
 
 # ── _check_rule_outputs ──────────────────────────────────────
@@ -85,7 +85,7 @@ class TestCheckRuleOutputs:
         rules_dir = tmp_path / ".cursor" / "rules"
         rules_dir.mkdir(parents=True)
 
-        before = set()
+        before = _snapshot_rules(tmp_path)
         (rules_dir / "new-rule.mdc").write_text("content")
 
         result = _check_rule_outputs(tmp_path, before, AIBackend.CLAUDE)
@@ -93,21 +93,35 @@ class TestCheckRuleOutputs:
         assert len(result.rule_files) == 1
         assert result.rule_files[0].name == "new-rule.mdc"
 
-    def test_failure_when_no_new_files(self, tmp_path: Path):
+    def test_failure_when_nothing_created_or_updated(self, tmp_path: Path):
         rules_dir = tmp_path / ".cursor" / "rules"
         rules_dir.mkdir(parents=True)
         (rules_dir / "existing.mdc").write_text("content")
 
-        before = {rules_dir / "existing.mdc"}
+        before = _snapshot_rules(tmp_path)
         result = _check_rule_outputs(tmp_path, before, AIBackend.CLAUDE)
         assert result.success is False
-        assert "No new .mdc files" in result.error
+        assert "created or updated" in result.error
+
+    def test_success_when_existing_rule_updated_in_place(self, tmp_path: Path):
+        """Re-running a topic that already has a rule file is a success."""
+        rules_dir = tmp_path / ".cursor" / "rules"
+        rules_dir.mkdir(parents=True)
+        existing = rules_dir / "testing.mdc"
+        existing.write_text("old rule body")
+
+        before = _snapshot_rules(tmp_path)
+        existing.write_text("refreshed rule body with more detail")
+
+        result = _check_rule_outputs(tmp_path, before, AIBackend.CLAUDE)
+        assert result.success is True
+        assert result.rule_files == [existing]
 
     def test_detects_only_new_files(self, tmp_path: Path):
         rules_dir = tmp_path / ".cursor" / "rules"
         rules_dir.mkdir(parents=True)
         (rules_dir / "old.mdc").write_text("old")
-        before = {rules_dir / "old.mdc"}
+        before = _snapshot_rules(tmp_path)
 
         (rules_dir / "new1.mdc").write_text("new1")
         (rules_dir / "new2.mdc").write_text("new2")

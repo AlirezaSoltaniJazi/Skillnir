@@ -7,22 +7,27 @@ description: Create Cursor rules for persistent AI guidance. Use when you want t
 
 Create project rules in `.cursor/rules/` to provide persistent context for the AI agent.
 
-## Gather Requirements
+## Derive Requirements (headless — you cannot ask questions)
 
-Before creating a rule, determine:
+You run non-interactively: the user prompt supplies the target project path and
+the rule topic, and there is no user available mid-run. Derive everything:
 
-1. **Purpose**: What should this rule enforce or teach?
-2. **Scope**: Always apply, or only for specific file patterns?
-3. **File patterns**: If scoped, which glob patterns?
+1. **Purpose**: from the rule topic in the user prompt.
+2. **Scope**: infer from the topic — language/framework topics get `globs`
+   scoped to the matching files; cross-cutting standards get `alwaysApply: true`.
+3. **File patterns**: from the file types the project actually contains
+   (Glob the tree; never invent extensions the project doesn't use).
 
-If previous conversation context exists, infer rules directly — don't ask redundant questions.
+## Ground the Rule in the Project
 
-If scope is unclear, ask:
+Before writing, scan the codebase (Read/Glob/Grep) for the topic's real
+conventions: actual file paths, actual error classes, actual naming. Every
+example in the rule must reflect this project — a rule showing code the
+project would never contain teaches the agent the wrong dialect. Check
+`.data/skills/*/LEARNED.md` for accumulated corrections on this topic first.
 
-- "Should this always apply, or only for specific files?"
-- If file-specific: "Which file patterns?" (e.g., `**/*.ts`, `backend/**/*.py`)
-
-Use AskQuestion tool when available.
+If `.cursor/rules/` already has a rule covering this topic, **UPDATE that file
+in place** — never create a near-duplicate under a new name.
 
 ---
 
@@ -144,5 +149,6 @@ To maximize reach, consider also adding the rule content as a section in the pro
 - [ ] File is `.mdc` format in `.cursor/rules/`
 - [ ] Frontmatter configured correctly (description + globs or alwaysApply)
 - [ ] Content under 50 lines
-- [ ] Includes concrete before/after examples
+- [ ] Includes concrete before/after examples drawn from THIS project's code
 - [ ] One concern per rule file
+- [ ] Existing rule on the same topic was updated, not duplicated

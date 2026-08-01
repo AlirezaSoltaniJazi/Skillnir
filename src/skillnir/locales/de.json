@@ -26,12 +26,15 @@
       "tools_registry": "Tool-Verzeichnis",
       "usage": "Nutzung",
       "research": "Forschung (KI-Engineering)",
+      "harness_research": "Forschung (Harness-Engineering)",
       "events": "Veranstaltungen",
       "benchmarks": "Benchmarks",
       "security": "Forschung (Sicherheits-Schwachstellen)",
       "settings": "Einstellungen",
       "testing_research": "Forschung (Testing & QA)",
-      "software_research": "Forschung (Software-Engineering)"
+      "software_research": "Forschung (Software-Engineering)",
+      "cleanup_articles": "Artikel aufräumen",
+      "package_vulns": "Paket-Schwachstellen"
     },
     "sort_modes": {
       "default": "Standard",
@@ -470,6 +473,55 @@
       "select_at_least_one_topic": "Select at least one topic",
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "harness_research": {
+      "title": "Harness-Engineering-Forschung",
+      "subtitle": "Neueste Artikel zum KI-Agent- / LLM-Harness-Engineering suchen (Agent-Loops, Tool-Nutzung, Context-Engineering, Evals, Guardrails), diese vertiefen und Zusammenfassungen generieren",
+      "topics_to_search": "Topics to search:",
+      "filter_by_source": "Filter by source (optional):",
+      "articles_in_kb": "Articles in knowledge base",
+      "result_success_title": "Harness-Forschung abgeschlossen",
+      "result_fail_title": "Harness-Forschung fehlgeschlagen",
+      "grid_articles_found": "Articles found",
+      "grid_new_articles": "New articles",
+      "grid_skipped_dedup": "Skipped (dedup)",
+      "grid_duration": "Duration",
+      "select_at_least_one_topic": "Select at least one topic",
+      "generated_html_pages": "Generated {count} HTML article page(s)",
+      "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "cleanup_articles": {
+      "title": "Artikel aufräumen",
+      "subtitle": "Veraltete Forschungsartikel per KI erkennen und nach outdated/ verschieben — nie löschen",
+      "store_label": "Artikelbestand",
+      "mode_label": "Modus",
+      "mode_report": "Bericht — nur klassifizieren (Testlauf)",
+      "mode_apply": "Anwenden — veraltete verschieben + Index aktualisieren",
+      "topics_label": "Themen (leer = alle)",
+      "older_than_label": "Nur Artikel älter als",
+      "older_all": "Alle Zeiträume",
+      "older_6m": "6 Monate",
+      "older_12m": "12 Monate",
+      "older_18m": "18 Monate",
+      "max_articles_label": "Max. Artikel pro Lauf",
+      "result_success_title": "Aufräumen abgeschlossen",
+      "result_fail_title": "Aufräumen fehlgeschlagen",
+      "no_candidates": "Keine veralteten Artikel gefunden — das Archiv ist auf dem Stand.",
+      "start_button": "Aufräumen starten"
+    },
+    "package_vulns": {
+      "title": "Paket-Schwachstellen",
+      "subtitle": "Verwundbare Pakete über Ökosysteme hinweg finden — welches Paket, betroffene Versionen und die behebende Version",
+      "ecosystems_label": "Ökosysteme",
+      "vulns_in_kb": "Hinweise in der Wissensdatenbank",
+      "regenerated_landing": "Landing-Seite neu erzeugt ({count} Hinweise)",
+      "result_success_title": "Paket-Scan abgeschlossen",
+      "result_fail_title": "Paket-Scan fehlgeschlagen",
+      "grid_vulns_found": "Gefundene Hinweise",
+      "grid_new_vulns": "Neue Hinweise",
+      "grid_updated": "Aktualisiert",
+      "grid_duration": "Dauer",
+      "select_at_least_one_ecosystem": "Mindestens ein Ökosystem wählen"
     }
   },
   "buttons": {
@@ -520,7 +572,8 @@
     "ask": "Fragen",
     "hide_log": "Log ausblenden",
     "show_log": "Log anzeigen",
-    "got_it": "Verstanden"
+    "got_it": "Verstanden",
+    "search_package_vulns": "Pakete scannen"
   },
   "messages": {
     "using_backend": "Verwendet: {name} ({model})",

@@ -1,6 +1,6 @@
 # Database Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are database-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are database-specific overrides.
 
 ```
 ROLE:     Senior database engineer analyzing a production data layer
@@ -141,7 +141,7 @@ Integrate for the detected database engine and ORM:
 9. **Security** — summary + link to references/security-checklist.md for per-table, per-query verification
 10. **Anti-Patterns** — what NOT to do (with why)
 11. **References** — key files, docs, resources
-12. **Adaptive Interaction Protocols** — interaction modes with database-specific detection signals (e.g., "slow query" for Diagnostic, "add a column" for Efficient, "what is this index" for Teaching), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
+12. **Session Protocols** (≤20 lines) — interaction modes with database-specific detection signals (e.g., "slow query" for Diagnostic, "add a column" for Efficient, "what is this index" for Teaching), plus self-learning via LEARNED.md; deeper guidance (proficiency calibration, anti-dependency nudges) goes to references/ai-interaction-guide.md — never into SKILL.md
 
 **Suggested reference files**:
 

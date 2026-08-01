@@ -126,6 +126,14 @@ def run_ui(port: int = 8080) -> None:
     _software_research_dir.mkdir(parents=True, exist_ok=True)
     app.add_static_files("/software-research-files", str(_software_research_dir))
 
+    _harness_research_dir = (
+        Path(__file__).resolve().parent.parent.parent.parent
+        / ".data"
+        / "harness-research"
+    )
+    _harness_research_dir.mkdir(parents=True, exist_ok=True)
+    app.add_static_files("/harness-research-files", str(_harness_research_dir))
+
     # ── Events files (landing page + event pages) ────────────
     _events_dir = (
         Path(__file__).resolve().parent.parent.parent.parent / ".data" / "events"
@@ -149,18 +157,27 @@ def run_ui(port: int = 8080) -> None:
     _security_dir.mkdir(parents=True, exist_ok=True)
     app.add_static_files("/security-files", str(_security_dir))
 
+    _package_vulns_dir = (
+        Path(__file__).resolve().parent.parent.parent.parent / ".data" / "package-vulns"
+    )
+    _package_vulns_dir.mkdir(parents=True, exist_ok=True)
+    app.add_static_files("/package-vulns-files", str(_package_vulns_dir))
+
     # ── Import page modules to register @ui.page routes ───────
     from skillnir.ui.pages import (  # noqa: F401
         ai_context,
         ai_extra,
         benchmarks,
+        cleanup_articles,
         delete_skill,
         events,
         generate_skill,
+        harness_research,
         home,
         ignore,
         news,
         optimize_docs,
+        package_vulns_page,
         research,
         security_page,
         settings,

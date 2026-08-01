@@ -8,7 +8,6 @@ agents.md) and ``rule_generator.py`` (Cursor .mdc files).
 
 import asyncio
 import shutil
-import subprocess
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
@@ -19,9 +18,15 @@ from skillnir.backends import (
     build_claude_sdk_kwargs,
     build_subprocess_command,
     load_config,
-    parse_stream_line,
+    maybe_compress_prompt,
+    run_streaming_command,
 )
-from skillnir.generator import GenerationProgress, _emit, get_prompts_dir
+from skillnir.generator import (
+    GenerationProgress,
+    _emit,
+    build_context_pack,
+    get_prompts_dir,
+)
 
 
 @dataclass
@@ -47,30 +52,38 @@ def load_wiki_prompt(version: str = "") -> str:
 
 def _build_wiki_user_prompt(target_project: Path) -> str:
     """Construct the runtime user prompt for wiki generation."""
-    return (
+    prompt = (
         f"Generate a project wiki for the project at {target_project}.\n"
         "Follow all phases in the system prompt.\n"
         f"Write llms.txt to the project root and create the docs/ folder under "
         f"{target_project}/docs/ with the markdown pages listed in the prompt."
     )
+    pack = build_context_pack(target_project)
+    if pack:
+        prompt += "\n\n" + pack
+    return prompt
 
 
-def _snapshot_wiki(target_project: Path) -> set[Path]:
-    """Return current wiki artefacts (llms.txt + docs/*.md)."""
-    snapshot: set[Path] = set()
-    llms_txt = target_project / "llms.txt"
-    if llms_txt.exists():
-        snapshot.add(llms_txt)
+def _snapshot_wiki(target_project: Path) -> dict[Path, tuple[int, int]]:
+    """Map wiki artefacts (llms.txt + docs/*.md) to (mtime_ns, size)."""
+    snapshot: dict[Path, tuple[int, int]] = {}
     docs_dir = target_project / "docs"
+    paths = [target_project / "llms.txt"]
     if docs_dir.is_dir():
-        snapshot.update(p for p in docs_dir.glob("*.md"))
+        paths.extend(docs_dir.glob("*.md"))
+    for p in paths:
+        try:
+            st = p.stat()
+        except OSError:
+            continue
+        snapshot[p] = (st.st_mtime_ns, st.st_size)
     return snapshot
 
 
 async def generate_wiki_sdk(
     target_project: Path,
     prompt_text: str,
-    before_files: set[Path],
+    before_files: dict[Path, tuple[int, int]],
     on_progress: Callable[[GenerationProgress], None] | None = None,
 ) -> WikiGenerationResult:
     """Generate wiki using claude-agent-sdk (async, streaming). Claude only."""
@@ -88,9 +101,9 @@ async def generate_wiki_sdk(
     _emit(on_progress, "phase", "Connecting to Claude SDK...")
 
     options = ClaudeAgentOptions(
-        system_prompt=prompt_text,
+        system_prompt=maybe_compress_prompt(prompt_text),
         max_turns=20,
-        allowed_tools=["Read", "Glob", "Grep", "Bash", "Write"],
+        allowed_tools=["Read", "Glob", "Grep", "Bash", "Edit", "Write"],
         permission_mode="acceptEdits",
         cwd=str(target_project),
         **build_claude_sdk_kwargs(),
@@ -131,7 +144,7 @@ async def generate_wiki_sdk(
 def generate_wiki_subprocess(
     target_project: Path,
     prompt_text: str,
-    before_files: set[Path],
+    before_files: dict[Path, tuple[int, int]],
     backend: AIBackend,
     model: str,
     on_progress: Callable[[GenerationProgress], None] | None = None,
@@ -144,53 +157,29 @@ def generate_wiki_subprocess(
     full_prompt = prompt_text + "\n\n---\n\n" + user_prompt
     cmd = build_subprocess_command(backend, full_prompt, model=model)
 
+    _emit(on_progress, "phase", "Scanning project...")
+
     try:
-        _emit(on_progress, "phase", "Scanning project...")
-
-        proc = subprocess.Popen(
-            cmd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            cwd=str(target_project),
-        )
-
-        import threading
-
-        stderr_chunks: list[str] = []
-
-        def _drain_stderr() -> None:
-            for err_line in proc.stderr:
-                stderr_chunks.append(err_line)
-
-        stderr_thread = threading.Thread(target=_drain_stderr, daemon=True)
-        stderr_thread.start()
-
-        for line in proc.stdout:
-            parse_stream_line(backend, line, on_progress)
-
-        proc.wait(timeout=600)
-        stderr_thread.join(timeout=5)
-        stderr = ''.join(stderr_chunks)
-
-        if proc.returncode != 0:
-            return WikiGenerationResult(
-                success=False,
-                error=f"{info.name} exited with code {proc.returncode}: {stderr}",
-                backend_used=backend,
-            )
-
-    except subprocess.TimeoutExpired:
-        proc.kill()
-        return WikiGenerationResult(
-            success=False,
-            error=f"{info.name} timed out after 10 minutes.",
-            backend_used=backend,
+        run = run_streaming_command(
+            cmd, backend, target_project, on_progress, timeout=600
         )
     except FileNotFoundError:
         return WikiGenerationResult(
             success=False,
             error=f"{info.cli_command} CLI not found in PATH.",
+            backend_used=backend,
+        )
+
+    if run.timed_out:
+        return WikiGenerationResult(
+            success=False,
+            error=f"{info.name} timed out after 10 minutes.",
+            backend_used=backend,
+        )
+    if run.returncode != 0:
+        return WikiGenerationResult(
+            success=False,
+            error=f"{info.name} exited with code {run.returncode}: {run.stderr}",
             backend_used=backend,
         )
 
@@ -200,12 +189,16 @@ def generate_wiki_subprocess(
 
 def _check_wiki_outputs(
     target_project: Path,
-    before_files: set[Path],
+    before_files: dict[Path, tuple[int, int]],
     backend: AIBackend,
 ) -> WikiGenerationResult:
-    """Verify llms.txt + at least one new docs/*.md page."""
+    """Verify llms.txt + at least one new or updated docs/*.md page."""
     after_files = _snapshot_wiki(target_project)
-    new_files = sorted(after_files - before_files)
+    new_files = sorted(
+        path
+        for path, signature in after_files.items()
+        if before_files.get(path) != signature
+    )
     llms_txt = target_project / "llms.txt"
     docs_dir = target_project / "docs"
 

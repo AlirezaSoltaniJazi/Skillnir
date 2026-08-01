@@ -331,11 +331,37 @@ class TestResolveModelId:
     def test_default_opus_alias_resolves_to_latest(self):
         # The "opus" alias is Claude's default_model; it must point at the flagship.
         result = resolve_model_id(AIBackend.CLAUDE, "opus")
+        assert result == "claude-opus-5"
+
+    def test_prior_opus_alias_still_resolves(self):
+        # Opus 4.8 stays selectable under its own alias after Opus 5 took "opus".
+        result = resolve_model_id(AIBackend.CLAUDE, "opus-4.8")
+        assert result == "claude-opus-4-8"
+
+    def test_full_opus_48_id_passes_through(self):
+        result = resolve_model_id(AIBackend.CLAUDE, "claude-opus-4-8")
         assert result == "claude-opus-4-8"
 
     def test_unknown_alias_passed_through(self):
         result = resolve_model_id(AIBackend.CLAUDE, "custom-model-xyz")
         assert result == "custom-model-xyz"
+
+
+class TestClaudeModelCatalog:
+    def test_opus_5_present_and_is_the_single_default(self):
+        claude_models = BACKENDS[AIBackend.CLAUDE].models
+        defaults = [m for m in claude_models if m.is_default]
+        assert len(defaults) == 1
+        assert defaults[0].id == "claude-opus-5"
+        assert defaults[0].alias == "opus"
+
+    def test_default_model_alias_resolves(self):
+        info = BACKENDS[AIBackend.CLAUDE]
+        assert resolve_model_id(AIBackend.CLAUDE, info.default_model) == "claude-opus-5"
+
+    def test_aliases_are_unique(self):
+        aliases = [m.alias for m in BACKENDS[AIBackend.CLAUDE].models]
+        assert len(aliases) == len(set(aliases)), "duplicate model alias"
 
 
 # ── _apply_mode ──────────────────────────────────────────────
@@ -653,3 +679,98 @@ class TestEffortAndThinking:
 
         kwargs = build_claude_sdk_kwargs(AppConfig(thinking_mode="disabled"))
         assert kwargs["thinking"] == {"type": "disabled"}
+
+
+class TestMaybeCompressPrompt:
+    def test_passthrough_when_disabled(self):
+        from skillnir.backends import maybe_compress_prompt
+
+        text = "The system is basically a very simple tool."
+        assert maybe_compress_prompt(text, AppConfig()) == text
+
+    def test_compresses_when_enabled(self):
+        from skillnir.backends import maybe_compress_prompt
+
+        text = "The system is basically a very simple tool."
+        result = maybe_compress_prompt(text, AppConfig(compress_prompts=True))
+        assert len(result) < len(text)
+        assert "system" in result
+
+
+class TestRunStreamingCommand:
+    def test_captures_exit_code_and_stderr(self, tmp_path: Path):
+        from skillnir.backends import run_streaming_command
+
+        cmd = [
+            sys.executable,
+            "-c",
+            "import sys; sys.stderr.write('boom'); sys.exit(3)",
+        ]
+        run = run_streaming_command(cmd, AIBackend.CLAUDE, tmp_path, None, timeout=30)
+        assert run.returncode == 3
+        assert "boom" in run.stderr
+        assert run.timed_out is False
+
+    def test_zero_exit_success(self, tmp_path: Path):
+        from skillnir.backends import run_streaming_command
+
+        cmd = [sys.executable, "-c", "print('not json but harmless')"]
+        run = run_streaming_command(cmd, AIBackend.CLAUDE, tmp_path, None, timeout=30)
+        assert run.returncode == 0
+        assert run.timed_out is False
+
+    def test_wall_clock_timeout_kills_hung_process(self, tmp_path: Path):
+        """A CLI that hangs with stdout open must be killed at the deadline.
+
+        The old per-module loops read stdout to EOF before ever calling
+        wait(timeout=...), so this exact scenario blocked forever.
+        """
+        from skillnir.backends import run_streaming_command
+
+        cmd = [sys.executable, "-c", "import time; time.sleep(60)"]
+        run = run_streaming_command(cmd, AIBackend.CLAUDE, tmp_path, None, timeout=1)
+        assert run.timed_out is True
+
+    def test_missing_executable_raises(self, tmp_path: Path):
+        from skillnir.backends import run_streaming_command
+
+        with pytest.raises(FileNotFoundError):
+            run_streaming_command(
+                ["definitely-not-a-real-cli-xyz"], AIBackend.CLAUDE, tmp_path, None
+            )
+
+    def test_max_turns_hit_detected_from_stdout(self, tmp_path: Path):
+        """The turn-limit signal rides stdout (subtype error_max_turns), not
+        stderr — run_streaming_command must surface it via max_turns_hit."""
+        from skillnir.backends import run_streaming_command
+
+        line = json.dumps({"type": "result", "subtype": "error_max_turns"})
+        cmd = [sys.executable, "-c", f"print({line!r}); exit(1)"]
+        run = run_streaming_command(cmd, AIBackend.CLAUDE, tmp_path, None, timeout=30)
+        assert run.returncode == 1
+        assert run.max_turns_hit is True
+
+    def test_max_turns_hit_false_on_normal_output(self, tmp_path: Path):
+        from skillnir.backends import run_streaming_command
+
+        cmd = [sys.executable, "-c", "print('all good')"]
+        run = run_streaming_command(cmd, AIBackend.CLAUDE, tmp_path, None, timeout=30)
+        assert run.max_turns_hit is False
+
+
+class TestLineSignalsMaxTurns:
+    def test_matches_subtype(self):
+        from skillnir.backends import _line_signals_max_turns
+
+        assert _line_signals_max_turns('{"subtype": "error_max_turns"}')
+
+    def test_matches_human_text(self):
+        from skillnir.backends import _line_signals_max_turns
+
+        assert _line_signals_max_turns("Reached maximum number of turns (30)")
+
+    def test_ignores_normal_lines(self):
+        from skillnir.backends import _line_signals_max_turns
+
+        assert not _line_signals_max_turns('{"type": "assistant"}')
+        assert not _line_signals_max_turns("")

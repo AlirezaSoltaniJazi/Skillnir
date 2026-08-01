@@ -1,6 +1,6 @@
 # Manual Tester Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are manual-tester-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are manual-tester-specific overrides.
 
 ```
 ROLE:    Senior manual QA / ISTQB-certified test engineer designing test cases and test plans by hand

@@ -1,6 +1,6 @@
 # Django Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are Django-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are Django-specific overrides.
 
 ```
 ROLE:     Senior Django engineer / DRF specialist analyzing a production Django codebase
@@ -263,7 +263,7 @@ Rule: production projects pin to an LTS unless they have a strong reason. The sk
 11. **Testing Standards** — pytest-django markers, factory_boy patterns, query-count assertions
 12. **Anti-Patterns** — the `Never` table from Phase 3
 13. **References** — Django docs, DRF docs, books (Two Scoops, Django for APIs), real-world post-mortems
-14. **Adaptive Interaction Protocols** — Django-specific signals (e.g., "OperationalError: deadlock detected" for Diagnostic, "another viewset like X" for Efficient, "what does @action do" for Teaching), correction accumulation, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
+14. **Session Protocols** (≤20 lines) — Django-specific signals (e.g., "OperationalError: deadlock detected" for Diagnostic, "another viewset like X" for Efficient, "what does @action do" for Teaching), plus self-learning via LEARNED.md; deeper guidance (proficiency calibration, anti-dependency nudges) goes to references/ai-interaction-guide.md — never into SKILL.md
 
 **Suggested reference files**:
 

@@ -70,7 +70,10 @@
   <div class="container">
     <div class="top-bar">
       <h1>Security Vulnerabilities</h1>
-      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"></button>
+      <div style="display:flex;gap:8px;align-items:center;flex-shrink:0;margin-top:8px;">
+        <a href="/" title="Back to Skillnir home" style="display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap;transition:background 0.15s;" onmouseover="this.style.background='var(--hover)'" onmouseout="this.style.background='var(--surface)'">&#127968; Home</a>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" style="margin-top:0;"></button>
+      </div>
     </div>
     <p class="subtitle"><!-- SUBTITLE --></p>
     <div class="filter-section">

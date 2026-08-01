@@ -30,13 +30,16 @@
       "tools_registry": "Tools Registry",
       "usage": "Usage",
       "research": "Research (AI Engineering)",
+      "harness_research": "Research (Harness Engineering)",
       "testing_research": "Research (Testing & QA)",
       "events": "Events",
       "news": "News",
       "benchmarks": "Benchmarks",
       "security": "Research (Security Vulnerabilities)",
       "settings": "Settings",
-      "software_research": "Research (Software Engineering)"
+      "software_research": "Research (Software Engineering)",
+      "cleanup_articles": "Cleanup Articles",
+      "package_vulns": "Package Vulnerabilities"
     },
     "sort_modes": {
       "default": "Default",
@@ -569,6 +572,55 @@
       "select_at_least_one_topic": "Select at least one topic",
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "harness_research": {
+      "title": "Harness Engineering Research",
+      "subtitle": "Search latest AI agent / LLM harness-engineering articles (agent loops, tool use, context engineering, evals, guardrails), deep-read them, and generate summaries",
+      "topics_to_search": "Topics to search:",
+      "filter_by_source": "Filter by source (optional):",
+      "articles_in_kb": "Articles in knowledge base",
+      "result_success_title": "Harness Research Complete",
+      "result_fail_title": "Harness Research Failed",
+      "grid_articles_found": "Articles found",
+      "grid_new_articles": "New articles",
+      "grid_skipped_dedup": "Skipped (dedup)",
+      "grid_duration": "Duration",
+      "select_at_least_one_topic": "Select at least one topic",
+      "generated_html_pages": "Generated {count} HTML article page(s)",
+      "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "cleanup_articles": {
+      "title": "Cleanup Articles",
+      "subtitle": "AI-classify outdated research articles and move them to outdated/ — never deletes",
+      "store_label": "Article store",
+      "mode_label": "Mode",
+      "mode_report": "Report — classify only (dry-run)",
+      "mode_apply": "Apply — move outdated + update index",
+      "topics_label": "Topics (empty = all)",
+      "older_than_label": "Only articles older than",
+      "older_all": "All time",
+      "older_6m": "6 months",
+      "older_12m": "12 months",
+      "older_18m": "18 months",
+      "max_articles_label": "Max articles per run",
+      "result_success_title": "Cleanup finished",
+      "result_fail_title": "Cleanup failed",
+      "no_candidates": "No outdated articles found — the archive looks healthy.",
+      "start_button": "Start Cleanup"
+    },
+    "package_vulns": {
+      "title": "Package Vulnerabilities",
+      "subtitle": "Find vulnerable packages across ecosystems — which package, affected versions, and the version that fixes it",
+      "ecosystems_label": "Ecosystems",
+      "vulns_in_kb": "advisories in knowledge base",
+      "regenerated_landing": "Regenerated landing page ({count} advisories)",
+      "result_success_title": "Package scan complete",
+      "result_fail_title": "Package scan failed",
+      "grid_vulns_found": "Advisories found",
+      "grid_new_vulns": "New advisories",
+      "grid_updated": "Updated",
+      "grid_duration": "Duration",
+      "select_at_least_one_ecosystem": "Select at least one ecosystem"
     }
   },
   "buttons": {
@@ -625,7 +677,8 @@
     "update_all_skills": "Update All Skills",
     "usage": "Usage",
     "view_landing_page": "View Landing Page",
-    "view_skill_md": "View SKILL.md"
+    "view_skill_md": "View SKILL.md",
+    "search_package_vulns": "Scan Packages"
   },
   "messages": {
     "using_backend": "Using: {name} ({model})",

@@ -1,6 +1,6 @@
 # Financial Manager Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are financial-manager-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are financial-manager-specific overrides.
 
 ```
 ROLE:    Senior finance manager / FP&A lead working across budgeting, forecasting, financial reporting, treasury, and unit-economics analysis — fluent in IFRS / US-GAAP basics, Excel/Sheets modeling, and SaaS metrics

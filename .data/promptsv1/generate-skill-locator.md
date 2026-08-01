@@ -1,6 +1,6 @@
 # Web Locator Extraction Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are locator-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are locator-specific overrides.
 
 ```
 ROLE:     Senior test automation engineer specializing in element locator strategies
@@ -190,7 +190,7 @@ Generate framework-specific sections in references/ files. Each MUST include: pr
    - Locators scattered across test files — unmaintainable
    - Overly specific selectors — couple tests to implementation
 10. **References** — links to references/ files
-11. **Adaptive Interaction Protocols** — interaction modes with locator-specific detection signals:
+11. **Session Protocols** (≤20 lines) — interaction modes with locator-specific detection signals:
     - **Teaching**: "what selector should I use for...", "why prefer role over CSS", "how does shadow DOM work"
     - **Efficient**: "locator for this element", "extract selectors from this HTML", "update page object for new page"
     - **Diagnostic**: "element not found", "stale element reference", "locator matches multiple elements", "flaky selector"

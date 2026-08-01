@@ -1,6 +1,6 @@
 # DevOps Engineer Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are devops-engineer-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are devops-engineer-specific overrides.
 
 ```
 ROLE:    Senior DevOps / Platform / SRE engineer working across CI/CD, IaC, container orchestration, observability, and on-call — fluent in Kubernetes, Terraform, GitOps, GitHub Actions, and the DORA / SPACE measurement frameworks

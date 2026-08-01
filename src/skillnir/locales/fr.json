@@ -26,12 +26,15 @@
       "tools_registry": "Registre des Outils",
       "usage": "Utilisation",
       "research": "Recherche (Ingénierie IA)",
+      "harness_research": "Recherche (Ingénierie des harnais IA)",
       "events": "Evenements",
       "benchmarks": "Benchmarks",
       "security": "Recherche (Vulnérabilités de sécurité)",
       "settings": "Parametres",
       "testing_research": "Recherche (Tests & QA)",
-      "software_research": "Recherche (Ingénierie Logicielle)"
+      "software_research": "Recherche (Ingénierie Logicielle)",
+      "cleanup_articles": "Nettoyage des articles",
+      "package_vulns": "Vulnérabilités des paquets"
     },
     "sort_modes": {
       "default": "Par defaut",
@@ -470,6 +473,55 @@
       "select_at_least_one_topic": "Select at least one topic",
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "harness_research": {
+      "title": "Recherche en ingénierie des harnais IA",
+      "subtitle": "Rechercher les derniers articles sur l'ingénierie des harnais d'agents IA / LLM (boucles d'agent, utilisation d'outils, ingénierie du contexte, évaluations, garde-fous), les lire en profondeur et générer des résumés",
+      "topics_to_search": "Topics to search:",
+      "filter_by_source": "Filter by source (optional):",
+      "articles_in_kb": "Articles in knowledge base",
+      "result_success_title": "Harness Research Complete",
+      "result_fail_title": "Harness Research Failed",
+      "grid_articles_found": "Articles found",
+      "grid_new_articles": "New articles",
+      "grid_skipped_dedup": "Skipped (dedup)",
+      "grid_duration": "Duration",
+      "select_at_least_one_topic": "Select at least one topic",
+      "generated_html_pages": "Generated {count} HTML article page(s)",
+      "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "cleanup_articles": {
+      "title": "Nettoyage des articles",
+      "subtitle": "Classer par IA les articles de recherche obsolètes et les déplacer vers outdated/ — jamais de suppression",
+      "store_label": "Dépôt d'articles",
+      "mode_label": "Mode",
+      "mode_report": "Rapport — classification seule (essai)",
+      "mode_apply": "Appliquer — déplacer les obsolètes + mettre à jour l'index",
+      "topics_label": "Sujets (vide = tous)",
+      "older_than_label": "Seulement les articles plus vieux que",
+      "older_all": "Toutes périodes",
+      "older_6m": "6 mois",
+      "older_12m": "12 mois",
+      "older_18m": "18 mois",
+      "max_articles_label": "Max. d'articles par exécution",
+      "result_success_title": "Nettoyage terminé",
+      "result_fail_title": "Échec du nettoyage",
+      "no_candidates": "Aucun article obsolète trouvé — l'archive est à jour.",
+      "start_button": "Lancer le nettoyage"
+    },
+    "package_vulns": {
+      "title": "Vulnérabilités des paquets",
+      "subtitle": "Trouver les paquets vulnérables par écosystème — quel paquet, versions affectées et version qui corrige",
+      "ecosystems_label": "Écosystèmes",
+      "vulns_in_kb": "avis dans la base de connaissances",
+      "regenerated_landing": "Page régénérée ({count} avis)",
+      "result_success_title": "Analyse des paquets terminée",
+      "result_fail_title": "Échec de l'analyse des paquets",
+      "grid_vulns_found": "Avis trouvés",
+      "grid_new_vulns": "Nouveaux avis",
+      "grid_updated": "Mis à jour",
+      "grid_duration": "Durée",
+      "select_at_least_one_ecosystem": "Sélectionnez au moins un écosystème"
     }
   },
   "buttons": {
@@ -520,7 +572,8 @@
     "ask": "Demander",
     "hide_log": "Masquer le log",
     "show_log": "Afficher le log",
-    "got_it": "Compris"
+    "got_it": "Compris",
+    "search_package_vulns": "Analyser les paquets"
   },
   "messages": {
     "using_backend": "Utilisation : {name} ({model})",

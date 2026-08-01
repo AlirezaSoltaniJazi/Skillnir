@@ -26,12 +26,15 @@
       "tools_registry": "Rejestr narzędzi",
       "usage": "Użycie",
       "research": "Badania (Inżynieria AI)",
+      "harness_research": "Badania (Inżynieria harnessów)",
       "events": "Wydarzenia",
       "benchmarks": "Benchmarki",
       "security": "Badania (Luki bezpieczeństwa)",
       "settings": "Ustawienia",
       "testing_research": "Badania (Testowanie i QA)",
-      "software_research": "Badania (Inżynieria oprogramowania)"
+      "software_research": "Badania (Inżynieria oprogramowania)",
+      "cleanup_articles": "Porządkowanie artykułów",
+      "package_vulns": "Podatności pakietów"
     },
     "sort_modes": {
       "default": "Domyślnie",
@@ -470,6 +473,55 @@
       "select_at_least_one_topic": "Select at least one topic",
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "harness_research": {
+      "title": "Badania inżynierii harnessów",
+      "subtitle": "Szukaj najnowszych artykułów o inżynierii harnessów agentów AI / LLM (pętle agentów, użycie narzędzi, inżynieria kontekstu, evals, guardrails), czytaj je dogłębnie i generuj podsumowania",
+      "topics_to_search": "Topics to search:",
+      "filter_by_source": "Filter by source (optional):",
+      "articles_in_kb": "Articles in knowledge base",
+      "result_success_title": "Harness Research Complete",
+      "result_fail_title": "Harness Research Failed",
+      "grid_articles_found": "Articles found",
+      "grid_new_articles": "New articles",
+      "grid_skipped_dedup": "Skipped (dedup)",
+      "grid_duration": "Duration",
+      "select_at_least_one_topic": "Select at least one topic",
+      "generated_html_pages": "Generated {count} HTML article page(s)",
+      "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "cleanup_articles": {
+      "title": "Porządkowanie artykułów",
+      "subtitle": "Klasyfikuj przestarzałe artykuły badawcze przez AI i przenoś do outdated/ — nigdy nie usuwa",
+      "store_label": "Magazyn artykułów",
+      "mode_label": "Tryb",
+      "mode_report": "Raport — tylko klasyfikacja (na sucho)",
+      "mode_apply": "Zastosuj — przenieś przestarzałe + zaktualizuj indeks",
+      "topics_label": "Tematy (puste = wszystkie)",
+      "older_than_label": "Tylko artykuły starsze niż",
+      "older_all": "Cały okres",
+      "older_6m": "6 miesięcy",
+      "older_12m": "12 miesięcy",
+      "older_18m": "18 miesięcy",
+      "max_articles_label": "Maks. artykułów na uruchomienie",
+      "result_success_title": "Porządkowanie zakończone",
+      "result_fail_title": "Porządkowanie nie powiodło się",
+      "no_candidates": "Nie znaleziono przestarzałych artykułów — archiwum jest aktualne.",
+      "start_button": "Rozpocznij porządkowanie"
+    },
+    "package_vulns": {
+      "title": "Podatności pakietów",
+      "subtitle": "Znajdź podatne pakiety w różnych ekosystemach — który pakiet, których wersji dotyczy i która wersja to naprawia",
+      "ecosystems_label": "Ekosystemy",
+      "vulns_in_kb": "poradników w bazie wiedzy",
+      "regenerated_landing": "Odświeżono stronę ({count} poradników)",
+      "result_success_title": "Skan pakietów zakończony",
+      "result_fail_title": "Skan pakietów nie powiódł się",
+      "grid_vulns_found": "Znalezione poradniki",
+      "grid_new_vulns": "Nowe poradniki",
+      "grid_updated": "Zaktualizowane",
+      "grid_duration": "Czas",
+      "select_at_least_one_ecosystem": "Wybierz co najmniej jeden ekosystem"
     }
   },
   "buttons": {
@@ -520,7 +572,8 @@
     "ask": "Zapytaj",
     "hide_log": "Ukryj dziennik",
     "show_log": "Pokaż dziennik",
-    "got_it": "Rozumiem"
+    "got_it": "Rozumiem",
+    "search_package_vulns": "Skanuj pakiety"
   },
   "messages": {
     "using_backend": "Używany: {name} ({model})",

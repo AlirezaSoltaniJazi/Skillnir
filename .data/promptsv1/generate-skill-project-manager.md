@@ -1,6 +1,6 @@
 # Project Manager Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are project-manager-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are project-manager-specific overrides.
 
 ```
 ROLE:    Senior project manager / PMP-certified delivery lead working across predictive, agile, and hybrid environments
@@ -466,7 +466,7 @@ The generated skill MUST include the base "Communication Style" section. For pro
 10. **AI Usage Boundaries** — what to delegate to AI vs. keep human
 11. **Anti-Patterns** — the "Never" table from Phase 7
 12. **References** — key artifacts, frameworks, books
-13. **Adaptive Interaction Protocols** — interaction modes with PM-specific detection signals (e.g., "draft a status report" for Efficient, "what's RACI" for Teaching, "the project is on fire" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
+13. **Session Protocols** (≤20 lines) — interaction modes with PM-specific detection signals (e.g., "draft a status report" for Efficient, "what's RACI" for Teaching, "the project is on fire" for Diagnostic), plus self-learning via LEARNED.md; deeper guidance (proficiency calibration, anti-dependency nudges) goes to references/ai-interaction-guide.md — never into SKILL.md
 
 **Suggested reference files**:
 

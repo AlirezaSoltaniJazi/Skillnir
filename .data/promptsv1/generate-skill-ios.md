@@ -1,6 +1,6 @@
 # iOS Skill Generator
 
-> **Base instructions**: Read [\_base-skill-generator.md](_base-skill-generator.md) first for shared structure, quality gates, and execution order. Below are iOS-specific overrides.
+> **Base instructions**: The shared base instructions (structure, quality gates, execution order) are already included above this prompt — do NOT attempt to read \_base-skill-generator.md from disk; it does not exist in the target project. Below are iOS-specific overrides.
 
 ```
 ROLE:     Senior iOS engineer analyzing a production iOS codebase
@@ -138,7 +138,7 @@ Integrate for the detected architecture:
 9. **Security** — summary + link to references/security-checklist.md for keychain, ATS, biometric verification
 10. **Anti-Patterns** — what NOT to do (with why)
 11. **References** — key files, SDK docs, architecture decisions
-12. **Adaptive Interaction Protocols** — interaction modes with iOS-specific detection signals (e.g., "how does @Observable work" for Teaching, "another view like X" for Efficient, "EXC_BAD_ACCESS" for Diagnostic), correction accumulation, proficiency calibration, anti-dependency guardrails, convention surfacing, self-learning via LEARNED.md
+12. **Session Protocols** (≤20 lines) — interaction modes with iOS-specific detection signals (e.g., "how does @Observable work" for Teaching, "another view like X" for Efficient, "EXC_BAD_ACCESS" for Diagnostic), plus self-learning via LEARNED.md; deeper guidance (proficiency calibration, anti-dependency nudges) goes to references/ai-interaction-guide.md — never into SKILL.md
 
 **Suggested reference files**:
 

@@ -26,12 +26,15 @@
       "tools_registry": "Toolregister",
       "usage": "Gebruik",
       "research": "Onderzoek (AI Engineering)",
+      "harness_research": "Onderzoek (Harness Engineering)",
       "events": "Evenementen",
       "benchmarks": "Benchmarks",
       "security": "Onderzoek (Beveiligingslekken)",
       "settings": "Instellingen",
       "testing_research": "Onderzoek (Testen & QA)",
-      "software_research": "Onderzoek (Software Engineering)"
+      "software_research": "Onderzoek (Software Engineering)",
+      "cleanup_articles": "Artikelen opschonen",
+      "package_vulns": "Pakketkwetsbaarheden"
     },
     "sort_modes": {
       "default": "Standaard",
@@ -470,6 +473,55 @@
       "select_at_least_one_topic": "Select at least one topic",
       "generated_html_pages": "Generated {count} HTML article page(s)",
       "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "harness_research": {
+      "title": "Harness Engineering Research",
+      "subtitle": "Search latest AI agent / LLM harness-engineering articles (agent loops, tool use, context engineering, evals, guardrails), deep-read them, and generate summaries",
+      "topics_to_search": "Topics to search:",
+      "filter_by_source": "Filter by source (optional):",
+      "articles_in_kb": "Articles in knowledge base",
+      "result_success_title": "Harness Research Complete",
+      "result_fail_title": "Harness Research Failed",
+      "grid_articles_found": "Articles found",
+      "grid_new_articles": "New articles",
+      "grid_skipped_dedup": "Skipped (dedup)",
+      "grid_duration": "Duration",
+      "select_at_least_one_topic": "Select at least one topic",
+      "generated_html_pages": "Generated {count} HTML article page(s)",
+      "all_articles_have_html": "All articles already have HTML pages"
+    },
+    "cleanup_articles": {
+      "title": "Artikelen opschonen",
+      "subtitle": "Verouderde onderzoeksartikelen met AI herkennen en naar outdated/ verplaatsen — nooit verwijderen",
+      "store_label": "Artikelarchief",
+      "mode_label": "Modus",
+      "mode_report": "Rapport — alleen classificeren (proefrun)",
+      "mode_apply": "Toepassen — verouderde verplaatsen + index bijwerken",
+      "topics_label": "Onderwerpen (leeg = alle)",
+      "older_than_label": "Alleen artikelen ouder dan",
+      "older_all": "Alle periodes",
+      "older_6m": "6 maanden",
+      "older_12m": "12 maanden",
+      "older_18m": "18 maanden",
+      "max_articles_label": "Max. artikelen per run",
+      "result_success_title": "Opschonen voltooid",
+      "result_fail_title": "Opschonen mislukt",
+      "no_candidates": "Geen verouderde artikelen gevonden — het archief is actueel.",
+      "start_button": "Opschonen starten"
+    },
+    "package_vulns": {
+      "title": "Pakketkwetsbaarheden",
+      "subtitle": "Kwetsbare pakketten vinden over ecosystemen — welk pakket, getroffen versies en de versie die het oplost",
+      "ecosystems_label": "Ecosystemen",
+      "vulns_in_kb": "adviezen in kennisbank",
+      "regenerated_landing": "Landingspagina opnieuw gegenereerd ({count} adviezen)",
+      "result_success_title": "Pakketscan voltooid",
+      "result_fail_title": "Pakketscan mislukt",
+      "grid_vulns_found": "Adviezen gevonden",
+      "grid_new_vulns": "Nieuwe adviezen",
+      "grid_updated": "Bijgewerkt",
+      "grid_duration": "Duur",
+      "select_at_least_one_ecosystem": "Kies minstens één ecosysteem"
     }
   },
   "buttons": {
@@ -520,7 +572,8 @@
     "ask": "Vragen",
     "hide_log": "Log verbergen",
     "show_log": "Log tonen",
-    "got_it": "Begrepen"
+    "got_it": "Begrepen",
+    "search_package_vulns": "Pakketten scannen"
   },
   "messages": {
     "using_backend": "In gebruik: {name} ({model})",
