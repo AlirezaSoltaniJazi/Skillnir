@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Non-interactive CI runner for Skillnir intel pipelines.
 
-Entry point for GitHub Actions. Runs ``research``, ``events``,
-``security``, or ``benchmarks`` via the Python API (NOT the interactive
-CLI, which uses questionary prompts and would hang in CI), diffs the
-on-disk index before/after the run, and POSTs a single consolidated
-Google Chat message listing all new items.
+Entry point for GitHub Actions. Runs one of the nine intel features
+(``research``, ``harness-research``, ``testing-research``,
+``software-research``, ``events``, ``security``, ``package-vulns``,
+``benchmarks``, ``news``) via the Python API (NOT the interactive CLI,
+which uses questionary prompts and would hang in CI), diffs the on-disk
+index before/after the run, and POSTs a single consolidated Google Chat
+message listing all new items.
 
 Environment variables
 ---------------------

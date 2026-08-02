@@ -15,3 +15,5 @@
 ## Discovered Conventions
 
 <!-- AI writes here when it discovers implicit skill system conventions through analysis -->
+
+- 2026-08-02: This skill's own `SKILL.md` frontmatter says `compatibility: "Python 3.13+..."`; `pyproject.toml` requires `>=3.14`. Treat this skill as Python 3.14+ until `SKILL.md` is regenerated.

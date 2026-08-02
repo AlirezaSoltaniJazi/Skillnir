@@ -122,8 +122,13 @@ bandit -lll -iii -r src/
 | `ask`              | Ask AI a question about a project (read-only)                                 |
 | `plan`             | Get a detailed implementation plan from AI                                    |
 | `research`         | Search latest AI engineering news and generate summaries                      |
+| `harness-research` | Search latest AI agent / LLM harness-engineering articles and generate a landing page |
 | `testing-research` | Search latest testing/QA news (manual, automation, AI-in-testing, perf, a11y) |
+| `software-research` | Search latest software-engineering / architecture / craft articles and generate a landing page |
+| `cleanup-articles` | AI-classify outdated research articles and move them to `outdated/` (report or apply, never deletes) |
+| `package-vulns`    | Search package advisory DBs for vulnerable dependencies across ecosystems      |
 | `events`           | Search upcoming AI events and conferences worldwide                           |
+| `news`             | Search fresh AI news headlines by category and recency                        |
 | `config`           | Manage backend and model configuration                                        |
 | `sound`            | Manage Claude Code sound notification hooks                                   |
 | `ui`               | Launch the web interface                                                      |
@@ -150,7 +155,7 @@ skillnir/
 │   ├── skill_generator.py    # Multi-backend skill generation
 │   ├── skills.py             # Skill discovery and parsing
 │   ├── syncer.py             # Version-aware skill sync
-│   ├── tools.py              # AI tool definitions (38 tools)
+│   ├── tools.py              # AI tool definitions (37 tools)
 │   ├── usage.py              # Token usage tracking
 │   ├── locales/              # Translation files (en, de, nl, pl, fa, uk, sq, fr, ar)
 │   ├── ui/                   # NiceGUI web interface
@@ -158,10 +163,10 @@ skillnir/
 ├── scripts/               # CI runner scripts (run_intel.py)
 ├── .data/
 │   ├── skills/               # Source skill directories
-│   ├── promptsv1/            # Skill generation prompts (32 templates)
+│   ├── promptsv1/            # Skill generation prompts (44 templates)
 │   ├── research/             # Research articles (organized by topic)
 │   └── events/               # AI events data
-├── tests/                    # pytest test suite (18 test files)
+├── tests/                    # pytest test suite (29 test files)
 ├── pyproject.toml            # Build config (hatchling)
 └── .pre-commit-config.yaml
 ```
@@ -180,15 +185,15 @@ skillName/
 └── agents/        # Sub-agent definitions
 ```
 
-### Available Scopes (26)
+### Available Scopes (37)
 
-| Category                | Scopes                                                                 |
-| ----------------------- | ---------------------------------------------------------------------- |
-| Application Development | backend, frontend, android, ios, js, python, go, cross-platform-mobile |
-| Data & APIs             | database, api-design, data-science                                     |
-| Testing & Quality       | testing, test-design, locator, playwright, wdio, selenium, appium      |
-| Operations & Security   | infra, security, observability, performance                            |
-| Specialized             | chrome-extension, accessibility, migration, general-system             |
+| Category                 | Scopes                                                                                                                                     |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Engineering Roles        | backend, frontend, js, python, django, go, android, android-google, ios, cross-platform-mobile, chrome-extension, data-science             |
+| Quality & Testing        | testing, test-design, manual-tester, locator, playwright, wdio, selenium, appium, accessibility, automation-review                          |
+| Architecture & Platform  | infra, devops-engineer, database, api-design, migration, performance, observability, security, general-system                             |
+| Design                   | ui-ux-designer                                                                                                                              |
+| Business & People        | project-manager, financial-manager, hr-manager, deep-researcher, translator                                                                 |
 
 ## CI / GitHub Actions Usage
 
@@ -228,10 +233,15 @@ Skillnir can be used as a library in CI pipelines via `scripts/run_intel.py` —
 ### Supported Features
 
 ```bash
-python scripts/run_intel.py research     # AI news articles
-python scripts/run_intel.py events       # AI conferences & meetups
-python scripts/run_intel.py security     # CVEs & advisories
-python scripts/run_intel.py benchmarks   # AI model leaderboards
+python scripts/run_intel.py research          # AI news articles
+python scripts/run_intel.py harness-research  # AI agent / LLM harness-engineering articles
+python scripts/run_intel.py testing-research  # Testing/QA news
+python scripts/run_intel.py software-research # Software-engineering / architecture articles
+python scripts/run_intel.py events            # AI conferences & meetups
+python scripts/run_intel.py security          # CVEs & advisories
+python scripts/run_intel.py package-vulns     # Vulnerable package advisories
+python scripts/run_intel.py benchmarks        # AI model leaderboards
+python scripts/run_intel.py news              # Fresh AI news headlines
 ```
 
 ### Environment Variables
@@ -245,9 +255,18 @@ python scripts/run_intel.py benchmarks   # AI model leaderboards
 | `AI_AGENT_MODEL_FALLBACK`       | No       | —                                       | Fallback model on primary failure                                             |
 | `AI_AGENT_RESEARCH_DATE_RANGE`  | No       | —                                       | Date filter for research (e.g. `published after 2026-01-01`)                  |
 | `AI_AGENT_RESEARCH_TOPICS`      | No       | all                                     | Comma-separated topic keys                                                    |
+| `AI_AGENT_HARNESS_RESEARCH_TOPICS` | No    | all                                     | Comma-separated harness-research topic keys                                   |
+| `AI_AGENT_HARNESS_RESEARCH_DATE_RANGE` | No | —                                       | Date filter for harness-research                                              |
+| `AI_AGENT_TESTING_RESEARCH_TOPICS` | No    | all                                     | Comma-separated testing-research topic keys                                   |
+| `AI_AGENT_TESTING_RESEARCH_DATE_RANGE` | No | —                                       | Date filter for testing-research                                              |
+| `AI_AGENT_SOFTWARE_RESEARCH_TOPICS` | No   | all                                     | Comma-separated software-research topic keys                                  |
+| `AI_AGENT_SOFTWARE_RESEARCH_DATE_RANGE` | No| —                                       | Date filter for software-research                                             |
 | `AI_AGENT_EVENT_COUNTRIES`      | No       | all                                     | Comma-separated country codes (e.g. `uk,de`)                                  |
 | `AI_AGENT_SECURITY_CATEGORIES`  | No       | all                                     | Comma-separated category keys                                                 |
+| `AI_AGENT_PACKAGE_VULNS_ECOSYSTEMS` | No   | all                                     | Comma-separated ecosystem keys (e.g. `npm,pypi,maven`)                        |
 | `AI_AGENT_BENCHMARK_TOP_N`      | No       | `10`                                    | Number of top models to fetch                                                 |
+| `AI_AGENT_NEWS_CATEGORIES`      | No       | all                                     | Comma-separated news category keys                                            |
+| `AI_AGENT_NEWS_RECENCY`         | No       | `7d`                                    | One of `24h`, `48h`, `7d`                                                     |
 | `AI_AGENT_NOTIFY_CHUNK_SIZE`    | No       | `15`                                    | Items per Google Chat card (chunked to avoid 32KB limit)                      |
 | `AI_AGENT_NOTIFY_BUTTON_TEXT`   | No       | `View source`                           | Label for the per-item link button                                            |
 | `AI_AGENT_NOTIFY_SUBTITLE`      | No       | `{feature} — {count} new item(s)`       | Card header subtitle template. Placeholders: `{feature}`, `{count}`, `{part}` |
