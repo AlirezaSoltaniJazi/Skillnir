@@ -427,6 +427,28 @@ class TestAutomationReviewScope:
         assert "automation-review" in quality
 
 
+class TestFirefoxExtensionScope:
+    def test_in_skill_scopes(self):
+        assert "firefox-extension" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "firefox-extension" in SCOPE_LABELS
+        assert "Firefox" in SCOPE_LABELS["firefox-extension"]
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("firefox-extension", "v1")
+        assert "Firefox" in text
+        assert "browser." in text
+        assert "webextension-polyfill" in text
+        assert "web-ext" in text
+        assert "browser_specific_settings" in text
+        assert "AMO" in text or "addons.mozilla.org" in text
+
+    def test_in_engineering_roles_category(self):
+        engineering = dict(SCOPE_CATEGORIES).get("Engineering Roles", ())
+        assert "firefox-extension" in engineering
+
+
 class TestScopeCategories:
     def test_every_scope_belongs_to_exactly_one_category(self):
         """Every entry in SKILL_SCOPES must appear in exactly one SCOPE_CATEGORIES bucket."""

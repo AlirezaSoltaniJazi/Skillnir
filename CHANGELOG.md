@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- New **Firefox extension** skill generator — pick the "Firefox Extension" scope in Generate Skill to create a WebExtensions skill (browser.\* APIs, sidebar, `web-ext`, AMO), alongside the existing Chrome extension one.
 - Added **Claude Opus 5** to the model picker and made it the new default. Opus 4.8 and the other Claude models are still available.
 - New **Harness Engineering** research section — finds the latest articles on building AI agents (agent loops, tool use, context, memory, evals, guardrails, and more), alongside the existing research sections.
 - New ready-to-use **Jira, GitHub, and GitLab skills** for the ticket → branch → pull/merge-request workflow, usable in any repository.
