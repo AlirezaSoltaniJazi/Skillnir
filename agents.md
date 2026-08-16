@@ -11,7 +11,7 @@ CLI + Web UI tool that generates, manages, and injects domain-specific AI skills
 | Language       | Python 3.14+                                                                                                                    |
 | Build          | hatchling + uv (package manager)                                                                                                |
 | CLI            | argparse + questionary (interactive prompts)                                                                                    |
-| Web UI         | NiceGUI 2.0+                                                                                                                    |
+| Web UI         | NiceGUI 3.10+                                                                                                                   |
 | AI Generation  | claude-agent-sdk + subprocess backends                                                                                          |
 | Config Parsing | PyYAML (SKILL.md frontmatter)                                                                                                   |
 | Testing        | pytest + pytest-asyncio                                                                                                         |
@@ -154,27 +154,27 @@ OS/file errors caught with specific exceptions (`OSError`, `FileNotFoundError`, 
 
 ## Files To Know
 
-| File                          | Purpose                                                                                           |
-| ----------------------------- | ------------------------------------------------------------------------------------------------- |
-| `src/skillnir/cli.py`         | CLI entry point — `main()` at bottom, 28 commands                                                 |
-| `src/skillnir/tools.py`       | AI tool registry — `TOOLS` tuple, `AITool` dataclass, `SOURCE_DOTDIR` constant                    |
-| `src/skillnir/backends.py`    | Backend configs — `BACKENDS` dict, `BackendInfo`, model lists                                     |
-| `src/skillnir/skills.py`      | Skill discovery — `Skill` dataclass, `parse_frontmatter()`, `discover_skills()`                   |
-| `src/skillnir/injector.py`    | Symlink creation — `inject_skill()`                                                               |
-| `src/skillnir/scaffold.py`    | Skill template scaffolding                                                                        |
-| `src/skillnir/events.py`      | Events pipeline — `Event`, `search_events()`, 12 countries                                        |
-| `src/skillnir/benchmarks.py`  | AI model benchmarks search — 7 categories, 10 providers                                           |
-| `src/skillnir/security.py`    | Security vulnerability search — 10 categories, 8 sources                                          |
-| `src/skillnir/compressor.py`  | Prompt token compression with protected zones (code, URLs, headers)                               |
-| `src/skillnir/crypto.py`      | Fernet encryption — machine-bound key derivation, credential encrypt/decrypt                      |
-| `src/skillnir/notifications/` | Multi-provider webhook notifications — 6 providers (GChat, Slack, Discord, Teams, Telegram, Cliq) |
-| `src/skillnir/i18n.py`        | Internationalization — `t()`, `load_locale()`, 9 languages                                        |
-| `src/skillnir/ui/layout.py`   | Web UI navigation structure + language picker                                                     |
+| File                          | Purpose                                                                                                                                        |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/skillnir/cli.py`         | CLI entry point — `main()` at bottom, 28 commands                                                                                              |
+| `src/skillnir/tools.py`       | AI tool registry — `TOOLS` tuple, `AITool` dataclass, `SOURCE_DOTDIR` constant                                                                 |
+| `src/skillnir/backends.py`    | Backend configs — `BACKENDS` dict, `BackendInfo`, model lists                                                                                  |
+| `src/skillnir/skills.py`      | Skill discovery — `Skill` dataclass, `parse_frontmatter()`, `discover_skills()`                                                                |
+| `src/skillnir/injector.py`    | Symlink creation — `inject_skill()`                                                                                                            |
+| `src/skillnir/scaffold.py`    | Skill template scaffolding                                                                                                                     |
+| `src/skillnir/events.py`      | Events pipeline — `Event`, `search_events()`, 12 countries                                                                                     |
+| `src/skillnir/benchmarks.py`  | AI model benchmarks search — 7 categories, 10 providers                                                                                        |
+| `src/skillnir/security.py`    | Security vulnerability search — 10 categories, 8 sources                                                                                       |
+| `src/skillnir/compressor.py`  | Prompt token compression with protected zones (code, URLs, headers)                                                                            |
+| `src/skillnir/crypto.py`      | Fernet encryption — machine-bound key derivation, credential encrypt/decrypt                                                                   |
+| `src/skillnir/notifications/` | Multi-provider webhook notifications — 6 providers (GChat, Slack, Discord, Teams, Telegram, Cliq)                                              |
+| `src/skillnir/i18n.py`        | Internationalization — `t()`, `load_locale()`, 9 languages                                                                                     |
+| `src/skillnir/ui/layout.py`   | Web UI navigation structure + language picker                                                                                                  |
 | `scripts/run_intel.py`        | Non-interactive CI runner for intel pipelines (research, harness/testing/software-research, events, security, package-vulns, benchmarks, news) |
-| `pyproject.toml`              | Build config, deps, entry point                                                                   |
-| `.pylintrc`                   | Linting rules (100 char, snake_case)                                                              |
-| `.pre-commit-config.yaml`     | 12 pre-commit hooks                                                                               |
-| `INJECT.md`                   | Always-loaded quick-reference (50–150 tokens) — stack / entry points / patterns at a glance       |
+| `pyproject.toml`              | Build config, deps, entry point                                                                                                                |
+| `.pylintrc`                   | Linting rules (100 char, snake_case)                                                                                                           |
+| `.pre-commit-config.yaml`     | 12 pre-commit hooks                                                                                                                            |
+| `INJECT.md`                   | Always-loaded quick-reference (50–150 tokens) — stack / entry points / patterns at a glance                                                    |
 
 ## Files To Never Touch
 

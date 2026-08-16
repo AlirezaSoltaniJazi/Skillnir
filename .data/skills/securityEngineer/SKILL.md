@@ -69,18 +69,18 @@ See [references/vulnerability-patterns.md](references/vulnerability-patterns.md)
 
 ## Security Checklist
 
-| Category                       | Check                                                | Status in Skillnir |
-| ------------------------------ | ---------------------------------------------------- | ------------------ |
-| **Deserialization**            | `yaml.safe_load()` only, no pickle/eval              | ✅ Compliant       |
-| **Subprocess**                 | List args, no `shell=True`, `--` separator for input | ✅ Compliant       |
-| **Path handling**              | `.resolve()` on user paths, relative symlinks        | ✅ Compliant       |
-| **Secret storage**             | Fernet encryption, machine-bound keys, 0o600 perms   | ✅ Compliant       |
-| **HTML output**                | `html.escape()` for user content in UI               | ✅ Compliant       |
-| **Pre-commit security**        | Bandit + Safety hooks active                         | ✅ Compliant       |
-| **Web UI auth**                | Authentication on network-exposed endpoints          | ⚠️ Local-only      |
-| **Storage secret**             | Unique per-instance NiceGUI `storage_secret`         | ⚠️ Hardcoded       |
-| **Structured logging**         | No sensitive data in logs                            | ✅ No logging      |
-| **Dependency vulnerabilities** | No known CVEs (safety check)                         | ✅ CI enforced     |
+| Category                       | Check                                                | Status in Skillnir                                  |
+| ------------------------------ | ---------------------------------------------------- | --------------------------------------------------- |
+| **Deserialization**            | `yaml.safe_load()` only, no pickle/eval              | ✅ Compliant                                        |
+| **Subprocess**                 | List args, no `shell=True`, `--` separator for input | ✅ Compliant                                        |
+| **Path handling**              | `.resolve()` on user paths, relative symlinks        | ✅ Compliant                                        |
+| **Secret storage**             | Fernet encryption, machine-bound keys, 0o600 perms   | ✅ Compliant                                        |
+| **HTML output**                | `html.escape()` for user content in UI               | ✅ Compliant                                        |
+| **Pre-commit security**        | Bandit + Safety hooks active                         | ✅ Compliant                                        |
+| **Web UI auth**                | Authentication on network-exposed endpoints          | ⚠️ Local-only                                       |
+| **Storage secret**             | Unique per-instance NiceGUI `storage_secret`         | ⚠️ Hardcoded                                        |
+| **Structured logging**         | No sensitive data in logs                            | ✅ No logging                                       |
+| **Dependency vulnerabilities** | No known CVEs (bandit + safety check)                | ⚠️ Bandit: CI + pre-commit. Safety: pre-commit only |
 
 See [references/security-checklist.md](references/security-checklist.md) for per-component verification details.
 

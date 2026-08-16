@@ -109,6 +109,75 @@ jobs:
             });
 ```
 
+### Workflow: pr-version-check.yml
+
+Guards against accidental version downgrades — fails a PR whose `pyproject.toml` version is lower than the base branch's (equal is allowed; the release workflow bumps at release time):
+
+```yaml
+name: PR - Version Check
+on:
+  pull_request:
+    branches: [main]
+jobs:
+  version-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Version must not go backwards
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          # Compares pyproject.toml's version on HEAD vs. the base branch;
+          # errors if HEAD's version sorts lower (semver via `sort -V`).
+          ...
+```
+
+Note: this workflow does not set `timeout-minutes` on its job — an inconsistency with the "every job gets a timeout" convention below; flag it if touching this file.
+
+### Workflow: bump-version.yml
+
+Cuts a release. Two triggers: merging a PR labeled `release:patch|minor|major` into `main`, or a manual `workflow_dispatch` with a chosen bump type. In both cases it bumps `pyproject.toml`'s `version`, promotes the CHANGELOG's `[Unreleased]` section to a dated release heading (re-seeding a fresh empty `[Unreleased]` above it), commits, tags `vX.Y.Z`, and creates a GitHub Release using that CHANGELOG section as the release notes:
+
+```yaml
+name: Bump Version & Release
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        type: choice
+        options: [patch, minor, major]
+  pull_request:
+    types: [closed]
+    branches: [main]
+permissions:
+  contents: write
+  pull-requests: read
+concurrency:
+  group: release
+  cancel-in-progress: false
+jobs:
+  bump:
+    name: Bump & Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event.pull_request.merged == true &&
+       github.event.pull_request.head.repo.fork == false &&
+       github.event.pull_request.user.login != 'dependabot[bot]' &&
+       (contains(github.event.pull_request.labels.*.name, 'release:patch') ||
+        contains(github.event.pull_request.labels.*.name, 'release:minor') ||
+        contains(github.event.pull_request.labels.*.name, 'release:major')))
+    steps:
+      # Resolve bump type → read current version → calculate next version →
+      # update pyproject.toml → roll CHANGELOG [Unreleased] → commit → tag →
+      # `gh release create` from the CHANGELOG section.
+      ...
+```
+
 ## CI Quality Gate Order
 
 The style check enforces this sequential pipeline:
@@ -130,7 +199,7 @@ Pre-commit hooks mirror CI checks to catch issues before push:
 | `autoflake` with in-place          | `autoflake --check ... src/ tests/` |
 | `pylint` with `--rcfile=.pylintrc` | `pylint -rn --rcfile=.pylintrc`     |
 | `bandit` with `-lll -iii`          | `bandit -lll -iii -r src/`          |
-| `safety` (dependencies)            | Not in CI (pre-commit only)         |
+| `uv-safety` (dependencies)         | Not in CI (pre-commit only)         |
 | `prettier` (markdown)              | Not in CI (pre-commit only)         |
 
 ## Adding a New Workflow

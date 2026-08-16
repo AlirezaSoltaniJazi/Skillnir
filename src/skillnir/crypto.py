@@ -2,12 +2,14 @@
 
 Purpose
 -------
-Webhook URLs (Google Chat incoming webhooks) are *capability tokens*: anyone
-with the URL can post to the space. Storing them in plaintext in
-``config.json`` means:
+Notification credentials — Google Chat, Slack, Discord, and Microsoft Teams
+incoming webhook URLs, a Zoho Cliq webhook URL, or a Telegram bot token —
+are *capability tokens*: anyone who has one can post as the integration
+(and, for Telegram, message any chat the bot has joined). Storing them in
+plaintext in ``config.json`` means:
 
 - A config file accidentally committed to git, synced to Dropbox, backed up,
-  or pasted into a log immediately leaks a working token.
+  or pasted into a log immediately leaks a working credential.
 - Copying the file between machines "just works", which is bad.
 
 This module mitigates both by encrypting secrets with a key derived from a
@@ -26,8 +28,9 @@ This is at-rest obfuscation, not a vault.
 - Root or anyone with read access to the machine + Python.
 - Anyone who captures the plaintext at runtime via memory inspection.
 
-If a webhook URL was ever logged, screenshotted, or printed, encryption does
-NOT retroactively protect it — rotate the webhook in Google Chat instead.
+If a credential was ever logged, screenshotted, or printed, encryption does
+NOT retroactively protect it — rotate/revoke it with the provider instead
+(regenerate the webhook, or revoke the bot token via @BotFather for Telegram).
 """
 
 from __future__ import annotations

@@ -138,12 +138,15 @@ acli jira workitem link type
    acli jira workitem create --project <KEY> --type Story --parent <PARENT> --summary "..." --assignee @me --json
    ```
 
-2. If `--parent` is rejected, create **without** `--parent`, then attach the parent with a link:
+2. If `--parent` is rejected, create **without** `--parent`, then attach the parent with a link. There is no universal "parent" link type — the default Jira Cloud set is `Relates`/`Duplicate`/`Blocks`/`Cloners`, and instances add their own on top (verified: this site's set has no parent/child-style type at all). List what actually exists before picking one:
 
    ```bash
    acli jira workitem create --project <KEY> --type Story --summary "..." --assignee @me --json
-   acli jira workitem link create --out <PARENT> --in <CHILD> --type "Parent of"
+   acli jira workitem link type
+   acli jira workitem link create --out <PARENT> --in <CHILD> --type "<a real type from the list above, e.g. Relates>"
    ```
+
+   Note this rung is a traceability substitute only — a plain issue link does **not** set the real hierarchy `parent` field, so the child still won't satisfy `parent = <KEY>` JQL or show nested under the parent on boards/backlogs. If the site has no suitable link type either, treat `--parent` support as unavailable here and go straight to rung 3.
 
 3. If that also fails, use `--from-json` with a full ADF body describing the parent relationship:
 

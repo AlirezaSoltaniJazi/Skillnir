@@ -42,10 +42,10 @@ allowed-tools: Read Edit Write Bash(python:*) Bash(uv:*) Bash(pip:*) Bash(pytest
 
 ```
 src/skillnir/
-├── cli.py                  # Entry point — argparse + questionary (1,287 lines)
+├── cli.py                  # Entry point — argparse + questionary (2,224 lines)
 ├── backends.py             # Multi-backend registry (Claude, Cursor, Gemini, Copilot)
 ├── skills.py               # Skill dataclass + discovery
-├── tools.py                # AITool registry (32+ tools with scoring)
+├── tools.py                # AITool registry (37 tools)
 ├── injector.py             # Symlink injection logic
 ├── syncer.py               # Version-aware skill syncing
 ├── remover.py              # Skill removal logic
@@ -62,11 +62,17 @@ src/skillnir/
 │   ├── __init__.py         # App setup, static routes, theme
 │   ├── components/         # Reusable UI components
 │   └── pages/              # Route pages
-├── assets/                 # Static assets (sounds)
+├── assets/                 # Static assets (sounds, icons, flags)
 └── resources/              # HTML templates
 ```
 
-**Data flow**: CLI input → argparse subparser → core module → filesystem/subprocess → result dataclass → CLI/UI report.
+_Tree shows the architecturally central modules. Also present today: `benchmarks.py`, `compressor.py`,
+`crypto.py`, `docs_compressor.py`, `docs_optimizer.py`, `notifier.py`, `notifications/`, `security.py`,
+`harness_researcher.py`, `software_researcher.py`, `testing_researcher.py`, `news.py`, `package_vulns.py`,
+`skill_validator.py`, `article_cleanup.py`, `article_status.py`, `usage.py`, `wiki_generator.py` (33
+top-level modules total, verified via `ls src/skillnir/_.py | wc -l`). See [LEARNED.md](LEARNED.md) for the running discovery log.\*
+
+**Data flow**: CLI input → `main()`'s `choices=[...]`-dispatched handler → core module → filesystem/subprocess → result dataclass → CLI/UI report.
 
 **Entry point**: `skillnir = "skillnir.cli:main"` in `pyproject.toml`.
 
@@ -110,8 +116,8 @@ See [references/code-style.md](references/code-style.md) for full formatting exa
 
 ## Common Recipes
 
-1. **Add a new CLI command**: Add subparser in `cli.py` → create handler function `_command_name()` → add questionary prompts → call core module → report results
-2. **Add a new AI tool**: Add `AITool` entry to `TOOLS` tuple in `tools.py` → set `dotdir`, `popularity`, `performance`, `price` → add detection pattern in `detect_tools()`
+1. **Add a new CLI command**: Add the command string to the `choices=[...]` list on `main()`'s `command` argument in `cli.py` → create handler function `_command_name()` → add questionary prompts → call core module → dispatch to it via a new `elif args.command == "command-name":` branch → report results
+2. **Add a new AI tool**: Add `AITool` entry to `TOOLS` tuple in `tools.py` → set `dotdir`, `popularity`, `performance`, `price` (`detect_tools()` needs no change — it generically checks every `TOOLS` entry's `dotdir` for existence)
 3. **Add a new backend**: Add enum value to `AIBackend` → add entry in `BACKENDS` dict with CLI command, models, slash commands → implement stream parsing in `parse_stream_line()`
 4. **Create a result dataclass**: Define `@dataclass` with descriptive fields → include optional `error: str | None = None` → return from core function instead of raising
 5. **Add async generation**: Use `async def` → `async for` with claude-agent-sdk → yield `GenerationProgress` via callback → wrap entry point with `asyncio.run()`
@@ -121,7 +127,7 @@ See [references/code-style.md](references/code-style.md) for full formatting exa
 
 | Rule              | Convention                                                  |
 | ----------------- | ----------------------------------------------------------- |
-| Framework         | pytest 9.0.2+ with `asyncio_mode = "auto"`                  |
+| Framework         | pytest 9.0.3+ with `asyncio_mode = "auto"`                  |
 | Test file naming  | `test_{{module}}.py` in `tests/`                            |
 | Fixture location  | `conftest.py` for shared, test file for local               |
 | Key fixtures      | `tmp_project`, `sample_skill`, `sample_tool`, `mock_config` |

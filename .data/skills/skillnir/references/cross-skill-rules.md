@@ -6,12 +6,17 @@
 
 ## Skill Inventory
 
-| Skill            | Domain                                | Activates For                                    |
-| ---------------- | ------------------------------------- | ------------------------------------------------ |
-| backendEngineer  | Python modules, CLI, async, testing   | Any code under `src/skillnir/`, `tests/`         |
-| frontendEngineer | NiceGUI UI, Tailwind, HTML generation | `ui.py`, `researcher.py` HTML, styling           |
-| devopsEngineer   | CI/CD, Docker, pre-commit, UV         | Workflows, Dockerfiles, config, scripts          |
-| skillnir         | Skill system meta-rules               | Skill files, LEARNED.md entries, skill structure |
+| Skill            | Domain                                        | Activates For                                          |
+| ---------------- | --------------------------------------------- | ------------------------------------------------------ |
+| backendEngineer  | Python modules, CLI, async, testing           | Any code under `src/skillnir/`, `tests/`               |
+| frontendEngineer | NiceGUI UI, Tailwind, HTML generation         | `src/skillnir/ui/`, `researcher.py` HTML, styling      |
+| devopsEngineer   | CI/CD, Docker, pre-commit, UV                 | Workflows, Dockerfiles, config, scripts                |
+| securityEngineer | Vulnerability/dependency/secret/config audits | Security review across backend, frontend, infra, CI/CD |
+| promptCompressor | Rule-based prompt token compression           | `compressor.py`, prompt-optimization tasks             |
+| github           | GitHub PR workflow (`gh` CLI)                 | Branch/commit/PR creation, PR-template detection       |
+| gitlab           | GitLab MR workflow (`glab` CLI)               | Branch/commit/MR creation, MR-template detection       |
+| jira             | Jira work-item management (`acli` CLI)        | Ticket create/search/transition/comment                |
+| skillnir         | Skill system meta-rules                       | Skill files, LEARNED.md entries, skill structure       |
 
 ---
 
@@ -23,7 +28,7 @@ When multiple skills could apply to a task, use this priority order:
 
 If the task clearly belongs to one domain, use that domain skill:
 
-- Editing `ui.py` layout → frontendEngineer
+- Editing `src/skillnir/ui/` layout → frontendEngineer
 - Adding a pytest fixture → backendEngineer
 - Modifying `.pre-commit-config.yaml` → devopsEngineer
 - Adding a LEARNED.md entry → skillnir
@@ -34,8 +39,8 @@ Use the primary file being edited to select the skill:
 
 | File Pattern                                | Skill                                                    |
 | ------------------------------------------- | -------------------------------------------------------- |
-| `src/skillnir/*.py` (except `ui.py`)        | backendEngineer                                          |
-| `src/skillnir/ui.py`                        | frontendEngineer                                         |
+| `src/skillnir/*.py` (outside `ui/`)         | backendEngineer                                          |
+| `src/skillnir/ui/**`                        | frontendEngineer                                         |
 | `src/skillnir/researcher.py` (HTML parts)   | frontendEngineer                                         |
 | `src/skillnir/researcher.py` (Python logic) | backendEngineer                                          |
 | `tests/**/*.py`                             | backendEngineer                                          |

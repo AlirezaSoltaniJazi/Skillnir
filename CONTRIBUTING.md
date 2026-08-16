@@ -9,7 +9,7 @@
 ## Setup
 
 ```bash
-git clone git@github.com:AlirezaSoltaniJazi/Skillnir.git
+git clone git@github.com:AlirezaSoltaniJazi/Skillnir.git skillnir
 cd skillnir
 
 # Install all dependencies
@@ -44,14 +44,14 @@ uv run pytest
 
 ## Code Style
 
-| Tool      | Purpose                         | Config                                             |
-| --------- | ------------------------------- | -------------------------------------------------- |
-| Black     | Formatting (PEP 8)              | `-S` flag (skip string normalization), Python 3.14 |
-| Pylint    | Linting                         | `.pylintrc` (line-length=100, fail-under=10)       |
-| Autoflake | Remove unused imports/variables | Excludes `.data/`                                  |
-| Bandit    | Security scanning               | `-lll -iii` (low false-positive threshold)         |
+| Tool      | Purpose                         | Config                                                                                             |
+| --------- | ------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Black     | Formatting (PEP 8)              | `-S` flag (skip string normalization), Python 3.14                                                 |
+| Pylint    | Linting                         | `.pylintrc` (line-length=100, fail-under=10)                                                       |
+| Autoflake | Remove unused imports/variables | Excludes `.data/`                                                                                  |
+| Bandit    | Security scanning               | `-lll -iii` (low false-positive threshold)                                                         |
 | Safety    | Dependency vulnerability check  | Local `uv-safety` hook -- runs `uv export` + `safety check` when `pyproject.toml`/`uv.lock` change |
-| Prettier  | Markdown formatting             | Default config                                     |
+| Prettier  | Markdown formatting             | Default config                                                                                     |
 
 All tools run automatically via pre-commit hooks on every commit. To run manually:
 

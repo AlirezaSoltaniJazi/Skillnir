@@ -32,12 +32,16 @@ gh repo view --json defaultBranchRef --jq .defaultBranchRef.name
 
 ## Find the PR template
 
-A repo may ship the template under any of these paths, and **the casing varies** by repo. Glob all of them and take the first match:
+GitHub accepts the template in the repo root, `docs/`, or `.github/` (`.github/` is by far the most common in practice), and **the casing varies** by repo. Glob all of them and take the first match:
 
 ```text
 .github/pull_request_template.md
 .github/PULL_REQUEST_TEMPLATE.md
 .github/PULL_REQUEST_TEMPLATE/*.md
+pull_request_template.md
+docs/pull_request_template.md
+PULL_REQUEST_TEMPLATE/*.md
+docs/PULL_REQUEST_TEMPLATE/*.md
 ```
 
 Locate it from the shell:
@@ -45,12 +49,16 @@ Locate it from the shell:
 ```bash
 ls .github/pull_request_template.md \
    .github/PULL_REQUEST_TEMPLATE.md \
-   .github/PULL_REQUEST_TEMPLATE/*.md 2>/dev/null
+   .github/PULL_REQUEST_TEMPLATE/*.md \
+   pull_request_template.md \
+   docs/pull_request_template.md \
+   PULL_REQUEST_TEMPLATE/*.md \
+   docs/PULL_REQUEST_TEMPLATE/*.md 2>/dev/null
 ```
 
 Notes:
 
-- The directory form `.github/PULL_REQUEST_TEMPLATE/*.md` holds **multiple** named templates — pick the one matching the change (e.g. `bugfix.md`, `feature.md`) or ask ONE question if ambiguous.
+- The multi-template directory (`PULL_REQUEST_TEMPLATE/*.md`) holds **multiple** named templates and is valid under `.github/`, the repo root, or `docs/` (GitHub's own docs: "store multiple pull request templates in a `PULL_REQUEST_TEMPLATE` subdirectory within the root or `docs/` directories") — pick the one matching the change (e.g. `bugfix.md`, `feature.md`) or ask ONE question if ambiguous.
 - Read the matched file's content; you will fill it yourself and pipe the result via `--body-file -`.
 - If nothing matches, jump to **No template? Use `--fill`**.
 

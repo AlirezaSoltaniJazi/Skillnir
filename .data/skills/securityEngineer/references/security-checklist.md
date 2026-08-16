@@ -63,7 +63,7 @@
 - [ ] Automated vulnerability scanning in CI (safety, bandit)
 - [ ] Dependency update policy documented
 
-**Skillnir status**: ✅ Safety + Bandit in pre-commit. CI runs security checks. uv.lock pinned.
+**Skillnir status**: ✅ Safety + Bandit in pre-commit. Bandit also runs in CI (`.github/workflows/check-style.yml`); Safety is pre-commit-only (triggers on `pyproject.toml`/`uv.lock` changes, not run in CI). uv.lock pinned.
 
 ## A07: Identification and Authentication Failures
 
@@ -99,7 +99,7 @@
 - [ ] No user-controlled URLs in server-side requests
 - [ ] Internal network access blocked for external-facing requests
 
-**Skillnir status**: No outbound HTTP requests with user-controlled URLs.
+**Skillnir status**: ✅ Notification webhook URLs (`src/skillnir/notifications/`) ARE user-controlled (entered in Settings), but every provider validator (`is_valid_gchat_webhook()`, `is_valid_slack_webhook()`, etc. in `providers.py`) enforces `https://` + a per-provider host allowlist before `senders.py` opens the connection (`# nosec B310`, justified since the allowlist check already ran).
 
 ---
 

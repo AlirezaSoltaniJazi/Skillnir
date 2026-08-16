@@ -7,7 +7,7 @@ description: >-
   and Python packaging infrastructure. Activates when modifying workflows, pre-commit
   hooks, CI configuration, quality gate setup, bash validation scripts, or any
   .github/, .pre-commit-config.yaml, .pylintrc, or pyproject.toml build config.
-compatibility: "GitHub Actions, pre-commit 4.5+, Black 26.3+, pylint 4.0+, bandit 1.9+, Python 3.14+"
+compatibility: "GitHub Actions, pre-commit 4.6+, Black 26.3+, pylint 4.0+, bandit 1.9+, Python 3.14+"
 metadata:
   author: skillnir
   version: "1.0.0"
@@ -53,10 +53,12 @@ sub-agents:
 ├── workflows/
 │   ├── run-tests.yml                # pytest --tb=short -q
 │   ├── check-style.yml              # Black → Autoflake → Pylint → Bandit
-│   └── auto-assign-author.yml       # PR author assignment
+│   ├── auto-assign-author.yml       # PR author assignment
+│   ├── pr-version-check.yml         # Fails PR if pyproject.toml version regresses
+│   └── bump-version.yml             # Bumps version + CHANGELOG + tag + release
 └── pull_request_template.md         # Summary + Changes + Test plan
 
-.pre-commit-config.yaml              # 11 hooks mirroring CI checks
+.pre-commit-config.yaml              # 12 hooks mirroring CI checks
 .pylintrc                            # 500+ line comprehensive config
 pyproject.toml                       # hatchling build, uv, dev deps
 ```

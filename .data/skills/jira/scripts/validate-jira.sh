@@ -15,7 +15,7 @@ fi
 
 if acli jira auth status >/tmp/jira-auth.$$ 2>&1; then
     echo "✅ Jira authenticated"
-    grep -i '^Site:' /tmp/jira-auth.$$ || true
+    grep -i 'Site:' /tmp/jira-auth.$$ || true
 else
     echo "⚠️  Not authenticated — run 'acli jira auth login' before using the skill"
     fail=1

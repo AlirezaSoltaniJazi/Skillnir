@@ -52,13 +52,13 @@ allowed-tools: Read Edit Write Bash(gh:*) Bash(git:*) Bash(acli:*) Glob Grep
 
 **Detect the convention before acting** (never hardcode):
 
-| What         | How                                                                                                                                             |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Base branch  | `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name`                                                                              |
-| Branch style | `git for-each-ref --format='%(refname:short)' refs/heads refs/remotes` → typed `^(feature\|feat\|fix\|refactor\|ci)/` vs bare `^[A-Z]+-[0-9]+-` |
-| Commit style | `git log -50 --format='%s'` → `[KEY-###] …` vs `KEY-###: …` vs Conventional Commits                                                             |
-| PR template  | `Glob` `.github/pull_request_template.md` \| `.github/PULL_REQUEST_TEMPLATE.md` \| `.github/PULL_REQUEST_TEMPLATE/*` (case varies)              |
-| Repo rules   | `Read` repo `CLAUDE.md`/`agents.md`/`CONTRIBUTING.md` for any branch/PR/label rules                                                             |
+| What         | How                                                                                                                                                             |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Base branch  | `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name`                                                                                              |
+| Branch style | `git for-each-ref --format='%(refname:short)' refs/heads refs/remotes` → typed `^(feature\|feat\|fix\|refactor\|ci)/` vs bare `^[A-Z]+-[0-9]+-`                 |
+| Commit style | `git log -50 --format='%s'` → `[KEY-###] …` vs `KEY-###: …` vs Conventional Commits                                                                             |
+| PR template  | `Glob` `pull_request_template.md` \| `PULL_REQUEST_TEMPLATE.md` \| `PULL_REQUEST_TEMPLATE/*` — each valid under `.github/`, repo root, or `docs/` (case varies) |
+| Repo rules   | `Read` repo `CLAUDE.md`/`agents.md`/`CONTRIBUTING.md` for any branch/PR/label rules                                                                             |
 
 If no ticket-key pattern exists in history, fall back to `<type>/<slug>` branches + Conventional Commits and ask. Persist confirmed per-repo conventions to LEARNED.md. Details: [references/branch-naming.md](references/branch-naming.md), [references/commit-conventions.md](references/commit-conventions.md), [references/pr-templates.md](references/pr-templates.md).
 

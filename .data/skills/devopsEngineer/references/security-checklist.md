@@ -70,13 +70,13 @@
 
 Current security-relevant hooks in `.pre-commit-config.yaml`:
 
-| Hook                               | Purpose                         | Severity |
-| ---------------------------------- | ------------------------------- | -------- |
-| `bandit`                           | Python security linter          | High     |
-| `python-safety-dependencies-check` | CVE scanning for deps           | High     |
-| `check-ast`                        | Validates Python syntax         | Medium   |
-| `check-merge-conflict`             | Prevents merge conflict markers | Medium   |
-| `check-added-large-files`          | Prevents accidental large files | Low      |
+| Hook                      | Purpose                                                                                         | Severity |
+| ------------------------- | ----------------------------------------------------------------------------------------------- | -------- |
+| `bandit`                  | Python security linter                                                                          | High     |
+| `uv-safety` (local)       | CVE scanning for deps — exports `uv.lock` via `uv export` and pipes into `safety check --stdin` | High     |
+| `check-ast`               | Validates Python syntax                                                                         | Medium   |
+| `check-merge-conflict`    | Prevents merge conflict markers                                                                 | Medium   |
+| `check-added-large-files` | Prevents accidental large files                                                                 | Low      |
 
 ## Adding Security to New Infrastructure
 

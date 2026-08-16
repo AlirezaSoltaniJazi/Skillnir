@@ -17,7 +17,7 @@
 ## A03: Injection
 
 - **Risk**: Command injection via subprocess, YAML deserialization
-- **Locations**: `src/skillnir/backends.py:557` (subprocess), `src/skillnir/skills.py:29` (YAML)
+- **Locations**: `src/skillnir/backends.py:896` (subprocess), `src/skillnir/skills.py:29` (YAML)
 - **Mitigation**: List-based subprocess args with `--` separator; `yaml.safe_load()` only
 - **Status**: ✅ Compliant
 
@@ -31,15 +31,15 @@
 ## A05: Security Misconfiguration
 
 - **Risk**: Hardcoded NiceGUI storage secret
-- **Location**: `src/skillnir/ui/__init__.py:140`
+- **Location**: `src/skillnir/ui/__init__.py:211`
 - **Mitigation**: None currently
 - **Remediation**: Derive from `_machine_fingerprint()` or use `secrets.token_hex()`
 
 ## A06: Vulnerable and Outdated Components
 
 - **Risk**: Known CVEs in dependencies
-- **Locations**: `pyproject.toml`, `uv.lock`, `.pre-commit-config.yaml`
-- **Mitigation**: Safety + Bandit in pre-commit; CI enforcement
+- **Locations**: `pyproject.toml`, `uv.lock`, `.pre-commit-config.yaml`, `.github/workflows/check-style.yml`
+- **Mitigation**: Bandit runs in pre-commit AND CI (`check-style.yml`); Safety runs in pre-commit only, triggered when `pyproject.toml`/`uv.lock` change — not currently run in CI
 - **Status**: ✅ Compliant (CVE-2025-6176 documented exception)
 
 ## A07: Identification and Authentication Failures
@@ -61,5 +61,7 @@
 
 ## A10: Server-Side Request Forgery
 
-- **Risk**: Minimal — no user-controlled outbound HTTP
-- **Status**: ✅ Not applicable
+- **Risk**: Notification webhook URLs (Slack, Discord, Teams, Google Chat, Zoho Cliq) are user-supplied in Settings and posted to via `urllib.request.urlopen`
+- **Locations**: `src/skillnir/notifications/providers.py` (validators), `src/skillnir/notifications/senders.py:65` (`urlopen(...)  # nosec B310`)
+- **Mitigation**: Strict `https://` + per-provider host-allowlist validation (`is_valid_*_webhook()`) runs at the call site before any socket is opened; `_post_json()` does not re-validate by design
+- **Status**: ✅ Compliant — user-controlled URLs exist but are allowlist-mitigated, not absent

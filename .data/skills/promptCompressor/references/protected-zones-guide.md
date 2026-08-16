@@ -30,9 +30,10 @@ Protected zones are regions of text that must never be modified by compression. 
 
 ### File Paths
 
-**Pattern**: `/path/to/file` or `~/config`
+**Pattern**: `/path/to/file.py` or `~/config.json` (must end in a file extension to match this zone's regex)
 **Regex**: `(?<!\w)[/~][\w./-]+(?:\.\w+)`
 **Why**: File paths reference exact filesystem locations.
+**Note**: An extensionless path like `/usr/local/bin` isn't matched by this regex (no trailing `.ext`), but its segments still typically survive word removal anyway — `_compress_words()` separately refuses to strip a word glued to `/`, `-`, `_`, or `.` (see `_GLUE_CHARS` in `compressor.py`).
 
 ### Markdown Headers
 
@@ -40,9 +41,27 @@ Protected zones are regions of text that must never be modified by compression. 
 **Regex**: `^#+\s.*$` (multiline)
 **Why**: Headers provide document structure used by AI to navigate sections.
 
+### YAML Frontmatter
+
+**Pattern**: `---\n...\n---` at the very start of the document (tolerates a leading UTF-8 BOM and blank lines before the opening `---`)
+**Regex**: `\A﻿?(?:[ \t]*\n)*---[ \t]*\n[\s\S]*?\n---[ \t]*(?=\n|\Z)`
+**Why**: Skill descriptions live in YAML frontmatter and drive activation matching — a single dropped word there breaks skill triggering.
+
+### Table Rows
+
+**Pattern**: any line containing a `|` (markdown table row)
+**Regex**: `^[^\n]*\|[^\n]*$` (multiline)
+**Why**: Markdown table rows lose column alignment (and cell content) under word removal.
+
+### Indented Code Blocks
+
+**Pattern**: lines indented with 4 spaces or a tab (legacy markdown code-block style)
+**Regex**: `(?:^(?:[ ]{4}|\t)[^\n]*\n?)+` (multiline)
+**Why**: As structural as fenced code blocks — word removal would corrupt the code.
+
 ## How Detection Works
 
-1. All 6 regex patterns are run against the full text
+1. All 9 regex patterns are run against the full text
 2. Each match produces a `(start, end)` character index tuple
 3. Overlapping zones are merged (e.g., inline code inside a code block)
 4. The text is split into `(segment, is_protected)` pairs

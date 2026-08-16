@@ -53,8 +53,8 @@ def process(name: str, count: Optional[int] = None) -> List[str]:
 ### Common Type Patterns
 
 ```python
-from collections.abc import Callable
 from pathlib import Path
+from typing import Callable
 
 # Union types
 value: str | None = None
@@ -108,15 +108,16 @@ Google-style, selective use. Module docstrings are one-liners. Function docstrin
 """Core injection logic: create symlinks from tool dotdirs to central skills."""
 
 
-def inject_skill(skill_path: Path, tool_dir: Path) -> InjectionResult:
-    """Create symlink from tool directory to central skill storage.
+def inject_skill(project_root: Path, skill: Skill, tools: list[AITool]) -> list[InjectionResult]:
+    """Create a symlink from each tool's dotdir to central skill storage.
 
     Args:
-        skill_path: Absolute path to the skill in .data/skills/.
-        tool_dir: Path to the AI tool's dotdir (e.g., .claude/).
+        project_root: Root of the project being injected into.
+        skill: The skill to inject.
+        tools: The AI tools to inject the skill into (one result per tool).
 
     Returns:
-        InjectionResult with created=True if symlink was new.
+        One InjectionResult per tool, with created=True if its symlink was new.
     """
 ```
 
@@ -164,10 +165,13 @@ class AITool:
     name: str
     dotdir: str
     company: str
-    popularity: int
-    performance: int
-    price: int
+    skills_subpath: str = 'skills'
+    popularity: int = 0
+    performance: int = 0
+    price: int = 0
     icon_url: str = ''
+    ignore_file: str = ''
+    website_url: str = ''
 
 
 # Mutable result — regular dataclass

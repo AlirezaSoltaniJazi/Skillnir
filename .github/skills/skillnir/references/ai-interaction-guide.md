@@ -9,7 +9,7 @@
 ### Prevent Over-Reliance on Skill Generation
 
 - After generating 3+ similar skill structures, suggest creating a project-level scaffold template
-- Point to `skillnir scaffold` command for automated skill creation
+- Point to `skillnir init-skill` (default scaffold) or `skillnir generate-skill` (AI-generated) for automated skill creation
 - Reference `.data/promptsv1/` prompt templates for consistent generation
 
 ### Promote Self-Sufficiency

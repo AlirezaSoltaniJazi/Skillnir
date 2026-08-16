@@ -6,7 +6,7 @@ description: >-
   async progress panels, form validation, and design system conventions. Activates
   when creating components, styling pages, adding routes, managing UI state, working
   with forms, progress panels, i18n translations, or any src/skillnir/ui/ source file.
-compatibility: "Python 3.14+, NiceGUI 2.0+, Quasar, Tailwind CSS, Material Design Icons"
+compatibility: "Python 3.14+, NiceGUI 3.10+, Quasar, Tailwind CSS, Material Design Icons"
 metadata:
   author: skillnir
   version: "1.0.0"
@@ -42,7 +42,7 @@ allowed-tools: Read Edit Write Bash(python:*) Bash(uv:*) Bash(pip:*) Bash(pytest
 ```
 src/skillnir/ui/
 ├── __init__.py              # App setup, _GLOBAL_CSS, static routes, run_ui()
-├── layout.py                # header(), drawer nav, helpers, NAV_GROUPS (670 lines)
+├── layout.py                # header(), drawer nav, NAV_GROUPS, install/sync flow builders (833 lines)
 ├── components/              # 13 reusable components
 │   ├── page_header.py       # Title + icon + subtitle + separator
 │   ├── stat_card.py         # Accent bar + value + label (clickable)
@@ -55,20 +55,32 @@ src/skillnir/ui/
 │   ├── empty_state.py       # Centered empty state with icon
 │   ├── welcome_dialog.py    # First-visit dialog + CLI install guide
 │   ├── backend_chip.py      # Tool/model indicator chip
-│   └── backend_picker.py    # Backend/model/prompt dialogs
-└── pages/                   # 12 route pages
-    ├── home.py              # / — dashboard with hero + section grid
-    ├── skill.py             # /install, /update, /check-skill
-    ├── delete_skill.py      # /delete-skill
-    ├── generate_skill.py    # /generate-skill
-    ├── ai_context.py        # /generate-rule, /generate-docs, /delete-docs
-    ├── ai_extra.py          # /ask, /plan
-    ├── settings.py          # /settings — preferences
-    ├── supported.py         # /skills, /tools — registry browsers
-    ├── usage_page.py        # /usage
-    ├── research.py          # /research
-    ├── events.py            # /events
-    └── templates.py         # /init-skill, /init-docs
+│   ├── backend_picker.py    # Backend/model/prompt dialogs
+│   └── path_input.py        # Text input + persisted recent-paths chip list
+└── pages/                   # 23 route pages
+    ├── home.py                # / — dashboard with hero + section grid
+    ├── skill.py               # /install, /update, /skills
+    ├── delete_skill.py        # /delete-skill
+    ├── generate_skill.py      # /generate-skill
+    ├── ai_context.py          # /generate-rule, /generate-docs, /delete-docs
+    ├── ai_extra.py            # /ask, /plan, /check-skill
+    ├── settings.py            # /settings — preferences
+    ├── supported.py           # /tools — tool registry browser
+    ├── usage_page.py          # /usage
+    ├── research.py            # /research
+    ├── events.py              # /events
+    ├── templates.py           # /init-skill, /init-docs
+    ├── benchmarks.py          # /benchmarks — AI model benchmarks
+    ├── cleanup_articles.py    # /cleanup-articles — classify + move outdated articles
+    ├── harness_research.py    # /harness-research — harness-engineering research
+    ├── ignore.py              # /install-ignore — install-ignore file editor
+    ├── news.py                # /news — AI news by category/recency window
+    ├── optimize_docs.py       # /compress-docs, /optimize-docs
+    ├── package_vulns_page.py  # /package-vulns — package vulnerability research
+    ├── security_page.py       # /security — security vulnerability research
+    ├── software_research.py   # /software-research
+    ├── testing_research.py    # /testing-research
+    └── wiki.py                # /generate-wiki, /delete-wiki
 ```
 
 **Data flow**: User interaction → `@ui.page` handler → component functions → NiceGUI elements → Quasar/Vue rendering.
@@ -92,23 +104,23 @@ See [references/component-patterns.md](references/component-patterns.md) for ful
 
 ## Code Style
 
-| Rule               | Convention                                                    |
-| ------------------ | ------------------------------------------------------------- |
-| Python version     | 3.14+ — use latest syntax features                            |
-| Formatter          | Black with `-S` flag (single quotes, no string normalization) |
-| Import style       | Absolute only — `from skillnir.ui.components.X import X`      |
-| Import order       | stdlib → third-party (nicegui) → local (skillnir.\*)          |
-| NiceGUI imports    | `from nicegui import ui` — at function level when needed      |
-| Naming — files     | `snake_case.py` (one component/page per file)                 |
-| Naming — functions | `snake_case` — component name matches filename                |
-| Naming — constants | `SCREAMING_SNAKE_CASE` (e.g., `NAV_GROUPS`, `_COLOR_HEX`)     |
-| Naming — pages     | `page_feature_name()` with `@ui.page('/route')` decorator     |
-| Styling — classes  | `.classes('tailwind-utilities custom-classes')`               |
-| Styling — props    | `.props('outlined dense rounded')` for Quasar props           |
-| Styling — inline   | `.style(f'color: {hex_color}')` only for dynamic values       |
-| Type hints         | `str \| None`, `list[X]`, `Callable \| None` — modern syntax  |
-| Strings            | Single quotes (Black -S enforced)                             |
-| Docstrings         | Google-style, module one-liners, function descriptions        |
+| Rule               | Convention                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Python version     | 3.14+ — use latest syntax features                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Formatter          | Black with `-S` flag (skips string normalization — preserves each file's existing quotes, does not force one style)                                                                                                                                                                                                                                                                                                                                                     |
+| Import style       | Absolute only — `from skillnir.ui.components.X import X`                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Import order       | stdlib → third-party (nicegui) → local (skillnir.\*)                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| NiceGUI imports    | `from nicegui import ui` — at function level when needed                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Naming — files     | `snake_case.py` (one component/page per file)                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Naming — functions | `snake_case` — component name matches filename                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Naming — constants | `SCREAMING_SNAKE_CASE` (e.g., `NAV_GROUPS`, `_COLOR_HEX`)                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Naming — pages     | `page_feature_name()` with `@ui.page('/route')` decorator                                                                                                                                                                                                                                                                                                                                                                                                               |
+| Styling — classes  | `.classes('tailwind-utilities custom-classes')`                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Styling — props    | `.props('outlined dense rounded')` for Quasar props                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| Styling — inline   | `.style(f'color: {hex_color}')` only for dynamic values                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| Type hints         | `str \| None`, `list[X]`, `Callable \| None` — modern syntax                                                                                                                                                                                                                                                                                                                                                                                                            |
+| Strings            | Match the file being edited — Black `-S` does not enforce a style; most existing files use single quotes, but several newer ones (`path_input.py`, `benchmarks.py`, `events.py`, `ignore.py`, `package_vulns_page.py`, `security_page.py`) use double quotes throughout; `layout.py` itself is mixed — its original NAV_GROUPS/`header()` code still uses single quotes, while the newer install/sync flow builders (`build_skill_cards` etc.) mostly use double quotes |
+| Docstrings         | Google-style, module one-liners, function descriptions                                                                                                                                                                                                                                                                                                                                                                                                                  |
 
 See [references/code-style.md](references/code-style.md) for full formatting examples.
 
@@ -125,7 +137,7 @@ See [references/code-style.md](references/code-style.md) for full formatting exa
 
 | Rule               | Convention                                                 |
 | ------------------ | ---------------------------------------------------------- |
-| Framework          | pytest 9.0.2+ with `asyncio_mode = "auto"`                 |
+| Framework          | pytest 9.0.3+ with `asyncio_mode = "auto"`                 |
 | Test file naming   | `test_{{module}}.py` in `tests/`                           |
 | UI component tests | Test function output indirectly via integration tests      |
 | Key fixtures       | `tmp_path` for filesystem, `mock_config` for app config    |
