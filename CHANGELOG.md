@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **All 9 pre-built skills refreshed to the current best-practice budget.** The five domain skills (backend/frontend/devops/security/skillnir) had grown well over the size budget that keeps skills effective — full directory trees, duplicated rule tables, and oversized always-loaded summaries. Every skill is now trimmed to a lean, single-purpose reference (detail moved into on-demand `references/` files), each rule now states its "why", and the skillnir skill's two stale facts (Python version and skill count) are corrected. The skill **template generator** was fixed at the root so newly generated skills stay lean automatically (it no longer asks for an ASCII directory tree or repeated rule tables).
 - **Compress Docs** no longer garbles code blocks, tables, or front-matter.
 - **Optimize Docs** now lists the files it changed, no longer fails on large projects, and keeps partial results when a run is cut short.
 - Re-running **rule generation** on a topic that already exists no longer reports a false failure.
