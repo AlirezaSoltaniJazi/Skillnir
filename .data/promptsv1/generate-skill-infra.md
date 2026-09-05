@@ -118,7 +118,7 @@ Integrate for the detected stack:
 
 1. **When to Use** — 4-6 trigger conditions
 2. **Do NOT Use** — cross-references to sibling skills (backend, frontend, mobile)
-3. **Architecture** — infrastructure diagram, environment topology, deploy flow
+3. **Architecture** — infrastructure diagram, environment topology, deploy flow (brief prose/table only — do NOT render an ASCII directory tree or multi-line structure diagram in SKILL.md; put any full structure map in `references/architecture-guide.md`, per the ≤5-line code-block gate)
 4. **Key Patterns** — summary table only (pattern name, approach, key rule). Full code examples in references/ only
 5. **Conventions** — rules table only. Naming, tagging, env separation details in references/code-style.md
 6. **Common Recipes** — numbered step lists only, no code blocks

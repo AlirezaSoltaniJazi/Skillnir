@@ -129,7 +129,7 @@ Write to `/tmp/skill_synthesis_testing.md`:
 
 1. **When to Use** — 4-6 trigger conditions
 2. **Do NOT Use** — cross-references to sibling skills + scope boundaries (e.g., unit tests if E2E-only)
-3. **Architecture** — test directory structure diagram, layer responsibilities, data flow
+3. **Architecture** — test directory structure diagram, layer responsibilities, data flow (brief prose/table only — do NOT render an ASCII directory tree or multi-line structure diagram in SKILL.md; put any full structure map in `references/architecture-guide.md`, per the ≤5-line code-block gate)
 4. **Key Patterns** — summary table only (pattern name, approach, key rule). Full code examples in references/ only
 5. **Code Style** — rules table only. Test naming, file naming, assertion style details in references/code-style.md
 6. **Common Recipes** — numbered step lists only, no code blocks

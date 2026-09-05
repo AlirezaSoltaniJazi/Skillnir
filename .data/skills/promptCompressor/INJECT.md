@@ -1,12 +1,9 @@
-# promptCompressor -- Quick Reference
+# promptCompressor — Quick Reference
 
-- **FIRST**: Read [LEARNED.md](LEARNED.md)
-- **Module**: `src/skillnir/compressor.py` -- pure Python, no deps, <100ms
-- **Entry**: `compress_prompt(text) -> CompressionResult`
-- **Config**: `compress_prompts: bool` in AppConfig / `~/.skillnir/config.json`
-- **Integration**: Applied inside `build_subprocess_command()` in `backends.py`
-- **REMOVE**: articles (a/an/the), auxiliaries (is/are/was), intensifiers (very/quite), fillers (basically/actually)
-- **KEEP**: negations (not/never/without), numbers, URLs, code blocks, JSON templates `{{ }}`, markdown headers
-- **Target**: 30-50% reduction on natural language, ~0% on structured data
-- **Safety**: Protected zones detected first -- code/JSON/URLs never modified
-- **Full guide**: See [SKILL.md](SKILL.md) and [references/](references/)
+- **FIRST**: read [LEARNED.md](LEARNED.md)
+- **Module**: `compressor.py` — pure Python, no deps, <100ms; entry `compress_prompt(text)`
+- **Wired in**: `build_subprocess_command()` in `backends.py`, gated by `compress_prompts` config
+- **REMOVE**: articles, auxiliaries, intensifiers, fillers
+- **KEEP**: negations, numbers, URLs, code, JSON `{{ }}`, headers
+- **Safety**: protected zones detected first — code/JSON/URLs never touched; ~30-50% on prose, ~0% structured
+- **Full guide**: [SKILL.md](SKILL.md), [references/](references/)

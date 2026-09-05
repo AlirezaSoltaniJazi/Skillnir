@@ -37,9 +37,9 @@ allowed-tools: Read Edit Write Bash(glab:*) Bash(git:*) Bash(acli:*) Glob Grep
 
 ## Do NOT Use
 
-- **GitHub pull requests** — use [github](../github/SKILL.md).
+- **GitHub pull requests** — use [github](../github/SKILL.md) (wrong platform; `glab` targets GitLab MRs, not GitHub PRs).
 - **Creating or transitioning Jira tickets as the primary task** — use [jira](../jira/SKILL.md). This skill only _updates_ the linked ticket at the end of the MR flow.
-- **CI/CD pipeline files** (`.gitlab-ci.yml`) — use [devopsEngineer](../devopsEngineer/SKILL.md).
+- **CI/CD pipeline files** (`.gitlab-ci.yml`) — use [devopsEngineer](../devopsEngineer/SKILL.md) (pipeline YAML is a different concern from raising an MR).
 - **Never** add file paths / code to the Jira ticket — keep the ticket non-technical; technical detail goes in the MR description.
 
 ## Access & Convention Detection

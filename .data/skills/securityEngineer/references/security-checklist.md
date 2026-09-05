@@ -119,3 +119,25 @@
 - [ ] Autoflake: Remove unused imports (reduces attack surface)
 - [ ] YAML check: Prevent malformed YAML injection
 - [ ] Merge conflict check: Prevent accidental code inclusion
+
+---
+
+## Skillnir Project-State Audit (as of last review)
+
+Current posture per control. `✅` = verified compliant, `⚠️` = accepted risk / follow-up. Re-verify each on audit — do not trust the cached status.
+
+| Category                     | Check                                                       | Status                                                    |
+| ---------------------------- | ---------------------------------------------------------- | --------------------------------------------------------- |
+| Deserialization              | `yaml.safe_load()` only, no `pickle`/`eval`/`exec`         | ✅ `src/skillnir/skills.py`                                |
+| Subprocess                   | List args, no `shell=True`, `--` separator for user input  | ✅ `src/skillnir/backends.py`                              |
+| Path handling                | `.resolve()` + `.is_dir()` on user paths, relative symlinks | ✅ `cli.py`, `injector.py`                                 |
+| Secret storage               | Fernet + machine-bound PBKDF2 key, `0o600` perms           | ✅ `src/skillnir/crypto.py`                                |
+| HTML output                  | `html.escape()` for user content in UI                     | ✅ `src/skillnir/ui/`                                      |
+| SSRF (webhooks)              | `https://` + per-provider host allowlist before `urlopen`  | ✅ `src/skillnir/notifications/providers.py`               |
+| Pre-commit security          | Bandit + Safety hooks active                                | ✅ `.pre-commit-config.yaml`                               |
+| Dependency CVE scan          | Bandit runs in CI + pre-commit; Safety pre-commit only     | ⚠️ Safety not in CI (`check-style.yml`)                    |
+| Web UI auth                  | Authentication on network-exposed endpoints                | ⚠️ Local-only (127.0.0.1) — no auth; document if exposed  |
+| NiceGUI `storage_secret`     | Unique per-instance secret                                  | ⚠️ Hardcoded — `ui/__init__.py:211` (CWE-798, MEDIUM)     |
+| Structured logging           | No sensitive data in logs                                   | ✅ `print()` only, no sensitive data                       |
+
+Historical anti-patterns audited and **not present** in the codebase: `yaml.load()` without SafeLoader (CWE-502), `eval()`/`exec()` on user input (CWE-95), `subprocess(shell=True)` + user input (CWE-78), hardcoded API keys (CWE-798), `pickle.loads()` on untrusted data (CWE-502), MD5/SHA1 for security (CWE-327), stack traces in errors (CWE-209). Plaintext secret storage (CWE-312) was migrated to Fernet.

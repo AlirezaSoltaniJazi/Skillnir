@@ -7,7 +7,7 @@ description: >-
   coordination, and LEARNED.md self-learning. Activates when working with any
   skill file, adding learnings, resolving content placement ambiguity, creating
   or modifying skill directory structure, or coordinating between domain skills.
-compatibility: "Python 3.13+, skillnir CLI, YAML frontmatter, Markdown skill files"
+compatibility: "Python 3.14+, skillnir CLI, YAML frontmatter, Markdown skill files"
 metadata:
   author: skillnir
   version: "1.0.0"
@@ -40,36 +40,39 @@ allowed-tools: Read Edit Write Glob Grep
 
 ## Architecture
 
-```
-.data/skills/                           # Central skill storage (source of truth)
-├── backendEngineer/                    # Python backend, CLI, async, testing
-├── frontendEngineer/                   # NiceGUI UI, Tailwind, HTML generation
-├── devopsEngineer/                     # CI/CD, Docker, pre-commit, UV
-└── skillnir/                            # THIS SKILL — meta-rules for skill system
-    ├── SKILL.md                        # Generated decision guide (this file)
-    ├── INJECT.md                       # Always-loaded quick reference
-    ├── LEARNED.md                      # Session-accumulated learnings
-    ├── references/                     # Detailed skill system documentation
-    └── scripts/validate-skill-system.sh
-```
+`.data/skills/` is the single source of truth. It currently holds **9 skills** —
+backendEngineer, devopsEngineer, frontendEngineer, github, gitlab, jira,
+promptCompressor, securityEngineer, skillnir. `skillnir install` symlinks each
+into every tool dotdir (`.claude/skills/`, `.cursor/skills/`, ...). AI tools read
+SKILL.md on activation; LEARNED.md is read first for overrides; INJECT.md is
+always loaded as a firewall. Full directory tree and data flow:
+[references/architecture-guide.md](references/architecture-guide.md).
 
-**Data flow**: Skills stored in `.data/skills/` → injector creates symlinks in `.claude/skills/`, `.cursor/skills/`, `.codex/skills/`, `.agents/skills/`, `.gemini/skills/` → AI tools read SKILL.md at activation → LEARNED.md read first for overrides → INJECT.md always loaded as hallucination firewall.
+## Rules
 
-**Tooling**: `skillnir generate-skill` creates skills from prompts in `.data/promptsv1/` → `skillnir install` symlinks into tool dotdirs → `skillnir update` syncs changes.
+Authoritative rule set — each stated once here. The Anti-Patterns table below
+mirrors these as "what not to do".
 
-## Key Patterns
+| Rule                     | Value / How                                                              | Why                                                                        |
+| ------------------------ | ------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| Read before edit         | Read a skill's SKILL.md before modifying any file in its directory       | Miss ownership rules and content-placement instructions otherwise          |
+| LEARNED.md for learnings  | Corrections, preferences, conventions go to LEARNED.md — never SKILL.md   | SKILL.md is regenerated; learnings written elsewhere are lost              |
+| SKILL.md is generated    | Never hand-edit SKILL.md; regenerate via the generator                   | Regeneration overwrites manual edits silently                             |
+| Code in references only  | Code blocks >5 lines live in `references/`, never SKILL.md                | Keeps SKILL.md within the ≤300-line / <3,500-token activation budget       |
+| One rule per LEARNED entry | Each LEARNED.md entry is one atomic, date-stamped rule                  | Atomic entries stay scannable and selectively applicable                   |
+| Date format in LEARNED   | Use `- YYYY-MM-DD: rule` — not `Mar 21` or `03/21/2026`                   | Sortable, unambiguous across locales                                       |
+| Check LEARNED.md first   | On ambiguity, read LEARNED.md before asking the user                     | A prior session may already have answered — avoids repeat questions        |
+| Announce activation      | Say "Using: skillnir skill" at the start of any response using a skill    | Signals which rule set is active to the user                              |
+| Skill dir naming         | `camelCase` matching existing skills (e.g. `backendEngineer`)            | Injector and discovery assume camelCase; snake_case breaks lookups         |
+| Reference file naming    | Lowercase-hyphen: `code-style.md`, `api-patterns.md`                     | Consistent, predictable links from SKILL.md                                |
+| Script naming            | `validate-{{scope}}.sh` with `set -euo pipefail`                         | Uniform validators; strict mode surfaces failures instead of masking them  |
+| Minimum references       | At least 5 reference files per skill                                      | Quality gate — forces progressive disclosure out of SKILL.md               |
+| Symlink pattern          | Relative: `../../.data/skills/{{name}}` from dotdirs                      | Absolute paths break when the repo moves; source of truth stays single     |
+| Agent ↔ agents/ sync     | `Agent` in `allowed-tools` iff an `agents/` directory exists             | Advertising a tool with no definitions (or vice versa) misroutes tasks     |
 
-| Rule                     | Description                                                                              |
-| ------------------------ | ---------------------------------------------------------------------------------------- |
-| Read before edit         | Always read a skill's SKILL.md before modifying any file in that skill's directory       |
-| LEARNED.md for learnings | Corrections, preferences, and discovered conventions go to LEARNED.md, never SKILL.md    |
-| SKILL.md is generated    | SKILL.md content is generated by the skill generator — manual edits will be overwritten  |
-| INJECT.md is a firewall  | INJECT.md stays under 150 tokens — only critical quick-reference facts                   |
-| Announce activation      | Say "Using: [Skill Name] skill" at the start of any response using a skill               |
-| Date format in LEARNED   | Use `YYYY-MM-DD: rule description` format in LEARNED.md entries                          |
-| One rule per entry       | Each LEARNED.md entry captures one discrete rule, not a paragraph                        |
-| Code in references only  | Code blocks >5 lines go in `references/`, never in SKILL.md                              |
-| Check LEARNED.md first   | On ambiguity, check LEARNED.md before asking the user — prior sessions may have answered |
+See [references/code-style.md](references/code-style.md) for full formatting
+conventions and [references/cross-skill-rules.md](references/cross-skill-rules.md)
+for routing between domain skills.
 
 ## File Ownership
 
@@ -85,72 +88,55 @@ allowed-tools: Read Edit Write Glob Grep
 
 See [references/skill-file-guide.md](references/skill-file-guide.md) for complete file system documentation with token budgets.
 
-## Conventions
-
-| Rule                   | Convention                                                                               |
-| ---------------------- | ---------------------------------------------------------------------------------------- |
-| Skill directory naming | `camelCase` matching existing skills (backendEngineer, frontendEngineer, devopsEngineer) |
-| SKILL.md budget        | ≤300 lines, <3,500 tokens                                                                |
-| INJECT.md budget       | 50-150 tokens (bullet-point format only)                                                 |
-| LEARNED.md sections    | Corrections, Preferences, Discovered Conventions — always all three                      |
-| Reference file naming  | Lowercase with hyphens: `code-style.md`, `api-patterns.md`                               |
-| Script naming          | `validate-{{scope}}.sh` with `set -euo pipefail`                                         |
-| Frontmatter fields     | Required: name, description, compatibility, metadata, allowed-tools                      |
-| Cross-skill links      | Relative paths: `[backendEngineer](../backendEngineer/SKILL.md)`                         |
-| Symlink pattern        | Relative: `../../.data/skills/{{name}}` from tool dotdirs                                |
-| Minimum references     | At least 5 reference files per skill                                                     |
-
-See [references/code-style.md](references/code-style.md) for full formatting conventions.
-
 ## Common Recipes
 
-1. **Add a LEARNED.md entry**: Identify correct skill → open its LEARNED.md → add entry under the right section (Corrections/Preferences/Discovered Conventions) → use `- YYYY-MM-DD: single rule` format
-2. **Create a new skill**: `mkdir -p .data/skills/{{name}}/{references,scripts}` → create SKILL.md with frontmatter → create INJECT.md (50-150 tokens) → create LEARNED.md template → add ≥5 reference files → add `validate-{{scope}}.sh` → run `skillnir install` for symlinks
-3. **Route content to correct file**: Is it a learning? → LEARNED.md. Is it a quick-reference fact? → INJECT.md. Is it a code example? → references/. Is it a decision rule? → SKILL.md (via generator only)
-4. **Resolve skill ambiguity**: Check file being edited → route by file pattern (see [references/cross-skill-rules.md](references/cross-skill-rules.md)) → if still ambiguous, ask ONE question → record routing decision in LEARNED.md
-5. **Update INJECT.md**: Read current content → identify stale entries → replace with current facts → verify ≤150 tokens → ensure LEARNED.md reference is present
-6. **Add a reference file**: Create in `references/` with descriptive hyphenated name → add link in SKILL.md References table → include code examples with language tags
+1. **Add a LEARNED.md entry**: pick the skill → its LEARNED.md → right section (Corrections/Preferences/Discovered Conventions) → `- YYYY-MM-DD: single rule`
+2. **Create a new skill**: `mkdir -p .data/skills/{{name}}/{references,scripts}` → SKILL.md + frontmatter → INJECT.md (≤150 tok) → LEARNED.md template → ≥5 references → `validate-{{scope}}.sh` → `skillnir install`
+3. **Route content**: learning → LEARNED.md; quick fact → INJECT.md; code → references/; decision rule → SKILL.md (via generator only)
+4. **Resolve ambiguity**: route by file pattern ([references/cross-skill-rules.md](references/cross-skill-rules.md)) → still unclear, ask ONE question → record decision in LEARNED.md
+5. **Update INJECT.md**: replace stale facts → verify ≤150 tokens → keep the LEARNED.md reference
+6. **Add a reference file**: hyphenated name in `references/` → link it in the References table → code gets language tags
 
 ## Anti-Patterns
 
 | Anti-Pattern                                        | Why It's Wrong                                                         |
 | --------------------------------------------------- | ---------------------------------------------------------------------- |
-| Writing preferences to SKILL.md                     | SKILL.md is generated — use LEARNED.md for session learnings           |
-| Editing skill files without reading SKILL.md first  | Miss instructions about where content belongs and file ownership rules |
-| Putting code examples in SKILL.md                   | SKILL.md budget is ≤300 lines — code goes in references/               |
-| Skipping LEARNED.md check on ambiguity              | May repeat a question the user already answered in a prior session     |
+| Writing preferences to / hand-editing SKILL.md      | SKILL.md is generated; regeneration overwrites edits — use LEARNED.md   |
+| Editing skill files without reading SKILL.md first  | Miss content-placement and file-ownership rules                        |
+| Putting code >5 lines in SKILL.md                   | Blows the ≤300-line / <3,500-token budget — code goes in references/   |
+| Skipping LEARNED.md check on ambiguity              | May repeat a question a prior session already answered                 |
 | Mixing multiple rules in one LEARNED.md entry       | Makes entries hard to scan and apply selectively                       |
 | Wrong date format in LEARNED.md                     | Use `YYYY-MM-DD`, not `Mar 21` or `03/21/2026`                         |
 | Adding `Agent` to allowed-tools without agents/     | `Agent` in allowed-tools ↔ agents/ directory must be in sync           |
 | INJECT.md exceeding 150 tokens                      | Consumes context budget every response — keep minimal                  |
 | Recording domain conventions in skillnir LEARNED.md | Domain learnings belong in the domain skill's LEARNED.md               |
-| Editing SKILL.md manually expecting persistence     | Regeneration overwrites manual changes — use LEARNED.md instead        |
 
-## Code Generation Rules
+## Communication Style
 
-1. **Read before writing** — always read a skill's SKILL.md before modifying any file in its directory
-2. **Route content correctly** — use the file ownership table to decide where content belongs
-3. **One rule per entry** — LEARNED.md entries must be atomic, scannable, date-formatted
-4. **On correction** — acknowledge the mistake, restate as a rule, apply to all subsequent actions, then **write the correction to [LEARNED.md](LEARNED.md)** under `## Corrections` with today's date
-5. **On ambiguity** — check [LEARNED.md](LEARNED.md) first, then project files, ask ONE targeted question, then **write the preference to [LEARNED.md](LEARNED.md)** under `## Preferences`
+- **Lead with the answer** — no preamble, no "Let me explain", no "Great question"
+- **Strip filler words** — drop "basically", "essentially", "actually", "just", "simply"
+- **No trailing summaries** — the user can read the diff; don't restate what you did
+- **Bullet points over paragraphs** — lists, tables, one-liners
+- **Show the fix, not a lecture** about the fix
+- **Max 2-3 sentences** per explanation unless the user asks "why" or is in Teaching mode
+- **No hedging, no apologies** — say "do X", fix mistakes silently
 
-## Adaptive Interaction Protocols
+## Session Protocols
 
-Corrections and preferences persist via [LEARNED.md](LEARNED.md).
+| Mode       | Detection signal                                                   | Behavior                          |
+| ---------- | ------------------------------------------------------------------ | --------------------------------- |
+| Teaching   | "where does this go", "what is LEARNED.md for", first encounter    | Explain first, then act           |
+| Efficient  | "add to LEARNED.md", "new skill like X", Nth repeat of a pattern   | Apply conventions directly, write |
+| Diagnostic | "wrong file", "lost my changes", "overwritten", "broken skill"     | Diagnose which file/why first     |
 
-| Mode       | Detection Signal                                                       | Behavior                                                                                           |
-| ---------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Diagnostic | "wrong file", "lost my changes", "overwritten", "broken skill"         | Investigate which file was edited and why content was lost; check SKILL.md vs LEARNED.md ownership |
-| Efficient  | "add this to LEARNED.md", "new skill like X", "update INJECT.md"       | Minimal explanation, apply conventions directly, write immediately                                 |
-| Teaching   | "where does this go", "what is LEARNED.md for", "explain skill system" | Explain file ownership model, reference skill-file-guide.md, show examples                         |
-| Review     | "check skill structure", "audit LEARNED.md", "validate skills"         | Read-only analysis, run validation script, report findings without changes                         |
+Default to Teaching when uncertain; a developer override always wins.
 
-**Self-Learning**: All learnings are **written** to LEARNED.md — not suggested, written:
+**Self-learning (non-negotiable, always written — never merely suggested):**
 
-- Corrections → `## Corrections` section
-- Preferences → `## Preferences` section
-- Discovered conventions → `## Discovered Conventions` section
-- Format: `- YYYY-MM-DD: rule description`
+- **On correction**: acknowledge, restate as a rule, apply for the session, write under `## Corrections`.
+- **On undocumented convention**: check LEARNED.md → project files → ask ONE question, write under `## Preferences`.
+- **On discovered implicit convention**: state it, write under `## Discovered Conventions`.
+- Entry format: `- YYYY-MM-DD: rule`. Deeper guidance: [references/ai-interaction-guide.md](references/ai-interaction-guide.md).
 
 ## Freedom Levels
 

@@ -36,9 +36,9 @@ allowed-tools: Read Edit Write Bash(gh:*) Bash(git:*) Bash(acli:*) Glob Grep
 
 ## Do NOT Use
 
-- **GitLab merge requests** — use [gitlab](../gitlab/SKILL.md).
+- **GitLab merge requests** — use [gitlab](../gitlab/SKILL.md) (wrong platform; `gh` can't open MRs).
 - **Creating or transitioning Jira tickets as the primary task** — use [jira](../jira/SKILL.md). This skill only _updates_ the linked ticket at the end of the PR flow.
-- **CI/CD workflow files** (`.github/workflows/`), pre-commit, quality gates — use [devopsEngineer](../devopsEngineer/SKILL.md).
+- **CI/CD workflow files** (`.github/workflows/`), pre-commit, quality gates — use [devopsEngineer](../devopsEngineer/SKILL.md) (workflow/pipeline YAML is a different concern from raising a PR).
 - **Never** add file paths / code to the Jira ticket — keep the ticket non-technical; technical detail goes in the PR body.
 
 ## Access & Convention Detection

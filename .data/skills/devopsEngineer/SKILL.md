@@ -22,8 +22,6 @@ sub-agents:
     file: agents/hook-debugger.md
 ---
 
-<!-- SKILL.md target: ≤300 lines / <3,500 tokens. Tables, rules, checklists, links only. Code examples go in references/. -->
-
 ## Before You Start
 
 **Read [LEARNED.md](LEARNED.md) first.** It contains corrections, preferences, and conventions accumulated from previous sessions. Apply every rule in that file — they override defaults in this skill.
@@ -47,23 +45,11 @@ sub-agents:
 
 ## Architecture
 
-```
-.github/
-├── actions/setup-python/action.yml  # Composite: Python 3.14 + pip cache
-├── workflows/
-│   ├── run-tests.yml                # pytest --tb=short -q
-│   ├── check-style.yml              # Black → Autoflake → Pylint → Bandit
-│   ├── auto-assign-author.yml       # PR author assignment
-│   ├── pr-version-check.yml         # Fails PR if pyproject.toml version regresses
-│   └── bump-version.yml             # Bumps version + CHANGELOG + tag + release
-└── pull_request_template.md         # Summary + Changes + Test plan
-
-.pre-commit-config.yaml              # 12 hooks mirroring CI checks
-.pylintrc                            # 500+ line comprehensive config
-pyproject.toml                       # hatchling build, uv, dev deps
-```
+Entry points: `.github/workflows/` (5 CI workflows), `.github/actions/setup-python/` (composite), `.pre-commit-config.yaml` (12 hooks), `.pylintrc`, `pyproject.toml`.
 
 **Flow**: Code change → pre-commit hooks (local) → git push → GitHub Actions CI (remote) → PR merge decision.
+
+See [references/architecture-guide.md](references/architecture-guide.md) for the annotated structure map and hook list.
 
 ## Key Patterns
 
@@ -87,7 +73,6 @@ See [references/pipeline-patterns.md](references/pipeline-patterns.md) for full 
 | Workflow naming      | File: `kebab-case.yml`, Name: `PR - {Description}`       |
 | Job naming           | Descriptive, title case (e.g., `Lint & Format Check`)    |
 | Step naming          | Imperative, title case (e.g., `Checkout repository`)     |
-| Action pinning       | Major version: `actions/checkout@v4` — never branch refs |
 | Pre-commit revisions | Pinned: `rev: vX.Y.Z` — never `main`/`latest`            |
 | Script shebang       | `#!/usr/bin/env bash` + `set -euo pipefail`              |
 | Script output        | Emoji prefixes: ✅ pass, ❌ fail, ⚠️ warning             |
@@ -98,38 +83,29 @@ See [references/code-style.md](references/code-style.md) for full formatting exa
 
 ## Common Recipes
 
-1. **Add a new CI workflow**: Create `.github/workflows/{trigger}-{action}.yml` → set `timeout-minutes` → use composite action for Python setup → pin all action versions → scope permissions
-2. **Add a pre-commit hook**: Add repo entry to `.pre-commit-config.yaml` → pin `rev` → add `exclude: ^\.data/` for code hooks → add corresponding CI step if merge-blocking → run `pre-commit run --all-files` to verify
-3. **Add a composite action**: Create `.github/actions/{name}/action.yml` → define inputs with defaults → use `runs: using: composite` → reference via `uses: ./.github/actions/{name}`
-4. **Update a quality gate**: Update both `.pre-commit-config.yaml` AND `.github/workflows/check-style.yml` → verify flag parity → test locally with `pre-commit run {hook-id} --all-files`
-5. **Exempt a CVE**: Add `--ignore={CVE}` to safety args in `.pre-commit-config.yaml` → add comment with CVE number, reason, and version status
-6. **Add a validation script**: Create `.data/skills/{name}/scripts/validate-{scope}.sh` → use `set -euo pipefail` → calculate `PROJECT_ROOT` → use pass/fail/warn helpers → exit 1 on any failure
+1. **New CI workflow**: create `.github/workflows/{trigger}-{action}.yml` → set `timeout-minutes` → reuse the setup-python composite → pin actions → scope permissions
+2. **New pre-commit hook**: add repo entry → pin `rev` → `exclude: ^\.data/` for code hooks → add matching CI step if merge-blocking → `pre-commit run --all-files`
+3. **New composite action**: `.github/actions/{name}/action.yml` → inputs with defaults → `runs: using: composite` → reference via `uses: ./.github/actions/{name}`
+4. **Update a quality gate**: change `.pre-commit-config.yaml` AND `check-style.yml` together → verify flag parity → `pre-commit run {hook-id} --all-files`
+5. **Exempt a CVE**: `--ignore={CVE}` on safety args → comment with CVE number, reason, version status
+6. **New validation script**: `.data/skills/{name}/scripts/validate-{scope}.sh` → `set -euo pipefail` → compute `PROJECT_ROOT` → pass/fail/warn helpers → exit 1 on failure
 
 ## Monitoring & Alerting
 
-- GitHub Actions provides built-in workflow run notifications
-- PR status checks gate merge — failed checks block merging
-- Pre-commit failures provide immediate local feedback
-- No external monitoring (Prometheus, Datadog) — not applicable for CLI tool
-- Validation scripts provide on-demand convention checks
+GitHub Actions run notifications + PR status checks gate merges; pre-commit gives immediate local feedback; validation scripts check conventions on demand. No external monitoring (Prometheus/Datadog) — a CLI tool doesn't need it.
 
 ## Security
 
-- All actions pinned to major versions (no branch refs)
-- Workflow permissions scoped to minimum per job
-- Bandit scans on every PR (`-lll -iii` threshold)
-- Safety CVE scanning with documented exemptions
-- No secrets in workflows — project has no deployment secrets
-- Pre-commit hooks enforce security before code reaches CI
+Bandit runs on every PR (`-lll -iii`); Safety scans CVEs with documented exemptions; pre-commit blocks issues before CI. Project has no deployment secrets. (Action pinning + permission scoping — see Key Patterns / Anti-Patterns.)
 
 See [references/security-checklist.md](references/security-checklist.md) for severity-classified checklists.
 
 ## Disaster Recovery
 
-- **Broken CI**: Check GitHub Actions status page → verify composite action exists → check Python version compatibility
+- **Broken CI**: check Actions status → verify composite action exists → check Python version
 - **Pre-commit corruption**: `pre-commit clean && pre-commit install` → `pre-commit run --all-files`
-- **Rollback workflow change**: `git revert` the workflow commit — workflows are versioned in git
-- **Broken quality gate**: Temporarily skip in pre-commit with `SKIP={hook-id} git commit` — fix immediately after
+- **Rollback**: `git revert` the workflow commit — workflows are versioned in git
+- **Broken gate**: `SKIP={hook-id} git commit` to unblock — fix immediately after
 
 ## Anti-Patterns
 
@@ -145,33 +121,30 @@ See [references/security-checklist.md](references/security-checklist.md) for sev
 | Overly permissive workflow permissions | Principle of least privilege — scope per job                |
 | Running pylint without `.pylintrc`     | Inconsistent results between local and CI                   |
 
-## Code Generation Rules
+## Communication Style
 
-1. **Check parity first** — before modifying CI or pre-commit, read both to understand current state
-2. **Pin everything** — action versions, hook revisions, Python version
-3. **Set timeouts** — every workflow job gets `timeout-minutes`
-4. **Exclude `.data/`** — from all code quality hooks and CI lint steps
-5. **Document exemptions** — CVE ignores, permission escalations, disabled hooks
-6. **On correction** — acknowledge, restate as rule, apply to all subsequent actions, write to [LEARNED.md](LEARNED.md)
-7. **On ambiguity** — check [LEARNED.md](LEARNED.md) first, then project files, ask ONE question, write preference to [LEARNED.md](LEARNED.md)
+- **Lead with the answer** — no preamble, no "Let me explain", no "Great question"
+- **Strip filler words** — remove "basically", "essentially", "actually", "just", "simply"
+- **No trailing summaries** — the user reads the diff/output, don't restate what you did
+- **Bullet points over paragraphs** — lists, tables, one-liners
+- **Show the config, not a lecture about it** — paste the YAML fix, not a walkthrough
+- **Maximum 2-3 sentences** per explanation unless asked "why" or in Teaching mode
+- **No hedging, no apologies** — say "do X", not "you might consider X"; fix mistakes silently
 
-## Adaptive Interaction Protocols
+## Session Protocols
 
-Corrections and preferences persist via [LEARNED.md](LEARNED.md).
+| Mode       | Detection Signal                                          | Behavior                            |
+| ---------- | --------------------------------------------------------- | ----------------------------------- |
+| Teaching   | "what is a composite action", "how does pre-commit work"  | Explain first, then generate        |
+| Efficient  | "another hook like X", "same gate as check-style"         | Generate directly, minimal prose    |
+| Diagnostic | "CI red", "hook failing", "workflow broken", error logs   | Diagnose before touching config     |
 
-| Mode       | Detection Signal                                                     | Behavior                                                            |
-| ---------- | -------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Diagnostic | "CI fails", "hook error", "workflow broken", error logs              | Read error context, check parity, trace root cause, minimal fix     |
-| Efficient  | "same as check-style", "another hook like X", "add step to workflow" | Minimal explanation, replicate existing patterns, apply conventions |
-| Teaching   | "what is composite action", "how does pre-commit work", "explain CI" | Explain with project examples, link to references/, reference docs  |
-| Review     | "review workflow", "check hooks", "audit CI"                         | Read-only analysis, check conventions, delegate to sub-agents       |
+Default to Teaching when uncertain; developer override wins. **Self-learning** — write, never merely suggest:
 
-**Self-Learning**: All learnings are **written** to LEARNED.md — not suggested, written:
-
-- Corrections → `## Corrections` section
-- Preferences → `## Preferences` section
-- Discovered conventions → `## Discovered Conventions` section
-- Format: `- YYYY-MM-DD: rule description`
+- **Read [LEARNED.md](LEARNED.md) first**, before any change.
+- **On correction**: acknowledge, restate as a rule, apply for the session, WRITE under `## Corrections`.
+- **On undocumented convention**: check LEARNED.md → project files → ask ONE question, WRITE under `## Preferences`.
+- **On discovered convention**: state it, WRITE under `## Discovered Conventions`. Format: `- YYYY-MM-DD: rule`.
 
 ## Sub-Agent Delegation
 
@@ -185,27 +158,31 @@ Corrections and preferences persist via [LEARNED.md](LEARNED.md).
 
 ## Freedom Levels
 
-| Level             | Scope                                                                                   | Examples                                                          |
-| ----------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| **MUST** follow   | Action pinning, timeout-minutes, CI ↔ pre-commit parity, `.data/` exclusion, LEARNED.md | "MUST pin actions to major versions", "MUST set timeout"          |
-| **SHOULD** follow | Quality gate ordering, composite action reuse, naming conventions                       | "SHOULD run cheapest checks first", "SHOULD use composite action" |
-| **CAN** customize | Bandit threshold, pylint rules, hook selection, timeout values                          | "CAN adjust bandit severity", "CAN add new hooks"                 |
+| Level             | Rule (with WHY)                                                                                                             |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **MUST** follow   | Pin actions/hooks to a major version — `@main` is a supply-chain risk: an upstream compromise runs in CI                   |
+| **MUST** follow   | Set `timeout-minutes` on every job — a runaway job blocks every PR and burns CI minutes                                    |
+| **MUST** follow   | Keep CI ↔ pre-commit parity — mismatched flags surprise devs with CI failures after a clean local run                     |
+| **MUST** follow   | Exclude `.data/` from code-quality hooks — prompt templates hold Python-like syntax that triggers false positives         |
+| **MUST** follow   | Write corrections to LEARNED.md — otherwise the fix is lost next session                                                   |
+| **SHOULD** follow | Quality-gate ordering (cheapest first), composite-action reuse, naming conventions — fail fast, less duplication           |
+| **CAN** customize | Bandit threshold, pylint rules, hook selection, timeout values                                                            |
 
 ## References
 
-| File                                                                       | Description                                                  |
-| -------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| [LEARNED.md](LEARNED.md)                                                   | **Auto-updated.** Corrections, preferences, conventions      |
-| [INJECT.md](INJECT.md)                                                     | Always-loaded quick reference (hallucination firewall)       |
-| [references/pipeline-patterns.md](references/pipeline-patterns.md)         | Full workflow examples, CI gate ordering, hook configuration |
-| [references/code-style.md](references/code-style.md)                       | Workflow naming, YAML structure, script conventions          |
-| [references/security-checklist.md](references/security-checklist.md)       | Severity-classified CI/CD and dependency security checklists |
-| [references/deployment-guide.md](references/deployment-guide.md)           | Environment topology, quality gate flow, distribution model  |
-| [references/common-issues.md](references/common-issues.md)                 | Troubleshooting CI failures, hook errors, parity issues      |
-| [references/ai-interaction-guide.md](references/ai-interaction-guide.md)   | Anti-dependency strategies, common AI mistakes for infra     |
-| [assets/workflow-example.yml](assets/workflow-example.yml)                 | Copy-paste GitHub Actions workflow template                  |
-| [assets/pre-commit-hook-example.yaml](assets/pre-commit-hook-example.yaml) | Copy-paste pre-commit hook entry template                    |
-| [scripts/validate-infra.sh](scripts/validate-infra.sh)                     | Infrastructure convention checker                            |
-| [agents/security-scanner.md](agents/security-scanner.md)                   | CI/CD security audit agent                                   |
-| [agents/pipeline-reviewer.md](agents/pipeline-reviewer.md)                 | Pipeline correctness review agent                            |
-| [agents/hook-debugger.md](agents/hook-debugger.md)                         | Pre-commit/CI failure diagnosis agent                        |
+| File | Description |
+| --- | --- |
+| [LEARNED.md](LEARNED.md) | **Auto-updated.** Corrections, preferences, conventions |
+| [INJECT.md](INJECT.md) | Always-loaded quick reference (hallucination firewall) |
+| [references/architecture-guide.md](references/architecture-guide.md) | Annotated `.github/` structure map + pre-commit hook list |
+| [references/pipeline-patterns.md](references/pipeline-patterns.md) | Full workflow examples, gate ordering, hook config |
+| [references/code-style.md](references/code-style.md) | Workflow naming, YAML structure, script conventions |
+| [references/security-checklist.md](references/security-checklist.md) | Severity-classified CI/CD + dependency checklists |
+| [references/deployment-guide.md](references/deployment-guide.md) | Environment topology, gate flow, distribution |
+| [references/common-issues.md](references/common-issues.md) | Troubleshooting CI/hook/parity failures |
+| [references/ai-interaction-guide.md](references/ai-interaction-guide.md) | Anti-dependency strategies, common AI infra mistakes |
+| [assets/workflow-example.yml](assets/workflow-example.yml) | Copy-paste workflow template |
+| [assets/pre-commit-hook-example.yaml](assets/pre-commit-hook-example.yaml) | Copy-paste pre-commit hook entry |
+| [scripts/validate-infra.sh](scripts/validate-infra.sh) | Infrastructure convention checker |
+
+Sub-agent definitions live in [agents/](agents/) — see the Sub-Agent Delegation table above.

@@ -112,6 +112,8 @@ Template:
 - Written as if from a senior engineer who works in this codebase daily
 - Phase 3 best practices SHOULD be **numbered by priority** (1 = highest) — this communicates trade-off ordering to the consuming AI when resources or time are limited
 - SKILL.md **≤300 lines and <3,500 tokens** — no code blocks >5 lines
+- The **Architecture** section in SKILL.md is a brief prose/table overview (entry points + data flow, ≤~8 lines) — **NEVER an ASCII directory tree or multi-line structure diagram**; a full structure map goes in `references/architecture-guide.md`. An ASCII tree is inferable from the codebase, violates the ≤5-line code-block rule, and is the most common cause of blowing the token budget.
+- Do not restate the same rule across multiple tables (e.g. Key Patterns + Conventions + Anti-Patterns all repeating "read before edit"). State each rule once in its most authoritative section; the Anti-Patterns table mirrors them as "what not to do", not as a third copy.
 - At least **5 reference files** generated (must include: code-style, security-checklist, patterns, common-issues)
 - Generated SKILL.md MUST include an announcement rule in "Before You Start": **Always say "Using: {{Skill Name}} skill" at the very start of the response before doing any work.**
 - Generated SKILL.md MUST include a "Communication Style" section enforcing concise, caveman-style responses (see COMMUNICATION STYLE section below)

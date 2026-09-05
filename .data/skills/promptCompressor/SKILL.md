@@ -138,6 +138,17 @@ Applied in order:
 4. **Protected zones first** — detect zones before any compression transforms
 5. **On correction** — acknowledge, restate as rule, write to LEARNED.md
 
+## Session Protocols
+
+| Mode       | Trigger                                       | Behavior                                                              |
+| ---------- | --------------------------------------------- | -------------------------------------------------------------------- |
+| Teaching   | "what does this rule do", first time in module | Explain the rule + why it's removed/protected; cite `compressor.py`  |
+| Efficient  | "add a filler word", repeated rule tweaks     | Apply the change with its test; minimal prose                        |
+| Diagnostic | "compression corrupted X"                     | Reproduce with a failing test first, then fix the zone/rule          |
+
+- **FIRST**: read [LEARNED.md](LEARNED.md) before editing.
+- On correction: restate as a rule and append to LEARNED.md (`- YYYY-MM-DD: rule`).
+
 ## References
 
 | File                                                                       | Description                                  |

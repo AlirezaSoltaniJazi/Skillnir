@@ -65,3 +65,15 @@
 - **Locations**: `src/skillnir/notifications/providers.py` (validators), `src/skillnir/notifications/senders.py:65` (`urlopen(...)  # nosec B310`)
 - **Mitigation**: Strict `https://` + per-provider host-allowlist validation (`is_valid_*_webhook()`) runs at the call site before any socket is opened; `_post_json()` does not re-validate by design
 - **Status**: ✅ Compliant — user-controlled URLs exist but are allowlist-mitigated, not absent
+
+---
+
+## Standards Enumeration (cross-reference)
+
+Frameworks the findings map to. Cite one per finding.
+
+- **OWASP Top 10 (2021)**: A01 Broken Access Control, A02 Cryptographic Failures, A03 Injection, A05 Security Misconfiguration, A06 Vulnerable Components, A08 Software/Data Integrity Failures.
+- **OWASP API Security Top 10 (2023)**: API1 BOLA, API2 Broken Authentication, API5 BFLA, API8 Security Misconfiguration.
+- **NIST CSF**: ID.AM (asset management), PR.AC (access control), PR.DS (data security), PR.IP (protective processes), DE.CM (continuous monitoring).
+- **CIS Controls v8**: CIS 2 (software inventory), CIS 4 (secure configuration), CIS 6 (access control management), CIS 16 (application software security).
+- **SANS/CWE Top 25**: CWE-78, CWE-79, CWE-89, CWE-200, CWE-502, CWE-798, CWE-862.
