@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Effort and thinking are now selectable right in the "Switch Model" dialog** (for Claude), instead of only on the Settings page — pick `low`–`max` effort and `adaptive`/`disabled` thinking without leaving the model picker. The model grid was also tidied so cards are evenly sized and wrap cleanly (a single model like Haiku is now a normal card, not a full-width slab).
 - New **Firefox extension** skill generator — pick the "Firefox Extension" scope in Generate Skill to create a WebExtensions skill (browser.\* APIs, sidebar, `web-ext`, AMO), alongside the existing Chrome extension one.
 - Added **Claude Opus 5** to the model picker and made it the new default. Opus 4.8 and the other Claude models are still available.
 - New **Harness Engineering** research section — finds the latest articles on building AI agents (agent loops, tool use, context, memory, evals, guardrails, and more), alongside the existing research sections.

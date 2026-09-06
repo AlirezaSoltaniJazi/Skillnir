@@ -61,14 +61,64 @@ _TIER_LABELS = {
 }
 
 
+def _effort_thinking_bar(config, save_config) -> None:
+    """Inline Effort + Thinking selectors (Claude only). Saves on change; no close."""
+    from skillnir.backends import EFFORT_LEVELS, THINKING_MODES
+
+    with ui.card().classes('w-full p-4 rounded-xl mb-5').props('flat bordered'):
+        with ui.row().classes('items-start gap-8 flex-wrap'):
+            with ui.column().classes('gap-1'):
+                with ui.row().classes('items-center gap-2'):
+                    ui.icon('speed', color='orange').classes('text-lg')
+                    ui.label('Effort').classes('text-sm font-semibold')
+
+                def on_effort(e):
+                    config.effort = e.value
+                    save_config(config)
+                    ui.notify(f'Effort: {e.value}', type='info')
+
+                ui.toggle(
+                    list(EFFORT_LEVELS), value=config.effort, on_change=on_effort
+                ).props('dense no-caps unelevated')
+
+            with ui.column().classes('gap-1'):
+                with ui.row().classes('items-center gap-2'):
+                    ui.icon('psychology', color='deep-purple').classes('text-lg')
+                    ui.label('Thinking').classes('text-sm font-semibold')
+
+                def on_thinking(e):
+                    config.thinking_mode = e.value
+                    save_config(config)
+                    ui.notify(f'Thinking: {e.value}', type='info')
+
+                ui.toggle(
+                    list(THINKING_MODES),
+                    value=config.thinking_mode,
+                    on_change=on_thinking,
+                ).props('dense no-caps unelevated')
+
+        ui.label(
+            'Effort & thinking apply to Claude generation and save instantly. '
+            'Pick a model below to switch model.'
+        ).classes('text-xs text-secondary mt-3')
+
+
 def model_dialog(config, backend_info, save_config) -> None:
-    """Open a dialog to switch the AI model with tiered grid layout."""
+    """Switch the AI model — plus effort/thinking for Claude — with a tiered grid."""
+    from skillnir.backends import AIBackend
+
+    is_claude = backend_info.id == AIBackend.CLAUDE
+
     with (
         ui.dialog() as dlg,
-        ui.card().classes('min-w-[700px] max-w-[900px] p-6 rounded-xl'),
+        ui.card().classes('min-w-[720px] max-w-[920px] p-6 rounded-xl'),
     ):
         ui.label('Switch Model').classes('text-xl font-bold mb-1')
         ui.label(f'AI Tool: {backend_info.name}').classes('text-secondary text-sm mb-4')
+
+        # Effort + Thinking controls (Claude only — other backends have no effort knob).
+        if is_claude:
+            _effort_thinking_bar(config, save_config)
 
         # Group models by tier
         tiers: dict[int, list] = {1: [], 2: [], 3: []}
@@ -80,11 +130,21 @@ def model_dialog(config, backend_info, save_config) -> None:
             if not tier_models:
                 continue
             label, icon, color = _TIER_LABELS[tier_num]
-            with ui.row().classes('items-center gap-2 mt-3 mb-1'):
+            with ui.row().classes('items-center gap-2 mt-3 mb-2'):
                 ui.icon(icon, color=color).classes('text-lg')
                 ui.label(label).classes('text-sm font-bold')
 
-            with ui.row().classes('gap-3 flex-wrap w-full'):
+            # Uniform auto-fill grid: cards stay evenly sized and wrap cleanly,
+            # so a lone model (e.g. Haiku) is a normal card, not a full-width slab.
+            with (
+                ui.element('div')
+                .classes('w-full')
+                .style(
+                    'display:grid;'
+                    'grid-template-columns:repeat(auto-fill,minmax(165px,1fr));'
+                    'gap:12px'
+                )
+            ):
                 for m in tier_models:
                     is_current = m.alias == config.model
 
@@ -100,21 +160,18 @@ def model_dialog(config, backend_info, save_config) -> None:
                     cursor = '' if is_current else ' cursor-pointer'
                     with (
                         ui.card()
-                        .classes(
-                            f'px-4 py-3 model-card min-w-[150px] '
-                            f'flex-1{ring}{cursor}'
-                        )
+                        .classes(f'px-4 py-3 model-card{ring}{cursor}')
                         .on('click', _select)
                     ):
                         ui.label(m.display_name).classes('font-bold text-sm')
-                        with ui.row().classes('items-center gap-2 mt-1'):
+                        with ui.row().classes('items-center gap-2 mt-1 flex-wrap'):
                             ui.label(f'{m.alias}').classes('text-secondary text-xs')
                             if is_current:
                                 ui.badge('current', color='primary').props('dense')
                             if m.is_default:
                                 ui.badge('default', color='grey').props('dense')
 
-        ui.button('Cancel', on_click=dlg.close).props('flat').classes('mt-4')
+        ui.button('Cancel', on_click=dlg.close).props('flat').classes('mt-5')
     dlg.open()
 
 
