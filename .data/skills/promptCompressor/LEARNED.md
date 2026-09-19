@@ -9,3 +9,5 @@
 ## Preferences
 
 ## Discovered Conventions
+
+- 2026-08-02: SKILL.md's "Integration point: Single function `build_subprocess_command()`" undersold it — `maybe_compress_prompt()` (also in `backends.py`) is the integration point for the async-SDK path and is called from `generator.py`, `docs_compressor.py`, `docs_optimizer.py`, `rule_generator.py`, `wiki_generator.py`, and `skill_generator.py` in addition to `build_subprocess_command()`; fixed directly in SKILL.md on 2026-08-02 (Architecture block + Integration points section now list both call sites), this entry kept for history.

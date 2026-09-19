@@ -134,7 +134,7 @@ Integrate for the detected API paradigm and tooling:
 
 1. **When to Use** — 4-6 trigger conditions
 2. **Do NOT Use** — cross-references to sibling skills (backend, frontend, database)
-3. **Architecture** — API contract structure diagram, spec file organization, validation pipeline
+3. **Architecture** — API contract structure diagram, spec file organization, validation pipeline (brief prose/table only — do NOT render an ASCII directory tree or multi-line structure diagram in SKILL.md; put any full structure map in `references/architecture-guide.md`, per the ≤5-line code-block gate)
 4. **Key Patterns** — summary table only (pattern name, approach, key rule). Full spec examples in references/ only
 5. **Code Style** — rules table only. Naming conventions, spec formatting, schema structure details in references/code-style.md
 6. **Common Recipes** — numbered step lists only, no code blocks

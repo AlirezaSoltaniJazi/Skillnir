@@ -119,6 +119,8 @@ echo "Results: $PASS passed, $FAIL failed, $WARN warnings"
 ├── workflows/
 │   ├── run-tests.yml           # Test runner
 │   ├── check-style.yml         # Linting + formatting
-│   └── auto-assign-author.yml  # PR automation
+│   ├── auto-assign-author.yml  # PR automation
+│   ├── pr-version-check.yml    # Blocks version downgrades on PRs
+│   └── bump-version.yml        # Version bump + CHANGELOG + tag + release
 └── pull_request_template.md    # PR template
 ```

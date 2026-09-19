@@ -133,7 +133,7 @@ If two keys compete for the top spot, or none is found, ask ONE question and rec
 Discover what the repo already defines, then apply only labels and milestones that already exist. Never create a taxonomy of your own. If a needed label or milestone does not exist, report it instead of creating it.
 
 ```bash
-gh label list --repo {owner}/{repo}
+gh label list
 gh api repos/{owner}/{repo}/milestones --jq '.[].title'
 ```
 
@@ -146,13 +146,13 @@ The review status the linked issue should transition to is instance-specific. De
 The Jira site `<site>` comes from the CLI's auth status, never hardcoded:
 
 ```bash
-jira me
+acli jira auth status
 ```
 
 Transition the issue to the recorded review status:
 
 ```bash
-jira issue move PROJ-123 "<Review status>"
+acli jira workitem transition --key PROJ-123 --status "<Review status>" --yes
 ```
 
 ---

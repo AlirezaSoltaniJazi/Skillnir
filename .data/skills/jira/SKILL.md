@@ -13,7 +13,7 @@ metadata:
   author: skillnir
   version: "1.0.0"
   sdlc-phase: planning
-allowed-tools: Read Grep Glob Bash(acli:*) Bash(git:*)
+allowed-tools: Read Edit Write Grep Glob Bash(acli:*) Bash(git:*)
 ---
 
 <!-- SKILL.md target: ≤300 lines / <3,500 tokens. Tables, rules, checklists, links only. Command blocks go in references/. -->

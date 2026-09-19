@@ -17,7 +17,7 @@
 ## A03: Injection
 
 - **Risk**: Command injection via subprocess, YAML deserialization
-- **Locations**: `src/skillnir/backends.py:557` (subprocess), `src/skillnir/skills.py:29` (YAML)
+- **Locations**: `src/skillnir/backends.py:896` (subprocess), `src/skillnir/skills.py:29` (YAML)
 - **Mitigation**: List-based subprocess args with `--` separator; `yaml.safe_load()` only
 - **Status**: ✅ Compliant
 
@@ -31,15 +31,15 @@
 ## A05: Security Misconfiguration
 
 - **Risk**: Hardcoded NiceGUI storage secret
-- **Location**: `src/skillnir/ui/__init__.py:140`
+- **Location**: `src/skillnir/ui/__init__.py:211`
 - **Mitigation**: None currently
 - **Remediation**: Derive from `_machine_fingerprint()` or use `secrets.token_hex()`
 
 ## A06: Vulnerable and Outdated Components
 
 - **Risk**: Known CVEs in dependencies
-- **Locations**: `pyproject.toml`, `uv.lock`, `.pre-commit-config.yaml`
-- **Mitigation**: Safety + Bandit in pre-commit; CI enforcement
+- **Locations**: `pyproject.toml`, `uv.lock`, `.pre-commit-config.yaml`, `.github/workflows/check-style.yml`
+- **Mitigation**: Bandit runs in pre-commit AND CI (`check-style.yml`); Safety runs in pre-commit only, triggered when `pyproject.toml`/`uv.lock` change — not currently run in CI
 - **Status**: ✅ Compliant (CVE-2025-6176 documented exception)
 
 ## A07: Identification and Authentication Failures
@@ -61,5 +61,19 @@
 
 ## A10: Server-Side Request Forgery
 
-- **Risk**: Minimal — no user-controlled outbound HTTP
-- **Status**: ✅ Not applicable
+- **Risk**: Notification webhook URLs (Slack, Discord, Teams, Google Chat, Zoho Cliq) are user-supplied in Settings and posted to via `urllib.request.urlopen`
+- **Locations**: `src/skillnir/notifications/providers.py` (validators), `src/skillnir/notifications/senders.py:65` (`urlopen(...)  # nosec B310`)
+- **Mitigation**: Strict `https://` + per-provider host-allowlist validation (`is_valid_*_webhook()`) runs at the call site before any socket is opened; `_post_json()` does not re-validate by design
+- **Status**: ✅ Compliant — user-controlled URLs exist but are allowlist-mitigated, not absent
+
+---
+
+## Standards Enumeration (cross-reference)
+
+Frameworks the findings map to. Cite one per finding.
+
+- **OWASP Top 10 (2021)**: A01 Broken Access Control, A02 Cryptographic Failures, A03 Injection, A05 Security Misconfiguration, A06 Vulnerable Components, A08 Software/Data Integrity Failures.
+- **OWASP API Security Top 10 (2023)**: API1 BOLA, API2 Broken Authentication, API5 BFLA, API8 Security Misconfiguration.
+- **NIST CSF**: ID.AM (asset management), PR.AC (access control), PR.DS (data security), PR.IP (protective processes), DE.CM (continuous monitoring).
+- **CIS Controls v8**: CIS 2 (software inventory), CIS 4 (secure configuration), CIS 6 (access control management), CIS 16 (application software security).
+- **SANS/CWE Top 25**: CWE-78, CWE-79, CWE-89, CWE-200, CWE-502, CWE-798, CWE-862.

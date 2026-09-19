@@ -71,6 +71,7 @@ SKILL_SCOPES: tuple[str, ...] = (
     "observability",
     "accessibility",
     "chrome-extension",
+    "firefox-extension",
     "playwright",
     "wdio",
     "selenium",
@@ -111,6 +112,7 @@ SCOPE_LABELS: dict[str, str] = {
     "observability": "Observability (OpenTelemetry/tracing/metrics/logging/SLOs/alerting)",
     "accessibility": "Accessibility (WCAG/ARIA/screen readers/keyboard navigation/color contrast)",
     "chrome-extension": "Chrome Extension (Manifest V3/content scripts/service workers/chrome.* APIs)",
+    "firefox-extension": "Firefox Extension (WebExtensions/Manifest V2+V3/browser.* APIs/sidebar/AMO/web-ext)",
     "playwright": "Playwright (fixtures/POM/visual regression/API testing/tracing/sharding)",
     "wdio": "WebDriverIO (wdio.conf/custom commands/services/BiDi/reporters/visual testing)",
     "selenium": "Selenium (Selenium 4+/Grid/multi-language/PageFactory/Actions API/waits)",
@@ -146,6 +148,7 @@ SCOPE_CATEGORIES: tuple[tuple[str, tuple[str, ...]], ...] = (
             "ios",
             "cross-platform-mobile",
             "chrome-extension",
+            "firefox-extension",
             "data-science",
         ),
     ),
@@ -319,6 +322,14 @@ def _find_reference_skill(scope: str) -> tuple[Path | None, bool]:
             "content-script",
             "service-worker",
             "popup",
+        ),
+        "firefox-extension": (
+            "firefox",
+            "webextension",
+            "web-ext",
+            "gecko",
+            "amo",
+            "sidebar",
         ),
         "playwright": ("playwright", "pw", "fixture", "visual-regression", "trace"),
         "wdio": ("wdio", "webdriverio", "webdriver-io"),
@@ -555,6 +566,7 @@ async def generate_skill_sdk(
     on_progress: Callable[[GenerationProgress], None] | None = None,
     pure: bool = False,
     extra_instructions: str = "",
+    model: str | None = None,
 ) -> SkillGenerationResult:
     """Generate skill using claude-agent-sdk (async, streaming). Claude only."""
     from claude_agent_sdk import (
@@ -577,7 +589,7 @@ async def generate_skill_sdk(
         allowed_tools=["Read", "Glob", "Grep", "Bash", "Edit", "Write"],
         permission_mode="acceptEdits",
         cwd=str(target_project),
-        **build_claude_sdk_kwargs(),
+        **build_claude_sdk_kwargs(model=model),
     )
 
     user_prompt = _build_user_prompt(
@@ -790,6 +802,7 @@ async def generate_skill(
                 on_progress,
                 pure=pure,
                 extra_instructions=extra_instructions,
+                model=model,
             )
         _emit(on_progress, "status", f"Using {info.name} ({model})")
         loop = asyncio.get_event_loop()

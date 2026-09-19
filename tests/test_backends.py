@@ -325,7 +325,13 @@ class TestResolveModelId:
         assert result == "claude-sonnet-4-6"
 
     def test_fable_alias_resolves_to_id(self):
+        # The unversioned "fable" alias tracks the newest Fable, like opus/sonnet.
         result = resolve_model_id(AIBackend.CLAUDE, "fable")
+        assert result == "claude-fable-5-1"
+
+    def test_prior_fable_alias_still_resolves(self):
+        # Fable 5 stays selectable under its own alias after 5.1 took "fable".
+        result = resolve_model_id(AIBackend.CLAUDE, "fable-5")
         assert result == "claude-fable-5"
 
     def test_default_opus_alias_resolves_to_latest(self):
@@ -679,6 +685,74 @@ class TestEffortAndThinking:
 
         kwargs = build_claude_sdk_kwargs(AppConfig(thinking_mode="disabled"))
         assert kwargs["thinking"] == {"type": "disabled"}
+
+
+class TestSdkModelKwargs:
+    """The SDK path must honor the configured model, like the CLI path does.
+
+    Regression: every ``*_sdk`` generator built ClaudeAgentOptions without a
+    ``model``, so the picker silently had no effect and generation always ran
+    on whatever the ``claude`` CLI defaulted to.
+    """
+
+    def test_configured_model_is_passed(self):
+        from skillnir.backends import build_claude_sdk_kwargs
+
+        kwargs = build_claude_sdk_kwargs(AppConfig(model="sonnet"))
+        assert kwargs["model"] == "claude-sonnet-5"
+
+    def test_alias_is_resolved_to_full_id(self):
+        # The CLI path resolves aliases via resolve_model_id; the SDK path
+        # must agree so both backends target the same model.
+        from skillnir.backends import build_claude_sdk_kwargs
+
+        assert build_claude_sdk_kwargs(AppConfig(model="fable"))["model"] == (
+            "claude-fable-5-1"
+        )
+
+    def test_full_id_passes_through_untouched(self):
+        from skillnir.backends import build_claude_sdk_kwargs
+
+        kwargs = build_claude_sdk_kwargs(AppConfig(), model="claude-opus-4-7")
+        assert kwargs["model"] == "claude-opus-4-7"
+
+    def test_explicit_model_overrides_config(self):
+        from skillnir.backends import build_claude_sdk_kwargs
+
+        kwargs = build_claude_sdk_kwargs(AppConfig(model="haiku"), model="opus")
+        assert kwargs["model"] == "claude-opus-5"
+
+
+class TestAllowedToolsOverride:
+    """Tool grants are a build_subprocess_command argument, not an argv rewrite."""
+
+    def test_default_grant_when_unset(self):
+        from skillnir.backends import DEFAULT_CLAUDE_TOOLS
+
+        cmd = build_subprocess_command(AIBackend.CLAUDE, "p", compress=False)
+        assert cmd[cmd.index("--allowedTools") + 1] == DEFAULT_CLAUDE_TOOLS
+
+    def test_research_grant_includes_web_tools(self):
+        from skillnir.backends import RESEARCH_CLAUDE_TOOLS
+
+        cmd = build_subprocess_command(
+            AIBackend.CLAUDE,
+            "p",
+            compress=False,
+            allowed_tools=RESEARCH_CLAUDE_TOOLS,
+        )
+        granted = cmd[cmd.index("--allowedTools") + 1]
+        assert "WebSearch" in granted and "WebFetch" in granted
+
+    def test_empty_grant_is_not_treated_as_unset(self):
+        # article_cleanup is pure classification and wants zero tools. An
+        # `or`-style default would silently hand it the full tool set.
+        from skillnir.backends import NO_CLAUDE_TOOLS
+
+        cmd = build_subprocess_command(
+            AIBackend.CLAUDE, "p", compress=False, allowed_tools=NO_CLAUDE_TOOLS
+        )
+        assert cmd[cmd.index("--allowedTools") + 1] == ""
 
 
 class TestMaybeCompressPrompt:

@@ -9,21 +9,17 @@
 
 ## Find the template
 
-GitLab stores project MR templates as individual `.md` files under `.gitlab/merge_request_templates/`. Each filename (minus `.md`) is a selectable template name. Glob for them:
+GitLab stores project MR templates as individual `.md` files under `.gitlab/merge_request_templates/` — unlike GitHub, there is no single template file at the repository root. Each filename (minus `.md`) is a selectable template name. Glob for them:
 
 ```bash
 ls -1 .gitlab/merge_request_templates/*.md 2>/dev/null
 ```
 
-Some repos keep a single default template at the repository root instead — check that too:
-
-```bash
-ls -1 .gitlab/merge_request_template.md 2>/dev/null
-```
+A repo can also set a project-level default description template in **Settings > Merge requests** (GitLab Premium/Ultimate). That default isn't a file you can `ls` — if the Glob above finds a `Default.md`, GitLab prefers it unless a project-settings default overrides it; either way, ask if you can't tell which the project expects.
 
 Notes on which one to use:
 
-- **Multiple templates found** — pick `Default.md` if present; otherwise choose the one whose name matches the change (for example a `Bugfix` template for a fix branch), or ask which to use and record the answer to `LEARNED.md`.
+- **Multiple templates found** — pick `Default.md` if present (case-insensitive); otherwise choose the one whose name matches the change (for example a `Bugfix` template for a fix branch), or ask which to use and record the answer to `LEARNED.md`.
 - **One template found** — use it.
 - **None found** — skip to the `--fill` fallback at the bottom.
 

@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Claude Fable 5.1 added to the model picker.** The `fable` shortcut now selects the newest Fable, and the previous Fable 5 stays available as `fable-5` — same pattern already used for `opus` and `sonnet`, so saved settings keep tracking the latest model automatically.
+- **New `modelRegistry` skill** — ask it to check for new models and it verifies the lineup against the providers' own live docs (never from memory), updates the model picker with the right shortcut/tier/default, and reviews the per-backend CLI install, login, and verify hints.
+- **Effort and thinking are now selectable right in the "Switch Model" dialog** (for Claude), instead of only on the Settings page — pick `low`–`max` effort and `adaptive`/`disabled` thinking without leaving the model picker. The model grid was also tidied so cards are evenly sized and wrap cleanly (a single model like Haiku is now a normal card, not a full-width slab).
+- New **Firefox extension** skill generator — pick the "Firefox Extension" scope in Generate Skill to create a WebExtensions skill (browser.\* APIs, sidebar, `web-ext`, AMO), alongside the existing Chrome extension one.
+
+### Fixed
+
+- **The model you pick is now actually used for Claude generation.** Every generator that runs through the Claude SDK — skills, AI docs, Cursor rules, the wiki, docs optimize, and the docs tone pass — built its request without a model, so your selection was silently ignored and generation always fell back to the `claude` CLI's own default. Since the SDK is always available, this affected every Claude run. Effort and thinking were already being passed correctly; only the model was missing. Aliases (`opus`, `sonnet`, `fable`) resolve to full model IDs exactly as they do on the CLI path.
+- **Web research can no longer lose its web tools silently.** The nine research pipelines (research, harness/testing/software research, events, news, security, package vulns, benchmarks) each rewrote the built command line to bolt `WebFetch`/`WebSearch` onto the tool grant, guarded by a `try/except` that quietly did nothing if the flag name ever changed — turning a web search into a no-op search with no error. Tool grants are now a named argument on the command builder, so there is one place to change and nothing to silently miss.
+- **All 9 pre-built skills refreshed to the current best-practice budget.** The five domain skills (backend/frontend/devops/security/skillnir) had grown well over the size budget that keeps skills effective — full directory trees, duplicated rule tables, and oversized always-loaded summaries. Every skill is now trimmed to a lean, single-purpose reference (detail moved into on-demand `references/` files), each rule now states its "why", and the skillnir skill's two stale facts (Python version and skill count) are corrected. The skill **template generator** was fixed at the root so newly generated skills stay lean automatically (it no longer asks for an ASCII directory tree or repeated rule tables).
+- **Ask and Plan no longer compress what you type** — your question or task is sent to the AI exactly as written, even with compress-prompts turned on. Compression is meant for long generated prompts, not your own words, where it could change your meaning.
+
 ## [1.8.0] - 2026-08-01
 
 ### Added

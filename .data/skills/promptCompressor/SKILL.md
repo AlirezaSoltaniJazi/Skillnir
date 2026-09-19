@@ -39,20 +39,20 @@ allowed-tools: Read Edit Write Glob Grep Bash
 
 ```
 src/skillnir/compressor.py          # Core module — compress_prompt()
-src/skillnir/backends.py            # Integration — build_subprocess_command()
+src/skillnir/backends.py            # Integration — build_subprocess_command() + maybe_compress_prompt()
 src/skillnir/ui/pages/settings.py   # Toggle — compress_prompts config
-tests/test_compressor.py            # 38+ unit tests
+tests/test_compressor.py            # 51 unit tests
 ```
 
-**Data flow**: Pipeline prompt string -> `build_subprocess_command()` -> `compress_prompt()` -> compressed string -> CLI subprocess
+**Data flow**: Pipeline prompt string -> `build_subprocess_command()` (subprocess backends) or `maybe_compress_prompt()` (Claude SDK backend) -> `compress_prompt()` -> compressed string -> CLI subprocess / SDK call
 
-**Integration point**: Single function `build_subprocess_command()` in `backends.py`. Compression is applied transparently when `compress_prompts=True` in `AppConfig`.
+**Integration points**: Two call sites in `backends.py`, both gated on `compress_prompts=True` in `AppConfig`: `build_subprocess_command()` compresses inline for subprocess backends; `maybe_compress_prompt()` is the shared wrapper for the async-SDK path and is called from `generator.py`, `docs_compressor.py`, `docs_optimizer.py`, `rule_generator.py`, `wiki_generator.py`, and `skill_generator.py`.
 
 ## Compression Algorithm
 
 Applied in order:
 
-1. **Detect protected zones** — code blocks, inline code, JSON templates, URLs, file paths, markdown headers
+1. **Detect protected zones** — code blocks, inline code, JSON templates, URLs, file paths, markdown headers, YAML frontmatter, table rows, indented code blocks
 2. **Replace verbose phrases** — "in order to" -> "to", "due to the fact that" -> "because" (~30 pairs)
 3. **Remove stop words** — articles, auxiliaries, intensifiers, fillers (outside protected zones)
 4. **Collapse whitespace** — normalize spaces and blank lines
@@ -67,6 +67,8 @@ Applied in order:
 | Auxiliaries  | is, are, was, were, am, be, been, being, have, has, had, do, does, did                             |
 | Intensifiers | very, quite, rather, somewhat, really, extremely, essentially, particularly, especially            |
 | Fillers      | currently, basically, actually, simply, just, certainly, definitely, obviously, clearly, literally |
+
+**Exception**: `have`/`has`/`had` are kept (not removed) when immediately followed by `to` — "have to fix this" expresses necessity, and removing it would invert the meaning.
 
 ### ALWAYS KEEP
 
@@ -83,14 +85,17 @@ Applied in order:
 
 ### PROTECTED ZONES (never modified)
 
-| Zone             | Pattern                         |
-| ---------------- | ------------------------------- |
-| Code blocks      | ` ``` ... ``` `                 |
-| Inline code      | `` `...` ``                     |
-| JSON templates   | `{{ ... }}` and `{{{{ ... }}}}` |
-| URLs             | `https://...`                   |
-| File paths       | `/path/to/file`                 |
-| Markdown headers | `## Header`                     |
+| Zone             | Pattern                                                                                                               |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Code blocks      | ` ``` ... ``` `                                                                                                       |
+| Inline code      | `` `...` ``                                                                                                           |
+| JSON templates   | `{{ ... }}` and `{{{{ ... }}}}`                                                                                       |
+| URLs             | `https://...`                                                                                                         |
+| File paths       | `/path/to/file.py` (needs a trailing extension — see [protected-zones-guide.md](references/protected-zones-guide.md)) |
+| Markdown headers | `## Header`                                                                                                           |
+| YAML frontmatter | `---` ... `---` at doc start                                                                                          |
+| Table rows       | any line containing `\|`                                                                                              |
+| Indented code    | 4-space or tab-indented lines                                                                                         |
 
 ## Key Patterns
 
@@ -116,14 +121,14 @@ Applied in order:
 
 ## Anti-Patterns
 
-| Anti-Pattern                          | Why It's Wrong                                               |
-| ------------------------------------- | ------------------------------------------------------------ |
-| Removing words inside code blocks     | Corrupts code — always check protected zones first           |
-| Partial word matches                  | "a" in "data" — must use `\b` word boundaries                |
-| Removing negations                    | "not working" becomes "working" — opposite meaning           |
-| Phrase replacement after word removal | "in order to" breaks if "in" removed first                   |
-| Compressing user input (ask/plan)     | Users chose their exact words — only compress system prompts |
-| External dependencies (spaCy/nltk)    | Must be pure Python, <100ms, no installs                     |
+| Anti-Pattern                          | Why It's Wrong                                                       |
+| ------------------------------------- | -------------------------------------------------------------------- |
+| Removing words inside code blocks     | Corrupts code — always check protected zones first                   |
+| Partial word matches                  | "a" in "data" — must use `\b` word boundaries                        |
+| Removing negations                    | "not working" becomes "working" — opposite meaning                   |
+| Phrase replacement after word removal | "is able to" -> "can" breaks if "is" (an auxiliary) is removed first |
+| Compressing user input (ask/plan)     | Users chose their exact words — only compress system prompts         |
+| External dependencies (spaCy/nltk)    | Must be pure Python, <100ms, no installs                             |
 
 ## Code Generation Rules
 
@@ -132,6 +137,17 @@ Applied in order:
 3. **Word boundaries** — always use `\b` in regex for word matching
 4. **Protected zones first** — detect zones before any compression transforms
 5. **On correction** — acknowledge, restate as rule, write to LEARNED.md
+
+## Session Protocols
+
+| Mode       | Trigger                                       | Behavior                                                              |
+| ---------- | --------------------------------------------- | -------------------------------------------------------------------- |
+| Teaching   | "what does this rule do", first time in module | Explain the rule + why it's removed/protected; cite `compressor.py`  |
+| Efficient  | "add a filler word", repeated rule tweaks     | Apply the change with its test; minimal prose                        |
+| Diagnostic | "compression corrupted X"                     | Reproduce with a failing test first, then fix the zone/rule          |
+
+- **FIRST**: read [LEARNED.md](LEARNED.md) before editing.
+- On correction: restate as a rule and append to LEARNED.md (`- YYYY-MM-DD: rule`).
 
 ## References
 

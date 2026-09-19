@@ -252,7 +252,7 @@ Rule: production projects pin to an LTS unless they have a strong reason. The sk
 
 1. **When to Use** — 4-6 trigger conditions (DRF endpoint, ORM N+1, migration safety, admin tweak, async view, Celery task)
 2. **Do NOT Use** — cross-references to sibling skills (`python` for non-Django scripts, `frontend` for SPA, `database` for raw SQL/Alembic, `api-design` for cross-framework OpenAPI)
-3. **Architecture** — apps layout, URL routing, settings module strategy, ASGI vs. WSGI
+3. **Architecture** — apps layout, URL routing, settings module strategy, ASGI vs. WSGI (brief prose/table only — do NOT render an ASCII directory tree or multi-line structure diagram in SKILL.md; put any full structure map in `references/architecture-guide.md`, per the ≤5-line code-block gate)
 4. **ORM Patterns** — rule table only; full examples in `references/orm-patterns.md`
 5. **Migration Safety** — zero-downtime ladder + locking rules; full examples in `references/migrations.md`
 6. **DRF Recipes** — numbered steps only ("Add a new endpoint", "Add a custom action")

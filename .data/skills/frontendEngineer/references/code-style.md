@@ -4,6 +4,16 @@
 
 ---
 
+## Quote Style (Black `-S`)
+
+Black runs with `-S`, so it preserves each file's existing quotes and does not force one style. Match the file you are editing:
+
+- **Single quotes** — most existing files (`layout.py`'s original `NAV_GROUPS`/`header()` code, older components/pages).
+- **Double quotes** — several newer files use them throughout: `path_input.py`, `benchmarks.py`, `events.py`, `ignore.py`, `package_vulns_page.py`, `security_page.py`.
+- **Mixed** — `layout.py` itself: original nav/header code is single-quoted, while newer install/sync flow builders (`build_skill_cards` etc.) are mostly double-quoted. Follow the surrounding block, not the file as a whole.
+
+---
+
 ## Import Order
 
 Three groups, separated by blank lines:

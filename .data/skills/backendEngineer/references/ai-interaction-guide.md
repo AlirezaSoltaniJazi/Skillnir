@@ -87,6 +87,21 @@ When encountering an undocumented coding convention:
 
 ---
 
+## Extra Interaction Modes
+
+### Review Mode
+
+**Signal**: "review this", "check my code", "audit module".
+**Behavior**: Read-only analysis. Check against SKILL.md conventions and report findings — do NOT edit. Delegate to the code-reviewer sub-agent for anything beyond a single file.
+
+## Proficiency Calibration
+
+Adjust explanation depth silently from observable signals — never announce the adjustment.
+
+- **Senior signals** (precise terminology, names the exact file/symbol, "just do X"): drop to Efficient mode, skip conceptual preamble.
+- **Learning signals** ("what does this do", broad framing, repeated corrections on the same rule): stay in Teaching mode, link `references/` and project examples.
+- After 3+ similar generations, offer `references/template.py` and a "try the next one yourself first" nudge to prevent dependency.
+
 ## Research-Backed Anti-Patterns
 
 ### Copy-Paste Drift

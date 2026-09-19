@@ -3,6 +3,7 @@
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Callable
 
 from skillnir.skills import Skill
 
@@ -38,7 +39,7 @@ class OperationResult:
 def perform_operation(
     source: Path,
     target: Path,
-    on_progress: 'Callable[[str], None] | None' = None,
+    on_progress: Callable[[str], None] | None = None,
 ) -> OperationResult:
     """Perform the main operation.
 
@@ -73,7 +74,7 @@ def perform_operation(
 def _process_files(
     source: Path,
     target: Path,
-    on_progress: 'Callable[[str], None] | None' = None,
+    on_progress: Callable[[str], None] | None = None,
 ) -> None:
     """Process files from source to target."""
     target.mkdir(parents=True, exist_ok=True)

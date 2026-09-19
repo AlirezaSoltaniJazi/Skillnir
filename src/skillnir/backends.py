@@ -60,7 +60,7 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         cli_command="claude",
         supports_stream_json=True,
         models=(
-            ModelInfo("claude-fable-5", "fable", "Claude Fable 5", tier=1),
+            ModelInfo("claude-fable-5-1", "fable", "Claude Fable 5.1", tier=1),
             ModelInfo(
                 "claude-opus-5", "opus", "Claude Opus 5", is_default=True, tier=1
             ),
@@ -70,6 +70,7 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
             ModelInfo("claude-sonnet-5", "sonnet", "Claude Sonnet 5", tier=2),
             ModelInfo("claude-sonnet-4-6", "sonnet-4.6", "Claude Sonnet 4.6", tier=2),
             ModelInfo("claude-haiku-4-5", "haiku", "Claude Haiku 4.5", tier=3),
+            ModelInfo("claude-fable-5", "fable-5", "Claude Fable 5", tier=1),
             ModelInfo("claude-opus-4-5", "opus-4.5", "Claude Opus 4.5", tier=1),
             ModelInfo("claude-opus-4-1", "opus-4.1", "Claude Opus 4.1", tier=1),
             ModelInfo("claude-opus-4-0", "opus-4.0", "Claude Opus 4", tier=1),
@@ -397,7 +398,7 @@ class AppConfig:
     prompt_version: str = field(default_factory=_default_prompt_version)
     compress_prompts: bool = False
     # ── Claude SDK reasoning controls (other backends ignore) ──
-    effort: str = DEFAULT_EFFORT  # low | medium | high | max
+    effort: str = DEFAULT_EFFORT  # low | medium | high | xhigh | max
     thinking_mode: str = DEFAULT_THINKING_MODE  # adaptive | disabled
     # ── Notification credentials (one cipher field per secret) ──
     gchat_webhook_cipher: str = ""
@@ -738,16 +739,26 @@ def get_usage_info(backend: AIBackend) -> str | None:
     return None
 
 
-def build_claude_sdk_kwargs(config: "AppConfig | None" = None) -> dict:
-    """Return ``ClaudeAgentOptions`` kwargs for ``effort`` and ``thinking``.
+def build_claude_sdk_kwargs(
+    config: "AppConfig | None" = None,
+    model: str | None = None,
+) -> dict:
+    """Return ``ClaudeAgentOptions`` kwargs for model, ``effort`` and ``thinking``.
 
     Centralizes the per-config translation so every Claude SDK call site
-    stays consistent. Returns an empty dict when both knobs are at their
-    defaults so we don't pin parameters the user hasn't customized.
+    stays consistent. ``model`` overrides the configured model, mirroring the
+    ``model_override`` argument the subprocess path already honors, and is
+    resolved through :func:`resolve_model_id` so an alias such as ``"opus"``
+    reaches the SDK as a full model ID exactly as it does on the CLI.
+    ``effort``/``thinking`` are omitted when left at their defaults so we
+    don't pin parameters the user hasn't customized.
     """
     if config is None:
         config = load_config()
     kwargs: dict = {}
+    selected_model = model or config.model
+    if selected_model:
+        kwargs["model"] = resolve_model_id(AIBackend.CLAUDE, selected_model)
     if config.effort and config.effort != DEFAULT_EFFORT:
         kwargs["effort"] = config.effort
     if config.thinking_mode == "adaptive":
@@ -809,6 +820,14 @@ def maybe_compress_prompt(prompt: str, config: "AppConfig | None" = None) -> str
     return compress_prompt(prompt).compressed
 
 
+# Claude tool grants. Named here so pipelines declare intent instead of
+# rewriting the built argv, and so the flag name lives in exactly one place.
+DEFAULT_CLAUDE_TOOLS = "Read,Glob,Grep,Bash,Edit,Write"
+RESEARCH_CLAUDE_TOOLS = "Read,Glob,Grep,Bash,Write,WebFetch,WebSearch"
+WEB_ONLY_CLAUDE_TOOLS = "WebFetch,WebSearch"
+NO_CLAUDE_TOOLS = ""  # pure classification — no tools needed or wanted
+
+
 def build_subprocess_command(
     backend: AIBackend,
     prompt: str,
@@ -816,8 +835,15 @@ def build_subprocess_command(
     max_turns: int = 15,
     mode: str | None = None,
     compress: bool | None = None,
+    allowed_tools: str | None = None,
 ) -> list[str]:
-    """Build CLI command for the given backend."""
+    """Build CLI command for the given backend.
+
+    ``allowed_tools`` overrides the Claude tool grant (comma-separated, e.g.
+    ``"Read,Write,WebFetch,WebSearch"``). Research pipelines need the web
+    tools that the default grant omits; passing them here keeps the flag name
+    in one place instead of rewriting the built argv.
+    """
     if compress is None:
         compress = load_config().compress_prompts
     if compress:
@@ -843,13 +869,15 @@ def build_subprocess_command(
             "--model",
             model_id,
             "--allowedTools",
-            "Read,Glob,Grep,Bash,Edit,Write",
+            DEFAULT_CLAUDE_TOOLS if allowed_tools is None else allowed_tools,
             "--max-turns",
             str(max_turns),
             "--verbose",
         ]
         # Pass --effort only when user customized it; keeps default behavior
         # unchanged for users on the older default ("high" is implicit).
+        # thinking_mode has no CLI equivalent (the SDK path applies it via
+        # build_claude_sdk_kwargs); the CLI exposes --effort only.
         if cfg.effort and cfg.effort != DEFAULT_EFFORT:
             cmd += ["--effort", cfg.effort]
     elif backend == AIBackend.CURSOR:

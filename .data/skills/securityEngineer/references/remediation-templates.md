@@ -111,6 +111,10 @@ SECRET_PATTERNS = [
     re.compile(r'(?i)(token|bearer)\s*[=:]\s*["\']?[\w.-]{20,}'),
     re.compile(r'(?i)(aws_access_key_id)\s*[=:]\s*["\']?AKIA[\w]{16}'),
     re.compile(r'(?i)(private[_-]?key)\s*[=:]\s*["\']?-----BEGIN'),
-    re.compile(r'hooks\.googleapis\.com/spaces/[\w/]+'),  # Google Chat webhook
+    re.compile(r'chat\.googleapis\.com/v1/spaces/[\w/-]+'),  # Google Chat webhook
+    re.compile(r'hooks\.slack\.com/services/[\w/-]+'),  # Slack webhook
+    re.compile(r'discord(?:app)?\.com/api/webhooks/[\w/-]+'),  # Discord webhook
+    re.compile(r'[\w-]+\.logic\.azure\.com/workflows/[\w/-]+'),  # Teams (Power Automate) webhook
+    re.compile(r'cliq\.zoho(?:cloud)?\.[\w.]+/.*[?&]zapikey='),  # Zoho Cliq webhook
 ]
 ```

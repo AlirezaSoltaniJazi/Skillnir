@@ -17,6 +17,11 @@
 - **Trigger**: Commands like `["claude", "--model", ...]` without full path
 - **Skillnir context**: AI CLI tools resolved via PATH. Acceptable — suppress with `# nosec B607`
 
+### B310: urllib_urlopen
+
+- **Trigger**: `urllib.request.urlopen()` — Bandit flags any use since the scheme/host isn't verified at that call
+- **Skillnir context**: `src/skillnir/notifications/senders.py:65` suppresses with `# nosec B310`. Justified because the caller already validated `https://` + a per-provider host allowlist (`is_valid_*_webhook()` in `notifications/providers.py`) before `_post_json()` is invoked — `_post_json()` itself does not re-validate
+
 ## Safety False Positives
 
 ### CVE-2025-6176 (brotli)

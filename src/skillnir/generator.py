@@ -233,6 +233,7 @@ async def generate_docs_sdk(
     target_project: Path,
     prompt_text: str,
     on_progress: Callable[[GenerationProgress], None] | None = None,
+    model: str | None = None,
 ) -> GenerationResult:
     """Generate docs using claude-agent-sdk (async, streaming). Claude only."""
     from claude_agent_sdk import (
@@ -254,7 +255,7 @@ async def generate_docs_sdk(
         allowed_tools=["Read", "Glob", "Grep", "Bash", "Write"],
         permission_mode="acceptEdits",
         cwd=str(target_project),
-        **build_claude_sdk_kwargs(),
+        **build_claude_sdk_kwargs(model=model),
     )
 
     user_prompt = _build_user_prompt(target_project)
@@ -409,7 +410,9 @@ async def generate_docs(
     # For Claude, try SDK first if available
     if backend == AIBackend.CLAUDE and _claude_sdk_available():
         _emit(on_progress, "status", "Using Claude SDK")
-        return await generate_docs_sdk(target_project, prompt_text, on_progress)
+        return await generate_docs_sdk(
+            target_project, prompt_text, on_progress, model=model
+        )
 
     if not cli_available:
         return GenerationResult(

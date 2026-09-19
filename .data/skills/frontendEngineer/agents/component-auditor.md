@@ -30,7 +30,7 @@ Conventions to check:
 - card-hover class on interactive cards
 - text-secondary for muted text (theme-adaptive)
 - Absolute imports only (no relative)
-- Single quotes (Black -S)
+- Match the file's existing quote style (Black `-S` preserves quotes, does not enforce single quotes — many newer files use double quotes throughout)
 
 Review these files: {{files}}
 Report: violations found, severity, suggested fixes (but do NOT apply them).

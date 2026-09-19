@@ -3,7 +3,7 @@
 > The label and milestone handling reference for the gitlab skill, referenced from SKILL.md: how to discover the labels and milestones a repository already defines, apply only the matching ones to a Merge Request, and skip-and-report anything that does not exist — without ever inventing a taxonomy.
 
 > [!IMPORTANT]
-> `glab` was **NOT** available to verify live in this environment. The flag names below (`-l/--label`, `-m/--milestone`, and the `label list` / `api` subcommands) are the _typical_ surface, not a confirmed one. On first use in any repository you MUST run `glab mr create --help`, `glab mr update --help`, and `glab label list --help` and confirm the exact flag names and behavior. Record any differences — renamed flags, missing options, different JSON field names — to `LEARNED.md` so the next session does not repeat the guesswork.
+> `glab` was **NOT** available to verify live in this environment. The flag names below (`-l/--label`, `-m/--milestone`, and the `label list` / `milestone list` / `api` subcommands) are the _typical_ surface, not a confirmed one. On first use in any repository you MUST run `glab mr create --help`, `glab mr update --help`, `glab label list --help`, and `glab milestone list --help` and confirm the exact flag names and behavior. Record any differences — renamed flags, missing options, different JSON field names — to `LEARNED.md` so the next session does not repeat the guesswork.
 
 **Core rule.** Labels and milestones must **already exist** in the project. `glab mr create` / `glab mr update` do **not** create them — they error on an unknown label or milestone. So the flow is always **discover first, then apply only the matches, then report the rest.** Never define a label taxonomy or a milestone scheme; only ever use what the repository has already set up.
 
@@ -31,13 +31,19 @@ Read the label `name` values from the output. An intended label that does **not*
 
 ## Discover the milestones the project defines
 
-There is no dedicated `milestone list` subcommand in the typical surface — query the API directly. `:id` auto-resolves to the current project:
+Use the dedicated `glab milestone list` subcommand — it lists the current project's milestones by default:
+
+```bash
+glab milestone list --output json
+```
+
+If `milestone list` is missing on an older `glab` (confirm with `glab milestone --help`), fall back to the API directly — `:id` auto-resolves to the current project:
 
 ```bash
 glab api "projects/:id/milestones"
 ```
 
-The response is a JSON array; read each milestone's `title` (and `id` / `state` if you need to prefer active over closed milestones). Only a milestone whose `title` appears in this array is eligible to apply.
+Either way the response is a JSON array (or list); read each milestone's `title` (and `id` / `state` if you need to prefer active over closed milestones). Only a milestone whose `title` appears in this output is eligible to apply.
 
 ---
 

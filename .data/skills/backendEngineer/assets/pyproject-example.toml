@@ -16,15 +16,15 @@ authors = [{ name = "Author Name" }]
 dependencies = [
     "questionary>=2.1.0",
     "pyyaml>=6.0",
-    "nicegui>=2.0",
-    "claude-agent-sdk>=0.1.44",
+    "nicegui>=3.10.0",
+    "claude-agent-sdk>=0.2.87",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=9.0.2",
-    "pytest-asyncio>=0.24",
-    "pre-commit>=4.5.1",
+    "pytest>=9.0.3",
+    "pytest-asyncio>=1.4.0",
+    "pre-commit>=4.6.0",
     "pylint>=4.0.5",
     "black>=26.3.1",
     "autoflake>=2.3.1",

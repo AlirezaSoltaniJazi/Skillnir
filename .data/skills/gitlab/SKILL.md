@@ -37,9 +37,9 @@ allowed-tools: Read Edit Write Bash(glab:*) Bash(git:*) Bash(acli:*) Glob Grep
 
 ## Do NOT Use
 
-- **GitHub pull requests** — use [github](../github/SKILL.md).
+- **GitHub pull requests** — use [github](../github/SKILL.md) (wrong platform; `glab` targets GitLab MRs, not GitHub PRs).
 - **Creating or transitioning Jira tickets as the primary task** — use [jira](../jira/SKILL.md). This skill only _updates_ the linked ticket at the end of the MR flow.
-- **CI/CD pipeline files** (`.gitlab-ci.yml`) — use [devopsEngineer](../devopsEngineer/SKILL.md).
+- **CI/CD pipeline files** (`.gitlab-ci.yml`) — use [devopsEngineer](../devopsEngineer/SKILL.md) (pipeline YAML is a different concern from raising an MR).
 - **Never** add file paths / code to the Jira ticket — keep the ticket non-technical; technical detail goes in the MR description.
 
 ## Access & Convention Detection
@@ -77,7 +77,7 @@ If no ticket-key pattern exists in history, fall back to `<type>/<slug>` branche
 7. **MR description** — "description updated based on the MR": load the repo's MR template (if any) and fill the ticket URL + a Summary generated from `git diff <target>...HEAD --stat` + commit subjects; keep the template's checklists. No template → `glab mr create --fill`.
 8. **Create the MR**:
    `glab mr create --source-branch <branch> --target-branch <target> --title "…" --description "$(cat <body-file>)" --yes`, then capture the URL (`glab mr view <id> --output json`).
-9. **Labels / milestone**: discover with `glab label list` and `glab api "projects/:id/milestones"`; apply the ones the repo actually defines via `glab mr update <id> --label "…" --milestone "…"` (or set them on `glab mr create`). **Apply only what already exists; skip and report the rest.**
+9. **Labels / milestone**: discover with `glab label list` and `glab milestone list` (fall back to `glab api "projects/:id/milestones"` on older `glab`); apply the ones the repo actually defines via `glab mr update <id> --label "…" --milestone "…"` (or set them on `glab mr create`). **Apply only what already exists; skip and report the rest.**
 10. **Update Jira** (optional, if a ticket is linked — via acli, the same recipes the jira skill documents):
     `acli jira workitem comment create --key <KEY>-<n> --body "MR: <url>"`
     then `acli jira workitem transition --key <KEY>-<n> --status "<Review status>" --yes`.

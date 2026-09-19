@@ -19,6 +19,7 @@ from skillnir.backends import (
     BACKENDS,
     AIBackend,
     build_subprocess_command,
+    RESEARCH_CLAUDE_TOOLS,
     load_config,
     parse_stream_line,
 )
@@ -733,15 +734,13 @@ def _research_topic_subprocess(
         date_hint=date_hint,
     )
 
-    cmd = build_subprocess_command(backend, prompt, model=model, max_turns=10)
-
-    # Override allowed tools to include WebFetch and WebSearch for research
-    if backend == AIBackend.CLAUDE:
-        try:
-            idx = cmd.index("--allowedTools")
-            cmd[idx + 1] = "Read,Glob,Grep,Bash,Write,WebFetch,WebSearch"
-        except ValueError:
-            pass
+    cmd = build_subprocess_command(
+        backend,
+        prompt,
+        model=model,
+        max_turns=10,
+        allowed_tools=RESEARCH_CLAUDE_TOOLS,
+    )
 
     # Note: Cursor --sandbox disabled + --force are now set globally in
     # backends.py:build_subprocess_command() so all features benefit.

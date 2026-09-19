@@ -106,11 +106,14 @@ acli jira workitem create --project PROJ --type Story --parent PROJ-123 --summar
 acli jira workitem create --project PROJ --type Story --parent PROJ-123 --summary "..." --description "..." --assignee @me --json | jq -r '.key'
 ```
 
-**If `--parent` is rejected** on a company-managed project, use the fallback ladder from [acli-recipes.md](acli-recipes.md): create WITHOUT `--parent`, then link the new child to the parent:
+**If `--parent` is rejected** on a company-managed project, use the fallback ladder from [acli-recipes.md](acli-recipes.md): create WITHOUT `--parent`, then link the new child to the parent using a link type that actually exists on this site (check first — there is no universal "parent" type):
 
 ```bash
-acli jira workitem link create --out <PARENT> --in <CHILD> --type "Parent of"
+acli jira workitem link type
+acli jira workitem link create --out <PARENT> --in <CHILD> --type "<a real type from the list above>"
 ```
+
+This is a traceability substitute only — a plain link doesn't set the real hierarchy `parent` field, so the child won't satisfy `parent = <KEY>` JQL or nest under the parent on boards. If no suitable type exists, move to the `--from-json` rung instead.
 
 Record whichever approach worked to LEARNED.md under `## Discovered Conventions` so it is tried first next time.
 

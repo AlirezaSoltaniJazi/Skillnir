@@ -48,7 +48,7 @@ glab label list
 ```
 
 ```bash
-glab api "projects/:id/milestones"
+glab milestone list
 ```
 
 ```bash
@@ -76,7 +76,7 @@ Answer the concept, then offer to run the real flow.
 
 ## Cross-Skill Handoff — the Jira ticket
 
-The tracking ticket links the MR to its work item. It comes from the [jira](../jira/SKILL.md) skill, which holds the **active ticket in conversation context** — there is no shared file. Resolve it in this order:
+The tracking ticket links the MR to its work item. It comes from the [jira](../../jira/SKILL.md) skill, which holds the **active ticket in conversation context** — there is no shared file. Resolve it in this order:
 
 1. **Reuse the active ticket from context.** If the jira skill has set one this session, adopt it silently — do not re-ask which ticket. Restate it before branching so the user sees what the MR will link:
 
@@ -102,13 +102,13 @@ acli jira workitem comment create --key <KEY>-<n> --body "MR: <url>"
 acli jira workitem transition --key <KEY>-<n> --status "<Review status>" --yes
 ```
 
-The `<Review status>` is instance-specific — `acli` cannot list valid transitions, so pull the name from LEARNED.md or ask, never assume a fixed string. On rejection, surface acli's exact error and record the real name to LEARNED.md. On GitHub, hand off to [github](../github/SKILL.md) instead of running any of this against `{owner}/{repo}`.
+The `<Review status>` is instance-specific — `acli` cannot list valid transitions, so pull the name from LEARNED.md or ask, never assume a fixed string. On rejection, surface acli's exact error and record the real name to LEARNED.md. On GitHub, hand off to [github](../../github/SKILL.md) instead of running any of this against `{owner}/{repo}`.
 
 ---
 
 ## MR Terminology — Merge Request, not Pull Request
 
-GitLab uses **Merge Request (MR)** everywhere; "Pull Request" / "PR" is GitHub's term. Say "MR", "raise an MR", "the merge request" in every message, title, description, and commit note. Calling it a pull request signals the wrong platform and the wrong skill — that work belongs to [github](../github/SKILL.md). The CLI is `glab`, and its verbs are `mr`:
+GitLab uses **Merge Request (MR)** everywhere; "Pull Request" / "PR" is GitHub's term. Say "MR", "raise an MR", "the merge request" in every message, title, description, and commit note. Calling it a pull request signals the wrong platform and the wrong skill — that work belongs to [github](../../github/SKILL.md). The CLI is `glab`, and its verbs are `mr`:
 
 ```bash
 glab mr create --help
@@ -134,7 +134,7 @@ Replace `<KEY>` with the real issue key (for example `PROJ-123` or `ABC-42`). Ke
 - **Hardcoding the target branch, branch style, commit style, or project.** They differ per repo — detect them (`git symbolic-ref …`, `git for-each-ref …`, `git log -50 --format='%s'`, `Glob .gitlab/merge_request_templates/*.md`). The project auto-resolves from the git remote; never paste a literal `{owner}/{repo}` you assumed.
 - **Calling it a pull request.** GitLab uses Merge Requests — match the platform's terminology in every message, title, and commit. A PR is a GitHub artifact, not this skill's.
 - **Skipping the Jira update when a ticket is linked.** Dropping the MR-link comment and the review transition removes a core purpose of the skill. Run both, then record the confirmed `<Review status>` to LEARNED.md.
-- **Applying a label or milestone that doesn't exist.** `glab mr create --label` does not create labels, and it errors on unknown ones. Discover first (`glab label list`, `glab api "projects/:id/milestones"`), apply only what exists, and report the rest.
+- **Applying a label or milestone that doesn't exist.** `glab mr create --label` does not create labels, and it errors on unknown ones. Discover first (`glab label list`, `glab milestone list`), apply only what exists, and report the rest.
 - **Putting ticket / skill / persona names in code comments.** Comments explain the code, not the process. Keys like `<KEY>-<n>`, "gitlab skill", and reviewer names belong in the branch, commit subject, MR, or ticket — never in source comments.
 
 ---

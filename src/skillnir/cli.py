@@ -1086,6 +1086,7 @@ def _ask() -> None:
         question,
         model=config.model,
         mode="ask",
+        compress=False,
     )
 
     try:
@@ -1170,6 +1171,7 @@ def _plan_cmd() -> None:
         task,
         model=config.model,
         mode="plan",
+        compress=False,
     )
 
     try:

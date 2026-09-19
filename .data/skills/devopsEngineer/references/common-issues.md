@@ -28,7 +28,7 @@
 
 ### GitHub Actions timeout
 
-**Cause**: Job exceeds `timeout-minutes` (10 min for test/style, 5 min for auto-assign).
+**Cause**: Job exceeds `timeout-minutes` (10 min for test/style, 5 min for auto-assign/bump-version). Note: `pr-version-check.yml` currently has no `timeout-minutes` set — an existing gap in the convention.
 **Fix**: Investigate slow step. Common causes: pip cache miss, large test suite, network issues.
 
 ## Pre-commit Issues

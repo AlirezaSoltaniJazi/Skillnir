@@ -1200,7 +1200,7 @@ wheels = [
 
 [[package]]
 name = "skillnir"
-version = "1.7.1"
+version = "1.8.0"
 source = { editable = "." }
 dependencies = [
     { name = "claude-agent-sdk" },
@@ -1230,7 +1230,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "claude-agent-sdk", specifier = ">=0.2.87" },
-    { name = "claude-agent-sdk", marker = "extra == 'generate'", specifier = ">=0.1.44" },
+    { name = "claude-agent-sdk", marker = "extra == 'generate'", specifier = ">=0.2.87" },
     { name = "cryptography", specifier = ">=46.0.7" },
     { name = "nicegui", specifier = ">=3.10.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.0.3" },

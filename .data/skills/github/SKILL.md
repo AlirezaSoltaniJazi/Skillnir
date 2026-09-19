@@ -36,9 +36,9 @@ allowed-tools: Read Edit Write Bash(gh:*) Bash(git:*) Bash(acli:*) Glob Grep
 
 ## Do NOT Use
 
-- **GitLab merge requests** — use [gitlab](../gitlab/SKILL.md).
+- **GitLab merge requests** — use [gitlab](../gitlab/SKILL.md) (wrong platform; `gh` can't open MRs).
 - **Creating or transitioning Jira tickets as the primary task** — use [jira](../jira/SKILL.md). This skill only _updates_ the linked ticket at the end of the PR flow.
-- **CI/CD workflow files** (`.github/workflows/`), pre-commit, quality gates — use [devopsEngineer](../devopsEngineer/SKILL.md).
+- **CI/CD workflow files** (`.github/workflows/`), pre-commit, quality gates — use [devopsEngineer](../devopsEngineer/SKILL.md) (workflow/pipeline YAML is a different concern from raising a PR).
 - **Never** add file paths / code to the Jira ticket — keep the ticket non-technical; technical detail goes in the PR body.
 
 ## Access & Convention Detection
@@ -52,13 +52,13 @@ allowed-tools: Read Edit Write Bash(gh:*) Bash(git:*) Bash(acli:*) Glob Grep
 
 **Detect the convention before acting** (never hardcode):
 
-| What         | How                                                                                                                                             |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Base branch  | `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name`                                                                              |
-| Branch style | `git for-each-ref --format='%(refname:short)' refs/heads refs/remotes` → typed `^(feature\|feat\|fix\|refactor\|ci)/` vs bare `^[A-Z]+-[0-9]+-` |
-| Commit style | `git log -50 --format='%s'` → `[KEY-###] …` vs `KEY-###: …` vs Conventional Commits                                                             |
-| PR template  | `Glob` `.github/pull_request_template.md` \| `.github/PULL_REQUEST_TEMPLATE.md` \| `.github/PULL_REQUEST_TEMPLATE/*` (case varies)              |
-| Repo rules   | `Read` repo `CLAUDE.md`/`agents.md`/`CONTRIBUTING.md` for any branch/PR/label rules                                                             |
+| What         | How                                                                                                                                                             |
+| ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Base branch  | `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name`                                                                                              |
+| Branch style | `git for-each-ref --format='%(refname:short)' refs/heads refs/remotes` → typed `^(feature\|feat\|fix\|refactor\|ci)/` vs bare `^[A-Z]+-[0-9]+-`                 |
+| Commit style | `git log -50 --format='%s'` → `[KEY-###] …` vs `KEY-###: …` vs Conventional Commits                                                                             |
+| PR template  | `Glob` `pull_request_template.md` \| `PULL_REQUEST_TEMPLATE.md` \| `PULL_REQUEST_TEMPLATE/*` — each valid under `.github/`, repo root, or `docs/` (case varies) |
+| Repo rules   | `Read` repo `CLAUDE.md`/`agents.md`/`CONTRIBUTING.md` for any branch/PR/label rules                                                                             |
 
 If no ticket-key pattern exists in history, fall back to `<type>/<slug>` branches + Conventional Commits and ask. Persist confirmed per-repo conventions to LEARNED.md. Details: [references/branch-naming.md](references/branch-naming.md), [references/commit-conventions.md](references/commit-conventions.md), [references/pr-templates.md](references/pr-templates.md).
 

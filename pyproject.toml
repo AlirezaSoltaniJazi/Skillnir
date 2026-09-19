@@ -13,7 +13,11 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-generate = ["claude-agent-sdk>=0.1.44"]
+# Kept for backwards compatibility: claude-agent-sdk is already a hard
+# runtime dependency above. The floor must match it — the SDK path uses
+# ClaudeAgentOptions(model=..., effort=..., thinking=...), which the old
+# 0.1.x floor predates.
+generate = ["claude-agent-sdk>=0.2.87"]
 dev = ["pytest>=9.0.3", "pytest-asyncio>=1.4.0"]
 
 [project.scripts]

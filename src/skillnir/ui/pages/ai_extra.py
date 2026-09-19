@@ -175,6 +175,7 @@ async def page_ask():
                 question,
                 model=config.model,
                 mode='ask',
+                compress=False,
             )
             await _run_subprocess_page(
                 audio_el=audio_el,
@@ -264,6 +265,7 @@ async def page_plan():
                 task,
                 model=config.model,
                 mode='plan',
+                compress=False,
             )
             await _run_subprocess_page(
                 audio_el=audio_el,

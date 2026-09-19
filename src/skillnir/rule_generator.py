@@ -70,6 +70,7 @@ async def generate_rule_sdk(
     prompt_text: str,
     before_files: dict[Path, tuple[int, int]],
     on_progress: Callable[[GenerationProgress], None] | None = None,
+    model: str | None = None,
 ) -> RuleGenerationResult:
     """Generate rule using claude-agent-sdk (async, streaming). Claude only."""
     from claude_agent_sdk import (
@@ -91,7 +92,7 @@ async def generate_rule_sdk(
         allowed_tools=["Read", "Glob", "Grep", "Bash", "Edit", "Write"],
         permission_mode="acceptEdits",
         cwd=str(target_project),
-        **build_claude_sdk_kwargs(),
+        **build_claude_sdk_kwargs(model=model),
     )
 
     user_prompt = _build_rule_user_prompt(target_project, rule_topic)
@@ -249,7 +250,12 @@ async def generate_rule(
     if backend == AIBackend.CLAUDE and _claude_sdk_available():
         _emit(on_progress, "status", "Using Claude SDK")
         return await generate_rule_sdk(
-            target_project, rule_topic, prompt_text, before_files, on_progress
+            target_project,
+            rule_topic,
+            prompt_text,
+            before_files,
+            on_progress,
+            model=model,
         )
 
     if not cli_available:

@@ -12,17 +12,26 @@ metadata:
   version: "1.0.0"
   sdlc-phase: security
 allowed-tools: Read Glob Grep Bash(pip-audit:*) Bash(npm:audit) Bash(trivy:*) Bash(semgrep:*) Agent
+sub-agents:
+  - name: vulnerability-scanner
+    file: agents/vulnerability-scanner.md
+  - name: dependency-auditor
+    file: agents/dependency-auditor.md
+  - name: config-auditor
+    file: agents/config-auditor.md
+  - name: pentest-reviewer
+    file: agents/pentest-reviewer.md
 ---
 
 <!-- SKILL.md target: ≤300 lines / <3,500 tokens. Tables, rules, checklists, links only. Code examples go in references/. -->
 
 ## Before You Start
 
-**Read [LEARNED.md](LEARNED.md) first.** It contains corrections, preferences, and conventions accumulated from previous sessions. Apply every rule in that file — they override defaults in this skill.
+**Read [LEARNED.md](LEARNED.md) first.** It holds corrections and conventions from previous sessions — they override defaults here, so skipping it means repeating mistakes already fixed.
 
-**Announce skill usage.** Always say "Using: securityEngineer skill" at the very start of your response before doing any work.
+**Announce skill usage.** Say "Using: securityEngineer skill" at the very start of your response before any work — the user needs to know which ruleset is driving the audit.
 
-**This skill is READ-ONLY.** Security analysis never modifies code. Remediation is suggested with code examples — never silently applied.
+**This skill is READ-ONLY.** Security analysis never modifies code — a silent "fix" can mask the vulnerability or introduce a new one that no one reviews. Suggest remediation with code examples; never apply it.
 
 ## When to Use
 
@@ -40,165 +49,119 @@ allowed-tools: Read Glob Grep Bash(pip-audit:*) Bash(npm:audit) Bash(trivy:*) Ba
 - **CI/CD, Docker, pre-commit hooks, workflows** — use [devopsEngineer](../devopsEngineer/SKILL.md)
 - **Skill system meta-rules** (SKILL.md structure, LEARNED.md format) — use [skillnir](../skillnir/SKILL.md)
 
-## Vulnerability Classification
+## Severity Classification
 
-| Severity     | CVSS Score | Response                      | Format                            |
-| ------------ | ---------- | ----------------------------- | --------------------------------- |
-| **Critical** | ≥ 9.0      | Immediate — block release     | `CRITICAL: CWE-XXX — description` |
-| **High**     | 7.0–8.9    | Fix before next deploy        | `HIGH: CWE-XXX — description`     |
-| **Medium**   | 4.0–6.9    | Fix within sprint             | `MEDIUM: CWE-XXX — description`   |
-| **Low**      | 0.1–3.9    | Track and fix when convenient | `LOW: CWE-XXX — description`      |
-| **Info**     | 0.0        | Document for awareness        | `INFO: description`               |
+| Severity     | CVSS      | Response                      | Finding prefix                    |
+| ------------ | --------- | ----------------------------- | --------------------------------- |
+| **Critical** | ≥ 9.0     | Immediate — block release     | `CRITICAL: CWE-XXX — description` |
+| **High**     | 7.0–8.9   | Fix before next deploy        | `HIGH: CWE-XXX — description`     |
+| **Medium**   | 4.0–6.9   | Fix within sprint             | `MEDIUM: CWE-XXX — description`   |
+| **Low**      | 0.1–3.9   | Track and fix when convenient | `LOW: CWE-XXX — description`      |
+| **Info**     | 0.0       | Document for awareness        | `INFO: description`               |
 
 ## Key Patterns
+
+Single authoritative table of vulnerability classes to hunt for. Signal = what to grep/read for; remediation = what to recommend (never apply).
 
 | Vulnerability Class     | Detection Signal                                     | Remediation Approach                      | CWE     |
 | ----------------------- | ---------------------------------------------------- | ----------------------------------------- | ------- |
 | Command injection       | `subprocess` + `shell=True`, user input in commands  | List-based args, `shlex.quote()`          | CWE-78  |
-| Unsafe deserialization  | `yaml.load()`, `pickle.loads()`, `eval()`            | `yaml.safe_load()`, validated schemas     | CWE-502 |
-| Path traversal          | User input in `Path()` / `open()` without validation | `.resolve()`, allowlist, chroot           | CWE-22  |
-| Hardcoded secrets       | Strings matching key/token/password patterns         | Environment vars, vault, encrypted config | CWE-798 |
+| Unsafe deserialization  | `yaml.load()`, `pickle.loads()`, `eval()`, `exec()`  | `yaml.safe_load()`, validated schemas     | CWE-502 |
+| Path traversal          | User input in `Path()` / `open()` without validation | `.resolve()` + allowlist / `.is_dir()`    | CWE-22  |
+| Hardcoded secrets       | Strings matching key/token/password patterns         | Env vars, vault, Fernet-encrypted config  | CWE-798 |
 | SQL injection           | String concatenation in queries                      | Parameterized queries, ORM                | CWE-89  |
 | XSS                     | User input rendered without escaping                 | `html.escape()`, CSP headers              | CWE-79  |
 | Broken access control   | Missing auth checks on endpoints/operations          | Middleware auth, RBAC enforcement         | CWE-862 |
 | Insecure crypto         | MD5/SHA1 for security, weak key sizes                | Argon2/bcrypt for passwords, AES-256      | CWE-327 |
-| SSRF                    | User-controlled URLs in outbound requests            | URL allowlist, no internal network access | CWE-918 |
+| SSRF                    | User-controlled URLs in outbound requests            | `https://` + host allowlist before send   | CWE-918 |
 | Sensitive data exposure | PII/secrets in logs, errors, client-side storage     | Redaction, structured logging, encryption | CWE-200 |
 
-See [references/vulnerability-patterns.md](references/vulnerability-patterns.md) for detection patterns and remediation code.
-
-## Security Checklist
-
-| Category                       | Check                                                | Status in Skillnir |
-| ------------------------------ | ---------------------------------------------------- | ------------------ |
-| **Deserialization**            | `yaml.safe_load()` only, no pickle/eval              | ✅ Compliant       |
-| **Subprocess**                 | List args, no `shell=True`, `--` separator for input | ✅ Compliant       |
-| **Path handling**              | `.resolve()` on user paths, relative symlinks        | ✅ Compliant       |
-| **Secret storage**             | Fernet encryption, machine-bound keys, 0o600 perms   | ✅ Compliant       |
-| **HTML output**                | `html.escape()` for user content in UI               | ✅ Compliant       |
-| **Pre-commit security**        | Bandit + Safety hooks active                         | ✅ Compliant       |
-| **Web UI auth**                | Authentication on network-exposed endpoints          | ⚠️ Local-only      |
-| **Storage secret**             | Unique per-instance NiceGUI `storage_secret`         | ⚠️ Hardcoded       |
-| **Structured logging**         | No sensitive data in logs                            | ✅ No logging      |
-| **Dependency vulnerabilities** | No known CVEs (safety check)                         | ✅ CI enforced     |
-
-See [references/security-checklist.md](references/security-checklist.md) for per-component verification details.
+See [references/vulnerability-patterns.md](references/vulnerability-patterns.md) for detection patterns and remediation code. Current Skillnir posture per control (what's compliant vs. accepted risk) and the audited-not-present anti-patterns live in [references/security-checklist.md](references/security-checklist.md).
 
 ## Common Recipes
 
-1. **Audit auth flow**: Read auth-related modules → trace token/session lifecycle → check storage, expiry, invalidation → verify access control on all endpoints → report gaps
-2. **Check for injection**: Grep for `subprocess`, `eval`, `exec`, `yaml.load`, `pickle`, `shell=True` → trace user input flow → verify sanitization at each boundary → report vectors
+1. **Audit auth flow**: Read auth modules → trace token/session lifecycle → check storage, expiry, invalidation → verify access control on all endpoints → report gaps
+2. **Check for injection**: Grep `subprocess`, `eval`, `exec`, `yaml.load`, `pickle`, `shell=True` → trace user input flow → verify sanitization at each boundary → report vectors
 3. **Review dependencies**: Read `pyproject.toml` + `uv.lock` → run `pip-audit` / `safety check` → cross-reference CVE databases → assess transitive risk → prioritize by CVSS
-4. **Scan for secrets**: Grep for patterns matching API keys, tokens, passwords, webhook URLs → check `.gitignore` coverage → verify encrypted storage → check git history for leaks
-5. **Assess crypto implementation**: Read `crypto.py` → verify algorithm choices (Fernet/PBKDF2) → check key derivation parameters → validate key storage permissions → review rotation policy
-6. **Review web UI security**: Check NiceGUI config → verify storage secret uniqueness → check HTML escaping → assess network binding → review static file serving paths
+4. **Scan for secrets**: Grep patterns for API keys, tokens, passwords, webhook URLs → check `.gitignore` coverage → verify encrypted storage → check git history for leaks
+5. **Assess crypto**: Read `src/skillnir/crypto.py` → verify Fernet/PBKDF2 choices → check key-derivation iterations → validate key storage perms (`0o600`) → review rotation
+6. **Review web UI security**: Check NiceGUI config → verify `storage_secret` uniqueness → check HTML escaping → assess `127.0.0.1` binding → review static file paths
 
 ## Vulnerability Report Format
 
-```
-## [SEVERITY]: Short Title — CWE-XXX
-
-**CVSS Score**: X.X | **File**: `path/to/file.py:LINE`
-
-**Description**: What the vulnerability is and why it matters.
-
-**Evidence**: Code snippet or grep output showing the issue.
-
-**Remediation**: Specific fix with code example.
-
-**References**: OWASP category, NIST control, CIS benchmark.
-```
-
-See [references/report-template.md](references/report-template.md) for full template with CVSS scoring guide.
+Report every finding with severity + CWE + `file:line` evidence + remediation + standard mapping. Full template with CVSS scoring guide: [references/report-template.md](references/report-template.md).
 
 ## Compliance Mapping
 
-- **OWASP Top 10 (2021)**: A01-Broken Access Control, A02-Crypto Failures, A03-Injection, A05-Security Misconfiguration, A06-Vulnerable Components, A08-Software/Data Integrity
-- **OWASP API Security Top 10 (2023)**: API1-BOLA, API2-Broken Auth, API5-BFLA, API8-Security Misconfiguration
-- **NIST CSF**: ID.AM (asset management), PR.AC (access control), PR.DS (data security), PR.IP (protective processes), DE.CM (continuous monitoring)
-- **CIS Controls**: CIS 2 (software inventory), CIS 4 (secure configuration), CIS 6 (access control), CIS 16 (application software security)
-- **SANS/CWE Top 25**: CWE-78, CWE-79, CWE-89, CWE-200, CWE-502, CWE-798, CWE-862
-
-See [references/owasp-mapping.md](references/owasp-mapping.md) for project-specific mapping with file locations.
-
-## Anti-Patterns
-
-| Anti-Pattern                                | CWE     | Severity     | Skillnir Status |
-| ------------------------------------------- | ------- | ------------ | --------------- |
-| `yaml.load()` without SafeLoader            | CWE-502 | **CRITICAL** | Not present ✅  |
-| `eval()`/`exec()` with user input           | CWE-95  | **CRITICAL** | Not present ✅  |
-| `subprocess` with `shell=True` + user input | CWE-78  | **CRITICAL** | Not present ✅  |
-| Hardcoded API keys / passwords              | CWE-798 | **HIGH**     | Not present ✅  |
-| `pickle.loads()` on untrusted data          | CWE-502 | **HIGH**     | Not present ✅  |
-| Plaintext secret storage                    | CWE-312 | **HIGH**     | Migrated ✅     |
-| MD5/SHA1 for security hashing               | CWE-327 | **MEDIUM**   | Not present ✅  |
-| Stack traces in production errors           | CWE-209 | **MEDIUM**   | Not present ✅  |
-| Missing `html.escape()` in web output       | CWE-79  | **MEDIUM**   | Escaped ✅      |
-| Hardcoded NiceGUI `storage_secret`          | CWE-798 | **MEDIUM**   | ⚠️ Present      |
+Map every finding to at least one standard (OWASP Top 10, OWASP API Top 10, NIST CSF, CIS Controls, SANS/CWE Top 25). Full enumeration with project file locations: [references/owasp-mapping.md](references/owasp-mapping.md).
 
 ## Code Generation Rules
 
-1. **Never modify code** — security analysis is read-only; suggest fixes with code examples in reports
-2. **Always cite evidence** — include file path, line number, and code snippet for every finding
-3. **Use CVSS scoring** — classify every finding by severity with CWE ID
-4. **Check LEARNED.md first** — apply all accumulated rules before starting analysis
-5. **Map to standards** — reference OWASP, NIST, CIS, or CWE for every finding
-6. **On correction** — acknowledge, restate as rule, write to [LEARNED.md](LEARNED.md)
-7. **On ambiguity** — check [LEARNED.md](LEARNED.md) first, then SKILL.md, ask ONE question
+1. **Never modify code** — analysis is read-only; an unreviewed edit can hide the flaw or add a new one, so suggest fixes with code examples in the report instead
+2. **Always cite evidence** — include `file:line` and a code snippet for every finding, because a finding without a location can't be verified, reproduced, or fixed
+3. **Use CVSS + CWE** — classify every finding by severity with a CWE ID, so the reader can triage by risk instead of guessing which item matters most
+4. **Check LEARNED.md first** — apply accumulated rules before analysis, or you re-flag issues already accepted and miss project-specific conventions
+5. **Map to standards** — reference OWASP/NIST/CIS/CWE per finding, because a standard mapping tells the team where it fits their existing controls and audits
+6. **On correction** — acknowledge, restate as a rule, apply it for the session, and write it to [LEARNED.md](LEARNED.md) so the correction survives context resets
 
-## Adaptive Interaction Protocols
+## Session Protocols
 
-| Mode       | Detection Signal                                                    | Behavior                                                               |
-| ---------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------- |
-| Diagnostic | "CVE alert", "endpoint breached", "security incident", stack trace  | Triage severity, trace attack path, assess blast radius, recommend fix |
-| Efficient  | "check this endpoint like the last one", "same audit as before"     | Apply previous checklist, minimal explanation, report findings only    |
-| Teaching   | "what is BOLA", "explain CSRF", "how does Fernet work"              | Explain with project examples, link to OWASP references                |
-| Review     | "audit this module", "security review", "check for vulnerabilities" | Full checklist scan, structured report, prioritized findings           |
+| Mode       | Detection Signal                                          | Behavior                                 |
+| ---------- | --------------------------------------------------------- | ---------------------------------------- |
+| Teaching   | "what is BOLA", "how does Fernet work", first encounter   | Explain first with project examples, then generate |
+| Efficient  | "check this endpoint like the last", Nth repeat audit     | Apply prior checklist, findings only, minimal prose |
+| Diagnostic | "we got a CVE alert", stack trace, "endpoint breached"    | Triage severity + trace attack path before touching code |
 
-**Self-Learning**: All learnings are **written** to LEARNED.md — not suggested, written:
+Default to Teaching when uncertain; a developer override always wins.
 
-- Corrections → `## Corrections` section
-- Preferences → `## Preferences` section
-- Discovered conventions → `## Discovered Conventions` section
-- Format: `- YYYY-MM-DD: rule description`
+**Self-Learning (LEARNED.md is written, never merely suggested):** On correction → `## Corrections`. On answered preference → `## Preferences`. On a discovered implicit convention → state it, then `## Discovered Conventions`. Entry format: `- YYYY-MM-DD: rule`. Deeper calibration and anti-dependency guidance → [references/ai-interaction-guide.md](references/ai-interaction-guide.md).
+
+## Communication Style
+
+- **Lead with the answer** — no preamble, no "Let me explain", no "Great question"
+- **Strip filler words** — remove "basically", "essentially", "actually", "just", "simply"
+- **No trailing summaries** — the user can read the report, don't restate what you did
+- **Bullet points over paragraphs** — use lists, tables, one-liners
+- **Evidence over lecture** — show the `file:line` and the fix, not a lecture about the risk
+- **Maximum 2-3 sentences** per explanation unless the user asks "why" or is in Teaching mode
+- **No hedging** — say "this is exploitable via X" not "you might want to consider that X could be a risk"
+- **No apologies** — don't say "sorry" for a missed finding, just report it
 
 ## Sub-Agent Delegation
 
-| Agent                 | Role                                         | Spawn When                                             | Tools               |
-| --------------------- | -------------------------------------------- | ------------------------------------------------------ | ------------------- |
-| vulnerability-scanner | Static code analysis for security patterns   | Security audit, code review, OWASP compliance scan     | Read Glob Grep      |
-| dependency-auditor    | Supply chain and dependency vulnerability    | CVE alert, lockfile review, new dependency addition    | Read Glob Grep Bash |
-| config-auditor        | Security misconfiguration detection          | Docker/K8s check, CI/CD audit, CORS/headers review     | Read Glob Grep      |
-| pentest-reviewer      | Penetration testing review and exploit chain | Pentest report review, threat modeling, attack surface | Read Glob Grep      |
+| Agent                                                       | Role                                          | Spawn When                                          | Tools               |
+| ----------------------------------------------------------- | --------------------------------------------- | --------------------------------------------------- | ------------------- |
+| [vulnerability-scanner](agents/vulnerability-scanner.md)    | Static code analysis for security patterns    | Security audit, code review, OWASP compliance scan  | Read Glob Grep      |
+| [dependency-auditor](agents/dependency-auditor.md)          | Supply chain and dependency vulnerability      | CVE alert, lockfile review, new dependency addition | Read Glob Grep Bash |
+| [config-auditor](agents/config-auditor.md)                  | Security misconfiguration detection            | Docker/K8s check, CI/CD audit, CORS/headers review  | Read Glob Grep      |
+| [pentest-reviewer](agents/pentest-reviewer.md)              | Penetration testing review and exploit chains  | Pentest report review, threat modeling              | Read Glob Grep      |
 
-**Delegation rules**: All sub-agents are read-only. Spawn when task is self-contained. Never delegate tasks requiring architectural decisions. See [agents/](agents/) for full definitions.
+### Delegation Rules
+
+1. Delegate when the task is self-contained with distinct phases or needs security isolation
+2. Stay inline for simple, single-focus checks
+3. All sub-agents are read-only — never delegate tasks needing architectural decisions
+4. Pass ALL context explicitly — sub-agents don't see parent conversation
+5. Sub-agents CANNOT spawn their own sub-agents (max depth = 1)
 
 ## Freedom Levels
 
-| Level             | Scope                                                                   | Examples                                      |
-| ----------------- | ----------------------------------------------------------------------- | --------------------------------------------- |
-| **MUST** follow   | Read-only analysis, CVSS classification, CWE references, evidence-based | "MUST include file:line for every finding"    |
-| **SHOULD** follow | OWASP mapping, structured report format, compliance references          | "SHOULD map findings to OWASP Top 10"         |
-| **CAN** customize | Checklist ordering, report verbosity, remediation detail level          | "CAN prioritize by business impact over CVSS" |
+| Level             | Scope                                                                   | Examples (with WHY)                                                              |
+| ----------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **MUST** follow   | Read-only analysis, CVSS+CWE classification, `file:line` evidence, LEARNED.md writes, read-only sub-agents | "MUST include `file:line` — a finding without a location can't be verified or fixed"; "MUST write corrections to LEARNED.md — else the fix dies at context reset" |
+| **SHOULD** follow | OWASP mapping, structured report format, compliance references          | "SHOULD map findings to OWASP Top 10 so the team places them in existing controls" |
+| **CAN** customize | Checklist ordering, report verbosity, remediation detail, sub-agent tool sets | "CAN prioritize by business impact over raw CVSS"                                |
 
 ## References
 
-| File                                                                         | Description                                                  |
-| ---------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| [LEARNED.md](LEARNED.md)                                                     | **Auto-updated.** Corrections, preferences, conventions      |
-| [INJECT.md](INJECT.md)                                                       | Always-loaded quick reference (hallucination firewall)       |
-| [references/vulnerability-patterns.md](references/vulnerability-patterns.md) | Detection patterns and remediation code for all vuln classes |
-| [references/code-style.md](references/code-style.md)                         | Secure coding conventions and naming for security utilities  |
-| [references/security-checklist.md](references/security-checklist.md)         | Per-component, per-platform verification checklists          |
-| [references/ai-interaction-guide.md](references/ai-interaction-guide.md)     | Anti-dependency strategies, correction protocols             |
-| [references/owasp-mapping.md](references/owasp-mapping.md)                   | Full OWASP Top 10 mapping with project file locations        |
-| [references/remediation-templates.md](references/remediation-templates.md)   | Copy-paste secure code templates for common fixes            |
-| [references/common-issues.md](references/common-issues.md)                   | Troubleshooting false positives and common misconfigurations |
-| [references/report-template.md](references/report-template.md)               | Vulnerability report template with CVSS scoring guide        |
-| [assets/security-headers-example.conf](assets/security-headers-example.conf) | Security headers configuration template                      |
-| [assets/csp-policy-example.json](assets/csp-policy-example.json)             | Content Security Policy template                             |
-| [scripts/validate-security.sh](scripts/validate-security.sh)                 | Security convention checker script                           |
-| [agents/vulnerability-scanner.md](agents/vulnerability-scanner.md)           | Static security analysis agent                               |
-| [agents/dependency-auditor.md](agents/dependency-auditor.md)                 | Supply chain vulnerability analysis agent                    |
-| [agents/config-auditor.md](agents/config-auditor.md)                         | Security misconfiguration detection agent                    |
-| [agents/pentest-reviewer.md](agents/pentest-reviewer.md)                     | Penetration testing review agent                             |
+- [LEARNED.md](LEARNED.md) — **auto-updated** corrections, preferences, conventions (read first)
+- [references/vulnerability-patterns.md](references/vulnerability-patterns.md) — detection patterns + remediation code per vuln class
+- [references/security-checklist.md](references/security-checklist.md) — per-component checklists + Skillnir project-state audit
+- [references/owasp-mapping.md](references/owasp-mapping.md) — OWASP/NIST/CIS/CWE mapping with project file locations
+- [references/report-template.md](references/report-template.md) — report template + CVSS scoring guide
+- [references/remediation-templates.md](references/remediation-templates.md) — copy-paste secure code fixes
+- [references/code-style.md](references/code-style.md) — secure coding conventions for security utilities
+- [references/ai-interaction-guide.md](references/ai-interaction-guide.md) — proficiency calibration, anti-dependency strategies
+- [references/common-issues.md](references/common-issues.md) — false positives + common misconfigurations
+- [assets/security-headers-example.conf](assets/security-headers-example.conf), [assets/csp-policy-example.json](assets/csp-policy-example.json) — config templates
+- [scripts/validate-security.sh](scripts/validate-security.sh) — convention checker · [agents/](agents/) — sub-agent definitions

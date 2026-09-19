@@ -34,8 +34,10 @@ if [ -d "$WORKFLOW_DIR" ]; then
             pass_check "$name actions are version-pinned"
         fi
 
-        # Check for hardcoded secrets
-        if grep -iE "(password|secret|token|api_key)\s*[:=]" "$wf" > /dev/null 2>&1; then
+        # Check for hardcoded secrets (skip legitimate GitHub Actions
+        # expressions like `GH_TOKEN: ${{ github.token }}` or
+        # `${{ secrets.FOO }}` — those are the correct idiom, not a leak)
+        if grep -iE "(password|secret|token|api_key)\s*[:=]" "$wf" | grep -v '\${{' | grep -q .; then
             fail_check "$name may contain hardcoded secrets"
         else
             pass_check "$name has no hardcoded secrets"

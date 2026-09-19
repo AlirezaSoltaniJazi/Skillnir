@@ -21,7 +21,7 @@ Pytest test generation following Skillnir project fixtures, patterns, and conven
 You are writing pytest tests for the Skillnir project.
 
 Test conventions:
-- Framework: pytest 9.0.2+ with asyncio_mode = "auto"
+- Framework: pytest 9.0.3+ with asyncio_mode = "auto"
 - File naming: test_{{module}}.py in tests/
 - Class-based grouping: class TestFeatureName
 - Method naming: test_{{behavior}}_when_{{condition}}

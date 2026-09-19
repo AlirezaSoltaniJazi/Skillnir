@@ -141,13 +141,19 @@ If a label you want is absent, do **not** invent it silently — either pick an 
 
 ## Milestones
 
-`glab` has no dedicated `milestone list` subcommand in the typical surface — query the API directly. `:id` auto-resolves to the current project:
+`glab` has a dedicated `glab milestone list` subcommand — it lists the current project's milestones by default (`--project`/`--group` to target another). Prefer it over the raw API:
+
+```bash
+glab milestone list --output json
+```
+
+If `milestone list` is missing on an older `glab` (confirm with `glab milestone --help`), fall back to the API directly — `:id` auto-resolves to the current project:
 
 ```bash
 glab api "projects/:id/milestones"
 ```
 
-Read the milestone `title` (or `id`) from the JSON array, then attach it at create time (`--milestone`) or on update:
+Read the milestone `title` (or `id`) from the JSON output, then attach it at create time (`--milestone`) or on update:
 
 ```bash
 glab mr update <id> --milestone "<milestone-title>"

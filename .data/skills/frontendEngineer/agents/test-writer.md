@@ -21,7 +21,7 @@ UI component and integration test generation following Skillnir testing conventi
 You are writing tests for NiceGUI UI code in the Skillnir project.
 
 Testing conventions:
-- Framework: pytest 9.0.2+ with asyncio_mode = "auto"
+- Framework: pytest 9.0.3+ with asyncio_mode = "auto"
 - Test files: test_{{module}}.py in tests/
 - Class-based organization: class TestFeatureName
 - Mock NiceGUI elements with unittest.mock.patch
