@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.9.0] - 2026-09-19
+
 ### Added
 
 - **Claude Fable 5.1 added to the model picker.** The `fable` shortcut now selects the newest Fable, and the previous Fable 5 stays available as `fable-5` — same pattern already used for `opus` and `sonnet`, so saved settings keep tracking the latest model automatically.
