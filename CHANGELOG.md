@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Claude Fable 5.1 added to the model picker.** The `fable` shortcut now selects the newest Fable, and the previous Fable 5 stays available as `fable-5` — same pattern already used for `opus` and `sonnet`, so saved settings keep tracking the latest model automatically.
+- **New `modelRegistry` skill** — ask it to check for new models and it verifies the lineup against the providers' own live docs (never from memory), updates the model picker with the right shortcut/tier/default, and reviews the per-backend CLI install, login, and verify hints.
 - **Effort and thinking are now selectable right in the "Switch Model" dialog** (for Claude), instead of only on the Settings page — pick `low`–`max` effort and `adaptive`/`disabled` thinking without leaving the model picker. The model grid was also tidied so cards are evenly sized and wrap cleanly (a single model like Haiku is now a normal card, not a full-width slab).
 - New **Firefox extension** skill generator — pick the "Firefox Extension" scope in Generate Skill to create a WebExtensions skill (browser.\* APIs, sidebar, `web-ext`, AMO), alongside the existing Chrome extension one.
 

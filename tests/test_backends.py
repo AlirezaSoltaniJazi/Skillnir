@@ -325,7 +325,13 @@ class TestResolveModelId:
         assert result == "claude-sonnet-4-6"
 
     def test_fable_alias_resolves_to_id(self):
+        # The unversioned "fable" alias tracks the newest Fable, like opus/sonnet.
         result = resolve_model_id(AIBackend.CLAUDE, "fable")
+        assert result == "claude-fable-5-1"
+
+    def test_prior_fable_alias_still_resolves(self):
+        # Fable 5 stays selectable under its own alias after 5.1 took "fable".
+        result = resolve_model_id(AIBackend.CLAUDE, "fable-5")
         assert result == "claude-fable-5"
 
     def test_default_opus_alias_resolves_to_latest(self):

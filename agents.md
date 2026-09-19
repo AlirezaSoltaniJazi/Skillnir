@@ -338,7 +338,7 @@ uv run pytest -k "test_creates_symlink"  # single test
 ## Skills Reference
 
 > Project-specific conventions live in `.data/skills/`. Check before making architectural decisions.
-> Skills available: backendEngineer, devopsEngineer, frontendEngineer, github, gitlab, jira, promptCompressor, securityEngineer, skillnir
+> Skills available: backendEngineer, devopsEngineer, frontendEngineer, github, gitlab, jira, modelRegistry, promptCompressor, securityEngineer, skillnir
 
 ## Sub-Agent Capabilities
 

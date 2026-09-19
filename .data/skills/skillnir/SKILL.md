@@ -40,9 +40,8 @@ allowed-tools: Read Edit Write Glob Grep
 
 ## Architecture
 
-`.data/skills/` is the single source of truth. It currently holds **9 skills** —
-backendEngineer, devopsEngineer, frontendEngineer, github, gitlab, jira,
-promptCompressor, securityEngineer, skillnir. `skillnir install` symlinks each
+`.data/skills/` is the single source of truth — run `ls .data/skills/` for the live roster
+(10 at last count; don't hardcode the list here, it goes stale). `skillnir install` symlinks each
 into every tool dotdir (`.claude/skills/`, `.cursor/skills/`, ...). AI tools read
 SKILL.md on activation; LEARNED.md is read first for overrides; INJECT.md is
 always loaded as a firewall. Full directory tree and data flow:

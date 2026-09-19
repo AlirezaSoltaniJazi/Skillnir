@@ -60,7 +60,7 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         cli_command="claude",
         supports_stream_json=True,
         models=(
-            ModelInfo("claude-fable-5", "fable", "Claude Fable 5", tier=1),
+            ModelInfo("claude-fable-5-1", "fable", "Claude Fable 5.1", tier=1),
             ModelInfo(
                 "claude-opus-5", "opus", "Claude Opus 5", is_default=True, tier=1
             ),
@@ -70,6 +70,7 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
             ModelInfo("claude-sonnet-5", "sonnet", "Claude Sonnet 5", tier=2),
             ModelInfo("claude-sonnet-4-6", "sonnet-4.6", "Claude Sonnet 4.6", tier=2),
             ModelInfo("claude-haiku-4-5", "haiku", "Claude Haiku 4.5", tier=3),
+            ModelInfo("claude-fable-5", "fable-5", "Claude Fable 5", tier=1),
             ModelInfo("claude-opus-4-5", "opus-4.5", "Claude Opus 4.5", tier=1),
             ModelInfo("claude-opus-4-1", "opus-4.1", "Claude Opus 4.1", tier=1),
             ModelInfo("claude-opus-4-0", "opus-4.0", "Claude Opus 4", tier=1),
