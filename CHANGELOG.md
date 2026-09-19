@@ -7,12 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.8.0] - 2026-08-01
-
 ### Added
 
 - **Effort and thinking are now selectable right in the "Switch Model" dialog** (for Claude), instead of only on the Settings page — pick `low`–`max` effort and `adaptive`/`disabled` thinking without leaving the model picker. The model grid was also tidied so cards are evenly sized and wrap cleanly (a single model like Haiku is now a normal card, not a full-width slab).
 - New **Firefox extension** skill generator — pick the "Firefox Extension" scope in Generate Skill to create a WebExtensions skill (browser.\* APIs, sidebar, `web-ext`, AMO), alongside the existing Chrome extension one.
+
+### Fixed
+
+- **All 9 pre-built skills refreshed to the current best-practice budget.** The five domain skills (backend/frontend/devops/security/skillnir) had grown well over the size budget that keeps skills effective — full directory trees, duplicated rule tables, and oversized always-loaded summaries. Every skill is now trimmed to a lean, single-purpose reference (detail moved into on-demand `references/` files), each rule now states its "why", and the skillnir skill's two stale facts (Python version and skill count) are corrected. The skill **template generator** was fixed at the root so newly generated skills stay lean automatically (it no longer asks for an ASCII directory tree or repeated rule tables).
+- **Ask and Plan no longer compress what you type** — your question or task is sent to the AI exactly as written, even with compress-prompts turned on. Compression is meant for long generated prompts, not your own words, where it could change your meaning.
+
+## [1.8.0] - 2026-08-01
+
+### Added
+
 - Added **Claude Opus 5** to the model picker and made it the new default. Opus 4.8 and the other Claude models are still available.
 - New **Harness Engineering** research section — finds the latest articles on building AI agents (agent loops, tool use, context, memory, evals, guardrails, and more), alongside the existing research sections.
 - New ready-to-use **Jira, GitHub, and GitLab skills** for the ticket → branch → pull/merge-request workflow, usable in any repository.
@@ -26,7 +34,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **All 9 pre-built skills refreshed to the current best-practice budget.** The five domain skills (backend/frontend/devops/security/skillnir) had grown well over the size budget that keeps skills effective — full directory trees, duplicated rule tables, and oversized always-loaded summaries. Every skill is now trimmed to a lean, single-purpose reference (detail moved into on-demand `references/` files), each rule now states its "why", and the skillnir skill's two stale facts (Python version and skill count) are corrected. The skill **template generator** was fixed at the root so newly generated skills stay lean automatically (it no longer asks for an ASCII directory tree or repeated rule tables).
 - **Compress Docs** no longer garbles code blocks, tables, or front-matter.
 - **Optimize Docs** now lists the files it changed, no longer fails on large projects, and keeps partial results when a run is cut short.
 - Re-running **rule generation** on a topic that already exists no longer reports a false failure.
