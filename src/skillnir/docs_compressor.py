@@ -261,6 +261,7 @@ async def _ai_tone_pass_sdk(
     target_project: Path,
     doc_paths: list[Path],
     on_progress: Callable[[GenerationProgress], None] | None = None,
+    model: str | None = None,
 ) -> str | None:
     """Run AI tone pass via claude-agent-sdk. Returns error string or None."""
     from claude_agent_sdk import (
@@ -287,7 +288,7 @@ async def _ai_tone_pass_sdk(
         allowed_tools=["Read", "Edit", "Write"],
         permission_mode="acceptEdits",
         cwd=str(target_project),
-        **build_claude_sdk_kwargs(),
+        **build_claude_sdk_kwargs(model=model),
     )
 
     user_prompt = _build_tone_user_prompt(target_project, doc_paths)
@@ -400,7 +401,9 @@ async def compress_docs_apply(
 
     if backend == AIBackend.CLAUDE and _claude_sdk_available():
         _emit(on_progress, "status", "Using Claude SDK for tone pass")
-        err = await _ai_tone_pass_sdk(project_root, written_paths, on_progress)
+        err = await _ai_tone_pass_sdk(
+            project_root, written_paths, on_progress, model=model
+        )
     elif cli_available:
         _emit(on_progress, "status", f"Using {info.name} ({model}) for tone pass")
         loop = asyncio.get_event_loop()

@@ -14,6 +14,7 @@ from skillnir.backends import (
     BACKENDS,
     AIBackend,
     build_subprocess_command,
+    WEB_ONLY_CLAUDE_TOOLS,
     load_config,
     parse_stream_line,
 )
@@ -410,15 +411,13 @@ def _search_benchmarks_subprocess(
         existing_ids=existing_ids_str,
     )
 
-    cmd = build_subprocess_command(backend, prompt, model=model, max_turns=30)
-
-    # Enable web tools for research
-    if backend == AIBackend.CLAUDE:
-        try:
-            idx = cmd.index("--allowedTools")
-            cmd[idx + 1] = "WebFetch,WebSearch"
-        except ValueError:
-            pass
+    cmd = build_subprocess_command(
+        backend,
+        prompt,
+        model=model,
+        max_turns=30,
+        allowed_tools=WEB_ONLY_CLAUDE_TOOLS,
+    )
 
     collected_text: list[str] = []
     raw_lines: list[str] = []

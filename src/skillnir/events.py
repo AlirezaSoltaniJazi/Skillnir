@@ -14,6 +14,7 @@ from skillnir.backends import (
     BACKENDS,
     AIBackend,
     build_subprocess_command,
+    RESEARCH_CLAUDE_TOOLS,
     load_config,
     parse_stream_line,
 )
@@ -696,15 +697,13 @@ def _search_events_subprocess(
         today_date=today_date,
     )
 
-    cmd = build_subprocess_command(backend, prompt, model=model, max_turns=10)
-
-    # Override allowed tools to include WebFetch and WebSearch for research
-    if backend == AIBackend.CLAUDE:
-        try:
-            idx = cmd.index("--allowedTools")
-            cmd[idx + 1] = "Read,Glob,Grep,Bash,Write,WebFetch,WebSearch"
-        except ValueError:
-            pass
+    cmd = build_subprocess_command(
+        backend,
+        prompt,
+        model=model,
+        max_turns=10,
+        allowed_tools=RESEARCH_CLAUDE_TOOLS,
+    )
 
     collected_text: list[str] = []
     raw_lines: list[str] = []

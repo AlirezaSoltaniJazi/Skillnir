@@ -615,6 +615,54 @@ class TestGenerateSkill:
             assert "not found" in result.error
 
     @pytest.mark.asyncio
+    async def test_sdk_path_receives_configured_model(self, tmp_path: Path):
+        """The model picker must reach the SDK path, not just the CLI path.
+
+        Regression: generate_skill computed `model` but passed it only to the
+        subprocess branch, so Claude generation ignored the user's choice.
+        """
+        from skillnir.skill_generator import SkillGenerationResult
+
+        seen: dict = {}
+
+        async def fake_sdk(*args, **kwargs):
+            seen.update(kwargs)
+            return SkillGenerationResult(success=True, skill_name="proj")
+
+        cfg = AppConfig(backend=AIBackend.CLAUDE, prompt_version="v1", model="sonnet")
+        with (
+            patch("skillnir.skill_generator.load_config", return_value=cfg),
+            patch("skillnir.skill_generator.load_skill_prompt", return_value="p"),
+            patch("skillnir.skill_generator._claude_sdk_available", return_value=True),
+            patch("skillnir.skill_generator.generate_skill_sdk", side_effect=fake_sdk),
+        ):
+            result = await generate_skill(tmp_path, "proj", "backend")
+
+        assert result.success is True
+        assert seen["model"] == "sonnet"
+
+    @pytest.mark.asyncio
+    async def test_sdk_path_honors_model_override(self, tmp_path: Path):
+        from skillnir.skill_generator import SkillGenerationResult
+
+        seen: dict = {}
+
+        async def fake_sdk(*args, **kwargs):
+            seen.update(kwargs)
+            return SkillGenerationResult(success=True, skill_name="proj")
+
+        cfg = AppConfig(backend=AIBackend.CLAUDE, prompt_version="v1", model="sonnet")
+        with (
+            patch("skillnir.skill_generator.load_config", return_value=cfg),
+            patch("skillnir.skill_generator.load_skill_prompt", return_value="p"),
+            patch("skillnir.skill_generator._claude_sdk_available", return_value=True),
+            patch("skillnir.skill_generator.generate_skill_sdk", side_effect=fake_sdk),
+        ):
+            await generate_skill(tmp_path, "proj", "backend", model_override="opus")
+
+        assert seen["model"] == "opus"
+
+    @pytest.mark.asyncio
     async def test_retries_once_on_contract_violations(self, tmp_path: Path):
         """A violating first attempt triggers exactly one repair pass."""
         from skillnir.skill_generator import SkillGenerationResult

@@ -566,6 +566,7 @@ async def generate_skill_sdk(
     on_progress: Callable[[GenerationProgress], None] | None = None,
     pure: bool = False,
     extra_instructions: str = "",
+    model: str | None = None,
 ) -> SkillGenerationResult:
     """Generate skill using claude-agent-sdk (async, streaming). Claude only."""
     from claude_agent_sdk import (
@@ -588,7 +589,7 @@ async def generate_skill_sdk(
         allowed_tools=["Read", "Glob", "Grep", "Bash", "Edit", "Write"],
         permission_mode="acceptEdits",
         cwd=str(target_project),
-        **build_claude_sdk_kwargs(),
+        **build_claude_sdk_kwargs(model=model),
     )
 
     user_prompt = _build_user_prompt(
@@ -801,6 +802,7 @@ async def generate_skill(
                 on_progress,
                 pure=pure,
                 extra_instructions=extra_instructions,
+                model=model,
             )
         _emit(on_progress, "status", f"Using {info.name} ({model})")
         loop = asyncio.get_event_loop()

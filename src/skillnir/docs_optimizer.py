@@ -182,6 +182,7 @@ async def optimize_docs_sdk(
     before_files: dict[Path, tuple[int, int]],
     max_turns: int,
     on_progress: Callable[[GenerationProgress], None] | None = None,
+    model: str | None = None,
 ) -> OptimizeDocsResult:
     """Optimize via claude-agent-sdk (async, streaming). Claude only."""
     from claude_agent_sdk import (
@@ -210,7 +211,7 @@ async def optimize_docs_sdk(
         allowed_tools=tools,
         permission_mode="acceptEdits",
         cwd=str(target_project),
-        **build_claude_sdk_kwargs(),
+        **build_claude_sdk_kwargs(model=model),
     )
 
     user_prompt = _build_user_prompt(target_project, mode)
@@ -402,7 +403,13 @@ async def optimize_docs(
     if backend == AIBackend.CLAUDE and _claude_sdk_available():
         _emit(on_progress, "status", "Using Claude SDK")
         return await optimize_docs_sdk(
-            target_project, mode, prompt_text, before_files, max_turns, on_progress
+            target_project,
+            mode,
+            prompt_text,
+            before_files,
+            max_turns,
+            on_progress,
+            model=model,
         )
 
     if not cli_available:

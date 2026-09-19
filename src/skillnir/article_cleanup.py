@@ -26,6 +26,7 @@ from skillnir.backends import (
     BACKENDS,
     AIBackend,
     build_subprocess_command,
+    NO_CLAUDE_TOOLS,
     load_config,
     run_streaming_command,
 )
@@ -289,14 +290,13 @@ def _classify_batch_subprocess(
     prompt = _CLEANUP_PROMPT.format(
         store_label=store_label, today=today, articles_json=payload_json
     )
-    cmd = build_subprocess_command(backend, prompt, model=model, max_turns=4)
-    if backend == AIBackend.CLAUDE:
-        # Pure classification — no tools needed or wanted.
-        try:
-            idx = cmd.index("--allowedTools")
-            cmd[idx + 1] = ""
-        except ValueError:
-            pass
+    cmd = build_subprocess_command(
+        backend,
+        prompt,
+        model=model,
+        max_turns=4,
+        allowed_tools=NO_CLAUDE_TOOLS,
+    )
 
     # "result_text" is the backend's authoritative final message; streamed
     # "text" chunks repeat the same content, so collect them separately and
