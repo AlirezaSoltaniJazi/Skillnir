@@ -449,6 +449,41 @@ class TestFirefoxExtensionScope:
         assert "firefox-extension" in engineering
 
 
+class TestUmlScope:
+    def test_in_skill_scopes(self):
+        assert "uml" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "uml" in SCOPE_LABELS
+        assert "UML" in SCOPE_LABELS["uml"]
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("uml", "v1")
+        assert "Mermaid" in text
+        assert "PlantUML" in text
+        assert "stateDiagram-v2" in text
+        assert "sequenceDiagram" in text
+        assert "pyreverse" in text
+        assert "ISTQB" in text
+        assert "accTitle" in text
+
+    def test_in_architecture_and_platform_category(self):
+        architecture = dict(SCOPE_CATEGORIES).get("Architecture & Platform", ())
+        assert "uml" in architecture
+
+    def test_reference_skill_matches_diagram_keyword(self, tmp_path: Path):
+        skill_dir = tmp_path / "mermaidDiagrams"
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "SKILL.md").write_text("---\nname: ref\n---\n")
+
+        with patch(
+            "skillnir.skill_generator.get_source_skills_dir", return_value=tmp_path
+        ):
+            result, same_scope = _find_reference_skill("uml")
+            assert result == skill_dir
+            assert same_scope is True
+
+
 class TestScopeCategories:
     def test_every_scope_belongs_to_exactly_one_category(self):
         """Every entry in SKILL_SCOPES must appear in exactly one SCOPE_CATEGORIES bucket."""

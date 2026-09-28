@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New **UML & Diagrams** skill generator — pick the "UML & Diagrams" scope in Generate Skill to add a diagramming skill to any project. It helps the AI choose the right diagram for the question (activity, sequence, state machine, class, use case, ER, C4), write it as code in Mermaid (or PlantUML when Mermaid can't express it), check that it renders, keep it in sync with the code it describes, and turn state, activity, and sequence diagrams into test cases. Works even in projects with no diagrams yet — it defaults to Mermaid in Markdown, which GitHub and GitLab render out of the box.
+
+### Fixed
+
+- The README scope list now includes the Firefox extension scope and shows the correct scope count.
+
 ## [1.9.0] - 2026-09-19
 
 ### Added
