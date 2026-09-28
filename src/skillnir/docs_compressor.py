@@ -24,6 +24,7 @@ from skillnir.backends import (
     load_config,
     maybe_compress_prompt,
     run_streaming_command,
+    sdk_result_error,
 )
 from skillnir.compressor import CompressionResult, compress_prompt
 from skillnir.generator import GenerationProgress, _emit, get_prompts_dir
@@ -293,6 +294,8 @@ async def _ai_tone_pass_sdk(
 
     user_prompt = _build_tone_user_prompt(target_project, doc_paths)
 
+    result_error: str | None = None
+
     try:
         async for message in query(prompt=user_prompt, options=options):
             if isinstance(message, AssistantMessage) and on_progress:
@@ -313,8 +316,9 @@ async def _ai_tone_pass_sdk(
                         message.usage,
                         getattr(message, 'total_cost_usd', None),
                     )
+                result_error = sdk_result_error(message) or result_error
     except Exception as exc:
-        return str(exc)
+        return result_error or str(exc)
     return None
 
 

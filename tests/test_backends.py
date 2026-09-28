@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -25,6 +26,7 @@ from skillnir.backends import (
     parse_stream_line,
     resolve_model_id,
     save_config,
+    sdk_result_error,
 )
 
 # ── AppConfig ────────────────────────────────────────────────
@@ -87,7 +89,7 @@ class TestAppConfig:
 
     def test_from_dict_round_trip(self):
         original = AppConfig(
-            backend=AIBackend.COPILOT, model="claude-sonnet-4-5", prompt_version="v1"
+            backend=AIBackend.COPILOT, model="claude-sonnet-5", prompt_version="v1"
         )
         restored = AppConfig.from_dict(original.to_dict())
         assert restored.backend == original.backend
@@ -337,10 +339,14 @@ class TestResolveModelId:
     def test_default_opus_alias_resolves_to_latest(self):
         # The "opus" alias is Claude's default_model; it must point at the flagship.
         result = resolve_model_id(AIBackend.CLAUDE, "opus")
-        assert result == "claude-opus-5"
+        assert result == "claude-opus-5-5"
 
     def test_prior_opus_alias_still_resolves(self):
-        # Opus 4.8 stays selectable under its own alias after Opus 5 took "opus".
+        # Opus 5 stays selectable under its own alias after Opus 5.5 took "opus".
+        result = resolve_model_id(AIBackend.CLAUDE, "opus-5")
+        assert result == "claude-opus-5"
+
+    def test_older_opus_alias_still_resolves(self):
         result = resolve_model_id(AIBackend.CLAUDE, "opus-4.8")
         assert result == "claude-opus-4-8"
 
@@ -354,20 +360,83 @@ class TestResolveModelId:
 
 
 class TestClaudeModelCatalog:
-    def test_opus_5_present_and_is_the_single_default(self):
+    def test_opus_5_5_present_and_is_the_single_default(self):
         claude_models = BACKENDS[AIBackend.CLAUDE].models
         defaults = [m for m in claude_models if m.is_default]
         assert len(defaults) == 1
-        assert defaults[0].id == "claude-opus-5"
+        assert defaults[0].id == "claude-opus-5-5"
         assert defaults[0].alias == "opus"
 
     def test_default_model_alias_resolves(self):
         info = BACKENDS[AIBackend.CLAUDE]
-        assert resolve_model_id(AIBackend.CLAUDE, info.default_model) == "claude-opus-5"
+        assert (
+            resolve_model_id(AIBackend.CLAUDE, info.default_model) == "claude-opus-5-5"
+        )
+
+    def test_retired_models_are_not_offered(self):
+        # Retired upstream (Opus 4 / Sonnet 4 on 2026-06-15, Opus 4.1 on 2026-08-05):
+        # requests to them fail, so the picker must not offer them.
+        ids = {m.id for m in BACKENDS[AIBackend.CLAUDE].models}
+        assert not ids & {"claude-opus-4-0", "claude-opus-4-1", "claude-sonnet-4-0"}
 
     def test_aliases_are_unique(self):
         aliases = [m.alias for m in BACKENDS[AIBackend.CLAUDE].models]
         assert len(aliases) == len(set(aliases)), "duplicate model alias"
+
+
+class TestThirdPartyModelCatalog:
+    def test_every_backend_has_one_resolvable_default(self):
+        for backend, info in BACKENDS.items():
+            defaults = [m for m in info.models if m.is_default]
+            assert len(defaults) == 1, backend
+            assert resolve_model_id(backend, info.default_model) == defaults[0].id
+
+    def test_every_backend_has_unique_aliases(self):
+        for backend, info in BACKENDS.items():
+            aliases = [m.alias for m in info.models]
+            assert len(aliases) == len(set(aliases)), backend
+
+    def test_gemini_family_aliases_track_newest(self):
+        assert resolve_model_id(AIBackend.GEMINI, "pro") == "gemini-3.1-pro-preview"
+        assert resolve_model_id(AIBackend.GEMINI, "flash") == "gemini-3.8-flash"
+        assert resolve_model_id(AIBackend.GEMINI, "2.5-pro") == "gemini-2.5-pro"
+
+    def test_copilot_ids_use_dotted_versions(self):
+        # Copilot CLI model IDs are "claude-opus-4.8", not "claude-opus-4-8".
+        ids = [m.id for m in BACKENDS[AIBackend.COPILOT].models]
+        assert "claude-opus-4.8" in ids
+        assert not [i for i in ids if re.search(r"claude-\w+-\d+-\d", i)]
+
+
+class TestSdkResultError:
+    @staticmethod
+    def _result(**overrides):
+        from claude_agent_sdk import ResultMessage
+
+        fields = {
+            "subtype": "success",
+            "duration_ms": 0,
+            "duration_api_ms": 0,
+            "is_error": False,
+            "num_turns": 1,
+            "session_id": "test",
+        }
+        fields.update(overrides)
+        return ResultMessage(**fields)
+
+    def test_successful_result_has_no_error(self):
+        assert sdk_result_error(self._result(result="ok")) is None
+
+    def test_api_error_text_comes_from_result(self):
+        # The CLI reports API failures as is_error=True with subtype "success".
+        msg = self._result(is_error=True, result="API Error: 400 upgrade required")
+        assert sdk_result_error(msg) == "API Error: 400 upgrade required"
+
+    def test_falls_back_to_errors_then_subtype(self):
+        msg = self._result(is_error=True, subtype="error_during_execution")
+        assert sdk_result_error(msg) == "error_during_execution"
+        msg = self._result(is_error=True, errors=["boom", "bang"])
+        assert sdk_result_error(msg) == "boom; bang"
 
 
 # ── _apply_mode ──────────────────────────────────────────────
@@ -720,7 +789,7 @@ class TestSdkModelKwargs:
         from skillnir.backends import build_claude_sdk_kwargs
 
         kwargs = build_claude_sdk_kwargs(AppConfig(model="haiku"), model="opus")
-        assert kwargs["model"] == "claude-opus-5"
+        assert kwargs["model"] == "claude-opus-5-5"
 
 
 class TestAllowedToolsOverride:

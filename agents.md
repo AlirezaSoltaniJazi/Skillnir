@@ -247,7 +247,7 @@ No `.env` file used. Configuration stored in `~/.skillnir/config.json`:
 ```json
 {
   "backend": "claude",
-  "model": "claude-opus-5",
+  "model": "opus",
   "prompt_version": "v1",
   "compress_prompts": false,
   "effort": "high",

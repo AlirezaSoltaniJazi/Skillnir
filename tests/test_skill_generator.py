@@ -14,6 +14,7 @@ from skillnir.skill_generator import (
     _check_skill_outputs,
     _find_reference_skill,
     generate_skill,
+    generate_skill_sdk,
     load_skill_prompt,
 )
 
@@ -482,6 +483,74 @@ class TestUmlScope:
             result, same_scope = _find_reference_skill("uml")
             assert result == skill_dir
             assert same_scope is True
+
+
+class TestGenerateSkillSdkErrors:
+    async def test_api_error_text_replaces_generic_sdk_message(
+        self, tmp_path: Path, monkeypatch
+    ):
+        """The SDK's exception only says 'error result: success' — surface the real text."""
+        from claude_agent_sdk import ResultMessage
+
+        async def fake_query(*, prompt, options):  # noqa: ARG001
+            yield ResultMessage(
+                subtype="success",
+                duration_ms=0,
+                duration_api_ms=0,
+                is_error=True,
+                num_turns=1,
+                session_id="test",
+                result="API Error: 400 Claude Code 2.1.150 does not support this model",
+            )
+            raise RuntimeError("Claude Code returned an error result: success")
+
+        monkeypatch.setattr("claude_agent_sdk.query", fake_query)
+        result = await generate_skill_sdk(tmp_path, "demo", "uml", "SYSTEM PROMPT")
+        assert result.success is False
+        assert "does not support this model" in (result.error or "")
+
+
+class TestGenerateSkillSdkMaxTurns:
+    @staticmethod
+    def _turn_limited_query(write_skill_md: Path | None = None):
+        from claude_agent_sdk import ResultMessage
+
+        async def fake_query(*, prompt, options):  # noqa: ARG001
+            if write_skill_md is not None:
+                write_skill_md.parent.mkdir(parents=True, exist_ok=True)
+                write_skill_md.write_text("---\nname: demo\n---\n# Demo\n")
+            yield ResultMessage(
+                subtype="error_max_turns",
+                duration_ms=0,
+                duration_api_ms=0,
+                is_error=True,
+                num_turns=50,
+                session_id="test",
+            )
+            raise RuntimeError("Claude Code returned an error result: error_max_turns")
+
+        return fake_query
+
+    async def test_limit_before_skill_md_reports_the_limit(
+        self, tmp_path: Path, monkeypatch
+    ):
+        monkeypatch.setattr("claude_agent_sdk.query", self._turn_limited_query())
+        result = await generate_skill_sdk(tmp_path, "demo", "uml", "SYSTEM PROMPT")
+        assert result.success is False
+        assert "turn limit" in (result.error or "")
+
+    async def test_partial_skill_is_kept_and_routed_to_repair(
+        self, tmp_path: Path, monkeypatch
+    ):
+        skill_md = tmp_path / ".data" / "skills" / "demo" / "SKILL.md"
+        monkeypatch.setattr(
+            "claude_agent_sdk.query", self._turn_limited_query(skill_md)
+        )
+        result = await generate_skill_sdk(tmp_path, "demo", "uml", "SYSTEM PROMPT")
+        # Validated like a normal run — violations feed generate_skill's repair pass.
+        assert result.target_skill_path == skill_md
+        assert result.violations
+        assert any("turn limit" in w for w in result.warnings)
 
 
 class TestScopeCategories:

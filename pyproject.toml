@@ -7,7 +7,8 @@ dependencies = [
     "questionary>=2.1.0",
     "pyyaml>=6.0",
     "nicegui>=3.10.0",
-    "claude-agent-sdk>=0.2.87",
+    # 0.2.160 bundles Claude Code CLI 2.1.283; Opus 5.5 needs CLI >= 2.1.280.
+    "claude-agent-sdk>=0.2.160",
     "cryptography>=46.0.7",
     "pytest-asyncio>=1.4.0",
 ]
@@ -17,7 +18,7 @@ dependencies = [
 # runtime dependency above. The floor must match it — the SDK path uses
 # ClaudeAgentOptions(model=..., effort=..., thinking=...), which the old
 # 0.1.x floor predates.
-generate = ["claude-agent-sdk>=0.2.87"]
+generate = ["claude-agent-sdk>=0.2.160"]
 dev = ["pytest>=9.0.3", "pytest-asyncio>=1.4.0"]
 
 [project.scripts]

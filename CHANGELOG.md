@@ -11,9 +11,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - New **UML & Diagrams** skill generator — pick the "UML & Diagrams" scope in Generate Skill to add a diagramming skill to any project. It helps the AI choose the right diagram for the question (activity, sequence, state machine, class, use case, ER, C4), write it as code in Mermaid (or PlantUML when Mermaid can't express it), check that it renders, keep it in sync with the code it describes, and turn state, activity, and sequence diagrams into test cases. Works even in projects with no diagrams yet — it defaults to Mermaid in Markdown, which GitHub and GitLab render out of the box.
 
+### Changed
+
+- **Claude Opus 5.5 is now the default model.** The `opus` shortcut now selects Opus 5.5, and the previous Opus 5 stays available as `opus-5`.
+- **Model lists refreshed for every backend**, checked against each provider's current model list:
+  - **Cursor** adds Claude Fable 5.1, Opus 5.5 (standard and Max), Opus 5, Sonnet 5, GPT-5.6 Sol / Terra / Luna, Kimi K3, and Gemini 3.8 Flash.
+  - **Gemini** adds Gemini 3.8 / 3.7 / 3.6 Flash, 3.1 Pro Preview, and 3.5 / 3.1 Flash-Lite. The `pro`, `flash`, and `flash-lite` shortcuts now select the newest of each; the 2.5 models stay available as `2.5-pro`, `2.5-flash`, and `2.5-flash-lite`.
+  - **GitHub Copilot** now offers Claude Sonnet 5 (new default), Fable 5.1 and 5, Opus 5, 4.8 and 4.7, GPT-6 Astra, GPT-5.6 Sol / Terra / Luna, Gemini 3.8 Flash, Kimi K3, MAI-Code 1.1 Flash, and Auto.
+- **CLI setup hints updated**: Copilot now signs in with `copilot login`, and the Gemini hint warns that the CLI no longer accepts free individual accounts.
+
+### Removed
+
+- Models the providers have shut down or no longer offer: Claude Opus 4.1, Opus 4, and Sonnet 4; Gemini 3 Pro Preview, 2.5 Pro Preview, and the 2.0 models; Kimi K2.5 on Cursor; and Copilot's GPT-4.1, GPT-5, o4-mini, Gemini 2.5 Pro, and the older Claude models. If one of these was selected, Skillnir switches to that backend's default model.
+
 ### Fixed
 
 - The README scope list now includes the Firefox extension scope and shows the correct scope count.
+- **Generating with Claude Opus 5.5 no longer fails.** The bundled Claude SDK was too old for Opus 5.5, so every Claude generation (skills, AI docs, rules, wiki, docs optimize, tone pass) failed. The SDK is now updated to a version that supports it.
+- **Large skills no longer fail at the turn limit.** Skill generation now gets 50 turns instead of 20 (a full skill is 20+ files), and if it still runs out after writing SKILL.md, the files are kept, checked, and automatically repaired instead of being reported as a failure.
+- **Claude generation errors now show the real reason** instead of the confusing "Claude Code returned an error result: success" — for example, which model or version problem the API reported.
+- **GitHub Copilot model IDs corrected.** Copilot uses dotted versions (`claude-opus-4.8`), but the picker was sending dashed ones (`claude-opus-4-8`), so the Copilot backend's Claude choices, including its default, didn't match any real Copilot model.
 
 ## [1.9.0] - 2026-09-19
 
