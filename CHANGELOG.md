@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.0] - 2026-10-25
+
 ### Added
 
 - New **Translation Review** skill generator — pick the "Translation Review" scope in Generate Skill to add a skill that reviews translation and localization PRs (Lokalise, Crowdin or Phrase exports, gettext `.po`, i18n JSON, ARB, Android and iOS strings). It catches broken or hard-coded placeholders, missing or mis-mapped plurals, strings that got emptied or lowercased, digits that changed, number and date formats that don't match the language, grammar broken by bulk term swaps, and translations that never reach the user because the app reads a different file or shows an empty string instead of falling back. It ships CLDR-based format tables for 15 languages and their regional variants, per-language notes, ready-to-run checker scripts, and a report template.
