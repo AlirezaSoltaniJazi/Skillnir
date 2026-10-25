@@ -19,6 +19,7 @@ from skillnir.backends import (
     parse_stream_line,
 )
 from skillnir.generator import GenerationProgress, _emit
+from skillnir.html_safety import attr, onclick_open, safe_url
 
 # ---------------------------------------------------------------------------
 # Data models
@@ -204,9 +205,9 @@ def _generate_landing_html(
         )
 
         rows.append(f"""\
-        <tr class="row" data-category="{v.category}" data-source="{v.source_name}" \
-data-severity="{v.severity}" style="cursor:pointer;" \
-onclick="window.open('{html.escape(v.source_url)}','_blank')">
+        <tr class="row" data-category="{attr(v.category)}" data-source="{attr(v.source_name)}" \
+data-severity="{attr(v.severity)}" style="cursor:pointer;" \
+onclick="{onclick_open(safe_url(v.source_url))}">
           <td data-sort="{title_escaped.lower()}" style="padding:10px 12px;">
             <div style="font-weight:600;color:#e2e8f0;">{title_escaped}{badge}</div>
             <div style="font-size:12px;color:#94a3b8;margin-top:2px;">\
@@ -214,19 +215,19 @@ onclick="window.open('{html.escape(v.source_url)}','_blank')">
           </td>
           <td data-sort="{source_escaped.lower()}" \
 style="padding:10px 12px;color:#94a3b8;font-size:13px;">{source_escaped}</td>
-          <td data-sort="{v.published_date}" \
+          <td data-sort="{attr(v.published_date)}" \
 style="padding:10px 12px;color:#94a3b8;font-family:monospace;font-size:13px;\
-white-space:nowrap;">{v.published_date}</td>
+white-space:nowrap;">{attr(v.published_date)}</td>
           <td style="padding:10px 12px;white-space:nowrap;">
             <span style="background:{cat_color};color:#fff;padding:2px 10px;\
 border-radius:12px;font-size:12px;">{cat_label}</span>
           </td>
-          <td data-sort="{v.severity}" style="padding:10px 12px;white-space:nowrap;">
+          <td data-sort="{attr(v.severity)}" style="padding:10px 12px;white-space:nowrap;">
             <span style="background:{sev_color};color:#fff;padding:2px 10px;\
 border-radius:12px;font-size:12px;text-transform:uppercase;">\
-{v.severity}</span>
+{attr(v.severity)}</span>
           </td>
-          <td data-sort="{v.cvss_score}" style="padding:10px 12px;text-align:center;">
+          <td data-sort="{attr(v.cvss_score)}" style="padding:10px 12px;text-align:center;">
             <span style="color:{cvss_color};font-weight:700;font-size:14px;">\
 {cvss_display}</span>
           </td>

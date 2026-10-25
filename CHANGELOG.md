@@ -35,6 +35,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Claude generation errors now show the real reason** instead of the confusing "Claude Code returned an error result: success" — for example, which model or version problem the API reported.
 - **GitHub Copilot model IDs corrected.** Copilot uses dotted versions (`claude-opus-4.8`), but the picker was sending dashed ones (`claude-opus-4-8`), so the Copilot backend's Claude choices, including its default, didn't match any real Copilot model.
 
+### Security
+
+- **All dependencies updated; no known vulnerabilities remain.** A scan of the locked dependencies found about 80 published vulnerabilities across 14 packages, including PyJWT, aiohttp, cryptography, the MCP library, the web UI's Socket.IO and form-upload libraries, and the dev tooling's virtualenv. Every package is now on a patched release (the Claude SDK, NiceGUI, cryptography, and the MCP library all move to their latest versions), and minimum versions are recorded so a future reinstall can't fall back to a vulnerable one.
+- Security and formatting checks updated to their latest versions (Bandit, Black, Prettier, autoflake).
+- **Research, news, events, security, package-vulnerability and benchmark pages can no longer run injected script.** These pages are built from AI summaries of arbitrary web pages and are served by the same local server as the web UI, so a malicious page the AI read could plant script that, once you opened the report, read your saved webhook URLs and Telegram token off the Settings page. Every value is now escaped, links only open `http`/`https` addresses, and the row-click handlers can't be broken out of.
+- **AI-supplied IDs can no longer write files outside the research stores.** An ID such as `../../.claude/agents/x` could previously place a file anywhere, for example a sub-agent or instructions that every later Claude Code session in the repo would load. IDs that aren't plain slugs are now dropped.
+- **Research pipelines run Claude with web search and fetch only.** They used to also get shell and file-write tools, which a prompt-injected web page could use to run commands or read API keys from the environment. They never needed them, since results come back as text.
+- **The web UI rejects requests for any host name other than `127.0.0.1` or `localhost`.** This blocks DNS-rebinding attacks, where a website re-points its own domain at your machine to read the unauthenticated UI and its stored credentials.
+- **`~/.skillnir/config.json` and `client_id` are created private from the start**, and the `~/.skillnir` folder is now owner-only. Before, both files were briefly readable by other local users when first created.
+- **Turning sound notifications on or off, or resetting the Claude config, no longer wipes a broken `~/.claude/settings.json`.** If the file isn't valid JSON, Skillnir now leaves it untouched and says so. Before, it replaced the file with just the hooks, silently dropping your permission rules and MCP servers.
+
 ## [1.9.0] - 2026-09-19
 
 ### Added

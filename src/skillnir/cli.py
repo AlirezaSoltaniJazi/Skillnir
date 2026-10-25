@@ -778,8 +778,7 @@ def _sound() -> None:
         disable_sound_hooks,
         enable_sound_hooks,
         is_sound_enabled,
-        load_settings,
-        save_settings,
+        remove_all_hooks,
     )
 
     enabled = is_sound_enabled()
@@ -810,12 +809,16 @@ def _sound() -> None:
         return
 
     if action == "Enable sound notifications":
-        enable_sound_hooks()
+        if error := enable_sound_hooks():
+            print(f"\n  {error}")
+            return
         print("\n  Sound notifications enabled (Stop + PermissionRequest).")
         print("  Restart Claude Code for changes to take effect.")
 
     elif action == "Disable sound notifications":
-        disable_sound_hooks()
+        if error := disable_sound_hooks():
+            print(f"\n  {error}")
+            return
         print("\n  Sound notifications disabled.")
         print("  Restart Claude Code for changes to take effect.")
 
@@ -826,9 +829,9 @@ def _sound() -> None:
         ).ask():
             print("  Aborted.")
             return
-        settings = load_settings()
-        settings.pop("hooks", None)
-        save_settings(settings)
+        if error := remove_all_hooks():
+            print(f"\n  {error}")
+            return
         print("\n  Claude config reset — all hooks removed.")
         print("  Restart Claude Code for changes to take effect.")
 

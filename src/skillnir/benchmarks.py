@@ -19,6 +19,7 @@ from skillnir.backends import (
     parse_stream_line,
 )
 from skillnir.generator import GenerationProgress, _emit
+from skillnir.html_safety import attr
 
 # ---------------------------------------------------------------------------
 # Data models
@@ -231,17 +232,17 @@ def _generate_landing_html(
             ctx = str(m.context_window)
 
         rows.append(f"""\
-        <tr class="row" data-provider="{m.provider}" style="cursor:default;">
+        <tr class="row" data-provider="{attr(m.provider)}" style="cursor:default;">
           <td data-sort="{name_escaped.lower()}" style="padding:10px 12px;">
             <div style="font-weight:600;color:#e2e8f0;">{name_escaped}{badge}</div>
           </td>
-          <td data-sort="{m.provider}" style="padding:10px 12px;white-space:nowrap;">
+          <td data-sort="{attr(m.provider)}" style="padding:10px 12px;white-space:nowrap;">
             <span style="background:{provider_color};color:#fff;padding:2px 10px;border-radius:12px;font-size:12px;">{provider_name}</span>
           </td>
           {score_cells}
-          <td data-sort="{m.input_price}" style="padding:10px 12px;text-align:center;font-family:monospace;font-size:12px;color:#94a3b8;">{input_price}</td>
-          <td data-sort="{m.output_price}" style="padding:10px 12px;text-align:center;font-family:monospace;font-size:12px;color:#94a3b8;">{output_price}</td>
-          <td data-sort="{m.context_window}" style="padding:10px 12px;text-align:center;font-family:monospace;font-size:12px;color:#94a3b8;">{ctx}</td>
+          <td data-sort="{attr(m.input_price)}" style="padding:10px 12px;text-align:center;font-family:monospace;font-size:12px;color:#94a3b8;">{input_price}</td>
+          <td data-sort="{attr(m.output_price)}" style="padding:10px 12px;text-align:center;font-family:monospace;font-size:12px;color:#94a3b8;">{output_price}</td>
+          <td data-sort="{attr(m.context_window)}" style="padding:10px 12px;text-align:center;font-family:monospace;font-size:12px;color:#94a3b8;">{ctx}</td>
         </tr>""")
 
     rows_html = "\n".join(rows)

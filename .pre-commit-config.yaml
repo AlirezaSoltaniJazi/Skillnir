@@ -29,7 +29,7 @@ repos:
         files: ^(pyproject\.toml|uv\.lock)$
   # A security linter from PyCQA
   - repo: https://github.com/PyCQA/bandit
-    rev: 1.9.2
+    rev: 1.9.4
     hooks:
       - id: bandit
         args:
@@ -37,7 +37,7 @@ repos:
           - "-iii"
   # Removes unused imports and unused variables
   - repo: https://github.com/PyCQA/autoflake
-    rev: v2.3.1
+    rev: v2.4.0
     hooks:
       - id: autoflake
         exclude: ^\.data/
@@ -67,7 +67,7 @@ repos:
 #        name: isort (python) ,
   # Automatically format your Python code to conform to the PEP 8 style guide
   - repo: https://github.com/psf/black
-    rev: 26.3.1
+    rev: 26.10.1
     hooks:
       - id: black
         language_version: python3.14
@@ -75,7 +75,7 @@ repos:
         args: [ "-S" ]
   # Format Markdown files with Prettier
   - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.8.1
+    rev: v3.9.10
     hooks:
       - id: prettier
         types: [ markdown ]

@@ -19,6 +19,7 @@ from skillnir.backends import (
     parse_stream_line,
 )
 from skillnir.generator import GenerationProgress, _emit
+from skillnir.html_safety import attr, href, is_safe_id, onclick_open
 from skillnir.researcher import TOPIC_LABELS
 
 # ---------------------------------------------------------------------------
@@ -334,12 +335,12 @@ def _load_template(name: str) -> str:
 def _generate_event_html(event: Event) -> str:
     """Generate a self-contained styled HTML page for a single event."""
     title = html.escape(event.title)
-    event_url = html.escape(event.event_url, quote=True)
-    registration_url = html.escape(event.registration_url, quote=True)
+    event_url = href(event.event_url)
+    registration_url = href(event.registration_url)
     organizer = html.escape(event.organizer)
-    event_date = event.event_date
+    event_date = attr(event.event_date)
     if event.end_date and event.end_date != event.event_date:
-        event_date = f"{event.event_date} — {event.end_date}"
+        event_date = f"{attr(event.event_date)} — {attr(event.end_date)}"
     location = html.escape(event.location)
     country = html.escape(EVENT_COUNTRIES.get(event.country, event.country))
     topic_label = html.escape(TOPIC_LABELS.get(event.topic, event.topic))
@@ -457,12 +458,12 @@ def _generate_landing_html(
             remaining_color = "#94a3b8"
 
         rows.append(f"""\
-        <tr onclick="window.open('events/{e.topic}/{e.id}.html','_blank')" style="cursor:pointer;" class="row" data-topic="{e.topic}" data-country="{e.country}" data-free="{free_val}" data-date="{e.event_date}">
+        <tr onclick="{onclick_open(f'events/{e.topic}/{e.id}.html')}" style="cursor:pointer;" class="row" data-topic="{attr(e.topic)}" data-country="{attr(e.country)}" data-free="{free_val}" data-date="{attr(e.event_date)}">
           <td style="padding:12px 16px;">
             <div style="font-weight:600;color:#e2e8f0;">{title_escaped}{badge}</div>
             <div style="font-size:13px;color:#94a3b8;margin-top:4px;">{html.escape(e.organizer)}</div>
           </td>
-          <td style="padding:12px 16px;color:{date_color};font-family:monospace;font-size:13px;white-space:nowrap;">{e.event_date}</td>
+          <td style="padding:12px 16px;color:{date_color};font-family:monospace;font-size:13px;white-space:nowrap;">{attr(e.event_date)}</td>
           <td style="padding:12px 16px;color:{remaining_color};font-size:13px;white-space:nowrap;font-weight:600;">{remaining_label}</td>
           <td style="padding:12px 16px;color:#94a3b8;">{location_escaped}</td>
           <td style="padding:12px 16px;white-space:nowrap;">
@@ -547,7 +548,7 @@ def _generate_landing_html(
     total = len(sorted_events)
     today_iso = today.isoformat()
     upcoming = [e for e in sorted_events if e.event_date >= today_iso]
-    next_event = upcoming[0].event_date if upcoming else "N/A"
+    next_event = attr(upcoming[0].event_date) if upcoming else "N/A"
     generated_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     subtitle = (
         f"{total} events | Next event: {next_event}" f" | Generated: {generated_at}"
@@ -659,7 +660,7 @@ def _dict_to_event(item: dict, country_code: str) -> Event | None:
             description=str(item.get("description", "")).strip(),
             key_highlights=[str(h) for h in item.get("key_highlights", [])],
         )
-        if event.id and event.title and event.event_url:
+        if event.title and event.event_url and is_safe_id(event.id):
             return event
     except json.JSONDecodeError, KeyError, TypeError:
         pass

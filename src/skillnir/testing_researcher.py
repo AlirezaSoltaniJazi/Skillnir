@@ -32,6 +32,7 @@ from skillnir.backends import (
     parse_stream_line,
 )
 from skillnir.generator import GenerationProgress, _emit
+from skillnir.html_safety import attr, href, is_safe_id, onclick_open
 
 # ---------------------------------------------------------------------------
 # Data models — same shape as researcher.Article, scoped to this module
@@ -422,7 +423,7 @@ def _generate_article_html(article: Article) -> str:
     """Render a single-article HTML page using the shared template."""
     title = html.escape(article.title)
     source_name = html.escape(article.source_name)
-    source_url = html.escape(article.source_url, quote=True)
+    source_url = href(article.source_url)
     topic_label = html.escape(TOPIC_LABELS.get(article.topic, article.topic))
 
     insights_html = "\n".join(
@@ -439,7 +440,7 @@ def _generate_article_html(article: Article) -> str:
         template.replace("<!-- TITLE -->", title)
         .replace("<!-- SOURCE_URL -->", source_url)
         .replace("<!-- SOURCE_NAME -->", source_name)
-        .replace("<!-- PUBLISHED_DATE -->", article.published_date)
+        .replace("<!-- PUBLISHED_DATE -->", attr(article.published_date))
         .replace("<!-- TOPIC_LABEL -->", topic_label)
         .replace("<!-- INSIGHTS_HTML -->", insights_html)
         .replace("<!-- SUMMARY_HTML -->", summary_html)
@@ -482,7 +483,7 @@ def _generate_landing_html(
         source_attr = html.escape(a.source_name, quote=True)
         insights_preview = html.escape(a.key_insights[0]) if a.key_insights else ""
         rows.append(f"""\
-        <tr onclick="window.open('articles/{a.topic}/{a.id}.html','_blank')" style="cursor:pointer;" class="row" data-topic="{a.topic}" data-source="{source_attr}">
+        <tr onclick="{onclick_open(f'articles/{a.topic}/{a.id}.html')}" style="cursor:pointer;" class="row" data-topic="{a.topic}" data-source="{source_attr}">
           <td style="padding:12px 16px;">
             <div style="font-weight:600;color:#e2e8f0;">{title_escaped}{badge}</div>
             <div style="font-size:13px;color:#94a3b8;margin-top:4px;">{insights_preview}</div>
@@ -491,7 +492,7 @@ def _generate_landing_html(
           <td style="padding:12px 16px;white-space:nowrap;">
             <span style="background:{color};color:#fff;padding:2px 10px;border-radius:12px;font-size:12px;">{TOPIC_LABELS.get(a.topic, a.topic)}</span>
           </td>
-          <td style="padding:12px 16px;color:#94a3b8;font-family:monospace;font-size:13px;white-space:nowrap;">{a.published_date}</td>
+          <td style="padding:12px 16px;color:#94a3b8;font-family:monospace;font-size:13px;white-space:nowrap;">{attr(a.published_date)}</td>
         </tr>""")
 
     rows_html = "\n".join(rows)
@@ -534,7 +535,7 @@ def _generate_landing_html(
     from datetime import datetime
 
     total = len(sorted_articles)
-    last_updated = sorted_articles[0].published_date if sorted_articles else "N/A"
+    last_updated = attr(sorted_articles[0].published_date) if sorted_articles else "N/A"
     generated_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     subtitle = (
         f"{total} testing articles | Last updated: {last_updated}"
@@ -629,7 +630,7 @@ def _dict_to_article(item: dict, topic_key: str) -> Article | None:
             key_insights=[str(i) for i in item.get("key_insights", [])],
             summary=str(item.get("summary", "")).strip(),
         )
-        if article.id and article.title and article.source_url:
+        if article.title and article.source_url and is_safe_id(article.id):
             return article
     except KeyError, TypeError, ValueError:
         pass

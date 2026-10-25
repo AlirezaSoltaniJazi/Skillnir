@@ -733,20 +733,12 @@ def load_config() -> AppConfig:
 
 def save_config(config: AppConfig) -> None:
     """Persist config to ~/.skillnir/config.json (owner-read/write only)."""
-    CONFIG_DIR.mkdir(parents=True, exist_ok=True)
-    CONFIG_FILE.write_text(
-        json.dumps(config.to_dict(), indent=2) + "\n",
-        encoding="utf-8",
-    )
-    # Restrict to owner read/write on POSIX; best-effort on Windows.
-    # The file contains ``gchat_webhook_cipher``, which — together with
-    # the same-user-readable ``client_id`` and machine fingerprint — is
-    # enough to recover the webhook URL. Keep its permissions in sync
-    # with crypto.CLIENT_ID_FILE (also 0o600).
-    try:
-        CONFIG_FILE.chmod(0o600)
-    except OSError:
-        pass
+    from skillnir.crypto import write_private_text
+
+    # The file holds the webhook ciphers, which — together with the
+    # ``client_id`` and machine fingerprint — are enough to recover the
+    # credentials, so it is created 0o600 like crypto.CLIENT_ID_FILE.
+    write_private_text(CONFIG_FILE, json.dumps(config.to_dict(), indent=2) + "\n")
 
 
 # ---------------------------------------------------------------------------
@@ -936,8 +928,10 @@ def maybe_compress_prompt(prompt: str, config: "AppConfig | None" = None) -> str
 # Claude tool grants. Named here so pipelines declare intent instead of
 # rewriting the built argv, and so the flag name lives in exactly one place.
 DEFAULT_CLAUDE_TOOLS = "Read,Glob,Grep,Bash,Edit,Write"
-RESEARCH_CLAUDE_TOOLS = "Read,Glob,Grep,Bash,Write,WebFetch,WebSearch"
 WEB_ONLY_CLAUDE_TOOLS = "WebFetch,WebSearch"
+# Research pipelines read untrusted web pages and return their findings on
+# stdout, so a prompt-injected page must not reach a shell or the filesystem.
+RESEARCH_CLAUDE_TOOLS = WEB_ONLY_CLAUDE_TOOLS
 NO_CLAUDE_TOOLS = ""  # pure classification — no tools needed or wanted
 
 
