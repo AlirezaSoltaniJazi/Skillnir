@@ -92,6 +92,7 @@ SKILL_SCOPES: tuple[str, ...] = (
     "android-google",
     "automation-review",
     "uml",
+    "translation-review",
 )
 
 SCOPE_LABELS: dict[str, str] = {
@@ -134,6 +135,7 @@ SCOPE_LABELS: dict[str, str] = {
     "android-google": "Android (Google Official Skills — Compose/Nav3/edge-to-edge/AGP9/Camera/Journeys/Glimmer XR)",
     "automation-review": "Automation Review (code review / test-plan & test-case review across languages & frameworks, self-extending, HTML report)",
     "uml": "UML & Diagrams (activity/sequence/state/class/use-case, Mermaid/PlantUML, diagrams-as-code, test derivation)",
+    "translation-review": "Translation Review (localization PR review — placeholders/plurals/CLDR locale formats/loader fallback/RTL, 15+ locales)",
 }
 
 
@@ -171,6 +173,7 @@ SCOPE_CATEGORIES: tuple[tuple[str, tuple[str, ...]], ...] = (
             "appium",
             "accessibility",
             "automation-review",
+            "translation-review",
         ),
     ),
     (
@@ -450,6 +453,15 @@ def _find_reference_skill(scope: str) -> tuple[Path | None, bool]:
             "plantuml",
             "flowchart",
             "modeling",
+        ),
+        "translation-review": (
+            "translation-review",
+            "translation-reviewer",
+            "localization-review",
+            "localization-qa",
+            "l10n-review",
+            "i18n-review",
+            "lokalise-review",
         ),
     }
 

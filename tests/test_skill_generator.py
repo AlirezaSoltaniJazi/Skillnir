@@ -485,6 +485,41 @@ class TestUmlScope:
             assert same_scope is True
 
 
+class TestTranslationReviewScope:
+    def test_in_skill_scopes(self):
+        assert "translation-review" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "translation-review" in SCOPE_LABELS
+        assert "Translation Review" in SCOPE_LABELS["translation-review"]
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("translation-review", "v1")
+        assert "nplurals" in text
+        assert "CLDR" in text
+        assert "returnEmptyString" in text
+        assert "check_catalogs.py" in text
+        assert "locale_facts.py" in text
+        assert "language-reviewer" in text
+        assert "translator" in text
+
+    def test_in_quality_and_testing_category(self):
+        quality = dict(SCOPE_CATEGORIES).get("Quality & Testing", ())
+        assert "translation-review" in quality
+
+    def test_reference_skill_matches_review_keyword(self, tmp_path: Path):
+        skill_dir = tmp_path / "localizationReview"
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "SKILL.md").write_text("---\nname: ref\n---\n")
+
+        with patch(
+            "skillnir.skill_generator.get_source_skills_dir", return_value=tmp_path
+        ):
+            result, same_scope = _find_reference_skill("translation-review")
+            assert result == skill_dir
+            assert same_scope is True
+
+
 class TestGenerateSkillSdkErrors:
     async def test_api_error_text_replaces_generic_sdk_message(
         self, tmp_path: Path, monkeypatch
