@@ -320,7 +320,13 @@ class TestPromptVersionDiscovery:
 class TestResolveModelId:
     def test_alias_resolves_to_id(self):
         result = resolve_model_id(AIBackend.CLAUDE, "sonnet")
-        assert result == "claude-sonnet-5"
+        assert result == "claude-sonnet-5-5"
+
+    def test_prior_sonnet_and_haiku_aliases_still_resolve(self):
+        # Sonnet 5 / Haiku 4.5 keep versioned aliases after 5.5 took the bare ones.
+        assert resolve_model_id(AIBackend.CLAUDE, "sonnet-5") == "claude-sonnet-5"
+        assert resolve_model_id(AIBackend.CLAUDE, "haiku") == "claude-haiku-5-5"
+        assert resolve_model_id(AIBackend.CLAUDE, "haiku-4.5") == "claude-haiku-4-5"
 
     def test_versioned_sonnet_alias_resolves_to_id(self):
         result = resolve_model_id(AIBackend.CLAUDE, "sonnet-4.6")
@@ -400,11 +406,13 @@ class TestThirdPartyModelCatalog:
         assert resolve_model_id(AIBackend.GEMINI, "pro") == "gemini-3.1-pro-preview"
         assert resolve_model_id(AIBackend.GEMINI, "flash") == "gemini-3.8-flash"
         assert resolve_model_id(AIBackend.GEMINI, "2.5-pro") == "gemini-2.5-pro"
+        assert resolve_model_id(AIBackend.GEMINI, "argon") == "gemini-4-argon"
 
     def test_copilot_ids_use_dotted_versions(self):
         # Copilot CLI model IDs are "claude-opus-4.8", not "claude-opus-4-8".
         ids = [m.id for m in BACKENDS[AIBackend.COPILOT].models]
         assert "claude-opus-4.8" in ids
+        assert "claude-sonnet-5.5" in ids
         assert not [i for i in ids if re.search(r"claude-\w+-\d+-\d", i)]
 
 
@@ -489,7 +497,7 @@ class TestBuildSubprocessCommand:
         assert "--output-format" in cmd
         assert "stream-json" in cmd
         assert "--model" in cmd
-        assert "claude-sonnet-5" in cmd
+        assert "claude-sonnet-5-5" in cmd
         assert "--max-turns" in cmd
 
     def test_cursor_command(self):
@@ -768,7 +776,7 @@ class TestSdkModelKwargs:
         from skillnir.backends import build_claude_sdk_kwargs
 
         kwargs = build_claude_sdk_kwargs(AppConfig(model="sonnet"))
-        assert kwargs["model"] == "claude-sonnet-5"
+        assert kwargs["model"] == "claude-sonnet-5-5"
 
     def test_alias_is_resolved_to_full_id(self):
         # The CLI path resolves aliases via resolve_model_id; the SDK path

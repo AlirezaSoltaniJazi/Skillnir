@@ -68,9 +68,11 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
             ModelInfo("claude-opus-4-8", "opus-4.8", "Claude Opus 4.8", tier=1),
             ModelInfo("claude-opus-4-7", "opus-4.7", "Claude Opus 4.7", tier=1),
             ModelInfo("claude-opus-4-6", "opus-4.6", "Claude Opus 4.6", tier=1),
-            ModelInfo("claude-sonnet-5", "sonnet", "Claude Sonnet 5", tier=2),
+            ModelInfo("claude-sonnet-5-5", "sonnet", "Claude Sonnet 5.5", tier=2),
+            ModelInfo("claude-sonnet-5", "sonnet-5", "Claude Sonnet 5", tier=2),
             ModelInfo("claude-sonnet-4-6", "sonnet-4.6", "Claude Sonnet 4.6", tier=2),
-            ModelInfo("claude-haiku-4-5", "haiku", "Claude Haiku 4.5", tier=3),
+            ModelInfo("claude-haiku-5-5", "haiku", "Claude Haiku 5.5", tier=3),
+            ModelInfo("claude-haiku-4-5", "haiku-4.5", "Claude Haiku 4.5", tier=3),
             ModelInfo("claude-fable-5", "fable-5", "Claude Fable 5", tier=1),
             ModelInfo("claude-opus-4-5", "opus-4.5", "Claude Opus 4.5", tier=1),
             ModelInfo("claude-sonnet-4-5", "sonnet-4.5", "Claude Sonnet 4.5", tier=2),
@@ -94,6 +96,13 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
             # Tier 2 — balanced (default)
             ModelInfo("auto", "auto", "Auto (recommended)", is_default=True, tier=2),
             ModelInfo("composer-2.5", "composer-2.5", "Composer 2.5", tier=2),
+            ModelInfo(
+                "claude-sonnet-5-5-high",
+                "claude-sonnet-5-5-high",
+                "Claude Sonnet 5.5",
+                tier=2,
+            ),
+            ModelInfo("grok-4.7-high", "grok-4.7-high", "Grok 4.7", tier=2),
             ModelInfo(
                 "claude-sonnet-5-high",
                 "claude-sonnet-5-high",
@@ -184,10 +193,19 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
                 "gpt-5.5-extra-high", "gpt-5.5-extra-high", "GPT-5.5 Extra High", tier=1
             ),
             ModelInfo("gpt-5.4-xhigh", "gpt-5.4-xhigh", "GPT-5.4 XHigh", tier=1),
+            ModelInfo(
+                "gemini-4-argon-high", "gemini-4-argon-high", "Gemini 4 Argon", tier=1
+            ),
             ModelInfo("gemini-3.1-pro", "gemini-3.1-pro", "Gemini 3.1 Pro", tier=1),
             # Tier 3 — fast / cheap
             ModelInfo(
                 "composer-2.5-fast", "composer-2.5-fast", "Composer 2.5 Fast", tier=3
+            ),
+            ModelInfo(
+                "claude-haiku-5-5-thinking-medium",
+                "claude-haiku-5-5-thinking-medium",
+                "Claude Haiku 5.5",
+                tier=3,
             ),
             ModelInfo(
                 "gpt-5.6-luna-medium", "gpt-5.6-luna-medium", "GPT-5.6 Luna", tier=3
@@ -221,10 +239,11 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         cli_command="gemini",
         supports_stream_json=True,
         models=(
-            # IDs per Google's Gemini API model docs (2026-09-28). The gemini CLI
+            # IDs per Google's Gemini API model docs (2026-10-25). The gemini CLI
             # rejects free-tier individual accounts (IneligibleTierError), so they
             # could not be exercised with `gemini -m` on the build machine.
             ModelInfo("auto", "auto", "Auto (recommended)", is_default=True, tier=2),
+            ModelInfo("gemini-4-argon", "argon", "Gemini 4 Argon", tier=1),
             ModelInfo(
                 "gemini-3.1-pro-preview", "pro", "Gemini 3.1 Pro Preview", tier=1
             ),
@@ -273,21 +292,23 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         models=(
             # IDs match the `model` values listed by `copilot help config`
             # (Copilot CLI 1.0.88, 2026-09-28) — dotted versions, not dashes.
+            # Models added after 1.0.88 (Opus/Sonnet/Haiku 5.5, GPT-6.x, Gemini 4
+            # Argon) follow the same scheme; GPT-5.5/5.4/5.4 mini/5 mini and
+            # Opus 4.7 were deprecated by GitHub in October 2026.
             # Tier 2 — balanced (default)
             ModelInfo(
-                "claude-sonnet-5",
-                "claude-sonnet-5",
-                "Claude Sonnet 5",
+                "claude-sonnet-5.5",
+                "claude-sonnet-5.5",
+                "Claude Sonnet 5.5",
                 is_default=True,
                 tier=2,
             ),
             ModelInfo("auto", "auto", "Auto", tier=2),
+            ModelInfo("claude-sonnet-5", "claude-sonnet-5", "Claude Sonnet 5", tier=2),
             ModelInfo(
                 "claude-sonnet-4.6", "claude-sonnet-4.6", "Claude Sonnet 4.6", tier=2
             ),
             ModelInfo("gpt-5.6-terra", "gpt-5.6-terra", "GPT-5.6 Terra", tier=2),
-            ModelInfo("gpt-5.5", "gpt-5.5", "GPT-5.5", tier=2),
-            ModelInfo("gpt-5.4", "gpt-5.4", "GPT-5.4", tier=2),
             ModelInfo("gpt-5.3-codex", "gpt-5.3-codex", "GPT-5.3 Codex", tier=2),
             ModelInfo(
                 "gemini-3.8-flash", "gemini-3.8-flash", "Gemini 3.8 Flash", tier=2
@@ -297,19 +318,25 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
             ModelInfo(
                 "claude-fable-5.1", "claude-fable-5.1", "Claude Fable 5.1", tier=1
             ),
+            ModelInfo("claude-opus-5.5", "claude-opus-5.5", "Claude Opus 5.5", tier=1),
             ModelInfo("claude-fable-5", "claude-fable-5", "Claude Fable 5", tier=1),
             ModelInfo("claude-opus-5", "claude-opus-5", "Claude Opus 5", tier=1),
             ModelInfo("claude-opus-4.8", "claude-opus-4.8", "Claude Opus 4.8", tier=1),
-            ModelInfo("claude-opus-4.7", "claude-opus-4.7", "Claude Opus 4.7", tier=1),
+            ModelInfo("gpt-6.1-sol", "gpt-6.1-sol", "GPT-6.1 Sol", tier=1),
+            ModelInfo("gpt-6-sol", "gpt-6-sol", "GPT-6 Sol", tier=1),
             ModelInfo("gpt-6-astra", "gpt-6-astra", "GPT-6 Astra", tier=1),
+            ModelInfo("gemini-4-argon", "gemini-4-argon", "Gemini 4 Argon", tier=1),
             ModelInfo("gpt-5.6-sol", "gpt-5.6-sol", "GPT-5.6 Sol", tier=1),
             # Tier 3 — fast / cheap
             ModelInfo(
+                "claude-haiku-5.5", "claude-haiku-5.5", "Claude Haiku 5.5", tier=3
+            ),
+            ModelInfo(
                 "claude-haiku-4.5", "claude-haiku-4.5", "Claude Haiku 4.5", tier=3
             ),
+            ModelInfo("gpt-6-luna", "gpt-6-luna", "GPT-6 Luna", tier=3),
             ModelInfo("gpt-5.6-luna", "gpt-5.6-luna", "GPT-5.6 Luna", tier=3),
-            ModelInfo("gpt-5.4-mini", "gpt-5.4-mini", "GPT-5.4 Mini", tier=3),
-            ModelInfo("gpt-5-mini", "gpt-5-mini", "GPT-5 Mini", tier=3),
+            ModelInfo("gpt-5.4-nano", "gpt-5.4-nano", "GPT-5.4 Nano", tier=3),
             ModelInfo(
                 "mai-code-1.1-flash",
                 "mai-code-1.1-flash",
@@ -317,7 +344,7 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
                 tier=3,
             ),
         ),
-        default_model="claude-sonnet-5",
+        default_model="claude-sonnet-5.5",
         usage_command=None,
         usage_url="https://github.com/settings/billing",
         version_command=("copilot", "--version"),
