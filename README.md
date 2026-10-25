@@ -31,7 +31,7 @@ Skills are structured markdown files that teach AI assistants project-specific p
 ## Features
 
 - **Multi-backend skill generation** -- generate skills using Claude Code, Cursor, Gemini, or GitHub Copilot
-- **39 skill scopes** -- backend, frontend, android, ios, infra, testing, js, python, test-design, uml, general-system, and more
+- **40 skill scopes** -- backend, frontend, android, ios, infra, testing, js, python, test-design, uml, translation-review, general-system, and more
 - **Cross-tool injection** -- one skill, symlinked into `.claude/`, `.cursor/`, `.github/`, `.gemini/`, `.codex/`, `.agents/`, and more
 - **Web UI** -- NiceGUI-based dashboard for all operations
 - **CLI** -- full command set for scripting and automation
@@ -186,12 +186,12 @@ skillName/
 └── agents/        # Sub-agent definitions
 ```
 
-### Available Scopes (39)
+### Available Scopes (40)
 
 | Category                | Scopes                                                                                                                                            |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Engineering Roles       | backend, frontend, js, python, django, go, android, android-google, ios, cross-platform-mobile, chrome-extension, firefox-extension, data-science |
-| Quality & Testing       | testing, test-design, manual-tester, locator, playwright, wdio, selenium, appium, accessibility, automation-review                                |
+| Quality & Testing       | testing, test-design, manual-tester, locator, playwright, wdio, selenium, appium, accessibility, automation-review, translation-review            |
 | Architecture & Platform | infra, devops-engineer, database, api-design, migration, performance, observability, security, general-system, uml                                |
 | Design                  | ui-ux-designer                                                                                                                                    |
 | Business & People       | project-manager, financial-manager, hr-manager, deep-researcher, translator                                                                       |

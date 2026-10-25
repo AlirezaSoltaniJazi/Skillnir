@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- New **Translation Review** skill generator — pick the "Translation Review" scope in Generate Skill to add a skill that reviews translation and localization PRs (Lokalise, Crowdin or Phrase exports, gettext `.po`, i18n JSON, ARB, Android and iOS strings). It catches broken or hard-coded placeholders, missing or mis-mapped plurals, strings that got emptied or lowercased, digits that changed, number and date formats that don't match the language, grammar broken by bulk term swaps, and translations that never reach the user because the app reads a different file or shows an empty string instead of falling back. It ships CLDR-based format tables for 15 languages and their regional variants, per-language notes, ready-to-run checker scripts, and a report template.
+- New built-in **translationReviewer** skill, generated with the new scope and ready to install.
 - New **UML & Diagrams** skill generator — pick the "UML & Diagrams" scope in Generate Skill to add a diagramming skill to any project. It helps the AI choose the right diagram for the question (activity, sequence, state machine, class, use case, ER, C4), write it as code in Mermaid (or PlantUML when Mermaid can't express it), check that it renders, keep it in sync with the code it describes, and turn state, activity, and sequence diagrams into test cases. Works even in projects with no diagrams yet — it defaults to Mermaid in Markdown, which GitHub and GitLab render out of the box.
 
 ### Changed
