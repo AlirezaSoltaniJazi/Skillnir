@@ -15,6 +15,7 @@ from skillnir.backends import (
     load_config,
     maybe_compress_prompt,
     run_streaming_command,
+    sdk_result_error,
 )
 
 # Canonical output filenames. The industry standard is uppercase AGENTS.md,
@@ -260,6 +261,8 @@ async def generate_docs_sdk(
 
     user_prompt = _build_user_prompt(target_project)
 
+    result_error: str | None = None
+
     try:
         async for message in query(prompt=user_prompt, options=options):
             if isinstance(message, AssistantMessage) and on_progress:
@@ -280,10 +283,11 @@ async def generate_docs_sdk(
                         message.usage,
                         getattr(message, 'total_cost_usd', None),
                     )
+                result_error = sdk_result_error(message) or result_error
     except Exception as e:
         return GenerationResult(
             success=False,
-            error=str(e),
+            error=result_error or str(e),
             backend_used=AIBackend.CLAUDE,
         )
 

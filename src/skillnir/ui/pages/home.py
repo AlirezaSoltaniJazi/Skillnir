@@ -193,11 +193,12 @@ def _build_claude_tools_content():
     hook_enabled = is_sound_enabled()
 
     def on_hook_toggle(e):
-        if e.value:
-            enable_sound_hooks()
+        error = enable_sound_hooks() if e.value else disable_sound_hooks()
+        if error:
+            ui.notify(error, type='negative')
+        elif e.value:
             ui.notify(t('messages.claude_sound_enabled', lang), type='positive')
         else:
-            disable_sound_hooks()
             ui.notify(t('messages.claude_sound_disabled', lang), type='warning')
 
     with ui.row().classes('items-center gap-3'):

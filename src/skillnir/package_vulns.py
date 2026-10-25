@@ -29,6 +29,7 @@ from skillnir.backends import (
     parse_stream_line,
 )
 from skillnir.generator import GenerationProgress, _emit
+from skillnir.html_safety import attr, onclick_open, safe_url
 
 # ---------------------------------------------------------------------------
 # Data models
@@ -260,17 +261,16 @@ def _generate_landing_html(
         )
         cvss_display = f"{v.cvss_score:.1f}" if v.cvss_score else "—"
         cvss_color = _cvss_color(v.cvss_score)
-        link = html.escape(v.advisory_url) if v.advisory_url else ""
-        onclick = f"window.open('{link}','_blank')" if link else ""
+        onclick = onclick_open(safe_url(v.advisory_url)) if v.advisory_url else ""
 
         rows.append(f"""\
-        <tr class="row" data-ecosystem="{v.ecosystem}" data-severity="{v.severity}" \
+        <tr class="row" data-ecosystem="{attr(v.ecosystem)}" data-severity="{attr(v.severity)}" \
 style="cursor:{'pointer' if onclick else 'default'};" onclick="{onclick}">
           <td data-sort="{pkg_escaped.lower()}" style="padding:10px 12px;">
             <div style="font-weight:600;color:#e2e8f0;">{pkg_escaped}{badge}</div>
             <div style="font-size:12px;color:#94a3b8;margin-top:2px;">{id_escaped}</div>
           </td>
-          <td data-sort="{v.ecosystem}" style="padding:10px 12px;white-space:nowrap;">
+          <td data-sort="{attr(v.ecosystem)}" style="padding:10px 12px;white-space:nowrap;">
             <span style="background:{eco_color};color:#fff;padding:2px 10px;\
 border-radius:12px;font-size:12px;">{eco_label}</span>
           </td>
@@ -278,17 +278,17 @@ border-radius:12px;font-size:12px;">{eco_label}</span>
 font-size:13px;">{affected}</td>
           <td style="padding:10px 12px;color:#34d399;font-family:monospace;\
 font-size:13px;font-weight:600;">{fixed}</td>
-          <td data-sort="{v.severity}" style="padding:10px 12px;white-space:nowrap;">
+          <td data-sort="{attr(v.severity)}" style="padding:10px 12px;white-space:nowrap;">
             <span style="background:{sev_color};color:#fff;padding:2px 10px;\
-border-radius:12px;font-size:12px;text-transform:uppercase;">{v.severity}</span>
+border-radius:12px;font-size:12px;text-transform:uppercase;">{attr(v.severity)}</span>
           </td>
-          <td data-sort="{v.cvss_score}" style="padding:10px 12px;text-align:center;">
+          <td data-sort="{attr(v.cvss_score)}" style="padding:10px 12px;text-align:center;">
             <span style="color:{cvss_color};font-weight:700;font-size:14px;">\
 {cvss_display}</span>
           </td>
-          <td data-sort="{v.published_date}" \
+          <td data-sort="{attr(v.published_date)}" \
 style="padding:10px 12px;color:#94a3b8;font-family:monospace;font-size:13px;\
-white-space:nowrap;">{v.published_date or '—'}</td>
+white-space:nowrap;">{attr(v.published_date or '—')}</td>
         </tr>""")
 
     rows_html = "\n".join(rows)

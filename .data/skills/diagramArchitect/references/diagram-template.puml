@@ -1,0 +1,20 @@
+@startuml <kebab-name>
+' Title: <Subject> <diagram type>
+' Question: <the ONE question this diagram answers>
+' Audience: <who reads it>
+' Source of truth: path/to/your/file.ext :: <Symbol>
+' Last verified: YYYY-MM-DD
+!pragma layout smetana
+title <Subject> <diagram type>
+caption <one-sentence description of what the diagram shows>
+|Owner A|
+start
+:Verb noun;
+if (Condition?) then (yes)
+  |Owner B|
+  :Verb noun;
+else (no)
+  :Handle alternative;
+endif
+stop
+@enduml

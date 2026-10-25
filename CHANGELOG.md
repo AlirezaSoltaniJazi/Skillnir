@@ -7,6 +7,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New **Translation Review** skill generator — pick the "Translation Review" scope in Generate Skill to add a skill that reviews translation and localization PRs (Lokalise, Crowdin or Phrase exports, gettext `.po`, i18n JSON, ARB, Android and iOS strings). It catches broken or hard-coded placeholders, missing or mis-mapped plurals, strings that got emptied or lowercased, digits that changed, number and date formats that don't match the language, grammar broken by bulk term swaps, and translations that never reach the user because the app reads a different file or shows an empty string instead of falling back. It ships CLDR-based format tables for 15 languages and their regional variants, per-language notes, ready-to-run checker scripts, and a report template.
+- New built-in **translationReviewer** skill, generated with the new scope and ready to install.
+- New **UML & Diagrams** skill generator — pick the "UML & Diagrams" scope in Generate Skill to add a diagramming skill to any project. It helps the AI choose the right diagram for the question (activity, sequence, state machine, class, use case, ER, C4), write it as code in Mermaid (or PlantUML when Mermaid can't express it), check that it renders, keep it in sync with the code it describes, and turn state, activity, and sequence diagrams into test cases. Works even in projects with no diagrams yet — it defaults to Mermaid in Markdown, which GitHub and GitLab render out of the box.
+
+### Changed
+
+- **Claude Opus 5.5 is now the default model.** The `opus` shortcut now selects Opus 5.5, and the previous Opus 5 stays available as `opus-5`.
+- **Claude Sonnet 5.5 and Haiku 5.5 added.** The `sonnet` and `haiku` shortcuts now select them; Sonnet 5 stays available as `sonnet-5` and Haiku 4.5 as `haiku-4.5`.
+- **Model lists refreshed for every backend**, checked against each provider's current model list:
+  - **Cursor** adds Claude Fable 5.1, Opus 5.5 (standard and Max), Opus 5, Sonnet 5.5, Sonnet 5, Haiku 5.5, GPT-5.6 Sol / Terra / Luna, Gemini 4 Argon, Gemini 3.8 Flash, Grok 4.7, and Kimi K3.
+  - **Gemini** adds Gemini 4 Argon (`argon`), Gemini 3.8 / 3.7 / 3.6 Flash, 3.1 Pro Preview, and 3.5 / 3.1 Flash-Lite. The `pro`, `flash`, and `flash-lite` shortcuts now select the newest of each; the 2.5 models stay available as `2.5-pro`, `2.5-flash`, and `2.5-flash-lite`.
+  - **GitHub Copilot** now offers Claude Sonnet 5.5 (new default), Opus 5.5, Haiku 5.5, Fable 5.1 and 5, Opus 5 and 4.8, Sonnet 5, GPT-6.1 Sol, GPT-6 Sol / Astra / Luna, GPT-5.6 Sol / Terra / Luna, GPT-5.4 Nano, Gemini 4 Argon, Gemini 3.8 Flash, Kimi K3, MAI-Code 1.1 Flash, and Auto.
+- **CLI setup hints updated**: Copilot now signs in with `copilot login`, and the Gemini hint warns that the CLI no longer accepts free individual accounts.
+
+### Removed
+
+- Models the providers have shut down or no longer offer: Claude Opus 4.1, Opus 4, and Sonnet 4; Gemini 3 Pro Preview, 2.5 Pro Preview, and the 2.0 models; Kimi K2.5 on Cursor; and Copilot's GPT-4.1, GPT-5, GPT-5.5, GPT-5.4, GPT-5.4 mini, GPT-5 mini, o4-mini, Gemini 2.5 Pro, Claude Opus 4.7, and the older Claude models. If one of these was selected, Skillnir switches to that backend's default model.
+
+### Fixed
+
+- The README scope list now includes the Firefox extension scope and shows the correct scope count.
+- **Generating with Claude Opus 5.5 no longer fails.** The bundled Claude SDK was too old for Opus 5.5, so every Claude generation (skills, AI docs, rules, wiki, docs optimize, tone pass) failed. The SDK is now updated to a version that supports it.
+- **Large skills no longer fail at the turn limit.** Skill generation now gets 50 turns instead of 20 (a full skill is 20+ files), and if it still runs out after writing SKILL.md, the files are kept, checked, and automatically repaired instead of being reported as a failure.
+- **Claude generation errors now show the real reason** instead of the confusing "Claude Code returned an error result: success" — for example, which model or version problem the API reported.
+- **GitHub Copilot model IDs corrected.** Copilot uses dotted versions (`claude-opus-4.8`), but the picker was sending dashed ones (`claude-opus-4-8`), so the Copilot backend's Claude choices, including its default, didn't match any real Copilot model.
+
+### Security
+
+- **All dependencies updated; no known vulnerabilities remain.** A scan of the locked dependencies found about 80 published vulnerabilities across 14 packages, including PyJWT, aiohttp, cryptography, the MCP library, the web UI's Socket.IO and form-upload libraries, and the dev tooling's virtualenv. Every package is now on a patched release (the Claude SDK, NiceGUI, cryptography, and the MCP library all move to their latest versions), and minimum versions are recorded so a future reinstall can't fall back to a vulnerable one.
+- Security and formatting checks updated to their latest versions (Bandit, Black, Prettier, autoflake).
+- **Research, news, events, security, package-vulnerability and benchmark pages can no longer run injected script.** These pages are built from AI summaries of arbitrary web pages and are served by the same local server as the web UI, so a malicious page the AI read could plant script that, once you opened the report, read your saved webhook URLs and Telegram token off the Settings page. Every value is now escaped, links only open `http`/`https` addresses, and the row-click handlers can't be broken out of.
+- **AI-supplied IDs can no longer write files outside the research stores.** An ID such as `../../.claude/agents/x` could previously place a file anywhere, for example a sub-agent or instructions that every later Claude Code session in the repo would load. IDs that aren't plain slugs are now dropped.
+- **Research pipelines run Claude with web search and fetch only.** They used to also get shell and file-write tools, which a prompt-injected web page could use to run commands or read API keys from the environment. They never needed them, since results come back as text.
+- **The web UI rejects requests for any host name other than `127.0.0.1` or `localhost`.** This blocks DNS-rebinding attacks, where a website re-points its own domain at your machine to read the unauthenticated UI and its stored credentials.
+- **`~/.skillnir/config.json` and `client_id` are created private from the start**, and the `~/.skillnir` folder is now owner-only. Before, both files were briefly readable by other local users when first created.
+- **Turning sound notifications on or off, or resetting the Claude config, no longer wipes a broken `~/.claude/settings.json`.** If the file isn't valid JSON, Skillnir now leaves it untouched and says so. Before, it replaced the file with just the hooks, silently dropping your permission rules and MCP servers.
+
 ## [1.9.0] - 2026-09-19
 
 ### Added

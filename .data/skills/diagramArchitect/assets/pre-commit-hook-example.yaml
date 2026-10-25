@@ -1,0 +1,11 @@
+# Add to .pre-commit-config.yaml — runs the diagram validator on diagram changes.
+# Adjust the script path to where the skill is installed in YOUR_PROJECT.
+repos:
+  - repo: local
+    hooks:
+      - id: validate-diagrams
+        name: validate diagrams (Mermaid / PlantUML)
+        entry: bash path/to/skills/diagramArchitect/scripts/validate-diagrams.sh .
+        language: system
+        pass_filenames: false
+        files: '\.(mmd|mermaid|puml|plantuml|iuml|md|mdx)$'

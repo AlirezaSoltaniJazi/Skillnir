@@ -37,8 +37,10 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import os
 import platform
 import sys
+import tempfile
 import uuid
 from getpass import getuser
 from pathlib import Path
@@ -53,6 +55,28 @@ _KEY_BYTES = 32
 CLIENT_ID_FILE = Path.home() / ".skillnir" / "client_id"
 
 
+def write_private_text(path: Path, text: str) -> None:
+    """Atomically write *text* to *path*, readable by the owner only.
+
+    ``mkstemp`` creates the temp file as 0o600, so the content is never on
+    disk with umask permissions (write-then-chmod leaves a window where
+    another local user can read it). The parent directory is kept at 0o700.
+    """
+    path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    try:
+        path.parent.chmod(0o700)
+    except OSError:
+        pass  # best-effort on Windows / foreign-owned dirs
+    fd, tmp_name = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            f.write(text)
+        os.replace(tmp_name, path)
+    except BaseException:
+        Path(tmp_name).unlink(missing_ok=True)
+        raise
+
+
 def _get_or_create_client_id() -> str:
     """Return the persistent per-install UUID, creating it on first call."""
     try:
@@ -65,13 +89,7 @@ def _get_or_create_client_id() -> str:
 
     cid = str(uuid.uuid4())
     try:
-        CLIENT_ID_FILE.parent.mkdir(parents=True, exist_ok=True)
-        CLIENT_ID_FILE.write_text(cid + "\n", encoding="utf-8")
-        # Restrict to owner read/write on POSIX; best-effort on Windows.
-        try:
-            CLIENT_ID_FILE.chmod(0o600)
-        except OSError:
-            pass
+        write_private_text(CLIENT_ID_FILE, cid + "\n")
     except OSError:
         # If we can't persist, fall back to an ephemeral per-process UUID.
         # Decryption will only work within this process — bad but non-fatal.

@@ -11,6 +11,8 @@ while their .md/.html files move to ``articles/<topic>/outdated/``.
 import html
 from pathlib import Path
 
+from skillnir.html_safety import attr, onclick_open
+
 STATUS_ACTIVE = "active"
 STATUS_OUTDATED = "outdated"
 
@@ -55,7 +57,7 @@ def build_outdated_section_html(outdated: list, topic_labels: dict[str, str]) ->
         reason = html.escape(getattr(a, "outdated_reason", ""))
         marked_at = html.escape(getattr(a, "outdated_at", ""))
         rows.append(f"""\
-        <tr onclick="window.open('articles/{a.topic}/{OUTDATED_DIR_NAME}/{a.id}.html','_blank')" style="cursor:pointer;opacity:0.75;" class="outdated-row">
+        <tr onclick="{onclick_open(f'articles/{a.topic}/{OUTDATED_DIR_NAME}/{a.id}.html')}" style="cursor:pointer;opacity:0.75;" class="outdated-row">
           <td style="padding:10px 16px;">
             <div style="font-weight:600;color:#94a3b8;">{title_escaped}</div>
             <div style="font-size:12px;color:#64748b;margin-top:4px;">{reason}</div>
@@ -63,7 +65,7 @@ def build_outdated_section_html(outdated: list, topic_labels: dict[str, str]) ->
           <td style="padding:10px 16px;white-space:nowrap;">
             <span style="background:#475569;color:#cbd5e1;padding:2px 10px;border-radius:12px;font-size:12px;">{topic_label}</span>
           </td>
-          <td style="padding:10px 16px;color:#64748b;font-family:monospace;font-size:13px;white-space:nowrap;">{a.published_date}</td>
+          <td style="padding:10px 16px;color:#64748b;font-family:monospace;font-size:13px;white-space:nowrap;">{attr(a.published_date)}</td>
           <td style="padding:10px 16px;color:#64748b;font-family:monospace;font-size:13px;white-space:nowrap;">{marked_at}</td>
         </tr>""")
     rows_html = "\n".join(rows)

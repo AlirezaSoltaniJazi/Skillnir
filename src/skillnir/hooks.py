@@ -37,6 +37,28 @@ def load_settings(settings_file: Path = SETTINGS_FILE) -> dict:
     return {}
 
 
+def _load_settings_for_update(settings_file: Path) -> dict:
+    """Load settings for a read-modify-write; raise ValueError if unparseable.
+
+    Unlike :func:`load_settings`, a broken file must not read as ``{}`` here:
+    writing that back would silently drop the user's permission rules, MCP
+    servers and every other setting.
+    """
+    if not settings_file.exists():
+        return {}
+    data = json.loads(settings_file.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError("top-level JSON value is not an object")
+    return data
+
+
+def _unreadable_settings_error(settings_file: Path, exc: Exception) -> str:
+    return (
+        f"Not changing {settings_file}: it is not valid JSON ({exc}). "
+        "Fix or remove the file, then try again."
+    )
+
+
 def save_settings(data: dict, settings_file: Path = SETTINGS_FILE) -> None:
     """Write Claude settings to JSON file."""
     settings_file.parent.mkdir(parents=True, exist_ok=True)
@@ -91,18 +113,46 @@ def is_sound_enabled(settings_file: Path = SETTINGS_FILE) -> bool:
     return all(has_sound_hook(settings, event) for event in HOOK_EVENTS)
 
 
-def enable_sound_hooks(settings_file: Path = SETTINGS_FILE) -> None:
-    """Enable sound hooks for Stop and PermissionRequest events."""
-    settings = load_settings(settings_file)
+def enable_sound_hooks(settings_file: Path = SETTINGS_FILE) -> str | None:
+    """Enable sound hooks for Stop and PermissionRequest events.
+
+    Returns an error message, without writing, if the settings file is broken.
+    """
+    try:
+        settings = _load_settings_for_update(settings_file)
+    except (OSError, ValueError) as exc:
+        return _unreadable_settings_error(settings_file, exc)
     hooks = settings.setdefault("hooks", {})
     for event in HOOK_EVENTS:
         if not has_sound_hook(settings, event):
             hooks.setdefault(event, []).append(HOOK_ENTRY)
     save_settings(settings, settings_file)
+    return None
 
 
-def disable_sound_hooks(settings_file: Path = SETTINGS_FILE) -> None:
-    """Disable sound hooks by removing them from settings."""
-    settings = load_settings(settings_file)
+def disable_sound_hooks(settings_file: Path = SETTINGS_FILE) -> str | None:
+    """Disable sound hooks by removing them from settings.
+
+    Returns an error message, without writing, if the settings file is broken.
+    """
+    try:
+        settings = _load_settings_for_update(settings_file)
+    except (OSError, ValueError) as exc:
+        return _unreadable_settings_error(settings_file, exc)
     settings = remove_sound_hooks(settings)
     save_settings(settings, settings_file)
+    return None
+
+
+def remove_all_hooks(settings_file: Path = SETTINGS_FILE) -> str | None:
+    """Remove every hook (not only skillnir's) from Claude settings.
+
+    Returns an error message, without writing, if the settings file is broken.
+    """
+    try:
+        settings = _load_settings_for_update(settings_file)
+    except (OSError, ValueError) as exc:
+        return _unreadable_settings_error(settings_file, exc)
+    settings.pop("hooks", None)
+    save_settings(settings, settings_file)
+    return None

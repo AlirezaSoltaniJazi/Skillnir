@@ -9,12 +9,12 @@ reaches the picker.
 The models-overview doc carries the full current table (ID, alias, tier, context, pricing,
 retirement date) for every platform.
 
-| What                      | URL                                                                     |
-| ------------------------- | ----------------------------------------------------------------------- |
-| Models overview (primary) | `https://platform.claude.com/docs/en/about-claude/models/overview.md`   |
-| Model deprecations        | `https://platform.claude.com/docs/en/about-claude/model-deprecations`   |
+| What                      | URL                                                                              |
+| ------------------------- | -------------------------------------------------------------------------------- |
+| Models overview (primary) | `https://platform.claude.com/docs/en/about-claude/models/overview.md`            |
+| Model deprecations        | `https://platform.claude.com/docs/en/about-claude/model-deprecations`            |
 | Model IDs & versioning    | `https://platform.claude.com/docs/en/about-claude/models/model-ids-and-versions` |
-| Pricing                   | `https://platform.claude.com/docs/en/about-claude/pricing`              |
+| Pricing                   | `https://platform.claude.com/docs/en/about-claude/pricing`                       |
 
 Fetch it with WebFetch and ask for the exact ID strings:
 
@@ -31,7 +31,7 @@ Read from the table:
 
 - **Claude API ID** — what goes in `ModelInfo(id=...)`
 - **Claude API alias** — for pre-4.6 models this is a pointer to a dated ID; from 4.6 on the
-  dateless ID *is* its own pinned snapshot and the alias row just repeats it
+  dateless ID _is_ its own pinned snapshot and the alias row just repeats it
 - **Legacy models (still available)** — keep these listed with versioned aliases; do not delete
 
 If a `claude-agent-sdk` / `claude-api` reference skill is available in the session, it carries a
@@ -72,12 +72,18 @@ gemini --help | grep -i model     # shows -m/--model only
 
 ## Copilot
 
-Model selection lives inside the TUI — there is no non-interactive list:
+`copilot help config` prints the exact `model` IDs this CLI version accepts — no login
+needed. IDs use **dotted** versions (`claude-opus-4.8`, not `claude-opus-4-8`). If the CLI
+isn't installed, run it through npx without installing:
 
 ```bash
-copilot            # then type: /model
-copilot --version
+npx -y @github/copilot@latest help config   # look for the `model` list
+npx -y @github/copilot@latest --version
+copilot                                     # interactive alternative: type /model
 ```
+
+The GitHub docs page (`docs.github.com/en/copilot/reference/ai-models/supported-models`)
+lists display names only, and can include models the CLI doesn't offer yet — the CLI list wins.
 
 ## Recording the outcome
 

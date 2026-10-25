@@ -31,7 +31,9 @@ _CLI_SETUP_INFO: tuple[dict, ...] = (
         'verify': 'gemini --version',
         'notes': (
             'Requires Node.js 18+ and a Google AI account. '
-            'Sign in via the in-app prompt the first time you run "gemini".'
+            'Sign in via the in-app prompt the first time you run "gemini". '
+            'Free "Gemini Code Assist for individuals" accounts are no longer '
+            'accepted by the CLI — use an API key or a paid/Workspace account.'
         ),
     },
     {
@@ -39,11 +41,11 @@ _CLI_SETUP_INFO: tuple[dict, ...] = (
         'icon': 'hub',
         'install': 'npm install -g @github/copilot',
         'install_alt': None,
-        'login': 'copilot  (then run /login inside the TUI)',
+        'login': 'copilot login',
         'verify': 'copilot --version',
         'notes': (
             'Requires Node.js 22+ and a GitHub account with Copilot access. '
-            'Sign in by running "copilot" and using the /login command.'
+            'Sign in with "copilot login" (or /login inside the TUI).'
         ),
     },
 )

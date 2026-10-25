@@ -62,20 +62,20 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         models=(
             ModelInfo("claude-fable-5-1", "fable", "Claude Fable 5.1", tier=1),
             ModelInfo(
-                "claude-opus-5", "opus", "Claude Opus 5", is_default=True, tier=1
+                "claude-opus-5-5", "opus", "Claude Opus 5.5", is_default=True, tier=1
             ),
+            ModelInfo("claude-opus-5", "opus-5", "Claude Opus 5", tier=1),
             ModelInfo("claude-opus-4-8", "opus-4.8", "Claude Opus 4.8", tier=1),
             ModelInfo("claude-opus-4-7", "opus-4.7", "Claude Opus 4.7", tier=1),
             ModelInfo("claude-opus-4-6", "opus-4.6", "Claude Opus 4.6", tier=1),
-            ModelInfo("claude-sonnet-5", "sonnet", "Claude Sonnet 5", tier=2),
+            ModelInfo("claude-sonnet-5-5", "sonnet", "Claude Sonnet 5.5", tier=2),
+            ModelInfo("claude-sonnet-5", "sonnet-5", "Claude Sonnet 5", tier=2),
             ModelInfo("claude-sonnet-4-6", "sonnet-4.6", "Claude Sonnet 4.6", tier=2),
-            ModelInfo("claude-haiku-4-5", "haiku", "Claude Haiku 4.5", tier=3),
+            ModelInfo("claude-haiku-5-5", "haiku", "Claude Haiku 5.5", tier=3),
+            ModelInfo("claude-haiku-4-5", "haiku-4.5", "Claude Haiku 4.5", tier=3),
             ModelInfo("claude-fable-5", "fable-5", "Claude Fable 5", tier=1),
             ModelInfo("claude-opus-4-5", "opus-4.5", "Claude Opus 4.5", tier=1),
-            ModelInfo("claude-opus-4-1", "opus-4.1", "Claude Opus 4.1", tier=1),
-            ModelInfo("claude-opus-4-0", "opus-4.0", "Claude Opus 4", tier=1),
             ModelInfo("claude-sonnet-4-5", "sonnet-4.5", "Claude Sonnet 4.5", tier=2),
-            ModelInfo("claude-sonnet-4-0", "sonnet-4.0", "Claude Sonnet 4", tier=2),
         ),
         default_model="opus",
         usage_command=None,
@@ -96,7 +96,29 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
             # Tier 2 — balanced (default)
             ModelInfo("auto", "auto", "Auto (recommended)", is_default=True, tier=2),
             ModelInfo("composer-2.5", "composer-2.5", "Composer 2.5", tier=2),
-            ModelInfo("kimi-k2.5", "kimi-k2.5", "Kimi K2.5", tier=2),
+            ModelInfo(
+                "claude-sonnet-5-5-high",
+                "claude-sonnet-5-5-high",
+                "Claude Sonnet 5.5",
+                tier=2,
+            ),
+            ModelInfo("grok-4.7-high", "grok-4.7-high", "Grok 4.7", tier=2),
+            ModelInfo(
+                "claude-sonnet-5-high",
+                "claude-sonnet-5-high",
+                "Claude Sonnet 5",
+                tier=2,
+            ),
+            ModelInfo(
+                "claude-sonnet-5-thinking-high",
+                "claude-sonnet-5-thinking-high",
+                "Claude Sonnet 5 (thinking)",
+                tier=2,
+            ),
+            ModelInfo(
+                "gpt-5.6-terra-medium", "gpt-5.6-terra-medium", "GPT-5.6 Terra", tier=2
+            ),
+            ModelInfo("kimi-k3-max", "kimi-k3-max", "Kimi K3", tier=2),
             ModelInfo(
                 "claude-4.6-sonnet-medium",
                 "claude-4.6-sonnet-medium",
@@ -115,6 +137,33 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
                 "claude-4.5-sonnet", "claude-4.5-sonnet", "Claude 4.5 Sonnet", tier=2
             ),
             # Tier 1 — powerful
+            ModelInfo(
+                "claude-fable-5-1-high",
+                "claude-fable-5-1-high",
+                "Claude Fable 5.1 (no ZDR)",
+                tier=1,
+            ),
+            ModelInfo(
+                "claude-opus-5-5-medium",
+                "claude-opus-5-5-medium",
+                "Claude Opus 5.5",
+                tier=1,
+            ),
+            ModelInfo(
+                "claude-opus-5-5-max",
+                "claude-opus-5-5-max",
+                "Claude Opus 5.5 Max",
+                tier=1,
+            ),
+            ModelInfo(
+                "claude-opus-5-high", "claude-opus-5-high", "Claude Opus 5", tier=1
+            ),
+            ModelInfo(
+                "gpt-5.6-sol-medium", "gpt-5.6-sol-medium", "GPT-5.6 Sol", tier=1
+            ),
+            ModelInfo(
+                "gpt-5.6-sol-high", "gpt-5.6-sol-high", "GPT-5.6 Sol High", tier=1
+            ),
             ModelInfo(
                 "claude-opus-4-7-max",
                 "claude-opus-4-7-max",
@@ -144,10 +193,28 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
                 "gpt-5.5-extra-high", "gpt-5.5-extra-high", "GPT-5.5 Extra High", tier=1
             ),
             ModelInfo("gpt-5.4-xhigh", "gpt-5.4-xhigh", "GPT-5.4 XHigh", tier=1),
+            ModelInfo(
+                "gemini-4-argon-high", "gemini-4-argon-high", "Gemini 4 Argon", tier=1
+            ),
             ModelInfo("gemini-3.1-pro", "gemini-3.1-pro", "Gemini 3.1 Pro", tier=1),
             # Tier 3 — fast / cheap
             ModelInfo(
                 "composer-2.5-fast", "composer-2.5-fast", "Composer 2.5 Fast", tier=3
+            ),
+            ModelInfo(
+                "claude-haiku-5-5-thinking-medium",
+                "claude-haiku-5-5-thinking-medium",
+                "Claude Haiku 5.5",
+                tier=3,
+            ),
+            ModelInfo(
+                "gpt-5.6-luna-medium", "gpt-5.6-luna-medium", "GPT-5.6 Luna", tier=3
+            ),
+            ModelInfo(
+                "gemini-3.8-flash-medium",
+                "gemini-3.8-flash-medium",
+                "Gemini 3.8 Flash",
+                tier=3,
             ),
             ModelInfo(
                 "gpt-5.4-mini-medium", "gpt-5.4-mini-medium", "GPT-5.4 Mini", tier=3
@@ -172,32 +239,38 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         cli_command="gemini",
         supports_stream_json=True,
         models=(
+            # IDs per Google's Gemini API model docs (2026-10-25). The gemini CLI
+            # rejects free-tier individual accounts (IneligibleTierError), so they
+            # could not be exercised with `gemini -m` on the build machine.
             ModelInfo("auto", "auto", "Auto (recommended)", is_default=True, tier=2),
-            ModelInfo("gemini-2.5-pro", "pro", "Gemini 2.5 Pro", tier=1),
-            ModelInfo("gemini-2.5-flash", "flash", "Gemini 2.5 Flash", tier=2),
+            ModelInfo("gemini-4-argon", "argon", "Gemini 4 Argon", tier=1),
             ModelInfo(
-                "gemini-2.5-flash-lite", "flash-lite", "Gemini 2.5 Flash Lite", tier=3
+                "gemini-3.1-pro-preview", "pro", "Gemini 3.1 Pro Preview", tier=1
             ),
-            # Gemini 3.5 Flash GA 2026-05-29. The gemini CLI is region-locked on the
-            # build machine; ID per Google AI docs — verify with `gemini -m` when available.
+            ModelInfo("gemini-3.8-flash", "flash", "Gemini 3.8 Flash", tier=2),
+            ModelInfo("gemini-3.7-flash", "3.7-flash", "Gemini 3.7 Flash", tier=2),
+            ModelInfo("gemini-3.6-flash", "3.6-flash", "Gemini 3.6 Flash", tier=2),
             ModelInfo("gemini-3.5-flash", "3.5-flash", "Gemini 3.5 Flash", tier=2),
-            ModelInfo("gemini-3-pro-preview", "3-pro", "Gemini 3 Pro Preview", tier=1),
             ModelInfo(
                 "gemini-3-flash-preview", "3-flash", "Gemini 3 Flash Preview", tier=2
             ),
-            ModelInfo("gemini-2.0-pro", "2.0-pro", "Gemini 2.0 Pro", tier=1),
-            ModelInfo("gemini-2.0-flash", "2.0-flash", "Gemini 2.0 Flash", tier=3),
             ModelInfo(
-                "gemini-2.0-flash-lite",
-                "2.0-flash-lite",
-                "Gemini 2.0 Flash Lite",
-                tier=3,
+                "gemini-3.5-flash-lite", "flash-lite", "Gemini 3.5 Flash-Lite", tier=3
             ),
             ModelInfo(
-                "gemini-2.5-pro-preview",
-                "pro-preview",
-                "Gemini 2.5 Pro Preview",
-                tier=1,
+                "gemini-3.1-flash-lite",
+                "3.1-flash-lite",
+                "Gemini 3.1 Flash-Lite",
+                tier=3,
+            ),
+            # Gemini 2.5 is "Limited Access" upstream — kept for pinned configs.
+            ModelInfo("gemini-2.5-pro", "2.5-pro", "Gemini 2.5 Pro", tier=1),
+            ModelInfo("gemini-2.5-flash", "2.5-flash", "Gemini 2.5 Flash", tier=2),
+            ModelInfo(
+                "gemini-2.5-flash-lite",
+                "2.5-flash-lite",
+                "Gemini 2.5 Flash-Lite",
+                tier=3,
             ),
         ),
         default_model="auto",
@@ -217,36 +290,61 @@ BACKENDS: dict[AIBackend, BackendInfo] = {
         cli_command="copilot",
         supports_stream_json=False,
         models=(
-            # Names match the identifiers shown by Copilot CLI's /model picker.
-            # TODO: copilot CLI is not installed on the build machine. The newer
-            # entries (claude-sonnet-4-6, gpt-5.5, claude-opus-4-8) are from Copilot
-            # release notes (2026-05); verify their exact IDs against `/model` before
-            # promoting any of them to default_model.
+            # IDs match the `model` values listed by `copilot help config`
+            # (Copilot CLI 1.0.88, 2026-09-28) — dotted versions, not dashes.
+            # Models added after 1.0.88 (Opus/Sonnet/Haiku 5.5, GPT-6.x, Gemini 4
+            # Argon) follow the same scheme; GPT-5.5/5.4/5.4 mini/5 mini and
+            # Opus 4.7 were deprecated by GitHub in October 2026.
             # Tier 2 — balanced (default)
             ModelInfo(
-                "claude-sonnet-4-5",
-                "claude-sonnet-4-5",
-                "Claude Sonnet 4.5",
+                "claude-sonnet-5.5",
+                "claude-sonnet-5.5",
+                "Claude Sonnet 5.5",
                 is_default=True,
                 tier=2,
             ),
+            ModelInfo("auto", "auto", "Auto", tier=2),
+            ModelInfo("claude-sonnet-5", "claude-sonnet-5", "Claude Sonnet 5", tier=2),
             ModelInfo(
-                "claude-sonnet-4-6", "claude-sonnet-4-6", "Claude Sonnet 4.6", tier=2
+                "claude-sonnet-4.6", "claude-sonnet-4.6", "Claude Sonnet 4.6", tier=2
             ),
-            ModelInfo("claude-sonnet-4", "claude-sonnet-4", "Claude Sonnet 4", tier=2),
-            ModelInfo("gpt-5.5", "gpt-5.5", "GPT-5.5", tier=2),
-            ModelInfo("gpt-5", "gpt-5", "GPT-5", tier=2),
-            ModelInfo("gpt-4.1", "gpt-4.1", "GPT-4.1", tier=2),
+            ModelInfo("gpt-5.6-terra", "gpt-5.6-terra", "GPT-5.6 Terra", tier=2),
+            ModelInfo("gpt-5.3-codex", "gpt-5.3-codex", "GPT-5.3 Codex", tier=2),
+            ModelInfo(
+                "gemini-3.8-flash", "gemini-3.8-flash", "Gemini 3.8 Flash", tier=2
+            ),
+            ModelInfo("kimi-k3", "kimi-k3", "Kimi K3", tier=2),
             # Tier 1 — powerful
-            ModelInfo("claude-opus-4-8", "claude-opus-4-8", "Claude Opus 4.8", tier=1),
-            ModelInfo("claude-opus-4-1", "claude-opus-4-1", "Claude Opus 4.1", tier=1),
-            ModelInfo("claude-opus-4", "claude-opus-4", "Claude Opus 4", tier=1),
-            ModelInfo("gemini-2.5-pro", "gemini-2.5-pro", "Gemini 2.5 Pro", tier=1),
+            ModelInfo(
+                "claude-fable-5.1", "claude-fable-5.1", "Claude Fable 5.1", tier=1
+            ),
+            ModelInfo("claude-opus-5.5", "claude-opus-5.5", "Claude Opus 5.5", tier=1),
+            ModelInfo("claude-fable-5", "claude-fable-5", "Claude Fable 5", tier=1),
+            ModelInfo("claude-opus-5", "claude-opus-5", "Claude Opus 5", tier=1),
+            ModelInfo("claude-opus-4.8", "claude-opus-4.8", "Claude Opus 4.8", tier=1),
+            ModelInfo("gpt-6.1-sol", "gpt-6.1-sol", "GPT-6.1 Sol", tier=1),
+            ModelInfo("gpt-6-sol", "gpt-6-sol", "GPT-6 Sol", tier=1),
+            ModelInfo("gpt-6-astra", "gpt-6-astra", "GPT-6 Astra", tier=1),
+            ModelInfo("gemini-4-argon", "gemini-4-argon", "Gemini 4 Argon", tier=1),
+            ModelInfo("gpt-5.6-sol", "gpt-5.6-sol", "GPT-5.6 Sol", tier=1),
             # Tier 3 — fast / cheap
-            ModelInfo("gpt-5-mini", "gpt-5-mini", "GPT-5 Mini", tier=3),
-            ModelInfo("o4-mini", "o4-mini", "o4-mini", tier=3),
+            ModelInfo(
+                "claude-haiku-5.5", "claude-haiku-5.5", "Claude Haiku 5.5", tier=3
+            ),
+            ModelInfo(
+                "claude-haiku-4.5", "claude-haiku-4.5", "Claude Haiku 4.5", tier=3
+            ),
+            ModelInfo("gpt-6-luna", "gpt-6-luna", "GPT-6 Luna", tier=3),
+            ModelInfo("gpt-5.6-luna", "gpt-5.6-luna", "GPT-5.6 Luna", tier=3),
+            ModelInfo("gpt-5.4-nano", "gpt-5.4-nano", "GPT-5.4 Nano", tier=3),
+            ModelInfo(
+                "mai-code-1.1-flash",
+                "mai-code-1.1-flash",
+                "MAI-Code 1.1 Flash",
+                tier=3,
+            ),
         ),
-        default_model="claude-sonnet-4-5",
+        default_model="claude-sonnet-5.5",
         usage_command=None,
         usage_url="https://github.com/settings/billing",
         version_command=("copilot", "--version"),
@@ -635,20 +733,12 @@ def load_config() -> AppConfig:
 
 def save_config(config: AppConfig) -> None:
     """Persist config to ~/.skillnir/config.json (owner-read/write only)."""
-    CONFIG_DIR.mkdir(parents=True, exist_ok=True)
-    CONFIG_FILE.write_text(
-        json.dumps(config.to_dict(), indent=2) + "\n",
-        encoding="utf-8",
-    )
-    # Restrict to owner read/write on POSIX; best-effort on Windows.
-    # The file contains ``gchat_webhook_cipher``, which — together with
-    # the same-user-readable ``client_id`` and machine fingerprint — is
-    # enough to recover the webhook URL. Keep its permissions in sync
-    # with crypto.CLIENT_ID_FILE (also 0o600).
-    try:
-        CONFIG_FILE.chmod(0o600)
-    except OSError:
-        pass
+    from skillnir.crypto import write_private_text
+
+    # The file holds the webhook ciphers, which — together with the
+    # ``client_id`` and machine fingerprint — are enough to recover the
+    # credentials, so it is created 0o600 like crypto.CLIENT_ID_FILE.
+    write_private_text(CONFIG_FILE, json.dumps(config.to_dict(), indent=2) + "\n")
 
 
 # ---------------------------------------------------------------------------
@@ -768,6 +858,21 @@ def build_claude_sdk_kwargs(
     return kwargs
 
 
+def sdk_result_error(message: object) -> str | None:
+    """Return the readable error carried by an SDK ``ResultMessage``, if any.
+
+    On an API failure the CLI reports ``is_error=True`` with ``subtype="success"``
+    and puts the real reason in ``result``; the exception the SDK raises
+    afterwards only repeats the subtype ("Claude Code returned an error
+    result: success"), so callers should prefer this text.
+    """
+    if not getattr(message, 'is_error', False):
+        return None
+    errors = getattr(message, 'errors', None) or []
+    text = getattr(message, 'result', None) or "; ".join(errors)
+    return text or str(getattr(message, 'subtype', '')) or None
+
+
 def resolve_model_id(backend: AIBackend, alias_or_id: str) -> str:
     """Resolve a model alias to its full ID. Returns as-is if not an alias."""
     info = BACKENDS[backend]
@@ -823,8 +928,10 @@ def maybe_compress_prompt(prompt: str, config: "AppConfig | None" = None) -> str
 # Claude tool grants. Named here so pipelines declare intent instead of
 # rewriting the built argv, and so the flag name lives in exactly one place.
 DEFAULT_CLAUDE_TOOLS = "Read,Glob,Grep,Bash,Edit,Write"
-RESEARCH_CLAUDE_TOOLS = "Read,Glob,Grep,Bash,Write,WebFetch,WebSearch"
 WEB_ONLY_CLAUDE_TOOLS = "WebFetch,WebSearch"
+# Research pipelines read untrusted web pages and return their findings on
+# stdout, so a prompt-injected page must not reach a shell or the filesystem.
+RESEARCH_CLAUDE_TOOLS = WEB_ONLY_CLAUDE_TOOLS
 NO_CLAUDE_TOOLS = ""  # pure classification — no tools needed or wanted
 
 

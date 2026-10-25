@@ -1,0 +1,6 @@
+{
+  "theme": "neutral",
+  "securityLevel": "strict",
+  "flowchart": { "htmlLabels": false, "curve": "basis" },
+  "sequence": { "showSequenceNumbers": true, "mirrorActors": false }
+}

@@ -14,6 +14,7 @@ from skillnir.skill_generator import (
     _check_skill_outputs,
     _find_reference_skill,
     generate_skill,
+    generate_skill_sdk,
     load_skill_prompt,
 )
 
@@ -447,6 +448,144 @@ class TestFirefoxExtensionScope:
     def test_in_engineering_roles_category(self):
         engineering = dict(SCOPE_CATEGORIES).get("Engineering Roles", ())
         assert "firefox-extension" in engineering
+
+
+class TestUmlScope:
+    def test_in_skill_scopes(self):
+        assert "uml" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "uml" in SCOPE_LABELS
+        assert "UML" in SCOPE_LABELS["uml"]
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("uml", "v1")
+        assert "Mermaid" in text
+        assert "PlantUML" in text
+        assert "stateDiagram-v2" in text
+        assert "sequenceDiagram" in text
+        assert "pyreverse" in text
+        assert "ISTQB" in text
+        assert "accTitle" in text
+
+    def test_in_architecture_and_platform_category(self):
+        architecture = dict(SCOPE_CATEGORIES).get("Architecture & Platform", ())
+        assert "uml" in architecture
+
+    def test_reference_skill_matches_diagram_keyword(self, tmp_path: Path):
+        skill_dir = tmp_path / "mermaidDiagrams"
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "SKILL.md").write_text("---\nname: ref\n---\n")
+
+        with patch(
+            "skillnir.skill_generator.get_source_skills_dir", return_value=tmp_path
+        ):
+            result, same_scope = _find_reference_skill("uml")
+            assert result == skill_dir
+            assert same_scope is True
+
+
+class TestTranslationReviewScope:
+    def test_in_skill_scopes(self):
+        assert "translation-review" in SKILL_SCOPES
+
+    def test_has_label(self):
+        assert "translation-review" in SCOPE_LABELS
+        assert "Translation Review" in SCOPE_LABELS["translation-review"]
+
+    def test_prompt_template_loads(self):
+        text = load_skill_prompt("translation-review", "v1")
+        assert "nplurals" in text
+        assert "CLDR" in text
+        assert "returnEmptyString" in text
+        assert "check_catalogs.py" in text
+        assert "locale_facts.py" in text
+        assert "language-reviewer" in text
+        assert "translator" in text
+
+    def test_in_quality_and_testing_category(self):
+        quality = dict(SCOPE_CATEGORIES).get("Quality & Testing", ())
+        assert "translation-review" in quality
+
+    def test_reference_skill_matches_review_keyword(self, tmp_path: Path):
+        skill_dir = tmp_path / "localizationReview"
+        skill_dir.mkdir(parents=True)
+        (skill_dir / "SKILL.md").write_text("---\nname: ref\n---\n")
+
+        with patch(
+            "skillnir.skill_generator.get_source_skills_dir", return_value=tmp_path
+        ):
+            result, same_scope = _find_reference_skill("translation-review")
+            assert result == skill_dir
+            assert same_scope is True
+
+
+class TestGenerateSkillSdkErrors:
+    async def test_api_error_text_replaces_generic_sdk_message(
+        self, tmp_path: Path, monkeypatch
+    ):
+        """The SDK's exception only says 'error result: success' — surface the real text."""
+        from claude_agent_sdk import ResultMessage
+
+        async def fake_query(*, prompt, options):  # noqa: ARG001
+            yield ResultMessage(
+                subtype="success",
+                duration_ms=0,
+                duration_api_ms=0,
+                is_error=True,
+                num_turns=1,
+                session_id="test",
+                result="API Error: 400 Claude Code 2.1.150 does not support this model",
+            )
+            raise RuntimeError("Claude Code returned an error result: success")
+
+        monkeypatch.setattr("claude_agent_sdk.query", fake_query)
+        result = await generate_skill_sdk(tmp_path, "demo", "uml", "SYSTEM PROMPT")
+        assert result.success is False
+        assert "does not support this model" in (result.error or "")
+
+
+class TestGenerateSkillSdkMaxTurns:
+    @staticmethod
+    def _turn_limited_query(write_skill_md: Path | None = None):
+        from claude_agent_sdk import ResultMessage
+
+        async def fake_query(*, prompt, options):  # noqa: ARG001
+            if write_skill_md is not None:
+                write_skill_md.parent.mkdir(parents=True, exist_ok=True)
+                write_skill_md.write_text("---\nname: demo\n---\n# Demo\n")
+            yield ResultMessage(
+                subtype="error_max_turns",
+                duration_ms=0,
+                duration_api_ms=0,
+                is_error=True,
+                num_turns=50,
+                session_id="test",
+            )
+            raise RuntimeError("Claude Code returned an error result: error_max_turns")
+
+        return fake_query
+
+    async def test_limit_before_skill_md_reports_the_limit(
+        self, tmp_path: Path, monkeypatch
+    ):
+        monkeypatch.setattr("claude_agent_sdk.query", self._turn_limited_query())
+        result = await generate_skill_sdk(tmp_path, "demo", "uml", "SYSTEM PROMPT")
+        assert result.success is False
+        assert "turn limit" in (result.error or "")
+
+    async def test_partial_skill_is_kept_and_routed_to_repair(
+        self, tmp_path: Path, monkeypatch
+    ):
+        skill_md = tmp_path / ".data" / "skills" / "demo" / "SKILL.md"
+        monkeypatch.setattr(
+            "claude_agent_sdk.query", self._turn_limited_query(skill_md)
+        )
+        result = await generate_skill_sdk(tmp_path, "demo", "uml", "SYSTEM PROMPT")
+        # Validated like a normal run — violations feed generate_skill's repair pass.
+        assert result.target_skill_path == skill_md
+        assert result.violations
+        assert any("turn limit" in w for w in result.warnings)
 
 
 class TestScopeCategories:

@@ -15,6 +15,7 @@ from skillnir.backends import (
     load_config,
     maybe_compress_prompt,
     run_streaming_command,
+    sdk_result_error,
 )
 from skillnir.generator import (
     GenerationProgress,
@@ -47,6 +48,9 @@ def to_camel_case(name: str) -> str:
         return name
     return result
 
+
+# A full skill is ~20-25 files plus the project scan; 20 turns ran out mid-write.
+SKILL_MAX_TURNS = 50
 
 SKILL_SCOPES: tuple[str, ...] = (
     "backend",
@@ -87,6 +91,8 @@ SKILL_SCOPES: tuple[str, ...] = (
     "translator",
     "android-google",
     "automation-review",
+    "uml",
+    "translation-review",
 )
 
 SCOPE_LABELS: dict[str, str] = {
@@ -128,6 +134,8 @@ SCOPE_LABELS: dict[str, str] = {
     "translator": "Translator (i18n/l10n/ICU plurals/RTL/terminology management/CAT tools)",
     "android-google": "Android (Google Official Skills — Compose/Nav3/edge-to-edge/AGP9/Camera/Journeys/Glimmer XR)",
     "automation-review": "Automation Review (code review / test-plan & test-case review across languages & frameworks, self-extending, HTML report)",
+    "uml": "UML & Diagrams (activity/sequence/state/class/use-case, Mermaid/PlantUML, diagrams-as-code, test derivation)",
+    "translation-review": "Translation Review (localization PR review — placeholders/plurals/CLDR locale formats/loader fallback/RTL, 15+ locales)",
 }
 
 
@@ -165,6 +173,7 @@ SCOPE_CATEGORIES: tuple[tuple[str, tuple[str, ...]], ...] = (
             "appium",
             "accessibility",
             "automation-review",
+            "translation-review",
         ),
     ),
     (
@@ -179,6 +188,7 @@ SCOPE_CATEGORIES: tuple[tuple[str, tuple[str, ...]], ...] = (
             "observability",
             "security",
             "general-system",
+            "uml",
         ),
     ),
     ("Design", ("ui-ux-designer",)),
@@ -435,6 +445,24 @@ def _find_reference_skill(scope: str) -> tuple[Path | None, bool]:
             "test-automation",
             "qa",
         ),
+        "uml": (
+            "uml",
+            "diagram",
+            "diagrams",
+            "mermaid",
+            "plantuml",
+            "flowchart",
+            "modeling",
+        ),
+        "translation-review": (
+            "translation-review",
+            "translation-reviewer",
+            "localization-review",
+            "localization-qa",
+            "l10n-review",
+            "i18n-review",
+            "lokalise-review",
+        ),
     }
 
     keywords = scope_keywords.get(scope, ())
@@ -585,7 +613,7 @@ async def generate_skill_sdk(
 
     options = ClaudeAgentOptions(
         system_prompt=maybe_compress_prompt(prompt_text),
-        max_turns=20,
+        max_turns=SKILL_MAX_TURNS,
         allowed_tools=["Read", "Glob", "Grep", "Bash", "Edit", "Write"],
         permission_mode="acceptEdits",
         cwd=str(target_project),
@@ -599,6 +627,11 @@ async def generate_skill_sdk(
         pure=pure,
         extra_instructions=extra_instructions,
     )
+
+    result_error: str | None = None
+    # The ResultMessage (subtype "error_max_turns") arrives just before the
+    # CLI's non-zero exit re-raises, so the flag survives into the except.
+    hit_max_turns = False
 
     try:
         async for message in query(prompt=user_prompt, options=options):
@@ -620,14 +653,21 @@ async def generate_skill_sdk(
                         message.usage,
                         getattr(message, 'total_cost_usd', None),
                     )
+                result_error = sdk_result_error(message) or result_error
+                if message.subtype == 'error_max_turns':
+                    hit_max_turns = True
     except Exception as e:
+        if hit_max_turns or _is_max_turns_error(str(e)):
+            return _salvage_max_turns(target_project, skill_name, AIBackend.CLAUDE)
         return SkillGenerationResult(
             success=False,
             skill_name=skill_name,
-            error=str(e),
+            error=result_error or str(e),
             backend_used=AIBackend.CLAUDE,
         )
 
+    if hit_max_turns:
+        return _salvage_max_turns(target_project, skill_name, AIBackend.CLAUDE)
     return _check_skill_outputs(target_project, skill_name, AIBackend.CLAUDE)
 
 
@@ -655,7 +695,9 @@ def generate_skill_subprocess(
         extra_instructions=extra_instructions,
     )
     full_prompt = prompt_text + "\n\n---\n\n" + user_prompt
-    cmd = build_subprocess_command(backend, full_prompt, model=model, max_turns=20)
+    cmd = build_subprocess_command(
+        backend, full_prompt, model=model, max_turns=SKILL_MAX_TURNS
+    )
 
     phase_label = (
         f"Generating generic ({scope}) skill..."
@@ -683,6 +725,8 @@ def generate_skill_subprocess(
             error=f"{info.name} timed out after 10 minutes.",
             backend_used=backend,
         )
+    if run.max_turns_hit or (run.returncode != 0 and _is_max_turns_error(run.stderr)):
+        return _salvage_max_turns(target_project, skill_name, backend)
     if run.returncode != 0:
         return SkillGenerationResult(
             success=False,
@@ -693,6 +737,39 @@ def generate_skill_subprocess(
 
     _emit(on_progress, "phase", "Verifying outputs...")
     return _check_skill_outputs(target_project, skill_name, backend)
+
+
+def _is_max_turns_error(text: str) -> bool:
+    """True when a backend error string reports the turn limit was reached."""
+    lowered = text.lower()
+    return "maximum number of turns" in lowered or "error_max_turns" in lowered
+
+
+def _salvage_max_turns(
+    target_project: Path, skill_name: str, backend: AIBackend
+) -> SkillGenerationResult:
+    """Keep what a turn-limited run wrote instead of discarding it.
+
+    If SKILL.md exists the normal contract check runs, so violations still
+    reach generate_skill's repair pass; a clean skill succeeds with a warning.
+    """
+    skill_md = target_project / ".data" / "skills" / skill_name / "SKILL.md"
+    if not skill_md.exists():
+        return SkillGenerationResult(
+            success=False,
+            skill_name=skill_name,
+            error=(
+                f"The AI hit the {SKILL_MAX_TURNS}-turn limit before writing "
+                f"SKILL.md at {skill_md}."
+            ),
+            backend_used=backend,
+        )
+    result = _check_skill_outputs(target_project, skill_name, backend)
+    result.warnings.append(
+        f"Generation stopped at the {SKILL_MAX_TURNS}-turn limit — "
+        "review the generated files for anything left unfinished."
+    )
+    return result
 
 
 def _check_skill_outputs(

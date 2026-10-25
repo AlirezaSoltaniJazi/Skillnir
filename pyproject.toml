@@ -6,10 +6,11 @@ requires-python = ">=3.14"
 dependencies = [
     "questionary>=2.1.0",
     "pyyaml>=6.0",
-    "nicegui>=3.10.0",
-    "claude-agent-sdk>=0.2.87",
-    "cryptography>=46.0.7",
-    "pytest-asyncio>=1.4.0",
+    "nicegui>=3.18.0",
+    # 0.2.160 bundles Claude Code CLI 2.1.283; Opus 5.5 needs CLI >= 2.1.280.
+    "claude-agent-sdk>=0.2.174",
+    "cryptography>=50.0.0",  # CVE-2026-69247/69248/69249, GHSA-537c-gmf6-5ccf
+    "pytest-asyncio>=1.4.1",
 ]
 
 [project.optional-dependencies]
@@ -17,22 +18,34 @@ dependencies = [
 # runtime dependency above. The floor must match it — the SDK path uses
 # ClaudeAgentOptions(model=..., effort=..., thinking=...), which the old
 # 0.1.x floor predates.
-generate = ["claude-agent-sdk>=0.2.87"]
-dev = ["pytest>=9.0.3", "pytest-asyncio>=1.4.0"]
+generate = ["claude-agent-sdk>=0.2.174"]
+dev = ["pytest>=9.1.1", "pytest-asyncio>=1.4.1"]
 
 [project.scripts]
 skillnir = "skillnir.cli:main"
 
 [tool.uv]
-# Security floors for transitively-pulled packages (CVE remediation, 2026-06-13).
-# aiohttp arrives via nicegui + python-socketio; pyjwt via mcp[crypto]; starlette
-# via fastapi/nicegui/mcp. These `>=` floors keep each at or above its patched
-# release so a future re-resolve cannot regress below the fix. uv.lock already
-# pins the resolved (possibly higher) versions; the floors document the boundary.
+# Security floors for transitively-pulled packages (CVE remediation, 2026-06-13,
+# raised 2026-10-25 after a pip-audit of uv.lock). aiohttp, multidict and
+# python-socketio/engineio arrive via nicegui; mcp, pyjwt, anyio via
+# claude-agent-sdk; starlette and python-multipart via fastapi/nicegui/mcp;
+# virtualenv and filelock via pre-commit (dev). These `>=` floors keep each at
+# or above its patched release so a future re-resolve cannot regress below the
+# fix. uv.lock already pins the resolved (possibly higher) versions; the floors
+# document the boundary.
 constraint-dependencies = [
-    "aiohttp>=3.14.0",   # CVE-2026-34993, CVE-2026-47265
-    "pyjwt>=2.13.0",     # PYSEC-2026-175/177/178/179
-    "starlette>=1.0.1",  # PYSEC-2026-161 (BadHost)
+    "aiohttp>=3.14.4",           # CVE-2026-111063..111066 and 7 more
+    "anyio>=4.14.2",             # CVE-2026-63374, CVE-2026-64847
+    "certifi>=2026.10.19",       # PYSEC-2026-4320
+    "filelock>=4.2.1",           # CVE-2026-112907/112913/112940
+    "mcp>=2.2.0",                # CVE-2026-52869/52870/59950/59951
+    "multidict>=6.9.1",          # CVE-2026-104874
+    "pyjwt>=2.15.0",             # CVE-2026-101917/101918/102265/102266 and 11 more
+    "python-engineio>=4.13.2",   # CVE-2026-48802, CVE-2026-48809
+    "python-multipart>=0.0.31",  # CVE-2026-53540
+    "python-socketio>=5.16.2",   # CVE-2026-48804
+    "starlette>=1.0.1",          # PYSEC-2026-161 (BadHost)
+    "virtualenv>=21.14.9",       # CVE-2026-102925/102930/102937/102938 and 11 more
 ]
 
 [tool.pytest.ini_options]
@@ -45,7 +58,7 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "pre-commit>=4.6.0",
-    "pylint>=4.0.5",
-    "pytest-asyncio>=0.24",
+    "pre-commit>=4.7.0",
+    "pylint>=4.1.3",
+    "pytest-asyncio>=1.4.1",
 ]

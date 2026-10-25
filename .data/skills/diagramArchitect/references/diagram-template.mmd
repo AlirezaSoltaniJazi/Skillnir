@@ -1,0 +1,14 @@
+%% Title: <Subject> <diagram type>
+%% Question: <the ONE question this diagram answers>
+%% Audience: <who reads it>
+%% Source of truth: path/to/your/file.ext :: <Symbol>
+%% Last verified: YYYY-MM-DD
+flowchart TB
+    accTitle: <Subject> <diagram type>
+    accDescr: <one-sentence description of what the diagram shows>
+    Start((Start)) --> Step1[Verb noun]
+    Step1 --> Dec{Condition?}
+    Dec -->|yes| Step2[Verb noun]
+    Dec -->|no| Alt[Handle alternative]
+    Step2 --> Done(((Done)))
+    Alt --> Done

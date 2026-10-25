@@ -35,6 +35,7 @@ src/skillnir/              # Core package (all modules)
 ├── generator.py           # AI docs (agents.md) generation
 ├── harness_researcher.py  # AI agent / LLM harness-engineering research pipeline
 ├── hooks.py               # Claude Code sound notification hooks
+├── html_safety.py         # Escaping, URL-scheme and record-ID checks for generated HTML (stdlib-only)
 ├── i18n.py                # Internationalization (9 languages, t() function)
 ├── injector.py            # Symlink injection into tool dotdirs
 ├── news.py                # Short-form AI news headlines pipeline
@@ -71,7 +72,7 @@ scripts/                   # CI runner scripts (run_intel.py)
 │       ├── references/    # Detailed docs and code samples
 │       ├── scripts/       # Validation scripts
 │       └── agents/        # Sub-agent definitions
-├── promptsv1/             # 45 prompt templates (38 skill generators + 7 utility prompts)
+├── promptsv1/             # 47 prompt templates (40 skill generators + 7 utility prompts)
 ├── research/articles/     # 500+ research articles (organized by topic)
 └── events/                # AI events data (organized by topic)
 tests/                     # 29 test files (pytest, class-based)
@@ -247,7 +248,7 @@ No `.env` file used. Configuration stored in `~/.skillnir/config.json`:
 ```json
 {
   "backend": "claude",
-  "model": "claude-opus-5",
+  "model": "opus",
   "prompt_version": "v1",
   "compress_prompts": false,
   "effort": "high",
@@ -297,7 +298,9 @@ uv run pytest -k "test_creates_symlink"  # single test
 - **At-rest encryption** — webhook credentials encrypted with machine-bound Fernet key (`crypto.py`)
 - **SSRF hardening** — per-provider webhook URL validation with host allowlists
 - **NiceGUI binds to 127.0.0.1 only** — prevents LAN exposure of unauthenticated Settings page
-- **Config file permissions** — `~/.skillnir/config.json` and `client_id` written with `0o600`
+- **Host-header allowlist** — `TrustedHostMiddleware` rejects any Host but `127.0.0.1`/`localhost` (DNS rebinding)
+- **Config file permissions** — `~/.skillnir/config.json` and `client_id` created `0o600` atomically (`crypto.write_private_text`), `~/.skillnir` kept `0o700`
+- **AI output is untrusted** — generated HTML escapes every record field via `html_safety` (`attr`, `href`, `onclick_open`); record IDs must pass `is_safe_id` before becoming file names; research pipelines get web tools only (`RESEARCH_CLAUDE_TOOLS`)
 
 ## Known Gotchas
 
@@ -338,7 +341,7 @@ uv run pytest -k "test_creates_symlink"  # single test
 ## Skills Reference
 
 > Project-specific conventions live in `.data/skills/`. Check before making architectural decisions.
-> Skills available: backendEngineer, devopsEngineer, frontendEngineer, github, gitlab, jira, modelRegistry, promptCompressor, securityEngineer, skillnir
+> Skills available: backendEngineer, devopsEngineer, frontendEngineer, github, gitlab, jira, modelRegistry, promptCompressor, securityEngineer, skillnir, translationReviewer
 
 ## Sub-Agent Capabilities
 

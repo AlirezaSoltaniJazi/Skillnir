@@ -79,6 +79,10 @@ _GLOBAL_CSS = """
 """
 
 
+# Host headers the UI answers to; anything else is refused (DNS rebinding).
+_LOOPBACK_HOSTS = ("127.0.0.1", "localhost")
+
+
 def _find_free_port(start: int, host: str = "127.0.0.1", max_tries: int = 20) -> int:
     """Return the first free TCP port at or above `start` on `host`."""
     for offset in range(max_tries):
@@ -96,6 +100,7 @@ def _find_free_port(start: int, host: str = "127.0.0.1", max_tries: int = 20) ->
 def run_ui(port: int = 8080) -> None:
     """Start the NiceGUI web server."""
     from nicegui import app, ui
+    from starlette.middleware.trustedhost import TrustedHostMiddleware
 
     from skillnir.backends import get_app_version
 
@@ -196,6 +201,12 @@ def run_ui(port: int = 8080) -> None:
     # page, so binding to 0.0.0.0 (NiceGUI's default) would leak it to
     # anyone on the same LAN. Users who deliberately want remote access
     # should run this behind their own reverse proxy + auth.
+    # Loopback binding alone doesn't stop DNS rebinding: a web page whose
+    # domain re-resolves to 127.0.0.1 becomes same-origin with this UI and
+    # could read decrypted credentials off the Settings page. Rejecting any
+    # other Host header (HTTP and WebSocket alike) closes that hole.
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=list(_LOOPBACK_HOSTS))
+
     actual_port = _find_free_port(port)
     if actual_port != port:
         print(

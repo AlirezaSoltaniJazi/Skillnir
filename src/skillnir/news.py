@@ -31,6 +31,7 @@ from skillnir.backends import (
     parse_stream_line,
 )
 from skillnir.generator import GenerationProgress, _emit
+from skillnir.html_safety import attr, is_safe_id, onclick_open, safe_url
 
 # ---------------------------------------------------------------------------
 # Data models
@@ -329,11 +330,10 @@ def _generate_landing_html(
         )
         title_escaped = html.escape(n.title)
         source_escaped = html.escape(n.source_name)
-        source_url = html.escape(n.source_url, quote=True)
         summary_escaped = html.escape(n.summary)
         cat_label = NEWS_CATEGORIES.get(n.category, n.category)
         rows.append(f"""\
-        <tr onclick="window.open('{source_url}','_blank')" style="cursor:pointer;" class="row" data-topic="{n.category}" data-source="{html.escape(n.source_name, quote=True)}">
+        <tr onclick="{onclick_open(safe_url(n.source_url))}" style="cursor:pointer;" class="row" data-topic="{attr(n.category)}" data-source="{html.escape(n.source_name, quote=True)}">
           <td style="padding:12px 16px;">
             <div style="font-weight:600;color:#e2e8f0;">{title_escaped}{badge}</div>
             <div style="font-size:13px;color:#94a3b8;margin-top:4px;">{summary_escaped}</div>
@@ -342,7 +342,7 @@ def _generate_landing_html(
           <td style="padding:12px 16px;white-space:nowrap;">
             <span style="background:{color};color:#fff;padding:2px 10px;border-radius:12px;font-size:12px;">{cat_label}</span>
           </td>
-          <td style="padding:12px 16px;color:#94a3b8;font-family:monospace;font-size:13px;white-space:nowrap;">{n.published_date}</td>
+          <td style="padding:12px 16px;color:#94a3b8;font-family:monospace;font-size:13px;white-space:nowrap;">{attr(n.published_date)}</td>
         </tr>""")
 
     rows_html = "\n".join(rows)
@@ -387,7 +387,7 @@ def _generate_landing_html(
     source_chips_html = all_source_chip + " " + source_chips
 
     total = len(sorted_items)
-    last_updated = sorted_items[0].published_date if sorted_items else "N/A"
+    last_updated = attr(sorted_items[0].published_date) if sorted_items else "N/A"
     generated_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     subtitle = (
         f"{total} news items | Last updated: {last_updated}"
@@ -482,7 +482,7 @@ def _dict_to_news_item(item: dict, category_key: str) -> NewsItem | None:
             category=category_key,
             summary=str(item.get("summary", "")).strip(),
         )
-        if news_item.id and news_item.title and news_item.source_url:
+        if news_item.title and news_item.source_url and is_safe_id(news_item.id):
             return news_item
     except KeyError, TypeError, ValueError:
         pass
